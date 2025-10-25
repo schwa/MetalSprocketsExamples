@@ -1,5 +1,5 @@
-XCODE_PROJECT := "Ultraviolence-Examples.xcodeproj"
-XCODE_SCHEME := "Ultraviolence-Examples"
+XCODE_PROJECT := "MetalSprockets-Examples.xcodeproj"
+XCODE_SCHEME := "MetalSprockets-Examples"
 CONFIGURATION := "Debug"
 
 default: list
@@ -32,7 +32,7 @@ build: build-macOS build-iOS
     @echo "✅ Build Success"
 
 test:
-    swift test --quiet --package-path Packages/UltraviolenceExamples
+    swift test --quiet --package-path Packages/MetalSprocketsExamples
     @echo "✅ Test Success"
 
 push: build test
@@ -43,7 +43,7 @@ format:
     fd --extension metal --extension h --exec clang-format -i {}
 
 update-deps:
-    rm Packages/UltraviolenceExamples/Package.resolved
-    #rm Ultraviolence-Examples.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-    cd Packages/UltraviolenceExamples; swift package update
+    rm Packages/MetalSprocketsExamples/Package.resolved
+    #rm MetalSprockets-Examples.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+    cd Packages/MetalSprocketsExamples; swift package update
     xcodebuild -resolvePackageDependencies

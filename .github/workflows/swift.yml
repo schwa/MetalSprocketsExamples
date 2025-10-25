@@ -1,7 +1,7 @@
 # This workflow will build a Swift project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
-# https://github.com/schwa/Ultraviolence-Examples/actions
+# https://github.com/schwa/MetalSprockets-Examples/actions
 
 name: Swift
 on:
@@ -22,15 +22,15 @@ jobs:
             - name: Trust plugins
               run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
             - run: swift build -v
-              working-directory: Packages/UltraviolenceExamples
+              working-directory: Packages/MetalSprocketsExamples
             - run: swift test -v
-              working-directory: Packages/UltraviolenceExamples
+              working-directory: Packages/MetalSprocketsExamples
 
     xcode-build-26:
         env:
             XCODE_VERSION: "latest-stable"
-            XCODE_PROJECT: "Ultraviolence-Examples.xcodeproj"
-            XCODE_SCHEME: "Ultraviolence-Examples"
+            XCODE_PROJECT: "MetalSprockets-Examples.xcodeproj"
+            XCODE_SCHEME: "MetalSprockets-Examples"
             XCODE_CONFIGURATION: "Release"
         runs-on: macos-15 # macos-latest
         steps:
