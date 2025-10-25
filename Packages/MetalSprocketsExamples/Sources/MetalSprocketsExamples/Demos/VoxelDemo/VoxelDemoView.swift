@@ -103,7 +103,9 @@ public struct VoxelDemoView: View {
         let device = _MTLCreateSystemDefaultDevice()
         do {
             voxelTexture = try makeSphereVoxelTexture(device: device, size: voxelSize)
-            voxelScale = SIMD3<Float>(1, 1, 1)
+            if voxelScale == SIMD3<Float>(0, 0, 0) {
+                voxelScale = SIMD3<Float>(1, 1, 1)
+            }
         }
         catch {
             assertionFailure("Failed to create voxel texture: \(error)")
