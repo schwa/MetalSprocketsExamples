@@ -1,10 +1,10 @@
 import GeometryLite3D
 import Metal
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import SwiftUI
 import UniformTypeIdentifiers
 
 struct PanoramaMiniMapView: View {

@@ -1,6 +1,6 @@
 import Metal
-import simd
 import MetalSprocketsSupport
+import simd
 
 enum GradientTextureGenerator {
     static func createThermalGradient(device: MTLDevice) throws -> MTLTexture {

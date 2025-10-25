@@ -13,19 +13,19 @@ let package = Package(
         .library(name: "MetalSprocketsExamples", targets: ["MetalSprocketsExamples"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
-        .package(url: "https://github.com/swiftlang/swift-syntax", from: "600.0.0-latest"),
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.2.0"),
+        .package(url: "https://github.com/schwa/earcut-swift", branch: "main"),
         .package(url: "https://github.com/schwa/Everything", from: "1.2.0"),
+        .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
         .package(url: "https://github.com/schwa/Interaction3D", branch: "main"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.0"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.2.0"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
-        .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
-        .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
+        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", branch: "main"),
+        .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
+        .package(url: "https://github.com/SomeRandomiOSDev/CBORCoding", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax", from: "600.0.0-latest"),
         .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0"),
-        .package(url: "https://github.com/schwa/earcut-swift", branch: "main"),
-        .package(url: "https://github.com/SomeRandomiOSDev/CBORCoding", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -33,20 +33,21 @@ let package = Package(
             dependencies: [
                 "MetalSprocketsExampleShaders",
                 "MikkTSpace",
-                .product(name: "MetalSprockets", package: "MetalSprockets"),
-                .product(name: "MetalSprocketsUI", package: "MetalSprockets"),
-                .product(name: "Collections", package: "swift-collections"),
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+                .product(name: "CBORCoding", package: "CBORCoding"),
+                .product(name: "Collections", package: "swift-collections"),
+                .product(name: "earcut", package: "earcut-swift"),
+                .product(name: "Everything", package: "Everything"),
                 .product(name: "GeometryLite3D", package: "GeometryLite3D"),
                 .product(name: "Interaction3D", package: "Interaction3D"),
-                .product(name: "SwiftGLTF", package: "SwiftGLTF"),
+                .product(name: "MetalSprockets", package: "MetalSprockets"),
+                .product(name: "MetalSprocketsUI", package: "MetalSprockets"),
                 .product(name: "Panels", package: "Panels"),
+                .product(name: "SwiftGLTF", package: "SwiftGLTF"),
                 .product(name: "ZIPFoundation", package: "ZIPFoundation"),
-                .product(name: "Everything", package: "Everything"),
-                .product(name: "earcut", package: "earcut-swift"),
-                .product(name: "CBORCoding", package: "CBORCoding"),
             ],
             resources: [
+                .copy("Resources/4.2.03.heic"),
                 .copy("Resources/AppleEventVideo.mp4"),
                 .copy("Resources/AppleLogoMask.png"),
                 .copy("Resources/DJSI3956.JPG"),
@@ -55,15 +56,7 @@ let package = Package(
                 .copy("Resources/IndoorEnvironmentHDRI013_1K-HDR.exr"),
                 .copy("Resources/Samples"),
                 .copy("Resources/teapot.obj"),
-                .copy("Resources/4.2.03.heic"),
             ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
-            ]
-        ),
-        .testTarget(
-            name: "MetalSprocketsExamplesTests",
-            dependencies: ["MetalSprocketsExamples"],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
             ]
@@ -78,6 +71,13 @@ let package = Package(
         .target(
             name: "MikkTSpace",
             publicHeadersPath: ".",
+        ),
+        .testTarget(
+            name: "MetalSprocketsExamplesTests",
+            dependencies: ["MetalSprocketsExamples"],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
+            ]
         )
     ],
     swiftLanguageModes: [.v6]

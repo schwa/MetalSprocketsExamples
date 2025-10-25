@@ -1,11 +1,11 @@
 import GeometryLite3D
 import Interaction3D
 import Metal
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 import UniformTypeIdentifiers
 
 public struct VoxelDemoView: View {
@@ -137,7 +137,7 @@ public struct VoxelDemoView: View {
         }
         texture.label = "Voxel Texture"
 
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load shader bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "VoxelShaders")
         let kernel: ComputeKernel = try shaderLibrary.voxel_generateSphere
 

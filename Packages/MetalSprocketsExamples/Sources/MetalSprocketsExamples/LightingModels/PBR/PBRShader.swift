@@ -1,10 +1,10 @@
 import Metal
 import MetalKit
-import ModelIO
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import ModelIO
+import simd
 
 // MARK: - Global Uniforms
 
@@ -14,14 +14,14 @@ struct PBRShader<Content>: Element where Content: Element {
     var content: Content
 
     init(@ElementBuilder content: () throws -> Content) throws {
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "PBR")
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main
         self.content = try content()
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             try RenderPipeline(label: "PBR Shader", vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content

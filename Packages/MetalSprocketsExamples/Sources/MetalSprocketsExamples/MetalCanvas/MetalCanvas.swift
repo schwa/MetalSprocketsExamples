@@ -1,6 +1,6 @@
 import Metal
-import SwiftUI
 import MetalSprocketsExampleShaders
+import SwiftUI
 
 struct MetalCanvas: Equatable {
     internal enum DrawOperation: Equatable {

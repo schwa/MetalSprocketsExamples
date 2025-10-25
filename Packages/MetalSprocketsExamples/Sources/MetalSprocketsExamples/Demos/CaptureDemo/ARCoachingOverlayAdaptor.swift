@@ -1,7 +1,7 @@
 #if os(iOS)
 import ARKit
-import SwiftUI
 import MetalSprocketsUI
+import SwiftUI
 
 struct ARCoachingOverlayAdaptor: View {
     let session: ARSession

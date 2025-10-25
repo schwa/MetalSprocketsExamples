@@ -8,13 +8,6 @@ struct BlinnPhongMaterial {
     var diffuse: ColorSource
     var specular: ColorSource
     var shininess: Float
-
-    init(ambient: ColorSource, diffuse: ColorSource, specular: ColorSource, shininess: Float) {
-        self.ambient = ambient
-        self.diffuse = diffuse
-        self.specular = specular
-        self.shininess = shininess
-    }
 }
 
 extension BlinnPhongMaterial {

@@ -1,6 +1,6 @@
 import DemoKit
-import SwiftUI
 import MetalSprocketsExamples
+import SwiftUI
 
 @MainActor let allDemos: [any DemoView.Type] = {
     var demos: [any DemoView.Type] = [

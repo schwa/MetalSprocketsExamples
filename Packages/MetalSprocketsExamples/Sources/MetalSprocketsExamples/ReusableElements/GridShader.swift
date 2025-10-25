@@ -1,10 +1,10 @@
 import GeometryLite3D
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 struct GridShader: Element {
     @MSState
@@ -19,7 +19,7 @@ struct GridShader: Element {
     init(projectionMatrix: simd_float4x4, cameraMatrix: simd_float4x4) throws {
         self.projectionMatrix = projectionMatrix
         self.cameraMatrix = cameraMatrix
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "GridShader")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main

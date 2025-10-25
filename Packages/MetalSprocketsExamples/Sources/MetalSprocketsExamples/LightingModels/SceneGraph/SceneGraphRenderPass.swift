@@ -1,8 +1,8 @@
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import simd
 
 // TODO: Lighing is static once generated.
 
@@ -111,7 +111,6 @@ struct SceneGraphRenderPass: Element {
         }
     }
 }
-
 
 extension VertexDescriptor {
     static var `default`: Self {

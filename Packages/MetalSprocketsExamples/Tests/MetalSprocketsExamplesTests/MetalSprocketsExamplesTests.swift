@@ -1,8 +1,8 @@
 import CoreGraphics
 import GeometryLite3D
+@testable import MetalSprocketsExamples
 import simd
 import Testing
-@testable import MetalSprocketsExamples
 
 // LineJoinTests and EndCapBoundingBoxTests removed - they tested CPU-based geometry generation
 // that no longer exists. The implementation now uses GPU mesh shaders for stroke rendering.

@@ -2,10 +2,10 @@ import CoreGraphics
 import GeometryLite3D
 import Metal
 import MetalKit
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import simd
 
 struct FlatShader <Content>: Element where Content: Element {
     var content: Content
@@ -22,7 +22,7 @@ struct FlatShader <Content>: Element where Content: Element {
     init(textureSpecifier: ColorSource, @ElementBuilder content: () throws -> Content) throws {
         self.textureSpecifier = textureSpecifier
         self.content = try content()
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "FlatShader")
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main

@@ -3,10 +3,10 @@ import SwiftUI
 import GeometryLite3D
 import Interaction3D
 import MetalKit
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsUI
+import simd
 
 public struct DebugShadersDemoView: View {
     @State
@@ -68,7 +68,7 @@ struct DebugModePicker: View {
         (.bitangent, "Bitangent"),
         (.worldPosition, "World Position"),
         (.localPosition, "Local Position"),
-        (.uvDistortion, "MS Distortion"),
+        (.uvDistortion, "UV Distortion"),
         (.tbnMatrix, "TBN Matrix"),
         (.vertexID, "Vertex ID"),
         (.faceNormal, "Face Normal"),

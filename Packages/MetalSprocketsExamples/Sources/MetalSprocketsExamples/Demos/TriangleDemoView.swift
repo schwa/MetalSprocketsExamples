@@ -1,8 +1,8 @@
 import MetalKit
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 public struct TriangleDemoView: View {
     let source = """

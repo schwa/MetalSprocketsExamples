@@ -5,10 +5,10 @@ import CoreGraphics
 import ImageIO
 import Metal
 import MetalKit
-import ModelIO
-import simd
 import MetalSprockets
 import MetalSprocketsSupport
+import ModelIO
+import simd
 import UniformTypeIdentifiers
 
 struct TeapotDemo: Element {
@@ -25,7 +25,7 @@ struct TeapotDemo: Element {
         self.lightDirection = lightDirection
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             try LambertianShader(transforms: transforms, color: color, lightDirection: lightDirection) {
                 Draw { encoder in

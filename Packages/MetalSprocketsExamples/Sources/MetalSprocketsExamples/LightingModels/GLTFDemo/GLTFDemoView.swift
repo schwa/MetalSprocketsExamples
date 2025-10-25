@@ -1,6 +1,6 @@
+import MetalSprocketsUI
 import SwiftGLTF
 import SwiftUI
-import MetalSprocketsUI
 import UniformTypeIdentifiers
 
 public struct GLTFDemoView: View {

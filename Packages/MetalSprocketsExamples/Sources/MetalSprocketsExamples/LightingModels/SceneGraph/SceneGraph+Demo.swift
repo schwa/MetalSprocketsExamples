@@ -1,7 +1,7 @@
 import GeometryLite3D
 import Metal
-import simd
 import MetalSprocketsExampleShaders
+import simd
 
 extension SceneGraph {
     static func demo(device: MTLDevice) -> SceneGraph {

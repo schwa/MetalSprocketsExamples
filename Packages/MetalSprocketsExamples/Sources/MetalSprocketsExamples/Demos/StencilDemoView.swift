@@ -1,7 +1,7 @@
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import SwiftUI
 
 /// A demo that shows the use of a stencil texture.
 /// This view creates a texture, the size of the output drawable, containing a checkerboard pattern. The texture is regenerated when the drawable size changes.

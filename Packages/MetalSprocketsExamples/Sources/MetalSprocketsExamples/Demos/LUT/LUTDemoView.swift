@@ -1,9 +1,9 @@
 import Metal
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import SwiftUI
 
 /// A demo that shows transform images using LUTs.
 /// I got a bit carried away here and it supports LUTs stored as 512x512 PNGs and .cube 3D LUTs: https://resolve.cafe/developers/luts/

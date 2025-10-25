@@ -1,6 +1,6 @@
 import GeometryLite3D
-import simd
 import MetalSprocketsExampleShaders
+import simd
 
 class SceneGraph {
     class Node: Identifiable {

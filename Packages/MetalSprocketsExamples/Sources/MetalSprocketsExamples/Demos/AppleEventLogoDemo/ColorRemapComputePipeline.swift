@@ -26,10 +26,10 @@ struct ColorRemapComputePipeline: Element {
         self.power = power
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             let shaderLibrary = try ShaderLibrary(
-                bundle: .metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
+                bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
                 namespace: "ColorRemap"
             )
 

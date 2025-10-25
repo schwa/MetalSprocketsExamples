@@ -108,12 +108,12 @@ namespace DebugShader {
             color = (in.localPosition + 1.0) * 0.5;
             break;
 
-        case kDebugShadersModeMSDistortion: {
-            // Check MS distortion using a checkerboard pattern
+        case kDebugShadersModeUVDistortion: {
+            // Check UV distortion using a checkerboard pattern
             // Areas with high distortion will show smaller/irregular squares
             float checker = sin(in.texCoord.x * 20.0) * sin(in.texCoord.y * 20.0);
             color = checker > 0 ? float3(1, 1, 1) : float3(0, 0, 0);
-            // Highlight MS seams and distortion with color coding
+            // Highlight UV seams and distortion with color coding
             float2 uvDeriv = fwidth(in.texCoord) * 100.0;
             color = mix(color, float3(1, 0, 0), saturate(length(uvDeriv) - 1.0));
             break;
@@ -152,17 +152,17 @@ namespace DebugShader {
             break;
         }
 
-        case kDebugShadersModeMSDerivatives: {
-            // Show MS derivatives - useful for understanding texture sampling
-            float2 dMSdx = dfdx(in.texCoord);
-            float2 dMSdy = dfdy(in.texCoord);
+        case kDebugShadersModeUVDerivatives: {
+            // Show UV derivatives - useful for understanding texture sampling
+            float2 dUVdx = dfdx(in.texCoord);
+            float2 dUVdy = dfdy(in.texCoord);
             // Map derivatives to color (scaled for visibility)
-            color = float3(length(dMSdx) * 10.0, length(dMSdy) * 10.0, 0.0);
+            color = float3(length(dUVdx) * 10.0, length(dUVdy) * 10.0, 0.0);
             break;
         }
 
         case kDebugShadersModeCheckerboard: {
-            // Simple checkerboard pattern for MS visualization
+            // Simple checkerboard pattern for UV visualization
             float checkSize = 10.0;
             bool checkX = fmod(floor(in.texCoord.x * checkSize), 2.0) > 0.5;
             bool checkY = fmod(floor(in.texCoord.y * checkSize), 2.0) > 0.5;
@@ -170,8 +170,8 @@ namespace DebugShader {
             break;
         }
 
-        case kDebugShadersModeMSGrid: {
-            // MS grid with coordinate lines
+        case kDebugShadersModeUVGrid: {
+            // UV grid with coordinate lines
             float gridSize = 10.0;
             float lineWidth = 0.02;
 
@@ -186,7 +186,7 @@ namespace DebugShader {
                 (majorGrid.x < lineWidth * 2.0 || majorGrid.x > (1.0 - lineWidth * 2.0) ||
                  majorGrid.y < lineWidth * 2.0 || majorGrid.y > (1.0 - lineWidth * 2.0));
 
-            // Base color shows MS coordinates
+            // Base color shows UV coordinates
             color = float3(in.texCoord.x, in.texCoord.y, 0.5);
 
             // Overlay grid

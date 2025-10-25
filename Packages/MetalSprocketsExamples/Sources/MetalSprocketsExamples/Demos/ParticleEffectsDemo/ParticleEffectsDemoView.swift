@@ -1,12 +1,12 @@
 import GeometryLite3D
 import Interaction3D
 import Metal
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 public struct ParticleEffectsDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
@@ -210,7 +210,7 @@ private struct ParticleUpdateCompute: Element {
     var body: some Element {
         get throws {
             let device = _MTLCreateSystemDefaultDevice()
-            let bundle = Bundle.metal-sprocketsExampleShaders()
+            let bundle = Bundle.metalSprocketsExampleShaders()
                 .orFatalError("Failed to load shader bundle")
             let library = try device.makeDefaultLibrary(bundle: bundle)
             let updateFunction = library.makeFunction(name: "updateParticles")
@@ -267,7 +267,7 @@ private struct ParticleRenderPipeline: Element {
     var body: some Element {
         get throws {
             let device = _MTLCreateSystemDefaultDevice()
-            let bundle = Bundle.metal-sprocketsExampleShaders()
+            let bundle = Bundle.metalSprocketsExampleShaders()
                 .orFatalError("Failed to load shader bundle")
             let library = try device.makeDefaultLibrary(bundle: bundle)
 

@@ -1,9 +1,9 @@
 import Foundation
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import simd
 
 /// A Game of Life simulation element that runs entirely on the GPU
 struct GameOfLife: Element {
@@ -46,7 +46,7 @@ struct GameOfLife: Element {
         self.pattern = pattern
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             // Initialize textures lazily
             setupTexturesIfNeeded()
@@ -58,7 +58,7 @@ struct GameOfLife: Element {
                 initialized = true
             }
 
-            let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+            let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
             let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "GameOfLifeShader")
 
             return try Group {
@@ -119,7 +119,7 @@ struct GameOfLife: Element {
             return
         }
 
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         guard let shaderLibrary = try? ShaderLibrary(bundle: shaderBundle, namespace: "GameOfLifeShader") else {
             return
         }

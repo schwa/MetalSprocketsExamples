@@ -2,13 +2,13 @@ import GeometryLite3D
 import Interaction3D
 import Metal
 import MetalKit
-import ModelIO
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import ModelIO
+import simd
+import SwiftUI
 
 public struct PBRDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()

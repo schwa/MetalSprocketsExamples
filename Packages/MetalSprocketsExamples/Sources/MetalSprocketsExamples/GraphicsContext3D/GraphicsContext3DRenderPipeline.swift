@@ -1,8 +1,8 @@
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import simd
 
 struct GraphicsContext3DRenderPipeline: Element {
     let context: GraphicsContext3D
@@ -58,7 +58,7 @@ struct GraphicsContext3DRenderPipeline: Element {
         self.viewport = viewport
         self.debugWireframe = debugWireframe
 
-        let library = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders(), namespace: "GraphicsContext3D")
+        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "GraphicsContext3D")
         objectShader = try library.function(named: "lineJoinObjectShader", type: ObjectShader.self)
         meshShader = try library.function(named: "lineJoinMeshShader", type: MeshShader.self)
         meshFragmentShader = try library.function(named: "fragmentShader", type: FragmentShader.self)
@@ -66,7 +66,7 @@ struct GraphicsContext3DRenderPipeline: Element {
         fillFragmentShader = try library.function(named: "fragmentShader", type: FragmentShader.self)
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             if let device {
                 if joinDataBuffer == nil {

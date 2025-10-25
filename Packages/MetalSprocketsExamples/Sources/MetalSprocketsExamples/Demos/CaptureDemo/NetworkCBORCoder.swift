@@ -5,10 +5,6 @@ import Network
 // MARK: - NetworkCBOREncoder
 
 struct NetworkCBOREncoder: NetworkEncoder, Sendable {
-    init() {
-        // Default initializer
-    }
-
     func encode<T>(_ value: T) throws -> Data where T: Encodable {
         try CBOREncoder().encode(value)
     }
@@ -17,10 +13,6 @@ struct NetworkCBOREncoder: NetworkEncoder, Sendable {
 // MARK: - NetworkCBORDecoder
 
 struct NetworkCBORDecoder: NetworkDecoder, Sendable {
-    init() {
-        // Default initializer
-    }
-
     func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
         try CBORDecoder().decode(type, from: data)
     }
@@ -31,10 +23,6 @@ struct NetworkCBORDecoder: NetworkDecoder, Sendable {
 struct NetworkCBORCoder: NetworkCoder, Sendable {
     typealias Encoder = NetworkCBOREncoder
     typealias Decoder = NetworkCBORDecoder
-
-    init() {
-        // Default initializer
-    }
 
     func makeEncoder() -> NetworkCBOREncoder {
         NetworkCBOREncoder()

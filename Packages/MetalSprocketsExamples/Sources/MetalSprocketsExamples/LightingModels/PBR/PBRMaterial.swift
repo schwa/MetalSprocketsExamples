@@ -1,6 +1,6 @@
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
+import simd
 
 struct PBRMaterialNew: @unchecked Sendable {
     var albedo: ColorSource

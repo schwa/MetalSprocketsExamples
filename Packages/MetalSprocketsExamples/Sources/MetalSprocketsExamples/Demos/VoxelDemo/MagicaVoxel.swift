@@ -37,7 +37,6 @@ public extension MagicaVoxelModel {
         }
         self = MagicaVoxelModel.instantiate(mainChunk: mainChunk)
     }
-
 }
 
 public extension MagicaVoxelModel {
@@ -139,7 +138,6 @@ extension ChunkType: ExpressibleByStringLiteral {
 }
 
 // MARK: -
-
 
 // MARK: -
 

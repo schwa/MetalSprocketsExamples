@@ -30,7 +30,6 @@ extension Quad {
     static let clip = Quad(min: [-1, -1], max: [1, 1])
 }
 
-
 struct TextureBillboardPipeline: Element {
     let vertexShader: VertexShader
     let fragmentShader: FragmentShader
@@ -48,7 +47,7 @@ struct TextureBillboardPipeline: Element {
         assert(device.supportsFamily(.apple4)) // For argument buffers tier
         #endif
         assert(device.argumentBuffersSupport == .tier2)
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main
@@ -95,7 +94,7 @@ struct TextureBillboardPipeline: Element {
 
 extension TextureBillboardPipeline {
     init(specifierA: ColorSource, specifierB: ColorSource, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransformFunctionName: String) throws {
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
         let colorTransform = try shaderLibrary.function(named: colorTransformFunctionName, type: VisibleFunction.self)
         try self.init(specifierA: specifierA, specifierB: specifierB, positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
@@ -107,7 +106,7 @@ extension TextureBillboardPipeline {
         assert(device.supportsFamily(.apple4))
         #endif
         assert(device.argumentBuffersSupport == .tier2)
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main

@@ -7,12 +7,12 @@ struct EdgeDetectionKernel: Element {
     var colorTexture: MTLTexture
 
     init(depthTexture: MTLTexture, colorTexture: MTLTexture) throws {
-        kernel = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders()).EdgeDetectionKernel
+        kernel = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).EdgeDetectionKernel
         self.depthTexture = depthTexture
         self.colorTexture = colorTexture
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             try ComputePipeline(computeKernel: kernel) {
                 // TODO: #52 Compute threads per threadgroup

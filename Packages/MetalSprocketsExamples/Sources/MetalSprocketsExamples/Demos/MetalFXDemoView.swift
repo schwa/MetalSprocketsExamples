@@ -1,10 +1,10 @@
 #if canImport(MetalFX)
 import Metal
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import SwiftUI
 
 public struct MetalFXDemoView: View {
     let sourceTexture: MTLTexture

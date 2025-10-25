@@ -1,7 +1,7 @@
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsSupport
+import simd
 
 /// Renders a textured quad in 3D world space with YCbCr to RGB conversion
 struct TexturedQuad3DPipeline: Element {
@@ -13,7 +13,7 @@ struct TexturedQuad3DPipeline: Element {
 
     var body: some Element {
         get throws {
-            let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+            let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
             let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TexturedQuad3D")
             let vertexShader: VertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self)
             let fragmentShader: FragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self)

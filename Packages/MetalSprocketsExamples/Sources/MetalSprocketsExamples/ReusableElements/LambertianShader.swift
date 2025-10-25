@@ -1,6 +1,6 @@
 import CoreGraphics
-import simd
 import MetalSprockets
+import simd
 
 struct LambertianShader <Content>: Element where Content: Element {
     var transforms: Transforms
@@ -14,7 +14,7 @@ struct LambertianShader <Content>: Element where Content: Element {
         self.transforms = transforms
         self.color = color
         self.lightDirection = lightDirection
-        let library = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders(), namespace: "LambertianShader")
+        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "LambertianShader")
         self.vertexShader = try library.vertex_main
         self.fragmentShader = try library.fragment_main
         self.content = content()
@@ -50,7 +50,7 @@ struct LambertianShaderInstanced <Content>: Element where Content: Element {
         self.modelMatrices = modelMatrices
         self.lightDirection = lightDirection
 
-        let library = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders(), namespace: "LambertianShader")
+        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "LambertianShader")
         self.vertexShader = try library.vertex_instanced
         self.fragmentShader = try library.fragment_main
         self.content = content()

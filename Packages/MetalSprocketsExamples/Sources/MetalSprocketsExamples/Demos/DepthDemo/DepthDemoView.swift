@@ -1,11 +1,11 @@
 import GeometryLite3D
 import Interaction3D
 import MetalKit
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 public struct DepthDemoView: View {
     @State

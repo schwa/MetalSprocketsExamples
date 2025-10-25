@@ -8,7 +8,7 @@
 
 @implementation NSBundle (Module)
 
-+ (NSBundle *)metal-sprocketsExampleShadersBundle {
++ (NSBundle *)metalSprocketsExampleShadersBundle {
     static NSBundle *moduleBundle = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

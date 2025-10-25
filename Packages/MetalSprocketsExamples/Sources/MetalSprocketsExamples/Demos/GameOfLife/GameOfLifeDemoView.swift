@@ -1,5 +1,5 @@
-import SwiftUI
 import MetalSprocketsUI
+import SwiftUI
 
 public struct GameOfLifeDemoView: View {
     @State private var isRunning = true

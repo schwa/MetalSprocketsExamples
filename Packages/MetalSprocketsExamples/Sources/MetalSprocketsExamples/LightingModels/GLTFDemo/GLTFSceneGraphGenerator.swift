@@ -8,9 +8,9 @@ import CoreImage.CIFilterBuiltins
 import Foundation
 import GeometryLite3D
 import MetalKit
-import SwiftGLTF
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import SwiftGLTF
 
 // swiftlint:disable discouraged_optional_collection
 
@@ -310,7 +310,6 @@ extension Array {
         }
     }
 }
-
 
 extension MTLTexture {
     func redChannel() -> MTLTexture {

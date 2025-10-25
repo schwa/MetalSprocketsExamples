@@ -1,10 +1,10 @@
 import AVFoundation
 import MetalKit
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 public struct AppleEventLogoDemoView: View {
     @State
@@ -51,7 +51,7 @@ public struct AppleEventLogoDemoView: View {
 
     @State
     private var shaderLibrary = (try? ShaderLibrary(
-        bundle: .metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
+        bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
         namespace: "AppleEventLogoShaders"
     )).orFatalError("Failed to load Apple event shader library")
 

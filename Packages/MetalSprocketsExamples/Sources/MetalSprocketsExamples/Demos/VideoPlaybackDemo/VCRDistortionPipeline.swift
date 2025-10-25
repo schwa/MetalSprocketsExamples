@@ -28,10 +28,6 @@ struct VCRParameters {
     // Time-based effects
     var noiseAmount: Float = 0.5
     var chromaticAberration: Float = 0.7
-
-    init() {
-        // This line intentionally left blank.
-    }
 }
 
 struct VCRDistortionPipeline: Element {
@@ -49,9 +45,9 @@ struct VCRDistortionPipeline: Element {
         self.frameUniforms = frameUniforms
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
-            let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+            let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
             let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "VCRDistortion")
 
             let width = outputTexture.width

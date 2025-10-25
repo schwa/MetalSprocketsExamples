@@ -2,12 +2,12 @@ import GeometryLite3D
 import Interaction3D
 import Metal
 import MetalKit
-import Panels
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import Panels
+import simd
+import SwiftUI
 
 public struct SceneGraphDemoView: View {
     let sceneGraph: SceneGraph

@@ -2,12 +2,12 @@ import GeometryLite3D
 import Interaction3D
 import Metal
 import MetalKit
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 enum HitTestVisualizationMode: String, CaseIterable {
     case none = "None"

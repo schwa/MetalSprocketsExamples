@@ -1,6 +1,6 @@
 #if canImport(AppKit)
-import SwiftUI
 import MetalSprockets
+import SwiftUI
 
 public struct OffscreenDemoView: View {
     @State

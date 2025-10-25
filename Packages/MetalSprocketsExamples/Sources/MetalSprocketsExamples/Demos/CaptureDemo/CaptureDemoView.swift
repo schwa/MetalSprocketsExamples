@@ -4,15 +4,15 @@ import CoreVideo
 import GeometryLite3D
 import Metal
 import MetalKit
+import MetalSprockets
+import MetalSprocketsExampleShaders
+import MetalSprocketsSupport
+import MetalSprocketsUI
 import Network
 import Observation
 import RoomPlan
 import simd
 import SwiftUI
-import MetalSprockets
-import MetalSprocketsExampleShaders
-import MetalSprocketsSupport
-import MetalSprocketsUI
 
 public struct CaptureDemoView: View {
     @State

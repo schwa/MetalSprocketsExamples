@@ -1,7 +1,7 @@
 import GeometryLite3D
 import Metal
-import simd
 import MetalSprocketsSupport
+import simd
 
 struct Mesh {
     var label: String?

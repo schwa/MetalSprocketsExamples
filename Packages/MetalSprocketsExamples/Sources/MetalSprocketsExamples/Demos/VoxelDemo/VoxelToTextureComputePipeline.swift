@@ -1,10 +1,10 @@
 import GeometryLite3D
 import Metal
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 struct VoxelToTextureComputePipeline: Element {
     let projection: PerspectiveProjection
@@ -26,7 +26,7 @@ struct VoxelToTextureComputePipeline: Element {
         self.voxelTexture = voxelTexture
         self.outputTexture = outputTexture
         self.voxelScale = voxelScale
-        let bundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load shader bundle")
+        let bundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
         let shaderLibrary = try ShaderLibrary(bundle: bundle, namespace: "VoxelShaders")
         self.voxelComputeShader = try shaderLibrary.voxel_main
     }

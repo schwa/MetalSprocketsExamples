@@ -2,10 +2,10 @@ import GeometryLite3D
 import Interaction3D
 @preconcurrency import Metal
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import SwiftUI
 import UniformTypeIdentifiers
 
 public struct PanoramaDemoView: View {

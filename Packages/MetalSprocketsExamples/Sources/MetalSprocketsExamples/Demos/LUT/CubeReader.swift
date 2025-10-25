@@ -1,8 +1,8 @@
 import Foundation
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsSupport
+import simd
 
 struct CubeReader {
     // NOTE: Use https://github.com/fastfloat/fast_float

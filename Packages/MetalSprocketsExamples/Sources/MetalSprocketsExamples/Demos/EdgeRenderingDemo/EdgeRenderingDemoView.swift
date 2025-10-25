@@ -2,13 +2,13 @@ import GeometryLite3D
 import Interaction3D
 import Metal
 import MetalKit
-import ModelIO
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import ModelIO
+import simd
+import SwiftUI
 
 public struct EdgeLinesDemoView: View {
     private static func createMesh(type meshType: MeshType) -> MeshWithEdges {
@@ -42,8 +42,8 @@ public struct EdgeLinesDemoView: View {
 
             let mdlVertexDescriptor = MTKModelIOVertexDescriptorFromMetal(vertexDescriptor)
             guard let positionAttr = mdlVertexDescriptor.attributes[0] as? MDLVertexAttribute,
-                let normalAttr = mdlVertexDescriptor.attributes[1] as? MDLVertexAttribute,
-                let texCoordAttr = mdlVertexDescriptor.attributes[2] as? MDLVertexAttribute else {
+                  let normalAttr = mdlVertexDescriptor.attributes[1] as? MDLVertexAttribute,
+                  let texCoordAttr = mdlVertexDescriptor.attributes[2] as? MDLVertexAttribute else {
                 fatalError("Failed to configure vertex descriptor attributes")
             }
             positionAttr.name = MDLVertexAttributePosition

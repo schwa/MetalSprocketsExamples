@@ -1,6 +1,6 @@
 import Metal
-import SwiftUI
 import MetalSprocketsExampleShaders
+import SwiftUI
 
 struct MetalCanvasOperations {
     struct Limits {

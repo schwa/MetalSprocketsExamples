@@ -17,30 +17,18 @@ public extension TimingFunction {
 // https://easings.net/#
 
 struct LinearTimingFunction: TimingFunction {
-    init() {
-        // This line intentionally left blank.
-    }
-
     func solve(_ x: Float) -> Float {
         x
     }
 }
 
 struct SinusoidalTimingFunction: TimingFunction {
-    init() {
-        // This line intentionally left blank.
-    }
-
     func solve(_ x: Float) -> Float {
         0.5 * (1 + sin(.pi * x - .pi / 2))
     }
 }
 
 struct EaseInOutTimingFunction: TimingFunction {
-    init() {
-        // This line intentionally left blank.
-    }
-
     func solve(_ x: Float) -> Float {
         let r = CubicBezier(p1x: 0.65, p1y: 0, p2x: 0.35, p2y: 1).solve(for: Double(x)) ?? 0
         return Float(r)
@@ -48,10 +36,6 @@ struct EaseInOutTimingFunction: TimingFunction {
 }
 
 struct EaseInOutTimingFunction2: TimingFunction {
-    init() {
-        // This line intentionally left blank.
-    }
-
     func solve(_ x: Float) -> Float {
         x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2
     }

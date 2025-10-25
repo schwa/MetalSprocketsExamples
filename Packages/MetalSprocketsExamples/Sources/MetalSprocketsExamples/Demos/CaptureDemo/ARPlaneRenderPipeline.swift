@@ -16,7 +16,7 @@ struct ARPlaneRenderPipeline: Element {
     let indexCount: Int
 
     init(mvpMatrix: float4x4, planeAnchor: ARPlaneAnchor, color: SIMD4<Float>) throws {
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "WireframeShader")
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main

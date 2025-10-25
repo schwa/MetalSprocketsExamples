@@ -2,11 +2,11 @@ import GeometryLite3D
 import Interaction3D
 import Metal
 import MetalKit
-import ModelIO
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import ModelIO
+import simd
 
 // struct EdgeRenderingUniforms {
 //    var viewProjection: simd_float4x4
@@ -46,7 +46,7 @@ struct EdgeLinesRenderPass: Element {
         self.edgeColor = edgeColor
         self.debugMode = debugMode
 
-        let library = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders(), namespace: "EdgeRendering")
+        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "EdgeRendering")
         meshShader = try library.function(named: "edgeRenderingMeshShader", type: MeshShader.self)
         fragmentShader = try library.function(named: "edgeRenderingFragmentShader", type: FragmentShader.self)
     }
@@ -105,8 +105,8 @@ struct EdgeLinesRenderPass: Element {
 
             return try MetalSprockets.Group {
                 if let vertexBuffer = meshWithEdges.mesh.vertexBuffers.first,
-                    let edgeDataBuffer,
-                    !meshWithEdges.uniqueEdges.isEmpty {
+                   let edgeDataBuffer,
+                   !meshWithEdges.uniqueEdges.isEmpty {
                     try MeshRenderPipeline(meshShader: meshShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
                             encoder.label = "Edge Rendering"

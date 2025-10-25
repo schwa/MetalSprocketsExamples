@@ -1,5 +1,5 @@
-import SwiftUI
 import MetalSprocketsSnapshotUI
+import SwiftUI
 
 @main
 struct MetalSprocketsExamplesApp: App {

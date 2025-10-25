@@ -1,8 +1,8 @@
 import Metal
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
+import SwiftUI
 
 public extension Draw {
     init(mtkMesh: MTKMesh) {

@@ -1,8 +1,8 @@
 import Metal
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
+import simd
+import SwiftUI
 
 struct MixedExample: Element {
     var transforms: Transforms
@@ -18,7 +18,7 @@ struct MixedExample: Element {
         self.lightDirection = lightDirection
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
             let colorTexture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.resourceCreationFailure("Missing color attachment texture"))

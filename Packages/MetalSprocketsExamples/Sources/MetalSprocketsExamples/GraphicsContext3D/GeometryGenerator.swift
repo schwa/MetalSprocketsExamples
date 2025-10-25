@@ -1,7 +1,7 @@
 import CoreGraphics
 import earcut
-import simd
 import MetalSprocketsExampleShaders
+import simd
 
 internal struct Vertex {
     // periphery:ignore - used in Metal shader

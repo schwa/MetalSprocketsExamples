@@ -1,12 +1,12 @@
 import GeometryLite3D
 import Interaction3D
 import MetalKit
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 public struct GrassDemoView: View {
     @State
@@ -215,7 +215,7 @@ public struct GrassDemoView: View {
         let grassDataBuffer = try device.makeBuffer(view: .init(count: grassData.count), values: grassData, options: .storageModeShared)
         let uniformsBuffer = try device.makeBuffer(view: .init(count: 1), values: [uniforms], options: .storageModeShared)
 
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load shader bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
         let library = try ShaderLibrary(bundle: shaderBundle)
         let objectShader = try library.function(named: "grassObjectShader", type: ObjectShader.self)
         let meshShader = try library.function(named: "grassMeshShader", type: MeshShader.self)

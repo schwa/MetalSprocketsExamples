@@ -1,7 +1,7 @@
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
+import simd
 
 struct AxisAlignedWireframeBoxesRenderPipeline: Element {
     let vertexShader: VertexShader
@@ -11,7 +11,7 @@ struct AxisAlignedWireframeBoxesRenderPipeline: Element {
     let nudge: SIMD3<Float>
 
     init(mvpMatrix: float4x4, boxes: [BoxInstance], nudge: SIMD3<Float> = .zero) throws {
-        let library = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders(), namespace: "Boxes")
+        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "Boxes")
         vertexShader = try library.vertex_main
         fragmentShader = try library.fragment_main
         self.mvpMatrix = mvpMatrix
@@ -19,7 +19,7 @@ struct AxisAlignedWireframeBoxesRenderPipeline: Element {
         self.nudge = nudge
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in

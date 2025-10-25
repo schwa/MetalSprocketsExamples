@@ -1,7 +1,7 @@
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
+import simd
 
 public enum ColorSource {
     case texture2D(MTLTexture, MTLSamplerState?)

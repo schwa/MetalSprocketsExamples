@@ -1,8 +1,8 @@
 import CoreGraphics
 import ImageIO
 import Metal
-import simd
 import MetalSprockets
+import simd
 import UniformTypeIdentifiers
 
 struct RedTriangle: Element {
@@ -12,7 +12,7 @@ struct RedTriangle: Element {
 
     var body: some Element {
         get throws {
-            let library = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders(), namespace: "RedTriangle")
+            let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "RedTriangle")
             let vertexShader: VertexShader = try library.vertex_main
             let fragmentShader: FragmentShader = try library.fragment_main
 

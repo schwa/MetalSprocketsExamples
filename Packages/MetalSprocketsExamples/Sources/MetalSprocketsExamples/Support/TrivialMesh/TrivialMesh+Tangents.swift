@@ -1,6 +1,6 @@
 import Foundation
-import MikkTSpace
 import MetalSprocketsSupport
+import MikkTSpace
 
 extension SMikkTSpaceContext {
     var mesh: TrivialMesh {

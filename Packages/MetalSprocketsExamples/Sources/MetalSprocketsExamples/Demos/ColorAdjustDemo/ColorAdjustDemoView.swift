@@ -1,9 +1,9 @@
 import Metal
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import SwiftUI
 
 public struct ColorAdjustDemoView: View {
     enum AdjustmentFunction: String, CaseIterable {
@@ -96,7 +96,7 @@ public struct ColorAdjustDemoView: View {
         adjustedDescriptor.usage = [.shaderRead, .shaderWrite]
         adjustedTexture = device.makeTexture(descriptor: adjustedDescriptor).orFatalError("Failed to create adjusted texture")
         shaderLibrary = (try? ShaderLibrary(
-            bundle: .metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
+            bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
             namespace: "ColorAdjust"
         )).orFatalError("Failed to load color adjust shader library")
     }

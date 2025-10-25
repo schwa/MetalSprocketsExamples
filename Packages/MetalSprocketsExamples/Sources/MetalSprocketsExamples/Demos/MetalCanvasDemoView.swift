@@ -1,6 +1,6 @@
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsUI
+import SwiftUI
 
 public struct MetalCanvasDemoView: View {
     enum DemoType: String, CaseIterable, Identifiable {

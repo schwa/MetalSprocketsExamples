@@ -1,6 +1,6 @@
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
+import SwiftUI
 
 public struct ComputeDemoView: View {
     @State

@@ -1,7 +1,7 @@
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsSupport
+import simd
 
 struct CircleGridKernel: Element {
     private var kernel: ComputeKernel
@@ -11,7 +11,7 @@ struct CircleGridKernel: Element {
     private var foregroundColor: SIMD4<Float>
 
     init(outputTexture: MTLTexture, spacing: SIMD2<Float>, radius: Float, foregroundColor: SIMD4<Float>) throws {
-        kernel = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders()).CircleGridKernel_float4
+        kernel = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).CircleGridKernel_float4
         self.outputTexture = outputTexture
         self.spacing = spacing
         self.radius = radius

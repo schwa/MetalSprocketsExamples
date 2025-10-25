@@ -1,10 +1,10 @@
 import GeometryLite3D
 import Interaction3D
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import SwiftUI
 
 public struct SkyboxDemoView: View {
     @State
@@ -102,7 +102,7 @@ struct SkyboxRenderPipeline: Element {
         self.projectionMatrix = projectionMatrix
         self.cameraMatrix = cameraMatrix
         self.texture = texture
-        let shaderBundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "SkyboxShader")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main

@@ -1,12 +1,12 @@
 import GeometryLite3D
 import Interaction3D
 import Metal
-import simd
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import simd
+import SwiftUI
 
 public struct PointCloudDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
@@ -186,7 +186,7 @@ private struct PointCloudRenderPipeline: Element {
     var body: some Element {
         get throws {
             let device = _MTLCreateSystemDefaultDevice()
-            let bundle = Bundle.metal-sprocketsExampleShaders().orFatalError("Failed to load shader bundle")
+            let bundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
             let library = try device.makeDefaultLibrary(bundle: bundle)
 
             let vertexFunction = library.makeFunction(name: "pointCloudVertex").orFatalError("Failed to find pointCloudVertex function")

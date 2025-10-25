@@ -1,9 +1,9 @@
 import Metal
 import MetalKit
-import SwiftUI
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import SwiftUI
 
 enum LightingAnimator {
     static func run(date: Date, lighting: inout Lighting) {
@@ -62,4 +62,3 @@ struct LightingVisualizer: Element {
         }
     }
 }
-

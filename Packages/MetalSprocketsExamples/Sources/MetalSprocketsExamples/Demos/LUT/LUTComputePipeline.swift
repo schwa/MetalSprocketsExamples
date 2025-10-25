@@ -23,7 +23,7 @@ struct LUTComputePipeline: Element {
         self.lutTexture = lutTexture
         self.blend = blend
         self.outputTexture = outputTexture
-        kernel = try MetalSprockets.ShaderLibrary(bundle: .metal-sprocketsExampleShaders()).applyLUT
+        kernel = try MetalSprockets.ShaderLibrary(bundle: .metalSprocketsExampleShaders()).applyLUT
     }
 
     var body: some Element {

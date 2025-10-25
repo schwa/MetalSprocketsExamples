@@ -1,7 +1,7 @@
 import Metal
-import simd
 import MetalSprockets
 import MetalSprocketsExampleShaders
+import simd
 
 struct AxisLinesRenderPipeline: Element {
     let vertexShader: VertexShader
@@ -27,7 +27,7 @@ struct AxisLinesRenderPipeline: Element {
         yAxisColor: SIMD4<Float> = [0, 1, 0, 1],
         zAxisColor: SIMD4<Float> = [0, 0, 1, 1]
     ) throws {
-        let library = try ShaderLibrary(bundle: .metal-sprocketsExampleShaders(), namespace: "AxisLines")
+        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "AxisLines")
         vertexShader = try library.vertex_main
         fragmentShader = try library.fragment_main
         self.mvpMatrix = mvpMatrix
@@ -41,7 +41,7 @@ struct AxisLinesRenderPipeline: Element {
         self.zAxisColor = zAxisColor
     }
 
-    public var body: some Element {
+    var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
