@@ -61,7 +61,6 @@ struct MetalCanvasRenderPipeline: Element {
                         return
                     }
                     encoder.setCullMode(.none)
-                    print("Drawing \(operationCount) object threadgroups")
                     encoder.drawMeshThreadgroups(MTLSize(width: operationCount, height: 1, depth: 1), threadsPerObjectThreadgroup: MTLSize(width: 32, height: 1, depth: 1), threadsPerMeshThreadgroup: MTLSize(width: 32, height: 1, depth: 1))
                 }
                 .parameter("drawOperations", functionType: .object, buffer: operations.drawOperationsBuffer, offset: 0)

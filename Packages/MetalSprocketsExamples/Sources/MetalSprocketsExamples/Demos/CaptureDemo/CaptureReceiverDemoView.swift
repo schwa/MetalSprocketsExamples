@@ -684,11 +684,7 @@ public struct CaptureReceiverDemoView: View {
                                         SIMD4(frameData.transform[12], frameData.transform[13], frameData.transform[14], frameData.transform[15])
                                     )
                                     photoQuads.append((transform: transform, imageData: imageData))
-                                    print("📸 Photo quad added at position: (\(transform.columns.3.x), \(transform.columns.3.y), \(transform.columns.3.z)). Total quads: \(photoQuads.count)")
-                                } else {
-                                    print("⚠️ No frameData available when camera image received")
                                 }
-                            // TODO: Create texture from YCbCr data
                             }
                         }
                     }

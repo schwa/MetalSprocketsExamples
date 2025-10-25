@@ -104,9 +104,7 @@ struct EdgeLinesRenderPass: Element {
             )
 
             return try MetalSprockets.Group {
-                if let vertexBuffer = meshWithEdges.mesh.vertexBuffers.first,
-                   let edgeDataBuffer,
-                   !meshWithEdges.uniqueEdges.isEmpty {
+                if let vertexBuffer = meshWithEdges.mesh.vertexBuffers.first, let edgeDataBuffer, !meshWithEdges.uniqueEdges.isEmpty {
                     try MeshRenderPipeline(meshShader: meshShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
                             encoder.label = "Edge Rendering"

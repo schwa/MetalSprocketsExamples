@@ -76,7 +76,7 @@ public struct MetalCanvasDemoView: View {
 
         case .randomLines:
             let canvas = MetalCanvas { context in
-                for i in 0..<8_192 {
+                for _ in 0..<8_192 {
                     var path = Path()
                     let x1 = CGFloat.random(in: 50...2_000)
                     let y1 = CGFloat.random(in: 50...2_000)
@@ -88,7 +88,6 @@ public struct MetalCanvasDemoView: View {
                     context.stroke(path, with: .white, lineWidth: lineWidth)
                 }
             }
-            print("Random lines canvas created with \(canvas.operations.count) operations")
             return canvas
         }
     }

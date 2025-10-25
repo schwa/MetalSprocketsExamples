@@ -26,17 +26,6 @@ struct SuperImportWell <Content>: View where Content: View {
             }
             else {
                 ContentUnavailableView("No File", systemImage: "exclamationmark.triangle")
-                //                    .onDrop(of: allowedContentTypes, isTargeted: $isDropTargeted) { providers in
-                //                        if let provider = providers.first {
-                //                            do {
-                //                                //try helper.storeImportedFile(at: url)
-                //                            }
-                //                            catch {
-                //                                print("Failed to store imported file: \(error)")
-                //                            }
-                //                        }
-                //                        return false
-                //                    }
             }
         }
         .onChange(of: helper.url, initial: true) {

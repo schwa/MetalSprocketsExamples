@@ -94,8 +94,7 @@ class SuperImportHelper {
 
         return bookmarksData.compactMap { bookmarkData -> URL? in
             var isStale = false
-            guard let url = try? URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, bookmarkDataIsStale: &isStale),
-                  !isStale else {
+            guard let url = try? URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, bookmarkDataIsStale: &isStale), !isStale else {
                 return nil
             }
             // Store the bookmark data for later use
@@ -141,9 +140,7 @@ class SuperImportHelper {
 
         var files: [URL] = []
         for case let url as URL in enumerator {
-            guard let resourceValues = try? url.resourceValues(forKeys: [.contentTypeKey]),
-                  let contentType = resourceValues.contentType,
-                  allowedContentTypes.contains(where: { contentType.conforms(to: $0) }) else {
+            guard let resourceValues = try? url.resourceValues(forKeys: [.contentTypeKey]), let contentType = resourceValues.contentType, allowedContentTypes.contains(where: { contentType.conforms(to: $0) }) else {
                 continue
             }
             files.append(url)
