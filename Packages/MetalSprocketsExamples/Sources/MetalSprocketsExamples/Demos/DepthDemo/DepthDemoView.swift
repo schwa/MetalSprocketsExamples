@@ -2,6 +2,7 @@ import GeometryLite3D
 import Interaction3D
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd
@@ -133,11 +134,12 @@ public struct DepthDemoView: View {
         }
     }
 
+    @ElementBuilder
     var teapotPipeline: some Element {
         get throws {
-            try FlatShader(textureSpecifier: .color([1, 1, 1])) {
+            let modelViewProjection = projection.projectionMatrix(for: drawableSize) * cameraMatrix.inverse
+            try FlatShader(modelViewProjection: modelViewProjection, textureSpecifier: .color([1, 1, 1])) {
                 Draw(mtkMesh: teapot)
-                    .transforms(Transforms(cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize)))
             }
             .vertexDescriptor(teapot.vertexDescriptor)
             .depthCompare(function: .less, enabled: true)

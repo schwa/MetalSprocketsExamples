@@ -1,5 +1,7 @@
 import Metal
 import MetalSprockets
+import MetalSprocketsAddOns
+import MetalSprocketsAddOnsShaders
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 

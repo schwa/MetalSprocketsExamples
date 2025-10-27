@@ -1,0 +1,118 @@
+import Collections
+import Metal
+import simd
+
+// swiftlint:disable discouraged_optional_collection
+public struct TrivialMesh: Equatable, Sendable {
+    public var label: String?
+    public var indices: [Int]
+    public var positions: [SIMD3<Float>]
+    public var textureCoordinates: [SIMD2<Float>]?
+    public var normals: [SIMD3<Float>]?
+    public var tangents: [SIMD3<Float>]?
+    public var bitangents: [SIMD3<Float>]?
+    public var colors: [SIMD4<Float>]?
+
+    public init() {
+        self.label = nil
+        self.indices = []
+        self.positions = []
+        self.textureCoordinates = nil
+        self.normals = nil
+        self.tangents = nil
+        self.bitangents = nil
+        self.colors = nil
+    }
+
+    public init(label: String? = nil, indices: [Int], positions: [SIMD3<Float>], textureCoordinates: [SIMD2<Float>]? = nil, normals: [SIMD3<Float>]? = nil, tangents: [SIMD3<Float>]? = nil, bitangents: [SIMD3<Float>]? = nil, colors: [SIMD4<Float>]? = nil) {
+        self.label = label
+        self.indices = indices
+        self.positions = positions
+        self.textureCoordinates = textureCoordinates
+        self.normals = normals
+        self.tangents = tangents
+        self.bitangents = bitangents
+        self.colors = colors
+    }
+}
+
+public extension TrivialMesh {
+    func scaled(_ scale: SIMD3<Float>) -> TrivialMesh {
+        var result = self
+        result.positions = positions.map { $0 * scale }
+        if let normals {
+            let inverseScale = SIMD3<Float>(1.0 / scale.x, 1.0 / scale.y, 1.0 / scale.z)
+            result.normals = normals.map { normalize($0 * inverseScale) }
+        }
+        if let tangents {
+            let inverseScale = SIMD3<Float>(1.0 / scale.x, 1.0 / scale.y, 1.0 / scale.z)
+            result.tangents = tangents.map { normalize($0 * inverseScale) }
+        }
+        if let bitangents {
+            let inverseScale = SIMD3<Float>(1.0 / scale.x, 1.0 / scale.y, 1.0 / scale.z)
+            result.bitangents = bitangents.map { normalize($0 * inverseScale) }
+        }
+        return result
+    }
+
+    func translated(_ translation: SIMD3<Float>) -> TrivialMesh {
+        var result = self
+        result.positions = positions.map { $0 + translation }
+        return result
+    }
+
+    func rotated(_ rotation: simd_quatf) -> TrivialMesh {
+        var result = self
+        let rotationMatrix = float3x3(rotation)
+        result.positions = positions.map { rotationMatrix * $0 }
+        if let normals {
+            result.normals = normals.map { rotationMatrix * $0 }
+        }
+        if let tangents {
+            result.tangents = tangents.map { rotationMatrix * $0 }
+        }
+        if let bitangents {
+            result.bitangents = bitangents.map { rotationMatrix * $0 }
+        }
+        return result
+    }
+}
+
+public extension TrivialMesh {
+    func vertexDescriptor() -> VertexDescriptor {
+        // Create vertex descriptor
+        var attributes: [VertexDescriptor.Attribute] = [
+            // Position attribute (always present)
+            .init(semantic: .position, format: .float3, offset: 0, bufferIndex: 0)
+        ]
+
+        // Normal attribute (optional)
+        if normals != nil {
+            attributes.append(VertexDescriptor.Attribute(semantic: .normal, format: .float3, offset: 0, bufferIndex: 0 ))
+        }
+
+        // Texture coordinate attribute (optional)
+        if textureCoordinates != nil {
+            attributes.append(VertexDescriptor.Attribute(semantic: .texcoord, format: .float2, offset: 0, bufferIndex: 0 ))
+        }
+
+        if tangents != nil {
+            attributes.append(VertexDescriptor.Attribute(semantic: .tangent, format: .float3, offset: 0, bufferIndex: 0 ))
+        }
+
+        if bitangents != nil {
+            attributes.append(VertexDescriptor.Attribute(semantic: .bitangent, format: .float3, offset: 0, bufferIndex: 0 ))
+        }
+
+        // Color attribute (optional)
+        if colors != nil {
+            attributes.append(VertexDescriptor.Attribute(semantic: .color, format: .float4, offset: 0, bufferIndex: 0))
+        }
+
+        return VertexDescriptor(
+            attributes: attributes,
+            layouts: [.init(bufferIndex: 0, stride: 0, stepFunction: .perVertex, stepRate: 1)]
+        )
+        .normalized()
+    }
+}

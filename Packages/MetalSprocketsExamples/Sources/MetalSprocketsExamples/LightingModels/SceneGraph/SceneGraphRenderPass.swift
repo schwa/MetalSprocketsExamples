@@ -1,5 +1,6 @@
 import Metal
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import simd

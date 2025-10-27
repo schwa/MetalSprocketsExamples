@@ -1,6 +1,7 @@
 import Metal
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import SwiftUI
@@ -45,20 +46,18 @@ struct LightingVisualizer: Element {
 
     var body: some Element {
         get throws {
-            try FlatShader(textureSpecifier: .color([1, 1, 1])) {
-                ForEach(Array(0 ..< lighting.count), id: \.self) { index in
-                    let lightPosition = lighting.lightPositions[SIMD3<Float>.self, index]
-                    let transforms = Transforms(modelMatrix: .init(translation: lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-
-                    Draw { encoder in
-                        encoder.setVertexBuffers(of: lightMarker)
-                        encoder.draw(lightMarker)
+            ForEach(Array(0 ..< lighting.count), id: \.self) { index in
+                let lightPosition = lighting.lightPositions[SIMD3<Float>.self, index]
+                let modelViewProjection = projectionMatrix * cameraMatrix.inverse * float4x4(translation: lightPosition)
+                try FlatShader(modelViewProjection: modelViewProjection, textureSpecifier: .color([1, 1, 1])) {
+                        Draw { encoder in
+                            encoder.setVertexBuffers(of: lightMarker)
+                            encoder.draw(lightMarker)
+                        }
                     }
-                    .transforms(transforms)
-                }
+                .vertexDescriptor(lightMarker.vertexDescriptor)
+                .depthCompare(function: .less, enabled: true)
             }
-            .vertexDescriptor(lightMarker.vertexDescriptor)
-            .depthCompare(function: .less, enabled: true)
         }
     }
 }

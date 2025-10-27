@@ -3,6 +3,7 @@ import Interaction3D
 import Metal
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI

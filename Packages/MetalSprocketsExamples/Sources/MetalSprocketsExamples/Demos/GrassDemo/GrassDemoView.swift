@@ -2,6 +2,7 @@ import GeometryLite3D
 import Interaction3D
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
@@ -42,7 +43,7 @@ public struct GrassDemoView: View {
     private var droopEnabled: Bool = false
 
     @State
-    private var sphereMesh: Mesh
+    private var sphereMesh: MetalSprocketsAddOns.Mesh
 
     @State
     private var precomputedGrassPoints: [SIMD3<Float>] = []
@@ -181,12 +182,12 @@ public struct GrassDemoView: View {
     }
 
     private func renderSphere(modelMatrix: float4x4, viewMatrix: float4x4, projectionMatrix: float4x4) throws -> some Element {
-        try FlatShader(textureSpecifier: .color([0.15, 0.4, 0.2])) {
+        let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
+        return try FlatShader(modelViewProjection: modelViewProjectionMatrix, textureSpecifier: .color([0.15, 0.4, 0.2])) {
             Draw { encoder in
                 encoder.setVertexBuffers(of: sphereMesh)
                 encoder.draw(mesh: sphereMesh)
             }
-            .transforms(.init(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
         }
         .vertexDescriptor(sphereMesh.vertexDescriptor)
         .depthCompare(function: .less, enabled: true)

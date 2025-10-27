@@ -1,4 +1,5 @@
 import GeometryLite3D
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import simd
 

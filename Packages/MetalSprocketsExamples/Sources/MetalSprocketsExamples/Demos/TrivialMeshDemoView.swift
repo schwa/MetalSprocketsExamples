@@ -3,6 +3,7 @@ import Interaction3D
 import Metal
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
@@ -350,7 +351,7 @@ public struct TrivialMeshDemoView: View {
 
     struct Model: Identifiable {
         var id: String
-        var mesh: Mesh
+        var mesh: MetalSprocketsAddOns.Mesh
         var modelMatrix: float4x4
         var material: BlinnPhongMaterial
     }

@@ -1,5 +1,6 @@
 import Metal
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsSupport
 
 struct ColorAdjustComputePipeline<T>: Element {

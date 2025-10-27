@@ -1,4 +1,9 @@
 {
     "metal-enable-logging": true,
-    "plugin-logging": false,
+    "plugin-logging": true,
+    "include-dependencies": true,
+    "verbose-logging": true,
+    "flags": ["-I", "/Users/schwa/Shared/Projects/MetalSprocketsExamples/Packages/MetalSprocketsExamples/Sources/MetalSprocketsExampleShaders/include"],
+    "logging-prefix": "🔨",
+    "dependency-path-suffix": "include"
 }

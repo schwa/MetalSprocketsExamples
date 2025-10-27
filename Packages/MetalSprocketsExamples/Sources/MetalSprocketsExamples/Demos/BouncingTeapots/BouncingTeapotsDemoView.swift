@@ -2,6 +2,7 @@ import GeometryLite3D
 import Interaction3D
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd
@@ -159,17 +160,17 @@ struct FlyingTeapotsRenderPass: Element {
             }
             try RenderPass {
                 // Draw the checkerboard texture into a skybox
-                try FlatShader(textureSpecifier: .texture2D(skyboxTexture, skyboxSampler)) {
+                let modelViewProjectionMatrix = transforms.projectionMatrix * transforms.cameraMatrix.inverse
+                try FlatShader(modelViewProjection: modelViewProjectionMatrix, textureSpecifier: .texture2D(skyboxTexture, skyboxSampler)) {
                     Draw { encoder in
                         encoder.setVertexBuffers(of: sphere)
                         encoder.draw(sphere)
                     }
-                    .transforms(transforms)
                 }
                 .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
 
                 // Teapot party.
-                try LambertianShaderInstanced(transforms: transforms, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
+                try LambertianShaderInstanced(projectionMatrix: transforms.projectionMatrix, cameraMatrix: transforms.cameraMatrix, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
                     Draw { encoder in
                         encoder.setVertexBuffers(of: mesh)
                         encoder.draw(mesh, instanceCount: simulation.teapots.count)

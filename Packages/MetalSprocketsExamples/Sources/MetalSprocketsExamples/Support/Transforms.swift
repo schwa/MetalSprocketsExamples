@@ -1,11 +1,13 @@
 import GeometryLite3D
 import MetalSprockets
 import MetalSprocketsExampleShaders
+import MetalSprocketsAddOnsShaders
+
 import MetalSprocketsSupport
 
 // TODO: Deprecate Transforms and use what we do in blinnphong/pbr instead [FILE ME]
-// @available(*, deprecated, message: "Transforms should be deprecated.")
-public typealias Transforms = MetalSprocketsExampleShaders.Transforms
+@available(*, deprecated, message: "Transforms should be deprecated.")
+public typealias Transforms = MetalSprocketsAddOnsShaders.Transforms
 
 public extension Transforms {
     init(modelMatrix: simd_float4x4 = .identity, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4) {
@@ -21,7 +23,9 @@ public extension Transforms {
     }
 }
 
+
 public extension Element {
+    @available(*, deprecated, message: "Transforms should be deprecated.")
     func transforms(_ transforms: Transforms) -> some Element {
         self
             .parameter("transforms", functionType: .vertex, value: transforms)

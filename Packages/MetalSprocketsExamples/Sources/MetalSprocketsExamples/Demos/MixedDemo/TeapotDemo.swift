@@ -6,6 +6,7 @@ import ImageIO
 import Metal
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import ModelIO
 import simd
@@ -27,7 +28,7 @@ struct TeapotDemo: Element {
 
     var body: some Element {
         get throws {
-            try LambertianShader(transforms: transforms, color: color, lightDirection: lightDirection) {
+            try LambertianShader(projectionMatrix: transforms.projectionMatrix, cameraMatrix: transforms.cameraMatrix, modelMatrix: transforms.modelMatrix, color: color, lightDirection: lightDirection) {
                 Draw { encoder in
                     encoder.setVertexBuffers(of: mesh)
                     encoder.draw(mesh)

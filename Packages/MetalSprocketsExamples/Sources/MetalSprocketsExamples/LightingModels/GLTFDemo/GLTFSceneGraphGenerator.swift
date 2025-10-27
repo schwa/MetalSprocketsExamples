@@ -8,6 +8,7 @@ import CoreImage.CIFilterBuiltins
 import Foundation
 import GeometryLite3D
 import MetalKit
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import SwiftGLTF

@@ -1,5 +1,5 @@
 {
-  "originHash" : "241cf75423598bd8da012ee15dcc17cad3f253d6e3ed51f4e74d57377a82d1fc",
+  "originHash" : "70cbacbede1b3f94da59de68400d28f890bbd4386ca72acc8aad7c1261b0e771",
   "pins" : [
     {
       "identity" : "cborcoding",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "6fbd643c64cf6ef7a98391820c372d05fa9ed9ab",
         "version" : "1.4.0"
+      }
+    },
+    {
+      "identity" : "demokit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/DemoKit",
+      "state" : {
+        "revision" : "e3e8fb2166fc1e478bbd628b98593bf7029f5e54",
+        "version" : "0.1.1"
       }
     },
     {
@@ -56,30 +65,12 @@
       }
     },
     {
-      "identity" : "metalcompilerplugin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/MetalCompilerPlugin",
-      "state" : {
-        "revision" : "1db3b5dcabd648e0316f3a472646e72af24a5bde",
-        "version" : "0.1.0"
-      }
-    },
-    {
       "identity" : "metalsprockets",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
         "revision" : "d61f73ccb37563834eafcec4ebbed6793428eaf6"
-      }
-    },
-    {
-      "identity" : "metalsprocketsaddons",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/MetalSprocketsAddOns",
-      "state" : {
-        "branch" : "main",
-        "revision" : "e30a83d093d44283f9908559827d73573f9f1cd3"
       }
     },
     {

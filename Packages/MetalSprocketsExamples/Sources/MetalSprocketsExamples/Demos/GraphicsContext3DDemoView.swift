@@ -2,6 +2,7 @@ import GeometryLite3D
 import Interaction3D
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd

@@ -3,6 +3,7 @@ import Interaction3D
 import Metal
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
@@ -84,7 +85,7 @@ public struct EdgeLinesDemoView: View {
             }
 
             // Extract unique edges using a hash set
-            var edgeSet = Set<Edge>()
+            var edgeSet = Set<MetalSprocketsAddOns.Edge>()
             var uniqueEdges: [(startIndex: UInt32, endIndex: UInt32)] = []
 
             for submesh in mtkMesh.submeshes {
@@ -99,9 +100,9 @@ public struct EdgeLinesDemoView: View {
                     let i2 = ptr[triangleIndex * 3 + 2]
 
                     let edges = [
-                        Edge(i0, i1),
-                        Edge(i1, i2),
-                        Edge(i2, i0)
+                        MetalSprocketsAddOns.Edge(i0, i1),
+                        MetalSprocketsAddOns.Edge(i1, i2),
+                        MetalSprocketsAddOns.Edge(i2, i0)
                     ]
 
                     for edge in edges where edgeSet.insert(edge).inserted {
@@ -114,7 +115,7 @@ public struct EdgeLinesDemoView: View {
             let mesh = Mesh(
                 label: "Teapot",
                 submeshes: mtkMesh.submeshes.map { submesh in
-                    Mesh.Submesh(
+                    MetalSprocketsAddOns.Mesh.Submesh(
                         label: nil,
                         primitiveType: submesh.primitiveType,
                         indices: Mesh.Buffer(
@@ -150,7 +151,7 @@ public struct EdgeLinesDemoView: View {
         let mesh = Mesh(trivialMesh, device: device)
 
         // Extract unique edges using a hash set
-        var edgeSet = Set<Edge>()
+        var edgeSet = Set<MetalSprocketsAddOns.Edge>()
         var uniqueEdges: [(startIndex: UInt32, endIndex: UInt32)] = []
 
         for submesh in mesh.submeshes {
@@ -299,15 +300,14 @@ public struct EdgeLinesDemoView: View {
             let scaleMatrix = simd_float4x4(diagonal: [scale, scale, scale, 1])
             let modelMatrix = animating ? scaleMatrix * simd_float4x4(yRotation: .radians(rotation)) : scaleMatrix
             let projectionMatrix = projection.projectionMatrix(for: size)
-            let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
 
             let resolved = edgeColor.resolve(in: EnvironmentValues())
             let colorVec = SIMD4<Float>(Float(resolved.red), Float(resolved.green), Float(resolved.blue), Float(resolved.opacity))
 
             try RenderPass {
-                try EdgeLinesRenderPass(
+                try EdgeLinesRenderPipeline(
                     meshWithEdges: meshWithEdges,
-                    transforms: transforms,
+                    viewProjection: projectionMatrix * cameraMatrix.inverse * modelMatrix,
                     lineWidth: lineWidth,
                     viewport: SIMD2<Float>(Float(size.width), Float(size.height)),
                     colorizeByTriangle: colorizeByTriangle,

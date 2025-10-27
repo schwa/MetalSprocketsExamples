@@ -1,3 +1,4 @@
+import CaptureExample
 import DemoKit
 import MetalSprocketsExamples
 import SwiftUI
