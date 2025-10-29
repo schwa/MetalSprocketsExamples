@@ -43,7 +43,6 @@ struct LightingVisualizer: Element {
     let projectionMatrix: float4x4
     let lighting: Lighting
     let lightMarker = MTKMesh.sphere(extent: [0.1, 0.1, 0.1])
-    
     var body: some Element {
         get throws {
             ForEach(Array(0 ..< lighting.count), id: \.self) { index in

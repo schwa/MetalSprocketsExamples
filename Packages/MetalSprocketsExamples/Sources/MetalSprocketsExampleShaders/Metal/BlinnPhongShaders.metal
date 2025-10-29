@@ -1,4 +1,4 @@
-#import "MetalSprocketsExampleShaders.h"
+#include "MetalSprocketsExampleShaders.h"
 
 // https://en.wikipedia.org/wiki/Blinn–Phong_reflection_model
 

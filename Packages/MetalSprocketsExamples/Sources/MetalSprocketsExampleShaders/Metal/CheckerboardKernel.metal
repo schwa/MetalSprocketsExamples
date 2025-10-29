@@ -1,4 +1,4 @@
-#import "MetalSprocketsExampleShaders.h"
+#include "MetalSprocketsExampleShaders.h"
 
 using namespace metal;
 
