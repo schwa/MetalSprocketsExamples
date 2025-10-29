@@ -36,7 +36,9 @@ struct PanoramaElement: Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw(mtkMesh: mesh)
-                    .transforms(Transforms(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                    .parameter("projectionMatrix", functionType: .vertex, value: projectionMatrix)
+                    .parameter("viewMatrix", functionType: .vertex, value: cameraMatrix.inverse)
+                    .parameter("modelMatrix", functionType: .vertex, value: simd_float4x4.identity)
                     .parameter("panoramaTexture", texture: panoramaTexture)
                     .parameter("uniforms", value: PanoramaUniforms(
                         showMS: showMS ? 1 : 0,

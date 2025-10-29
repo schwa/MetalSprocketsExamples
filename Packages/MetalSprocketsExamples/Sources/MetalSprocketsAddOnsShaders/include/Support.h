@@ -66,19 +66,6 @@ inline float3x3 extractNormalMatrix(float4x4 modelMatrix) {
 }
 #endif
 
-// MARK: Transforms
-
-/// Universal transforms.
-/// TODO: Deprecate
-struct Transforms {
-    simd_float4x4 modelMatrix;
-    simd_float4x4 cameraMatrix;
-    simd_float4x4 viewMatrix;
-    simd_float4x4 projectionMatrix;
-    simd_float4x4 modelViewMatrix;
-    simd_float4x4 modelViewProjectionMatrix;
-};
-
 // MARK: Buffer descriptor and accessors
 
 struct BufferDescriptor {

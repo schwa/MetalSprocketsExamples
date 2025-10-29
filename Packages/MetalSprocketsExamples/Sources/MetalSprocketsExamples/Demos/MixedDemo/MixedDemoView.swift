@@ -35,8 +35,8 @@ public struct MixedDemoView: View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             TimelineView(.animation) { timeline in
                 RenderView { _, _ in
-                    let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize))
-                    MixedExample(transforms: transforms, color: color, lightDirection: lightDirection)
+                    let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+                    MixedExample(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
                     //                        .debugLabel("MIXED EXAMPLE")
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)

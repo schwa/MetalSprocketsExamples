@@ -70,10 +70,10 @@ public struct BouncingTeapotsDemoView: View {
     @ViewBuilder
     func renderView() -> some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-            let transforms = Transforms(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize))
+            let projectionMatrix = projection.projectionMatrix(for: drawableSize)
             RenderView { _, _ in
                 if let offscreenTexture, let offscreenDepthTexture, let upscaledTexture {
-                    FlyingTeapotsRenderPass(transforms: transforms, simulation: simulation, checkerboardColor: checkerboardColor, offscreenTexture: offscreenTexture, offscreenDepthTexture: offscreenDepthTexture, upscaledTexture: upscaledTexture)
+                    FlyingTeapotsRenderPass(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, simulation: simulation, checkerboardColor: checkerboardColor, offscreenTexture: offscreenTexture, offscreenDepthTexture: offscreenDepthTexture, upscaledTexture: upscaledTexture)
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
@@ -124,7 +124,8 @@ struct FlyingTeapotsRenderPass: Element {
     @MSState
     var skyboxTexture: MTLTexture
 
-    var transforms: Transforms
+    var projectionMatrix: float4x4
+    var cameraMatrix: float4x4
 
     let simulation: TeapotSimulation
     let checkerboardColor: Color
@@ -132,7 +133,7 @@ struct FlyingTeapotsRenderPass: Element {
     let offscreenDepthTexture: MTLTexture
     let upscaledTexture: MTLTexture
 
-    init(transforms: Transforms, simulation: TeapotSimulation, checkerboardColor: Color, offscreenTexture: MTLTexture, offscreenDepthTexture: MTLTexture, upscaledTexture: MTLTexture) {
+    init(projectionMatrix: float4x4, cameraMatrix: float4x4, simulation: TeapotSimulation, checkerboardColor: Color, offscreenTexture: MTLTexture, offscreenDepthTexture: MTLTexture, upscaledTexture: MTLTexture) {
         let device = _MTLCreateSystemDefaultDevice()
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 2_048, height: 2_048, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
@@ -144,7 +145,8 @@ struct FlyingTeapotsRenderPass: Element {
         self.offscreenTexture = offscreenTexture
         self.offscreenDepthTexture = offscreenDepthTexture
         self.upscaledTexture = upscaledTexture
-        self.transforms = transforms
+        self.projectionMatrix = projectionMatrix
+        self.cameraMatrix = cameraMatrix
     }
 
     var body: some Element {
@@ -160,7 +162,7 @@ struct FlyingTeapotsRenderPass: Element {
             }
             try RenderPass {
                 // Draw the checkerboard texture into a skybox
-                let modelViewProjectionMatrix = transforms.projectionMatrix * transforms.cameraMatrix.inverse
+                let modelViewProjectionMatrix = projectionMatrix * cameraMatrix.inverse
                 try FlatShader(modelViewProjection: modelViewProjectionMatrix, textureSpecifier: .texture2D(skyboxTexture, skyboxSampler)) {
                     Draw { encoder in
                         encoder.setVertexBuffers(of: sphere)
@@ -170,7 +172,7 @@ struct FlyingTeapotsRenderPass: Element {
                 .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
 
                 // Teapot party.
-                try LambertianShaderInstanced(projectionMatrix: transforms.projectionMatrix, cameraMatrix: transforms.cameraMatrix, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
+                try LambertianShaderInstanced(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
                     Draw { encoder in
                         encoder.setVertexBuffers(of: mesh)
                         encoder.draw(mesh, instanceCount: simulation.teapots.count)

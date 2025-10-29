@@ -28,13 +28,16 @@ public struct LambertianShader <Content>: Element where Content: Element {
 
     public var body: some Element {
         get throws {
-            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+            // Pre-compute matrix products on CPU to avoid per-vertex computation
+            let viewMatrix = cameraMatrix.inverse
+            let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
+
+            return try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
-                    .parameter("color", value: color)
-                    .parameter("projectionMatrix", value: projectionMatrix)
-                    .parameter("viewMatrix", value: cameraMatrix.inverse)
-                    .parameter("cameraPosition", value: cameraMatrix.translation)
+                    .parameter("modelViewProjectionMatrix", value: modelViewProjectionMatrix)
                     .parameter("modelMatrix", value: modelMatrix)
+                    .parameter("color", value: color)
+                    .parameter("cameraPosition", value: cameraMatrix.translation)
                     .parameter("lightDirection", value: lightDirection)
             }
         }
@@ -66,12 +69,15 @@ public struct LambertianShaderInstanced <Content>: Element where Content: Elemen
 
     public var body: some Element {
         get throws {
-            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+            // Pre-compute view-projection matrix on CPU (model matrices vary per instance)
+            let viewMatrix = cameraMatrix.inverse
+            let viewProjectionMatrix = projectionMatrix * viewMatrix
+
+            return try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
-                    .parameter("colors", values: colors)
-                    .parameter("projectionMatrix", value: projectionMatrix)
+                    .parameter("viewProjectionMatrix", value: viewProjectionMatrix)
                     .parameter("modelMatrices", values: modelMatrices)
-                    .parameter("viewMatrix", value: cameraMatrix.inverse)
+                    .parameter("colors", values: colors)
                     .parameter("lightDirection", value: lightDirection)
                     .parameter("cameraPosition", value: cameraMatrix.translation)
             }

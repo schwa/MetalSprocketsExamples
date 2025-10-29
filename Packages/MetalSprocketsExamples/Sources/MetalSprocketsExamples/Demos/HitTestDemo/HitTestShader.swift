@@ -38,4 +38,14 @@ extension Element {
     func geometryID(_ id: Int32) -> some Element {
         self.parameter("geometryID", value: id)
     }
+
+    func hitTestMatrices(projectionMatrix: simd_float4x4, viewMatrix: simd_float4x4, modelMatrix: simd_float4x4) -> some Element {
+        // Pre-compute matrix products on CPU to avoid per-vertex computation
+        let modelViewMatrix = viewMatrix * modelMatrix
+        let modelViewProjectionMatrix = projectionMatrix * modelViewMatrix
+
+        return self
+            .parameter("modelViewMatrix", functionType: .vertex, value: modelViewMatrix)
+            .parameter("modelViewProjectionMatrix", functionType: .vertex, value: modelViewProjectionMatrix)
+    }
 }

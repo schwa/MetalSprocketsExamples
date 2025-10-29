@@ -18,16 +18,21 @@ namespace Panorama {
     };
 
     [[vertex]] SphereVertexOut
-    vertex_main(const SphereVertexIn in [[stage_in]], constant Transforms &transforms [[buffer(4)]]) {
+    vertex_main(
+        const SphereVertexIn in [[stage_in]],
+        constant float4x4 &projectionMatrix [[buffer(1)]],
+        constant float4x4 &viewMatrix [[buffer(2)]],
+        constant float4x4 &modelMatrix [[buffer(3)]]
+    ) {
         SphereVertexOut out;
 
         // Pass model-space position to fragment shader
         out.modelSpacePosition = in.position;
 
         // Transform position for rendering
-        float4 worldPosition = transforms.modelMatrix * float4(in.position, 1.0);
-        float4 viewPosition = transforms.viewMatrix * worldPosition;
-        out.position = transforms.projectionMatrix * viewPosition;
+        float4 worldPosition = modelMatrix * float4(in.position, 1.0);
+        float4 viewPosition = viewMatrix * worldPosition;
+        out.position = projectionMatrix * viewPosition;
 
         return out;
     }

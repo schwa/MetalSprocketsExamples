@@ -309,7 +309,7 @@ public struct TrivialMeshDemoView: View {
                                         encoder.draw(mesh: model.mesh)
                                     }
                                     .blinnPhongMaterial(model.material)
-                                    .transforms(.init(modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                                    .blinnPhongMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix)
                                 }
                                 .lighting(lighting)
                             }

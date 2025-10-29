@@ -71,6 +71,7 @@ public struct HitTestDemoView: View {
                     // swiftlint:disable:next accessibility_trait_for_button
                     RenderView { _, drawableSize in
                         let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+                        let viewMatrix = cameraMatrix.inverse
                         // Main rendering pass
                         try RenderPass {
                             // Render teapot with Blinn-Phong shading
@@ -80,7 +81,7 @@ public struct HitTestDemoView: View {
                                     encoder.draw(mesh)
                                 }
                                 .blinnPhongMaterial(material)
-                                .transforms(.init(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                                .blinnPhongMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: modelMatrix, cameraMatrix: cameraMatrix)
                                 .lighting(lighting)
                             }
                             .vertexDescriptor(mesh.vertexDescriptor)
@@ -95,7 +96,7 @@ public struct HitTestDemoView: View {
                                         encoder.setVertexBuffers(of: mesh)
                                         encoder.draw(mesh)
                                     }
-                                    .transforms(.init(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                                    .hitTestMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: modelMatrix)
                                     .geometryID(0)
                                 }
                                 .vertexDescriptor(mesh.vertexDescriptor)

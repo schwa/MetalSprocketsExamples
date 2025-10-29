@@ -31,13 +31,14 @@ namespace HitTest {
         uint vertexID [[vertex_id]],
         uint instanceID [[instance_id]],
         Vertex in [[stage_in]],
-        constant Transforms *transforms [[buffer(1)]]
+        constant float4x4 &modelViewMatrix [[buffer(1)]],
+        constant float4x4 &modelViewProjectionMatrix [[buffer(2)]]
     ) {
         Fragment out;
 
         const float4 position = float4(in.position, 1.0);
-        const float4 modelVertex = transforms[instanceID].modelViewMatrix * position;
-        out.position = transforms[instanceID].modelViewProjectionMatrix * position;
+        const float4 modelVertex = modelViewMatrix * position;
+        out.position = modelViewProjectionMatrix * position;
         out.worldPosition = float3(modelVertex) / modelVertex.w;
 
         // Calculate barycentric coordinates based on vertex ID within the triangle

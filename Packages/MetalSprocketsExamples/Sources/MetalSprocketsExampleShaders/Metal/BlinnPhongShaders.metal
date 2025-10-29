@@ -42,14 +42,19 @@ namespace BlinnPhong {
     // MARK: Shaders
 
     [[vertex]] Fragment vertex_main(
-        uint instance_id [[instance_id]], Vertex in [[stage_in]], constant Transforms *transforms [[buffer(1)]]
+        uint instance_id [[instance_id]],
+        Vertex in [[stage_in]],
+        constant float4x4 &modelViewMatrix [[buffer(1)]],
+        constant float4x4 &modelViewProjectionMatrix [[buffer(2)]],
+        constant float4x4 &modelMatrix [[buffer(3)]]
     ) {
         Fragment out;
         const float4 position = float4(in.position, 1.0);
-        const float4 modelVertex = transforms[instance_id].modelViewMatrix * position;
-        out.position = transforms[instance_id].modelViewProjectionMatrix * position;
+
+        const float4 modelVertex = modelViewMatrix * position;
+        out.position = modelViewProjectionMatrix * position;
         out.worldPosition = float3(modelVertex) / modelVertex.w;
-        out.normal = normalize(extractNormalMatrix(transforms[instance_id].modelMatrix) * in.normal);
+        out.normal = normalize(extractNormalMatrix(modelMatrix) * in.normal);
         out.textureCoordinate = in.textureCoordinate;
         out.instance_id = instance_id;
         return out;
@@ -59,7 +64,7 @@ namespace BlinnPhong {
         Fragment in [[stage_in]],
         constant LightingArgumentBuffer &lighting [[buffer(1)]],
         constant BlinnPhongMaterialArgumentBuffer *material [[buffer(2)]],
-        constant Transforms *transforms [[buffer(3)]]
+        constant float4x4 &cameraMatrix [[buffer(3)]]
     ) {
         uint instance_id = in.instance_id;
 
@@ -67,7 +72,7 @@ namespace BlinnPhong {
         float3 diffuseColor = material[instance_id].diffuse.resolve(in.textureCoordinate).xyz;
         float3 specularColor = material[instance_id].specular.resolve(in.textureCoordinate).xyz;
 
-        auto cameraPosition = transforms[instance_id].cameraMatrix.columns[3].xyz;
+        auto cameraPosition = cameraMatrix.columns[3].xyz;
 
         float3 color = CalculateBlinnPhong(
             in.worldPosition, cameraPosition, in.normal, lighting, material[instance_id].shininess, ambientColor,

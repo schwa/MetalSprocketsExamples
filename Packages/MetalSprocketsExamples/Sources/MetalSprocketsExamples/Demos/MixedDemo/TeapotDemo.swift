@@ -16,19 +16,23 @@ struct TeapotDemo: Element {
     @MSState
     var mesh: MTKMesh
     var color: SIMD3<Float>
-    var transforms: Transforms
+    var projectionMatrix: float4x4
+    var cameraMatrix: float4x4
+    var modelMatrix: float4x4
     var lightDirection: SIMD3<Float>
 
-    init(transforms: Transforms, color: SIMD3<Float>, lightDirection: SIMD3<Float>) throws {
+    init(projectionMatrix: float4x4, cameraMatrix: float4x4, modelMatrix: float4x4, color: SIMD3<Float>, lightDirection: SIMD3<Float>) throws {
         mesh = MTKMesh.teapot()
-        self.transforms = transforms
+        self.projectionMatrix = projectionMatrix
+        self.cameraMatrix = cameraMatrix
+        self.modelMatrix = modelMatrix
         self.color = color
         self.lightDirection = lightDirection
     }
 
     var body: some Element {
         get throws {
-            try LambertianShader(projectionMatrix: transforms.projectionMatrix, cameraMatrix: transforms.cameraMatrix, modelMatrix: transforms.modelMatrix, color: color, lightDirection: lightDirection) {
+            try LambertianShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection) {
                 Draw { encoder in
                     encoder.setVertexBuffers(of: mesh)
                     encoder.draw(mesh)

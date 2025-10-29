@@ -56,6 +56,7 @@ struct SceneGraphRenderPass: Element {
     @ElementBuilder
     var blinnPhong: some Element {
         get throws {
+            let viewMatrix = cameraMatrix.inverse
             let meshNodes = nodesWithWorldTransforms.filter { $0.node.mesh != nil }
             let blinnPhongNodes = meshNodes.filter { entry in
                 if case .blinnPhong = entry.node.material {
@@ -72,7 +73,7 @@ struct SceneGraphRenderPass: Element {
                             encoder.draw(mesh: mesh)
                         }
                         .blinnPhongMaterial(material)
-                        .transforms(.init(modelMatrix: worldTransform, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                        .blinnPhongMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: worldTransform, cameraMatrix: cameraMatrix)
                     }
                 }
                 .lighting(lighting)

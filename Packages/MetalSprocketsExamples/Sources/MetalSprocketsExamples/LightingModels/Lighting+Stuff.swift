@@ -43,18 +43,18 @@ struct LightingVisualizer: Element {
     let projectionMatrix: float4x4
     let lighting: Lighting
     let lightMarker = MTKMesh.sphere(extent: [0.1, 0.1, 0.1])
-
+    
     var body: some Element {
         get throws {
             ForEach(Array(0 ..< lighting.count), id: \.self) { index in
                 let lightPosition = lighting.lightPositions[SIMD3<Float>.self, index]
                 let modelViewProjection = projectionMatrix * cameraMatrix.inverse * float4x4(translation: lightPosition)
                 try FlatShader(modelViewProjection: modelViewProjection, textureSpecifier: .color([1, 1, 1])) {
-                        Draw { encoder in
-                            encoder.setVertexBuffers(of: lightMarker)
-                            encoder.draw(lightMarker)
-                        }
+                    Draw { encoder in
+                        encoder.setVertexBuffers(of: lightMarker)
+                        encoder.draw(lightMarker)
                     }
+                }
                 .vertexDescriptor(lightMarker.vertexDescriptor)
                 .depthCompare(function: .less, enabled: true)
             }

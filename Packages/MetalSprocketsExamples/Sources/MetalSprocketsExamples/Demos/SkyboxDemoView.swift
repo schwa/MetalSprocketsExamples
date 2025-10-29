@@ -141,7 +141,7 @@ struct SkyboxRenderPipeline: Element {
                     encoder.setVertexUnsafeBytes(of: positions, index: 0)
                     encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: positions.count)
                 }
-                .transforms(.init(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                .parameter("modelViewProjectionMatrix", functionType: .vertex, value: projectionMatrix * cameraMatrix.inverse)
                 .parameter("texture", texture: texture)
             }
             .vertexDescriptor(try vertexShader.inferredVertexDescriptor())

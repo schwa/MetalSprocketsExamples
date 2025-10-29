@@ -13,12 +13,13 @@ namespace DepthShader {
     };
 
     [[vertex]] VertexOut vertex_main(
-        uint instance_id [[instance_id]], const VertexIn in [[stage_in]], constant Transforms &transforms [[buffer(1)]]
+        uint instance_id [[instance_id]],
+        const VertexIn in [[stage_in]],
+        constant float4x4 &modelViewProjectionMatrix [[buffer(1)]]
     ) {
         VertexOut out;
         float4 objectSpace = float4(in.position, 1.0);
-        float4x4 mvp = transforms.projectionMatrix * transforms.viewMatrix * transforms.modelMatrix;
-        out.position = mvp * objectSpace;
+        out.position = modelViewProjectionMatrix * objectSpace;
         return out;
     }
 

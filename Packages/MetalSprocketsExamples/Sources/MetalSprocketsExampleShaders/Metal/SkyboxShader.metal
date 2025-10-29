@@ -13,11 +13,13 @@ namespace SkyboxShader {
         float3 textureCoordinate;
     };
 
-    [[vertex]] VertexOut vertex_main(const VertexIn in [[stage_in]], constant Transforms &transforms [[buffer(4)]]) {
+    [[vertex]] VertexOut vertex_main(
+        const VertexIn in [[stage_in]],
+        constant float4x4 &modelViewProjectionMatrix [[buffer(1)]]
+    ) {
         VertexOut out;
         float4 objectSpace = float4(in.position, 1.0);
-        float4x4 mvp = transforms.projectionMatrix * transforms.viewMatrix * transforms.modelMatrix;
-        out.position = mvp * objectSpace;
+        out.position = modelViewProjectionMatrix * objectSpace;
         out.textureCoordinate = float3(-in.position.x, in.position.y, in.position.z);
         ;
         return out;
