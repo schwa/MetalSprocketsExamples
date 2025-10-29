@@ -185,16 +185,15 @@ private struct PointCloudRenderPipeline: Element {
 
     var body: some Element {
         get throws {
-            let device = _MTLCreateSystemDefaultDevice()
             let bundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
-            let library = try device.makeDefaultLibrary(bundle: bundle)
-
-            let vertexFunction = library.makeFunction(name: "pointCloudVertex").orFatalError("Failed to find pointCloudVertex function")
-            let fragmentFunction = library.makeFunction(name: "pointCloudFragment").orFatalError("Failed to find pointCloudFragment function")
+            // TODO: Clean up shader handlign here.
+            let shaderLibrary = try ShaderLibrary(bundle: bundle)
+            let vertexFunction: VertexShader = try shaderLibrary.pointCloudVertex
+            let fragmentFunction: FragmentShader = try shaderLibrary.pointCloudFragment
 
             try RenderPipeline(
-                vertexShader: VertexShader(vertexFunction),
-                fragmentShader: FragmentShader(fragmentFunction)
+                vertexShader: vertexFunction,
+                fragmentShader: fragmentFunction
             ) {
                 Draw { encoder in
                     let uniforms = Uniforms(

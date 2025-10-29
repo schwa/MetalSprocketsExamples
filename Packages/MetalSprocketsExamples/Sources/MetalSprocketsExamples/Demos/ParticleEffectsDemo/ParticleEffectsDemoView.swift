@@ -209,12 +209,10 @@ private struct ParticleUpdateCompute: Element {
 
     var body: some Element {
         get throws {
-            let device = _MTLCreateSystemDefaultDevice()
             let bundle = Bundle.metalSprocketsExampleShaders()
                 .orFatalError("Failed to load shader bundle")
-            let library = try device.makeDefaultLibrary(bundle: bundle)
-            let updateFunction = library.makeFunction(name: "updateParticles")
-                .orFatalError("Missing updateParticles shader")
+            let library = try ShaderLibrary(bundle: bundle)
+            let updateKernel = try library.function(named: "updateParticles", type: ComputeKernel.self)
 
             let uniforms = ParticleUniforms(
                 viewMatrix: .identity,
@@ -225,7 +223,7 @@ private struct ParticleUpdateCompute: Element {
                 baseSize: 1.0
             )
 
-            try ComputePipeline(computeKernel: ComputeKernel(updateFunction)) {
+            try ComputePipeline(computeKernel: updateKernel) {
                 try ComputeDispatch(
                     threadsPerGrid: MTLSize(width: particleCount, height: 1, depth: 1),
                     threadsPerThreadgroup: MTLSize(width: 64, height: 1, depth: 1)
@@ -266,19 +264,16 @@ private struct ParticleRenderPipeline: Element {
 
     var body: some Element {
         get throws {
-            let device = _MTLCreateSystemDefaultDevice()
             let bundle = Bundle.metalSprocketsExampleShaders()
                 .orFatalError("Failed to load shader bundle")
-            let library = try device.makeDefaultLibrary(bundle: bundle)
+            let library = try ShaderLibrary(bundle: bundle)
 
-            let vertexFunction = library.makeFunction(name: "particleEffectsVertex")
-                .orFatalError("Missing particleEffectsVertex shader")
-            let fragmentFunction = library.makeFunction(name: "particleEffectsFragment")
-                .orFatalError("Missing particleEffectsFragment shader")
+            let vertexShader = try library.function(named: "particleEffectsVertex", type: VertexShader.self)
+            let fragmentShader = try library.function(named: "particleEffectsFragment", type: FragmentShader.self)
 
             try RenderPipeline(
-                vertexShader: VertexShader(vertexFunction),
-                fragmentShader: FragmentShader(fragmentFunction)
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader
             ) {
                 Draw { encoder in
                     let uniforms = ParticleUniforms(

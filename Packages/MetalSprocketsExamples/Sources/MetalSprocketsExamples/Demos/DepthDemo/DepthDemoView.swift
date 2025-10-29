@@ -54,10 +54,8 @@ public struct DepthDemoView: View {
             return float4(depth, depth, depth, 1.0);
         }
         """
-        let device = _MTLCreateSystemDefaultDevice()
-        let mtlLibrary = (try? device.makeLibrary(source: adjustSource, options: nil))
+        let library = (try? ShaderLibrary(source: adjustSource))
             .orFatalError("Failed to compile depth adjust shader")
-        let library = MetalSprockets.ShaderLibrary(library: mtlLibrary)
         colorAdjustFunction = (try? library.function(named: "colorAdjustPow", type: VisibleFunction.self))
             .orFatalError("Missing colorAdjustPow function")
     }
