@@ -1,7 +1,4 @@
-#import <metal_stdlib>
-
-#import "ColorSource.h"
-#import "MetalSprocketsAddOnsShaders.h"
+#include "MetalSprocketsAddOnsShaders.h"
 
 using namespace metal;
 

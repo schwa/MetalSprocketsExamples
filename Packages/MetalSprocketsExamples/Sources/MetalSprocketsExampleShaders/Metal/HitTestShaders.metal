@@ -1,8 +1,4 @@
-#import <metal_stdlib>
-#import <simd/simd.h>
-
-#import "Support.h"
-#import "MetalSprocketsAddOnsShaders.h"
+#import "MetalSprocketsExampleShaders.h"
 
 using namespace metal;
 

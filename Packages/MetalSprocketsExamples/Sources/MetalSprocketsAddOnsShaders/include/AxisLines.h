@@ -1,6 +1,7 @@
 #pragma once
 
-#import "Support.h"
+#import "Support.h" // TODO: Unsure why this is needed when MetalSprocketsAddOnsShaders.h already imports it
+#import "MetalSprocketsAddOnsShaders.h"
 
 struct AxisLinesUniforms {
     float4x4 mvpMatrix;

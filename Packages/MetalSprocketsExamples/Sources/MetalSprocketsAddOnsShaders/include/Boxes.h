@@ -1,6 +1,6 @@
 #pragma once
 
-#import "Support.h"
+#import "MetalSprocketsAddOnsShaders.h"
 
 struct BoxInstance {
     float3 min;

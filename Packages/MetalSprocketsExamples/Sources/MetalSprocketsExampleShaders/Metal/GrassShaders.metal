@@ -1,5 +1,4 @@
-#include <metal_stdlib>
-#include "GrassShaders.h"
+#import "MetalSprocketsExampleShaders.h"
 
 using namespace metal;
 

@@ -1,9 +1,6 @@
-#include <metal_stdlib>
-#include <metal_logging>
-#include "GraphicsContext3DShaders.h"
+#include "MetalSprocketsAddOnsShaders.h"
 
 using namespace metal;
-
 
 namespace GraphicsContext3D {
 

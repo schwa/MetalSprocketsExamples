@@ -1,8 +1,4 @@
-#import <metal_stdlib>
-#import <simd/simd.h>
-
 #import "MetalSprocketsExampleShaders.h"
-#import "MetalSprocketsAddOnsShaders.h"
 
 // https://en.wikipedia.org/wiki/Blinn–Phong_reflection_model
 

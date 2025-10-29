@@ -1,6 +1,6 @@
 #pragma once
 
-#include <simd/simd.h>
+#import "MetalSprocketsAddOnsShaders.h"
 
 struct EdgeRenderingUniforms {
     simd_float4x4 viewProjection;

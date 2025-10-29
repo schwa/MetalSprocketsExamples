@@ -1,5 +1,5 @@
-#include "ParticleEffectsShader.h"
-#include <metal_stdlib>
+#import "MetalSprocketsExampleShaders.h"
+
 using namespace metal;
 
 struct ParticleVertexOut {

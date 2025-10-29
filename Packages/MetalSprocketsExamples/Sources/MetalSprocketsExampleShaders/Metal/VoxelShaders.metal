@@ -1,7 +1,4 @@
 #import "MetalSprocketsExampleShaders.h"
-#import "VoxelShaders.h"
-#import <metal_stdlib>
-#import <metal_logging>
 
 using namespace metal;
 

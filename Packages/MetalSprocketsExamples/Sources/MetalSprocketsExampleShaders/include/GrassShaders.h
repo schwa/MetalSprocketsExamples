@@ -1,6 +1,6 @@
 #pragma once
 
-#include <simd/simd.h>
+#import "MetalSprocketsExampleShaders.h"
 
 struct GrassPointData {
     simd_float3 position;

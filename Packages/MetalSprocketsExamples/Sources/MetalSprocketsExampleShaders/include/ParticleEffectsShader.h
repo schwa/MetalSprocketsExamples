@@ -1,7 +1,6 @@
-#ifndef ParticleEffectsShader_h
-#define ParticleEffectsShader_h
+#pragma once
 
-#include <simd/simd.h>
+#import "MetalSprocketsExampleShaders.h"
 
 struct Particle {
     simd_float3 position;
@@ -26,5 +25,3 @@ struct ParticleEmitterParams {
     float emissionRate;
     float time;
 };
-
-#endif /* ParticleEffectsShader_h */

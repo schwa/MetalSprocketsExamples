@@ -1,6 +1,4 @@
-#import "Panorama.h"
 #import "MetalSprocketsExampleShaders.h"
-#include <metal_stdlib>
 
 using namespace metal;
 

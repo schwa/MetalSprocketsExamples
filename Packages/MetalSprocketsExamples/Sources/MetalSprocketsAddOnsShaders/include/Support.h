@@ -2,15 +2,18 @@
 
 #import <simd/simd.h>
 
+// TODO: Break this up.
+
+// MARK: Cross-environment macros
+
 #if defined(__METAL_VERSION__)
 #import <metal_stdlib>
 #define ATTRIBUTE(INDEX) [[attribute(INDEX)]]
-#define TEXTURE2D(TYPE, ACCESS) texture2d<TYPE, ACCESS>
-#define DEPTH2D(TYPE, ACCESS) depth2d<TYPE, ACCESS>
-#define TEXTURECUBE(TYPE, ACCESS) texturecube<TYPE, ACCESS>
-#define SAMPLER sampler
+#define TEXTURE2D(TYPE, ACCESS) metal::texture2d<TYPE, ACCESS>
+#define DEPTH2D(TYPE, ACCESS) metal::depth2d<TYPE, ACCESS>
+#define TEXTURECUBE(TYPE, ACCESS) metal::texturecube<TYPE, ACCESS>
+#define SAMPLER metal::sampler
 #define BUFFER(ADDRESS_SPACE, TYPE) ADDRESS_SPACE TYPE
-using namespace metal;
 #else
 #import <Metal/Metal.h>
 #define ATTRIBUTE(INDEX)
@@ -21,11 +24,15 @@ using namespace metal;
 #define BUFFER(ADDRESS_SPACE, TYPE) TYPE
 #endif
 
+// MARK: SIMD Type aliases
+
 typedef simd_float4x4 float4x4;
 typedef simd_float3x3 float3x3;
 typedef simd_float4 float4;
 typedef simd_float3 float3;
 typedef simd_float2 float2;
+
+// MARK: Enum macros
 
 // Copied from <CoreFoundation/CFAvailability.h>
 #define __MS_ENUM_ATTRIBUTES __attribute__((enum_extensibility(open)))
@@ -36,6 +43,9 @@ typedef simd_float2 float2;
 #define __MS_ENUM_GET_MACRO(_1, _2, NAME, ...) NAME
 #define MS_ENUM(...) __MS_ENUM_GET_MACRO(__VA_ARGS__, __MS_NAMED_ENUM, __MS_ANON_ENUM, )(__VA_ARGS__)
 
+// MARK: Frame uniforms
+
+// TODO: Move to MetalSprocketsShaders.h (does not exist yet?)
 struct FrameUniforms {
     uint index;
     float time;
@@ -43,6 +53,8 @@ struct FrameUniforms {
     simd_int2 viewportSize;
 };
 typedef struct FrameUniforms FrameUniforms;
+
+// MARK: Math utilities
 
 #if defined(__METAL_VERSION__)
 inline float square(float x) {
@@ -54,11 +66,7 @@ inline float3x3 extractNormalMatrix(float4x4 modelMatrix) {
 }
 #endif
 
-struct BufferDescriptor {
-    uint count;        // elements in the buffer
-    uint stride;       // bytes per element
-    uint valueOffset;  // byte offset of the value within each element
-};
+// MARK: Transforms
 
 /// Universal transforms.
 /// TODO: Deprecate
@@ -71,6 +79,13 @@ struct Transforms {
     simd_float4x4 modelViewProjectionMatrix;
 };
 
+// MARK: Buffer descriptor and accessors
+
+struct BufferDescriptor {
+    uint count;        // elements in the buffer
+    uint stride;       // bytes per element
+    uint valueOffset;  // byte offset of the value within each element
+};
 
 #if defined(__METAL_VERSION__)
 // Generic unaligned load: works for any T

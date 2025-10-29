@@ -1,5 +1,4 @@
-#include <metal_stdlib>
-#include <metal_uniform>
+#include "MetalSprocketsAddOnsShaders.h"
 
 using namespace metal;
 

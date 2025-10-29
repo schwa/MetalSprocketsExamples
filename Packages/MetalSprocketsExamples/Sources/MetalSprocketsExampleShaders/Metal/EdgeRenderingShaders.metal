@@ -1,7 +1,4 @@
-#include <metal_stdlib>
-#include "EdgeRenderingShaders.h"
-#include "Support.h"
-#import "MetalSprocketsAddOnsShaders.h"
+#import "MetalSprocketsExampleShaders.h"
 
 using namespace metal;
 

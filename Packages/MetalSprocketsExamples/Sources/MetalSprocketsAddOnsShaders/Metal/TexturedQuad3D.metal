@@ -1,6 +1,4 @@
-#import "MetalSprocketsAddOnsShaders.h"
-
-#import <metal_stdlib>
+#include "MetalSprocketsAddOnsShaders.h"
 
 using namespace metal;
 

@@ -1,8 +1,6 @@
 #pragma once
 
-#import "Support.h"
-
-#import <simd/simd.h>
+#import "MetalSprocketsExampleShaders.h"
 
 // Uniforms for panorama rendering
 struct PanoramaUniforms {

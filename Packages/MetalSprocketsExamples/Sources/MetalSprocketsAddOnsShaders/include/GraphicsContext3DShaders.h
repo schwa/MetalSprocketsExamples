@@ -1,6 +1,6 @@
 #pragma once
 
-#include <simd/simd.h>
+#import "MetalSprocketsAddOnsShaders.h"
 
 struct GraphicsContext3DVertex {
     simd_float3 position;

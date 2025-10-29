@@ -1,5 +1,6 @@
 #pragma once
 
+#import "MetalSprocketsAddOnsShaders.h"
 #import "Support.h"
 
 typedef MS_ENUM(int, ColorSourceType){
@@ -12,10 +13,10 @@ typedef MS_ENUM(int, ColorSourceType){
 struct ColorSourceArgumentBuffer {
     ColorSourceType source;
     simd_float3 color;
-    TEXTURE2D(float, access::sample) texture2D;
-    TEXTURECUBE(float, access::sample) textureCube;
+    TEXTURE2D(float, metal::access::sample) texture2D;
+    TEXTURECUBE(float, metal::access::sample) textureCube;
     uint slice;
-    DEPTH2D(float, access::sample) depth2D;
+    DEPTH2D(float, metal::access::sample) depth2D;
     SAMPLER sampler;
 
 #if defined(__METAL_VERSION__)

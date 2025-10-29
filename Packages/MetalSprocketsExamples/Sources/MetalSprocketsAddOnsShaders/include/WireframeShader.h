@@ -1,7 +1,6 @@
 #pragma once
 
-#import "Support.h"
-#import <simd/simd.h>
+#import "MetalSprocketsAddOnsShaders.h"
 
 struct WireframeUniforms {
     float4x4 modelViewProjectionMatrix;

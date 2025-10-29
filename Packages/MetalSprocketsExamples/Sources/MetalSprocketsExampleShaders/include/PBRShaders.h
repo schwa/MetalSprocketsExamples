@@ -1,12 +1,10 @@
 #pragma once
 
-#if defined(METAL) || defined(__OBJC__)
-#import "MetalSprocketsAddOnsShaders.h"
-#import "Support.h"
+#import "MetalSprocketsExampleShaders.h"
 
 struct PBRMaterialArgumentBuffer {
     ColorSourceArgumentBuffer albedo;
-    TEXTURE2D(float, access::sample) normal;
+    TEXTURE2D(float, metal::access::sample) normal;
     ColorSourceArgumentBuffer metallic;
     ColorSourceArgumentBuffer roughness;
     ColorSourceArgumentBuffer ambientOcclusion;
@@ -30,4 +28,3 @@ struct PBRAmplifiedUniforms {
     float4x4 viewProjectionMatrix;
     float3 cameraPosition;
 };
-#endif

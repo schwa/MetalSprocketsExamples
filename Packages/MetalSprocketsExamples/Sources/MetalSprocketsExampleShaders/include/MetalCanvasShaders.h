@@ -1,6 +1,6 @@
 #pragma once
 
-#import "Support.h"
+#import "MetalSprocketsExampleShaders.h"
 
 typedef MS_ENUM(int, MetalCanvasSegmentType) {
     kMetalCanvasSegmentTypeLine = 0,

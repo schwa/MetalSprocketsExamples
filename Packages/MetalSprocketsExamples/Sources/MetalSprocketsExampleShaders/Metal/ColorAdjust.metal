@@ -1,9 +1,3 @@
-#import <metal_stdlib>
-
-#if defined(METAL) || defined(__OBJC__)
-#import "MetalSprocketsAddOnsShaders.h"
-#endif
-
 #import "MetalSprocketsExampleShaders.h"
 
 using namespace metal;

@@ -1,5 +1,5 @@
 #include "MetalSprocketsAddOnsShaders.h"
-#include <metal_stdlib>
+
 using namespace metal;
 
 namespace AxisLines {

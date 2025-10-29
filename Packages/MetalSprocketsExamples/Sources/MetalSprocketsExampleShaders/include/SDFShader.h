@@ -1,6 +1,6 @@
 #pragma once
 
-#import <simd/simd.h>
+#import "MetalSprocketsExampleShaders.h"
 
 struct SDFUniforms {
     float time;
