@@ -127,6 +127,7 @@ public struct ParticleEffectsDemoView: View {
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
             .padding()
         }
+        .screenshotButton()
     }
 
     private func initializeParticles() {
