@@ -24,3 +24,5 @@
 #import "TextureBillboard.h"
 #import "TexturedQuad3D.h"
 #import "WireframeShader.h"
+#import "GridShader.h"
+#import "LambertianShader.h"
