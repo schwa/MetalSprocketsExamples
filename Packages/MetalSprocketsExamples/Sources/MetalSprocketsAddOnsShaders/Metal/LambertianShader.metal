@@ -23,13 +23,13 @@ namespace LambertianShader {
         float3 normal,
         float4x4 modelViewProjectionMatrix,
         float4x4 modelMatrix,
+        float3x3 normalMatrix,
         float3 color
     ) {
         VertexOut out;
         float4 objectSpace = float4(position, 1.0);
         out.position = modelViewProjectionMatrix * objectSpace;
         out.worldPosition = (modelMatrix * objectSpace).xyz;
-        float3x3 normalMatrix = float3x3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz);
         out.worldNormal = normalize(-(normalMatrix * normal));
         out.color = color;
         return out;
@@ -39,22 +39,25 @@ namespace LambertianShader {
         const VertexIn in [[stage_in]],
         constant float4x4 &modelViewProjectionMatrix [[buffer(1)]],
         constant float4x4 &modelMatrix [[buffer(2)]],
-        constant float3 &color [[buffer(3)]]
+        constant float3x3 &normalMatrix [[buffer(3)]],
+        constant float3 &color [[buffer(4)]]
     ) {
-        return lambertian(in.position, in.normal, modelViewProjectionMatrix, modelMatrix, color);
+        return lambertian(in.position, in.normal, modelViewProjectionMatrix, modelMatrix, normalMatrix, color);
     }
 
     [[vertex]] VertexOut vertex_instanced(
         const VertexIn in [[stage_in]],
-        constant float4x4 &viewProjectionMatrix [[buffer(1)]],
         uint instance_id [[instance_id]],
+        constant float4x4 *modelViewProjectionMatrices [[buffer(1)]],
         constant float4x4 *modelMatrices [[buffer(2)]],
-        constant float3 *colors [[buffer(3)]]
+        constant float3x3 *normalMatrices [[buffer(3)]],
+        constant float3 *colors [[buffer(4)]]
     ) {
+        const float4x4 modelViewProjectionMatrix = modelViewProjectionMatrices[instance_id];
         const float4x4 modelMatrix = modelMatrices[instance_id];
+        const float3x3 normalMatrix = normalMatrices[instance_id];
         const float3 color = colors[instance_id];
-        const float4x4 modelViewProjectionMatrix = viewProjectionMatrix * modelMatrix;
-        return lambertian(in.position, in.normal, modelViewProjectionMatrix, modelMatrix, color);
+        return lambertian(in.position, in.normal, modelViewProjectionMatrix, modelMatrix, normalMatrix, color);
     }
 
     [[fragment]] float4 fragment_main(

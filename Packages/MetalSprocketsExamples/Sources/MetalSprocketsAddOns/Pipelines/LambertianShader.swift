@@ -32,10 +32,18 @@ public struct LambertianShader <Content>: Element where Content: Element {
             let viewMatrix = cameraMatrix.inverse
             let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
 
+            // Pre-compute normal matrix on CPU (upper-left 3x3 of model matrix)
+            let normalMatrix = float3x3(
+                modelMatrix.columns.0.xyz,
+                modelMatrix.columns.1.xyz,
+                modelMatrix.columns.2.xyz
+            )
+
             return try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
                     .parameter("modelViewProjectionMatrix", value: modelViewProjectionMatrix)
                     .parameter("modelMatrix", value: modelMatrix)
+                    .parameter("normalMatrix", value: normalMatrix)
                     .parameter("color", value: color)
                     .parameter("cameraPosition", value: cameraMatrix.translation)
                     .parameter("lightDirection", value: lightDirection)
@@ -69,14 +77,29 @@ public struct LambertianShaderInstanced <Content>: Element where Content: Elemen
 
     public var body: some Element {
         get throws {
-            // Pre-compute view-projection matrix on CPU (model matrices vary per instance)
+            // Pre-compute all per-instance matrices on CPU to avoid per-vertex computation
             let viewMatrix = cameraMatrix.inverse
             let viewProjectionMatrix = projectionMatrix * viewMatrix
 
+            // Pre-compute MVP matrices for all instances
+            let modelViewProjectionMatrices = modelMatrices.map { modelMatrix in
+                viewProjectionMatrix * modelMatrix
+            }
+
+            // Pre-compute normal matrices for all instances (upper-left 3x3 of each model matrix)
+            let normalMatrices = modelMatrices.map { modelMatrix in
+                float3x3(
+                    modelMatrix.columns.0.xyz,
+                    modelMatrix.columns.1.xyz,
+                    modelMatrix.columns.2.xyz
+                )
+            }
+
             return try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
-                    .parameter("viewProjectionMatrix", value: viewProjectionMatrix)
+                    .parameter("modelViewProjectionMatrices", values: modelViewProjectionMatrices)
                     .parameter("modelMatrices", values: modelMatrices)
+                    .parameter("normalMatrices", values: normalMatrices)
                     .parameter("colors", values: colors)
                     .parameter("lightDirection", value: lightDirection)
                     .parameter("cameraPosition", value: cameraMatrix.translation)
