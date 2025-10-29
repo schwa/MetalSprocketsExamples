@@ -1,7 +1,7 @@
 import GeometryLite3D
 import MetalSprockets
-import MetalSprocketsExampleShaders
 import MetalSprocketsAddOnsShaders
+import MetalSprocketsExampleShaders
 
 import MetalSprocketsSupport
 
@@ -22,7 +22,6 @@ public extension Transforms {
         self.modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
     }
 }
-
 
 public extension Element {
     @available(*, deprecated, message: "Transforms should be deprecated.")

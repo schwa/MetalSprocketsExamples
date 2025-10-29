@@ -1,5 +1,5 @@
 {
-  "originHash" : "ce065ffd47e54793750112d574bdd64aedcec190d10ccd39e19e44bbef2b72eb",
+  "originHash" : "535e369decfd11ecbd725601b30a5921e542ee5c9ab3a5b4b6ebde7ec7feda21",
   "pins" : [
     {
       "identity" : "cborcoding",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/earcut-swift",
       "state" : {
-        "branch" : "main",
-        "revision" : "84309d9350a3e818412c4c13156af5d95d761147"
+        "revision" : "84309d9350a3e818412c4c13156af5d95d761147",
+        "version" : "0.1.0"
       }
     },
     {
@@ -79,7 +79,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "d61f73ccb37563834eafcec4ebbed6793428eaf6"
+        "revision" : "aa85a487a660138dd4a439ab0ff8eba9ab71d92a"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Panels",
       "state" : {
-        "branch" : "main",
-        "revision" : "69d396ba90b17cfe2adbc0fb2aec5f175fefe7df"
+        "revision" : "69d396ba90b17cfe2adbc0fb2aec5f175fefe7df",
+        "version" : "0.1.0"
       }
     },
     {

@@ -72,13 +72,12 @@ public struct CaptureDemoView: View {
     }
 
     public var body: some View {
-        // TODO: THIS IS TERRIBLE. FIX ME
-//        _ = {
-//            viewModel.sendFrameData = sendFrameData
-//            viewModel.sendAnchors = sendAnchors
-//            viewModel.sendRoomData = sendRoomData
-//            viewModel.sendCameraImages = sendCameraImages
-//        }()
+        _ = {
+            viewModel.sendFrameData = sendFrameData
+            viewModel.sendAnchors = sendAnchors
+            viewModel.sendRoomData = sendRoomData
+            viewModel.sendCameraImages = sendCameraImages
+        }()
 
         ZStack {
             RenderView { _, drawableSize in

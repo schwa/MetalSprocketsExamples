@@ -1,5 +1,5 @@
-import os
 import Foundation
+import os
 
 internal let logger: Logger? = {
     guard ProcessInfo.processInfo.environment["LOGGING"] != nil else {

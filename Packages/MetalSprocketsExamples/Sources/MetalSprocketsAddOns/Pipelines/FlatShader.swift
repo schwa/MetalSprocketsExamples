@@ -18,7 +18,6 @@ public struct FlatShader <Content>: Element where Content: Element {
     @MSState
     var fragmentShader: FragmentShader
 
-
     // TODO: Remove texture specifier and use a parameter/element extension [FILE ME]
     public init(modelViewProjection: float4x4, textureSpecifier: ColorSource, @ElementBuilder content: () throws -> Content) throws {
         self.modelViewProjection = modelViewProjection
