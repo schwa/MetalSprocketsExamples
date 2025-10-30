@@ -10,7 +10,6 @@
 		4570B1FD2E8DAD2F00C44C13 /* MetalSprocketsSnapshotUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4570B1FC2E8DAD2F00C44C13 /* MetalSprocketsSnapshotUI */; };
 		45CCE6A92E83B057001EF989 /* MetalSprocketsExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 45CCE6A82E83B057001EF989 /* MetalSprocketsExamples */; };
 		45CCE6AD2E83B0C0001EF989 /* DemoKit in Frameworks */ = {isa = PBXBuildFile; productRef = 45CCE6AC2E83B0C0001EF989 /* DemoKit */; };
-		45FE3EB12EAFE6CE0065379F /* CaptureExample in Frameworks */ = {isa = PBXBuildFile; productRef = 45FE3EB02EAFE6CE0065379F /* CaptureExample */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +65,6 @@
 			files = (
 				45CCE6AD2E83B0C0001EF989 /* DemoKit in Frameworks */,
 				4570B1FD2E8DAD2F00C44C13 /* MetalSprocketsSnapshotUI in Frameworks */,
-				45FE3EB12EAFE6CE0065379F /* CaptureExample in Frameworks */,
 				45CCE6A92E83B057001EF989 /* MetalSprocketsExamples in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,7 +134,6 @@
 				45CCE6A82E83B057001EF989 /* MetalSprocketsExamples */,
 				45CCE6AC2E83B0C0001EF989 /* DemoKit */,
 				4570B1FC2E8DAD2F00C44C13 /* MetalSprocketsSnapshotUI */,
-				45FE3EB02EAFE6CE0065379F /* CaptureExample */,
 			);
 			productName = MetalSprocketsExamples;
 			productReference = 45E0A1122D9DAF2D0091ED9E /* MetalSprockets-Examples.app */;
@@ -354,10 +351,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
 			productName = DemoKit;
-		};
-		45FE3EB02EAFE6CE0065379F /* CaptureExample */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CaptureExample;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

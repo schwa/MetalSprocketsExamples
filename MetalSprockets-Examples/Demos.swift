@@ -1,4 +1,3 @@
-import CaptureExample
 import DemoKit
 import MetalSprocketsExamples
 import SwiftUI
@@ -34,19 +33,12 @@ import SwiftUI
         GrassDemoView.self,
         GraphicsContext3DDemoView.self,
         EdgeLinesDemoView.self,
-        CaptureReceiverDemoView.self,
         MetalCanvasDemoView.self
     ]
 
     #if os(macOS)
     demos += [
         OffscreenDemoView.self
-    ]
-    #endif
-
-    #if os(iOS)
-    demos += [
-        CaptureDemoView.self
     ]
     #endif
 
@@ -348,14 +340,6 @@ extension WireframeDemoView: @retroactive DemoView {
     }
 }
 
-#if os(iOS)
-extension CaptureDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Capture Demo", description: "ARKit camera capture with RoomPlan integration", group: "WIP", keywords: [])
-    }
-}
-#endif
-
 extension TrivialMeshDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
@@ -428,17 +412,6 @@ extension EdgeLinesDemoView: @retroactive DemoView {
             description: "Screen-space edge rendering with rounded endcaps using mesh shaders. Each mesh edge is rendered as a screen-aligned line with adaptive tessellation.",
             group: "Complex",
             keywords: ["mesh-shaders", "wireframe", "edges", "animated"]
-        )
-    }
-}
-
-extension CaptureReceiverDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Capture Receiver",
-            description: "Network receiver for AR capture data using Bonjour service discovery and structured concurrency",
-            group: "WIP",
-            keywords: ["network", "bonjour", "ar"]
         )
     }
 }

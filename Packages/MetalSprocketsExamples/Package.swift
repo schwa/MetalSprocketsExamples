@@ -11,7 +11,6 @@ let package = Package(
     ],
     products: [
         .library(name: "MetalSprocketsExamples", targets: ["MetalSprocketsExamples"]),
-        .library(name: "CaptureExample", targets: ["CaptureExample"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
@@ -25,7 +24,6 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", from: "0.1.0"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
-        .package(url: "https://github.com/SomeRandomiOSDev/CBORCoding", from: "1.0.0"),
         .package(url: "https://github.com/swiftlang/swift-syntax", from: "600.0.0-latest"),
         .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0"),
     ],
@@ -76,22 +74,6 @@ let package = Package(
         .testTarget(
             name: "MetalSprocketsExamplesTests",
             dependencies: ["MetalSprocketsExamples"],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
-            ]
-        ),
-
-        .target(
-            name: "CaptureExample",
-            dependencies: [
-                "MetalSprocketsExampleShaders",
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-                .product(name: "CBORCoding", package: "CBORCoding"),
-                .product(name: "earcut", package: "earcut-swift"),
-                .product(name: "MetalSprockets", package: "MetalSprockets"),
-                .product(name: "MetalSprocketsUI", package: "MetalSprockets"),
-                .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns"),
-            ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
             ]
