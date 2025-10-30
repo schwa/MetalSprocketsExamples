@@ -65,6 +65,7 @@ let package = Package(
         .target(
             name: "MetalSprocketsExamplesSupport",
             dependencies: [
+                .product(name: "MetalSprockets", package: "MetalSprockets"),
                 .product(name: "ZIPFoundation", package: "ZIPFoundation"),
             ]
         ),
