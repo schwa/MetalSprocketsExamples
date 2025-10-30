@@ -1,5 +1,5 @@
 {
-  "originHash" : "535e369decfd11ecbd725601b30a5921e542ee5c9ab3a5b4b6ebde7ec7feda21",
+  "originHash" : "0dc9a504df6aaa70fcb7de537943a201733371f3140b4cfbd433ff5572bf4d15",
   "pins" : [
     {
       "identity" : "cborcoding",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalCompilerPlugin",
       "state" : {
-        "revision" : "cd3a1555f387bb82d75d3dca4f1ddd0da12b7b4b",
-        "version" : "0.1.3"
+        "revision" : "4f361b5611e7e2022baeaa74da60ea32635323b1",
+        "version" : "0.1.4"
       }
     },
     {
@@ -80,6 +80,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "aa85a487a660138dd4a439ab0ff8eba9ab71d92a"
+      }
+    },
+    {
+      "identity" : "metalsprocketsaddons",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/MetalSprocketsAddOns",
+      "state" : {
+        "branch" : "main",
+        "revision" : "cfefd182a41158739ad3da2bed4b6bf28ba8322f"
       }
     },
     {

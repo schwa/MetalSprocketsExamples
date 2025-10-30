@@ -3,7 +3,7 @@
     "plugin-logging": true,
     "include-dependencies": true,
     "verbose-logging": true,
-    "flags": ["-I", "/Users/schwa/Shared/Projects/MetalSprocketsExamples/Packages/MetalSprocketsExamples/Sources/MetalSprocketsExampleShaders/include"],
     "logging-prefix": "🔨",
-    "dependency-path-suffix": "include"
+    "dependency-path-suffix": "include",
+    "include-paths": ["include"]
 }

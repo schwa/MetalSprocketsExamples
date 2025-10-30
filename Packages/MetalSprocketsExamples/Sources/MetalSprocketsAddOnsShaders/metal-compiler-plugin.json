@@ -1,8 +1,0 @@
-{
-    "metal-enable-logging": true,
-    "plugin-logging": true,
-    "include-dependencies": true,
-    "verbose-logging": true,
-    "flags": ["-I", "/Users/schwa/Shared/Projects/MetalSprocketsExamples/Packages/MetalSprocketsExamples/Sources/MetalSprocketsAddOnsShaders/include"],
-    "logging-prefix": "🔨"
-}
