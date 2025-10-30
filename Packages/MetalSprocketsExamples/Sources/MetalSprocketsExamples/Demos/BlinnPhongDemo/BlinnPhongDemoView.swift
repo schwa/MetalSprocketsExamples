@@ -5,6 +5,7 @@ import MetalKit
 import MetalSprockets
 import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
+import MetalSprocketsExamplesSupport
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd

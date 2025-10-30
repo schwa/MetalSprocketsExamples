@@ -78,14 +78,14 @@ extension MTLSize: @retroactive ExpressibleByArrayLiteral {
     }
 }
 
-extension MTLLinkedFunctions {
+public extension MTLLinkedFunctions {
     convenience init(functions: [MTLFunction]) {
         self.init()
         self.functions = functions
     }
 }
 
-extension MTLStitchedLibraryDescriptor {
+public extension MTLStitchedLibraryDescriptor {
     convenience init(functions: [MTLFunction], functionGraphs: [MTLFunctionStitchingGraph]) {
         self.init()
         self.functions = functions
@@ -93,13 +93,13 @@ extension MTLStitchedLibraryDescriptor {
     }
 }
 
-extension MTLSize {
+public extension MTLSize {
     init(_ size: CGSize) {
         self.init(width: Int(size.width), height: Int(size.height), depth: 1)
     }
 }
 
-extension MTLTexture {
+public extension MTLTexture {
     var size: MTLSize {
         MTLSize(width: width, height: height, depth: depth)
     }

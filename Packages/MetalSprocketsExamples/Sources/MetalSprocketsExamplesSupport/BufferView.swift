@@ -1,24 +1,24 @@
 import Metal
 import MetalSprocketsSupport
 
-struct RawBufferView: Equatable, Sendable {
-    var stride: Int
-    var offset: Int
-    var count: Int
+public struct RawBufferView: Equatable, Sendable {
+    public var stride: Int
+    public var offset: Int
+    public var count: Int
 
-    init(stride: Int, offset: Int = 0, count: Int) {
+    public init(stride: Int, offset: Int = 0, count: Int) {
         self.stride = stride
         self.offset = offset
         self.count = count
     }
 }
 
-struct BufferView<T>: Equatable, Sendable {
-    var stride: Int
-    var offset: Int
-    var count: Int
+public struct BufferView<T>: Equatable, Sendable {
+    public var stride: Int
+    public var offset: Int
+    public var count: Int
 
-    init(stride: Int? = nil, offset: Int = 0, count: Int) {
+    public init(stride: Int? = nil, offset: Int = 0, count: Int) {
         self.stride = stride ?? MemoryLayout<T>.stride
         self.offset = offset
         self.count = count
@@ -27,7 +27,7 @@ struct BufferView<T>: Equatable, Sendable {
 
 // MARK: -
 
-extension MTLDevice {
+public extension MTLDevice {
     func makeBuffer<T>(view: BufferView<T>, values: [T], options: MTLResourceOptions) throws -> MTLBuffer {
         let length = view.stride * values.count
         guard let buffer = self.makeBuffer(length: length, options: options) else {
@@ -40,7 +40,7 @@ extension MTLDevice {
 
 // MARK: -
 
-extension MTLBuffer {
+public extension MTLBuffer {
     subscript(view: RawBufferView, range: Range<Int>) -> UnsafeRawBufferPointer {
         get {
             let pointer = contents().advanced(by: view.offset + range.lowerBound * view.stride)
@@ -93,7 +93,7 @@ extension MTLBuffer {
     }
 }
 
-extension MTLBuffer {
+public extension MTLBuffer {
     subscript<T>(type: T.Type, index: Int) -> T {
         get {
             let view = BufferView<T>(count: length / MemoryLayout<T>.stride)

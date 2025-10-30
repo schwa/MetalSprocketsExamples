@@ -2,6 +2,7 @@ import AVFoundation
 import MetalKit
 import MetalSprockets
 import MetalSprocketsAddOns
+import MetalSprocketsExamplesSupport
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd

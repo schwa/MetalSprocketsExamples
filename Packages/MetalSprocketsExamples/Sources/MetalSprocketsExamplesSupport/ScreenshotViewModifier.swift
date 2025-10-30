@@ -1,10 +1,13 @@
 import AppKit
 import SwiftUI
 
-struct ScreenshotViewModifier: ViewModifier {
+public struct ScreenshotViewModifier: ViewModifier {
     @State private var hostingView: NSView?
 
-    func body(content: Content) -> some View {
+    public init() {
+    }
+
+    public func body(content: Content) -> some View {
         content
             .background(ViewHostingReader { view in
                 hostingView = view
@@ -67,7 +70,7 @@ struct ViewHostingReader: NSViewRepresentable {
     }
 }
 
-extension View {
+public extension View {
     func screenshotButton() -> some View {
         modifier(ScreenshotViewModifier())
     }

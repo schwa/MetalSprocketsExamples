@@ -2,7 +2,7 @@ import MetalSprocketsSupport
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct SuperImportWidget: View {
+public struct SuperImportWidget: View {
     @Binding
     private var url: URL?
 
@@ -14,13 +14,13 @@ struct SuperImportWidget: View {
     @State
     private var isImporting = false
 
-    init(url: Binding<URL?>, identifier: String, allowedContentTypes: [UTType]) {
+    public init(url: Binding<URL?>, identifier: String, allowedContentTypes: [UTType]) {
         self._url = url
         self.allowedContentTypes = allowedContentTypes
         self._helper = State(initialValue: SuperImportHelper(identifier: identifier, allowedContentTypes: allowedContentTypes))
     }
 
-    var body: some View {
+    public var body: some View {
         Menu("Import") {
             Button("Choose…") {
                 isImporting = true

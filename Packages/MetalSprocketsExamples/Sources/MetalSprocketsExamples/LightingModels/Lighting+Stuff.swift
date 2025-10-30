@@ -2,6 +2,7 @@ import Metal
 import MetalKit
 import MetalSprockets
 import MetalSprocketsAddOns
+import MetalSprocketsExamplesSupport
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import SwiftUI

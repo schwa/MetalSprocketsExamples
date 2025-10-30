@@ -11,6 +11,7 @@ let package = Package(
     ],
     products: [
         .library(name: "MetalSprocketsExamples", targets: ["MetalSprocketsExamples"]),
+        .library(name: "MetalSprocketsExamplesSupport", targets: ["MetalSprocketsExamplesSupport"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
@@ -31,6 +32,7 @@ let package = Package(
         .target(
             name: "MetalSprocketsExamples",
             dependencies: [
+                "MetalSprocketsExamplesSupport",
                 "MetalSprocketsExampleShaders",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                 .product(name: "Collections", package: "swift-collections"),
@@ -44,7 +46,6 @@ let package = Package(
                 .product(name: "MetalSprocketsAddOnsShaders", package: "MetalSprocketsAddOns"),
                 .product(name: "Panels", package: "Panels"),
                 .product(name: "SwiftGLTF", package: "SwiftGLTF"),
-                .product(name: "ZIPFoundation", package: "ZIPFoundation"),
             ],
             resources: [
                 .copy("Resources/4.2.03.heic"),
@@ -62,6 +63,13 @@ let package = Package(
             ]
         ),
         .target(
+            name: "MetalSprocketsExamplesSupport",
+            dependencies: [
+                .product(name: "ZIPFoundation", package: "ZIPFoundation"),
+            ]
+        ),
+        .target(
+            // TODO: Rename to MetalSprocketsExamplesShaders (note the s in examples)
             name: "MetalSprocketsExampleShaders",
             dependencies: [
                 .product(name: "MetalSprocketsAddOnsShaders", package: "MetalSprocketsAddOns")

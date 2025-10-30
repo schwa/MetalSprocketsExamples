@@ -1,4 +1,5 @@
 import MetalSprocketsUI
+import MetalSprocketsExamplesSupport
 import SwiftGLTF
 import SwiftUI
 import UniformTypeIdentifiers

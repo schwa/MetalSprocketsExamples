@@ -1,6 +1,7 @@
 import Metal
 import MetalSprockets
 import MetalSprocketsExampleShaders
+import MetalSprocketsExamplesSupport
 import MetalSprocketsSupport
 
 extension Light {
