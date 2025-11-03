@@ -47,7 +47,7 @@ struct VCRDistortionPipeline: Element {
 
     var body: some Element {
         get throws {
-            let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+            let shaderBundle = Bundle.metalSprocketsExampleShaders()
             let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("VCRDistortion")
 
             let width = outputTexture.width

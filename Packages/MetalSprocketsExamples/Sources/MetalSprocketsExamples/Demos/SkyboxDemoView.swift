@@ -102,7 +102,7 @@ struct SkyboxRenderPipeline: Element {
         self.projectionMatrix = projectionMatrix
         self.cameraMatrix = cameraMatrix
         self.texture = texture
-        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("SkyboxShader")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main

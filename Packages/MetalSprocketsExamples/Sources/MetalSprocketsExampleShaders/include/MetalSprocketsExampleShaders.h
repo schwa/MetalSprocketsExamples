@@ -16,7 +16,13 @@
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSBundle (Module)
 + (NSBundle *)metalSprocketsExampleShadersBundle;
 @end
+
+NS_ASSUME_NONNULL_END
+
 #endif

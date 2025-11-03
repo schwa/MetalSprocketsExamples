@@ -28,34 +28,26 @@ void metalCanvasObjectShader(uint objectID [[thread_position_in_grid]], object_d
     mgp.set_threadgroups_per_grid(uint3(op.segmentCount, 1, 1));
 }
 
-[[mesh]]
-void metalCanvasMeshShader(
+void cubicCurveToMesh(
     mesh<MetalCanvas::VertexOut, void, 4, 2, topology::triangle> output,
-    const object_data MetalCanvasMeshPayload& payload [[payload]],
-    uint meshID [[threadgroup_position_in_grid]],
-    uint threadID [[thread_position_in_threadgroup]],
-    constant DrawOperation *drawOperations [[buffer(0)]],
-    constant uint32_t *segmentOffsets [[buffer(1)]],
-    constant void *segments [[buffer(2)]],
-    constant float2 &viewport [[buffer(3)]]
+    CubicCurve curve,
+    uint threadID,
+    DrawOperation op,
+    float2 viewport
 ) {
-
-    DrawOperation op = drawOperations[payload.index];
-    uint32_t segmentIndex = op.segmentIndex + meshID;
-    uint32_t segmentType = segmentOffsets[segmentIndex];
-
-    // For now, only handle line segments
-    if (segmentType != kMetalCanvasSegmentTypeLine) {
-        if (threadID == 0) {
-            output.set_primitive_count(0);
-        }
-        return;
+    if (threadID == 0) {
+        output.set_primitive_count(0);
     }
+}
 
-    // Read the line segment (all threads read the same data)
-    constant LineSegment* lineSegments = (constant LineSegment*)segments;
-    LineSegment line = lineSegments[segmentIndex];
 
+void lineToMesh(
+    mesh<MetalCanvas::VertexOut, void, 4, 2, topology::triangle> output,
+    LineSegment line,
+    uint threadID,
+    DrawOperation op,
+    float2 viewport
+) {
     float2 start = line.start;
     float2 end = line.end;
     float2 dir = normalize(end - start);
@@ -89,6 +81,47 @@ void metalCanvasMeshShader(
         output.set_index(5, 3);
         output.set_primitive_count(2);
     }
+
+}
+
+
+[[mesh]]
+void metalCanvasMeshShader(
+    mesh<MetalCanvas::VertexOut, void, 4, 2, topology::triangle> output,
+    const object_data MetalCanvasMeshPayload& payload [[payload]],
+    uint meshID [[threadgroup_position_in_grid]],
+    uint threadID [[thread_position_in_threadgroup]],
+    constant DrawOperation *drawOperations [[buffer(0)]],
+    constant uint32_t *segmentOffsets [[buffer(1)]],
+    constant void *segments [[buffer(2)]],
+    constant float2 &viewport [[buffer(3)]]
+) {
+    DrawOperation op = drawOperations[payload.index];
+    uint32_t segmentIndex = op.segmentIndex + meshID;
+    uint32_t segmentType = segmentOffsets[segmentIndex];
+
+    switch (segmentType) {
+        case kMetalCanvasSegmentTypeLine: {
+            // Read the line segment (all threads read the same data)
+            constant LineSegment* lineSegments = (constant LineSegment*)segments;
+            LineSegment line = lineSegments[segmentIndex];
+            lineToMesh(output, line, threadID, op, viewport);
+            break;
+        }
+        case kMetalCanvasSegmentTypeCubicCurve: {
+            constant CubicCurve *curveSegments = (constant CubicCurve*)segments;
+            CubicCurve curve = curveSegments[segmentIndex];
+            cubicCurveToMesh(output, curve, threadID, op, viewport);
+            break;
+        }
+        default: {
+            if (threadID == 0) {
+                output.set_primitive_count(0);
+            }
+            break;
+        }
+    }
+
 }
 
 [[fragment]]

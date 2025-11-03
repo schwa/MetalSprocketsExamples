@@ -141,7 +141,7 @@ public struct VoxelDemoView: View {
         }
         texture.label = "Voxel Texture"
 
-        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("VoxelShaders")
         let kernel: ComputeKernel = try shaderLibrary.voxel_generateSphere
 

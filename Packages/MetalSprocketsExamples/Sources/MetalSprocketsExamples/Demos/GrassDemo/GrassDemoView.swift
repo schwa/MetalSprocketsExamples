@@ -216,7 +216,7 @@ public struct GrassDemoView: View {
         let grassDataBuffer = try device.makeBuffer(view: .init(count: grassData.count), values: grassData, options: .storageModeShared)
         let uniformsBuffer = try device.makeBuffer(view: .init(count: 1), values: [uniforms], options: .storageModeShared)
 
-        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let library = try ShaderLibrary(bundle: shaderBundle)
         let objectShader = try library.function(named: "grassObjectShader", type: ObjectShader.self)
         let meshShader = try library.function(named: "grassMeshShader", type: MeshShader.self)

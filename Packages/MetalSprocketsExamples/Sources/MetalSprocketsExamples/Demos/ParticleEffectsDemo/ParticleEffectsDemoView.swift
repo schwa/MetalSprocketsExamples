@@ -211,7 +211,6 @@ private struct ParticleUpdateCompute: Element {
     var body: some Element {
         get throws {
             let bundle = Bundle.metalSprocketsExampleShaders()
-                .orFatalError("Failed to load shader bundle")
             let library = try ShaderLibrary(bundle: bundle)
             let updateKernel = try library.function(named: "updateParticles", type: ComputeKernel.self)
 
@@ -266,7 +265,6 @@ private struct ParticleRenderPipeline: Element {
     var body: some Element {
         get throws {
             let bundle = Bundle.metalSprocketsExampleShaders()
-                .orFatalError("Failed to load shader bundle")
             let library = try ShaderLibrary(bundle: bundle)
 
             let vertexShader = try library.function(named: "particleEffectsVertex", type: VertexShader.self)

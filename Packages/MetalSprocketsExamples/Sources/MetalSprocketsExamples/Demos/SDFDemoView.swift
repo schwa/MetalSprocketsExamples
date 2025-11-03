@@ -77,7 +77,7 @@ struct SDFRenderPipeline: Element {
         self.cameraMatrix = cameraMatrix
         self.drawableSize = drawableSize
         self.showDepth = showDepth
-        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("SDFShader")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main

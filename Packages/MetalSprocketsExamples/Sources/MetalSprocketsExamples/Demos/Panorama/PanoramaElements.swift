@@ -26,7 +26,7 @@ struct PanoramaElement: Element {
         self.panoramaTexture = panoramaTexture
         self.mesh = mesh
         self.showMS = showMS
-        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("Panorama")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main
@@ -60,7 +60,7 @@ struct PanoramaMinimapElement: Element {
 
     init(panoramaTexture: MTLTexture) throws {
         self.panoramaTexture = panoramaTexture
-        let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
+        let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("Panorama")
         vertexShader = try shaderLibrary.minimap_vertex
         fragmentShader = try shaderLibrary.minimap_fragment

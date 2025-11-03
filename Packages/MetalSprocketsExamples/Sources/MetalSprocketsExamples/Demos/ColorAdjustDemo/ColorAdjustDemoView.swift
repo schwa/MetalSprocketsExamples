@@ -97,7 +97,7 @@ public struct ColorAdjustDemoView: View {
         adjustedDescriptor.usage = [.shaderRead, .shaderWrite]
         adjustedTexture = device.makeTexture(descriptor: adjustedDescriptor).orFatalError("Failed to create adjusted texture")
         shaderLibrary = (try! ShaderLibrary(
-            bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
+            bundle: .metalSprocketsExampleShaders()
         ))
         .namespaced("ColorAdjust")
     }
