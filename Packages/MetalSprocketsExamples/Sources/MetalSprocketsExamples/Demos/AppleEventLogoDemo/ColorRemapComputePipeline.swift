@@ -30,8 +30,8 @@ struct ColorRemapComputePipeline: Element {
         get throws {
             let shaderLibrary = try ShaderLibrary(
                 bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
-                namespace: "ColorRemap"
             )
+            .namespaced("ColorRemap")
 
             try ComputePipeline(
                 computeKernel: try shaderLibrary.colorRemap

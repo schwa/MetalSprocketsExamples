@@ -28,8 +28,9 @@ struct ThermalVideoBlendPipeline: Element {
         get throws {
             let shaderLibrary = try ShaderLibrary(
                 bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
-                namespace: "ThermalVideoBlend"
             )
+            .namespaced("ThermalVideoBlend")
+
 
             if let videoTexture {
                 // Use full blending kernel when video is available

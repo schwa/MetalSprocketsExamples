@@ -37,7 +37,7 @@ public struct ColorAdjustDemoView: View {
 
     let sourceTexture: MTLTexture
     let adjustedTexture: MTLTexture
-    let shaderLibrary: MetalSprockets.ShaderLibrary
+    let shaderLibrary: MetalSprockets.ShaderNamespace
 
     @State
     private var selectedFunction: AdjustmentFunction = .gamma
@@ -96,10 +96,10 @@ public struct ColorAdjustDemoView: View {
         let adjustedDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
         adjustedDescriptor.usage = [.shaderRead, .shaderWrite]
         adjustedTexture = device.makeTexture(descriptor: adjustedDescriptor).orFatalError("Failed to create adjusted texture")
-        shaderLibrary = (try? ShaderLibrary(
+        shaderLibrary = (try! ShaderLibrary(
             bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
-            namespace: "ColorAdjust"
-        )).orFatalError("Failed to load color adjust shader library")
+        ))
+        .namespaced("ColorAdjust")
     }
 
     public var body: some View {

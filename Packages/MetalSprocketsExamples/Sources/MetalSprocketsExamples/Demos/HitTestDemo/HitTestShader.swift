@@ -12,7 +12,7 @@ struct HitTestShader<Content>: Element where Content: Element {
         let device = _MTLCreateSystemDefaultDevice()
         assert(device.argumentBuffersSupport == .tier2)
         let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "HitTest")
+        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("HitTest")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main
         self.content = try content()

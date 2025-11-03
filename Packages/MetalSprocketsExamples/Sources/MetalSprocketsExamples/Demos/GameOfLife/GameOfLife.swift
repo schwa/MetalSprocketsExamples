@@ -60,7 +60,7 @@ struct GameOfLife: Element {
             }
 
             let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
-            let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "GameOfLifeShader")
+            let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("GameOfLifeShader")
 
             return try Group {
                 // Update simulation if running
@@ -121,7 +121,7 @@ struct GameOfLife: Element {
         }
 
         let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
-        guard let shaderLibrary = try? ShaderLibrary(bundle: shaderBundle, namespace: "GameOfLifeShader") else {
+        guard let shaderLibrary = try? ShaderLibrary(bundle: shaderBundle).namespaced("GameOfLifeShader") else {
             return
         }
 

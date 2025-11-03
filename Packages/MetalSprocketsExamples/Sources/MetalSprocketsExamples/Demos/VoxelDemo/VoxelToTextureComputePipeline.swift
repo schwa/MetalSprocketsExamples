@@ -27,7 +27,7 @@ struct VoxelToTextureComputePipeline: Element {
         self.outputTexture = outputTexture
         self.voxelScale = voxelScale
         let bundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load shader bundle")
-        let shaderLibrary = try ShaderLibrary(bundle: bundle, namespace: "VoxelShaders")
+        let shaderLibrary = try ShaderLibrary(bundle: bundle).namespaced("VoxelShaders")
         self.voxelComputeShader = try shaderLibrary.voxel_main
     }
 

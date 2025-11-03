@@ -35,7 +35,7 @@ struct MetalCanvasRenderPipeline: Element {
 
         let device = _MTLCreateSystemDefaultDevice()
 
-        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders(), namespace: "MetalCanvas")
+        let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("MetalCanvas")
         objectShader = try library.function(named: "metalCanvasObjectShader", type: ObjectShader.self)
         meshShader = try library.function(named: "metalCanvasMeshShader", type: MeshShader.self)
         fragmentShader = try library.function(named: "metalCanvasFragmentShader", type: FragmentShader.self)

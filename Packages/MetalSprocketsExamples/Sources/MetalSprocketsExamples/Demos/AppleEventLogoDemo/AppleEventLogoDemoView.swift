@@ -53,9 +53,8 @@ public struct AppleEventLogoDemoView: View {
 
     @State
     private var shaderLibrary = (try? ShaderLibrary(
-        bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle"),
-        namespace: "AppleEventLogoShaders"
-    )).orFatalError("Failed to load Apple event shader library")
+        bundle: .metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")).namespaced("AppleEventLogoShaders")
+    ).orFatalError("Failed to load Apple event shader library")
 
     public init() {
         // This line intentionally left blank.

@@ -29,7 +29,7 @@ struct DebugRenderPipeline<Content>: Element where Content: Element {
         self.content = try content()
 
         let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "DebugShader")
+        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("DebugShader")
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main
     }

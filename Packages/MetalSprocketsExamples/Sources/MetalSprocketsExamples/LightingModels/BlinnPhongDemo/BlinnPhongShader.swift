@@ -13,7 +13,7 @@ struct BlinnPhongShader<Content>: Element where Content: Element {
         let device = _MTLCreateSystemDefaultDevice()
         assert(device.argumentBuffersSupport == .tier2)
         let shaderBundle = Bundle.metalSprocketsExampleShaders().orFatalError("Failed to load metal-sprockets example shaders bundle")
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "BlinnPhong")
+        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("BlinnPhong")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main
 
