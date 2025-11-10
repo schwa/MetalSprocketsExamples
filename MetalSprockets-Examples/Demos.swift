@@ -31,6 +31,7 @@ import SwiftUI
         GLTFDemoView.self,
         VoxelDemoView.self,
         GrassDemoView.self,
+        SpiralParticlesDemoView.self,
         GraphicsContext3DDemoView.self,
         EdgeLinesDemoView.self,
         MetalCanvasDemoView.self
@@ -394,6 +395,18 @@ extension GrassDemoView: @retroactive DemoView {
         )
     }
 }
+
+extension SpiralParticlesDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Spiral Particles",
+            description: "Particle system where each particle generates a colorful spiral of triangles using Object and Mesh shaders with parallel thread execution",
+            group: "Complex",
+            keywords: ["mesh-shaders", "particles", "animated", "procedural"]
+        )
+    }
+}
+
 extension GraphicsContext3DDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
