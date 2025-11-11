@@ -34,7 +34,8 @@ import SwiftUI
         SpiralParticlesDemoView.self,
         GraphicsContext3DDemoView.self,
         EdgeLinesDemoView.self,
-        MetalCanvasDemoView.self
+        MetalCanvasDemoView.self,
+        TiledSDFDemoView.self
     ]
 
     #if os(macOS)
@@ -436,6 +437,19 @@ extension MetalCanvasDemoView: @retroactive DemoView {
             description: "2D Canvas-style API for rendering SwiftUI Paths with stroke operations using mesh shaders",
             group: "Basic",
             keywords: ["2d", "path", "canvas", "mesh-shaders"]
+        )
+    }
+}
+
+extension TiledSDFDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Tiled SDF (2D)",
+            description: """
+            Demonstrates tile-based culling for 2D signed distance fields. Primitives are culled to tiles and stored in threadgroup memory, reducing global memory access per pixel.
+            """,
+            group: "Complex",
+            keywords: ["compute", "sdf", "tiled", "animated", "2d"]
         )
     }
 }
