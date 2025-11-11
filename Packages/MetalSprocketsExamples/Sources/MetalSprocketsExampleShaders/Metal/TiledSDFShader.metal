@@ -151,13 +151,8 @@ kernel void cullPrimitivesToTiles(
 // MARK: - Imageblock Layout for Tile Memory
 // ============================================================================
 
-// Master imageblock structure with raster_order_group for tile memory
-struct MasterImageblock {
-    half4 color [[raster_order_group(0)]];
-};
-
-// View structure for output (references master)
-struct ImageblockOut {
+// Imageblock structure for tile-local memory with raster_order_group
+struct TileImageblock {
     half4 color [[raster_order_group(0)]];
 };
 
@@ -171,7 +166,7 @@ struct VertexOut {
 };
 
 struct FragmentOut {
-    ImageblockOut imageblock [[imageblock_data(MasterImageblock)]];
+    TileImageblock imageblock [[imageblock_data(TileImageblock)]];
 };
 
 vertex VertexOut sdfVertex(
@@ -187,11 +182,6 @@ vertex VertexOut sdfVertex(
     return out;
 }
 
-// View structure for input (references master)
-struct ImageblockIn {
-    half4 color [[raster_order_group(0)]];
-};
-
 // IMAGEBLOCK DEMO: Fragment shader using explicit tile memory (imageblock)
 // This keeps all color data in on-chip tile memory until the tile is complete
 // Using [[imageblock_data]] for explicit imageblock layout with raster_order_group
@@ -201,7 +191,9 @@ fragment FragmentOut sdfFragment(
     constant uint *tilePrimitives [[buffer(1)]],
     constant uint *tilePrimitiveCounts [[buffer(2)]],
     constant TiledSDFUniforms &uniforms [[buffer(3)]],
-    ImageblockIn imageblockIn [[imageblock_data(MasterImageblock)]]
+    TileImageblock imageblockIn [[imageblock_data(TileImageblock)]],
+    ushort2 pixelPositionInTile [[pixel_position_in_tile]],
+    ushort2 pixelsPerTile [[pixels_per_tile]]
 ) {
     uint2 pixelPos = uint2(in.pixelCoord);
 
@@ -352,7 +344,9 @@ fragment FragmentOut sdfFragment(
 // It runs as a final full-screen pass after all SDF evaluation is complete
 fragment half4 sdfBlitFragment(
     VertexOut in [[stage_in]],
-    ImageblockIn imageblockIn [[imageblock_data(MasterImageblock)]]
+    TileImageblock imageblockIn [[imageblock_data(TileImageblock)]],
+    ushort2 pixelPositionInTile [[pixel_position_in_tile]],
+    ushort2 pixelsPerTile [[pixels_per_tile]]
 ) {
     // Read the color from the imageblock and output to color attachment
     // This is when the tile memory data finally gets written to the framebuffer

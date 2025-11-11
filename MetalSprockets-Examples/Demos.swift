@@ -35,7 +35,8 @@ import SwiftUI
         GraphicsContext3DDemoView.self,
         EdgeLinesDemoView.self,
         MetalCanvasDemoView.self,
-        TiledSDFDemoView.self
+        TiledSDFDemoView.self,
+        TileAverageDemoView.self
     ]
 
     #if os(macOS)
@@ -450,6 +451,19 @@ extension TiledSDFDemoView: @retroactive DemoView {
             """,
             group: "Complex",
             keywords: ["compute", "sdf", "tiled", "animated", "2d"]
+        )
+    }
+}
+
+extension TileAverageDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Hello Imageblock",
+            description: """
+            The simplest imageblock demo: computes per-tile average color creating a pixelated/mosaic effect. Demonstrates basic imageblock usage with tile memory allocation, loading, and writing.
+            """,
+            group: "Basic",
+            keywords: ["imageblock", "tile", "2d"]
         )
     }
 }
