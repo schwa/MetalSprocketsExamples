@@ -218,9 +218,9 @@ public struct GrassDemoView: View {
 
         let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let library = try ShaderLibrary(bundle: shaderBundle)
-        let objectShader = try library.function(named: "grassObjectShader", type: ObjectShader.self)
-        let meshShader = try library.function(named: "grassMeshShader", type: MeshShader.self)
-        let fragmentShader = try library.function(named: "grassFragmentShader", type: FragmentShader.self)
+        let objectShader = try library.function(type: ObjectShader.self, named: "grassObjectShader")
+        let meshShader = try library.function(type: MeshShader.self, named: "grassMeshShader")
+        let fragmentShader = try library.function(type: FragmentShader.self, named: "grassFragmentShader")
 
         return try MeshRenderPipeline(objectShader: objectShader, meshShader: meshShader, fragmentShader: fragmentShader) {
             Draw { encoder in

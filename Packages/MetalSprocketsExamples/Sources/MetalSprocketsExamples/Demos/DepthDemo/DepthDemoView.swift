@@ -56,7 +56,7 @@ public struct DepthDemoView: View {
         """
         let library = (try? ShaderLibrary(source: adjustSource))
             .orFatalError("Failed to compile depth adjust shader")
-        colorAdjustFunction = (try? library.function(named: "colorAdjustPow", type: VisibleFunction.self))
+        colorAdjustFunction = (try? library.function(type: VisibleFunction.self, named: "colorAdjustPow"))
             .orFatalError("Missing colorAdjustPow function")
     }
 

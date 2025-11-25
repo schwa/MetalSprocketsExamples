@@ -224,9 +224,9 @@ public struct SpiralParticlesDemoView: View {
 
         let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let library = try ShaderLibrary(bundle: shaderBundle)
-        let objectShader = try library.function(named: "spiralParticleObjectShader", type: ObjectShader.self)
-        let meshShader = try library.function(named: "spiralParticleMeshShader", type: MeshShader.self)
-        let fragmentShader = try library.function(named: "spiralParticleFragmentShader", type: FragmentShader.self)
+        let objectShader = try library.function(type: ObjectShader.self, named: "spiralParticleObjectShader")
+        let meshShader = try library.function(type: MeshShader.self, named: "spiralParticleMeshShader")
+        let fragmentShader = try library.function(type: FragmentShader.self, named: "spiralParticleFragmentShader")
 
         return try MeshRenderPipeline(
             objectShader: objectShader,

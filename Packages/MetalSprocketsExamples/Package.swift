@@ -22,6 +22,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/Interaction3D", branch: "main"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.4"),
         .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
+//        .package(path: "/Users/schwa/Projects/MetalSprockets"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", from: "0.1.0"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
