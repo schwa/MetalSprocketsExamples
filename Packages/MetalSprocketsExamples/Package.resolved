@@ -1,5 +1,5 @@
 {
-  "originHash" : "a6dcf023352a4e14947e3c98b03b6de9169cd122396ee2d0565feb652fd466d6",
+  "originHash" : "57eaa20ad7187183d1636a7858120709bb0c192072d4635ad30c19f36a7d2274",
   "pins" : [
     {
       "identity" : "demokit",
@@ -61,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "5e0e7d72093c76e8d9fccdd4cf17146cd4e6cc17"
+        "revision" : "c1ff35c2d6b361bfe9d38c2def54e6e7f5dfedfb"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Panels",
       "state" : {
-        "revision" : "69d396ba90b17cfe2adbc0fb2aec5f175fefe7df",
-        "version" : "0.1.0"
+        "revision" : "2f850df1b092e137ac309a1300b645aca7120102",
+        "version" : "0.1.1"
       }
     },
     {

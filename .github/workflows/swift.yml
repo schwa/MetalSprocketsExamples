@@ -43,7 +43,8 @@ jobs:
             - name: Download MetalToolchain
               run: xcodebuild -downloadComponent MetalToolchain
             - run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-            - run: |
+            - name: Build for macOS
+              run: |
                   xcodebuild \
                     -project "${{ env.XCODE_PROJECT }}" \
                     -scheme "${{ env.XCODE_SCHEME }}" \
@@ -53,5 +54,29 @@ jobs:
                     -skipMacroValidation \
                     build \
                     ARCHS=arm64 \
+                    ONLY_ACTIVE_ARCH=NO \
+                    CODE_SIGNING_ALLOWED=NO
+            - name: Build for visionOS Simulator
+              run: |
+                  xcodebuild \
+                    -project "${{ env.XCODE_PROJECT }}" \
+                    -scheme "${{ env.XCODE_SCHEME }}" \
+                    -configuration "${{ env.XCODE_CONFIGURATION }}" \
+                    -destination "generic/platform=visionOS Simulator" \
+                    -skipPackagePluginValidation \
+                    -skipMacroValidation \
+                    build \
+                    ONLY_ACTIVE_ARCH=NO \
+                    CODE_SIGNING_ALLOWED=NO
+            - name: Build for visionOS
+              run: |
+                  xcodebuild \
+                    -project "${{ env.XCODE_PROJECT }}" \
+                    -scheme "${{ env.XCODE_SCHEME }}" \
+                    -configuration "${{ env.XCODE_CONFIGURATION }}" \
+                    -destination "generic/platform=visionOS" \
+                    -skipPackagePluginValidation \
+                    -skipMacroValidation \
+                    build \
                     ONLY_ACTIVE_ARCH=NO \
                     CODE_SIGNING_ALLOWED=NO

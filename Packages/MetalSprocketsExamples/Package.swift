@@ -24,7 +24,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
 //        .package(path: "/Users/schwa/Projects/MetalSprockets"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
-        .package(url: "https://github.com/schwa/Panels", from: "0.1.0"),
+        .package(url: "https://github.com/schwa/Panels", from: "0.1.1"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0"),
     ],

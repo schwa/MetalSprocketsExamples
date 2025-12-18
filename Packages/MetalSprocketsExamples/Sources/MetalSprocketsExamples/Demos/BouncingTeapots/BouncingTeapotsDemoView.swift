@@ -53,6 +53,7 @@ public struct BouncingTeapotsDemoView: View {
                     }
                     lastUpdate = now
                 }
+                #if !os(visionOS)
                 .inspector(isPresented: .constant(false)) {
                     Form {
                         ColorPicker("Checkerboard Color", selection: $checkerboardColor)
@@ -64,6 +65,7 @@ public struct BouncingTeapotsDemoView: View {
                         }
                     }
                 }
+                #endif
         }
     }
 
@@ -198,3 +200,4 @@ struct FlyingTeapotsRenderPass: Element {
         }
     }
 }
+
