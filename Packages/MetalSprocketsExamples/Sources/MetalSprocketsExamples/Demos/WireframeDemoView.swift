@@ -35,7 +35,7 @@ public struct WireframeDemoView: View {
                 let mvpMatrix = projectionMatrix * viewMatrix * modelMatrix
 
                 try RenderPass {
-                    try GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
+                    GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
                     try AxisLinesRenderPipeline(
                         mvpMatrix: projectionMatrix * viewMatrix,
                         viewMatrix: viewMatrix,
@@ -43,7 +43,7 @@ public struct WireframeDemoView: View {
                         viewportSize: SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height)),
                         lineWidth: 2.0
                     )
-                    try WireframeRenderPipeline(mvpMatrix: mvpMatrix, wireframeColor: wireframeColor, mesh: teapotMesh)
+                    WireframeRenderPipeline(mvpMatrix: mvpMatrix, wireframeColor: wireframeColor, mesh: teapotMesh)
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)

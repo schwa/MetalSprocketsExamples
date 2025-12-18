@@ -26,7 +26,6 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", from: "0.1.0"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
-        .package(url: "https://github.com/swiftlang/swift-syntax", from: "600.0.0-latest"),
         .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0"),
     ],
     targets: [

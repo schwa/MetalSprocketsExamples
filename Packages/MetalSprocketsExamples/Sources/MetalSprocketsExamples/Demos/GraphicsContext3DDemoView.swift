@@ -68,7 +68,7 @@ public struct GraphicsContext3DDemoView: View {
                     let viewProjection = projectionMatrix * viewMatrix * rotationMatrix
 
                     try RenderPass {
-                        try GraphicsContext3DRenderPipeline(context: currentContext, viewProjection: viewProjection, viewport: [Float(drawableSize.width), Float(drawableSize.height)], debugWireframe: debugWireframe)
+                        GraphicsContext3DRenderPipeline(context: currentContext, viewProjection: viewProjection, viewport: [Float(drawableSize.width), Float(drawableSize.height)], debugWireframe: debugWireframe)
                     }
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)

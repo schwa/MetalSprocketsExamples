@@ -21,7 +21,7 @@ public struct MixedDemoView: View {
     private var color: SIMD3<Float> = [1, 0, 0]
 
     @State
-    private var angle: Angle = Angle(degrees: 0)
+    private var angle = Angle(degrees: 0)
 
     @State
     private var drawableSize: CGSize = .zero

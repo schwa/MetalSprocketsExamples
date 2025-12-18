@@ -305,7 +305,7 @@ public struct EdgeLinesDemoView: View {
             let colorVec = SIMD4<Float>(Float(resolved.red), Float(resolved.green), Float(resolved.blue), Float(resolved.opacity))
 
             try RenderPass {
-                try EdgeLinesRenderPipeline(
+                EdgeLinesRenderPipeline(
                     meshWithEdges: meshWithEdges,
                     viewProjection: projectionMatrix * cameraMatrix.inverse * modelMatrix,
                     lineWidth: lineWidth,

@@ -172,7 +172,7 @@ struct FlyingTeapotsRenderPass: Element {
                 .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
 
                 // Teapot party.
-                try LambertianShaderInstanced(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
+                LambertianShaderInstanced(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
                     Draw { encoder in
                         encoder.setVertexBuffers(of: mesh)
                         encoder.draw(mesh, instanceCount: simulation.teapots.count)

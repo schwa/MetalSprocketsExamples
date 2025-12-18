@@ -37,7 +37,9 @@ public struct SpiralParticlesDemoView: View {
     private let maxParticles = 32
     private let maxTriangles = 64
 
-    public init() {}
+    public init() {
+        // Intentionally empty
+    }
 
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {

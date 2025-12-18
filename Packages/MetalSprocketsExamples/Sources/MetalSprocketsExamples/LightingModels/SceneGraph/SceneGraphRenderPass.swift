@@ -46,7 +46,7 @@ struct SceneGraphRenderPass: Element {
     var body: some Element {
         get throws {
             try RenderPass {
-                try GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
+                GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
                 try blinnPhong
                 try pbr
             }

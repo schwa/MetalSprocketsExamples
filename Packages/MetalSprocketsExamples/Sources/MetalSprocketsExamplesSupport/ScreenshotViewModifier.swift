@@ -5,6 +5,7 @@ public struct ScreenshotViewModifier: ViewModifier {
     @State private var hostingView: NSView?
 
     public init() {
+        // Intentionally empty
     }
 
     public func body(content: Content) -> some View {

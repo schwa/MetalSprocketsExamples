@@ -55,7 +55,7 @@ public struct PBRDemoView: View {
                             projectionMatrix: projectionMatrix,
                             viewportSize: SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
                         )
-                        try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
+                        AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
                         LightingVisualizer(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lighting: lighting)
                         try PBRShader {
                             try Draw(mtkMesh: teapot)

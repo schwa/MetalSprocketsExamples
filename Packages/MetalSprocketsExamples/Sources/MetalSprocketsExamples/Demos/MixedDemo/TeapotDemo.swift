@@ -32,7 +32,7 @@ struct TeapotDemo: Element {
 
     var body: some Element {
         get throws {
-            try LambertianShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection) {
+            LambertianShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection) {
                 Draw { encoder in
                     encoder.setVertexBuffers(of: mesh)
                     encoder.draw(mesh)

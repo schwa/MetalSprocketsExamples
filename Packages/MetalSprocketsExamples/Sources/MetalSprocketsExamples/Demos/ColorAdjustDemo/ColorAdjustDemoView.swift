@@ -96,10 +96,12 @@ public struct ColorAdjustDemoView: View {
         let adjustedDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
         adjustedDescriptor.usage = [.shaderRead, .shaderWrite]
         adjustedTexture = device.makeTexture(descriptor: adjustedDescriptor).orFatalError("Failed to create adjusted texture")
-        shaderLibrary = (try! ShaderLibrary(
-            bundle: .metalSprocketsExampleShaders()
-        ))
-        .namespaced("ColorAdjust")
+        do {
+            shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
+                .namespaced("ColorAdjust")
+        } catch {
+            fatalError("Failed to create shader library: \(error)")
+        }
     }
 
     public var body: some View {

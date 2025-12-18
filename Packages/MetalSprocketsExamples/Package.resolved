@@ -1,5 +1,5 @@
 {
-  "originHash" : "1c0fc9a0d5ebac9ab3d5c664aa3de6621fe94f98708c19aa5e9e7bd20cc359c2",
+  "originHash" : "e1eca165d1b830ef4e70f01bf55a759884b780f0d4385d7e322385b8d01bcb85",
   "pins" : [
     {
       "identity" : "demokit",
@@ -56,12 +56,21 @@
       }
     },
     {
+      "identity" : "metalsprockets",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/MetalSprockets",
+      "state" : {
+        "branch" : "main",
+        "revision" : "5e0e7d72093c76e8d9fccdd4cf17146cd4e6cc17"
+      }
+    },
+    {
       "identity" : "metalsprocketsaddons",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
         "branch" : "main",
-        "revision" : "04fd7e8147d52015597adacfc7ec35257f1d8004"
+        "revision" : "0ba51c5319fae4729a2a469437c2b25b76dc9301"
       }
     },
     {
@@ -87,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms",
       "state" : {
-        "revision" : "2773d4125311133a2f705ec374c363a935069d45",
-        "version" : "1.1.0"
+        "revision" : "6c050d5ef8e1aa6342528460db614e9770d7f804",
+        "version" : "1.1.1"
       }
     },
     {
@@ -133,7 +142,7 @@
       "location" : "https://github.com/schwa/SwiftGLTF",
       "state" : {
         "branch" : "main",
-        "revision" : "4160ed7e89b7cfcccf5ff7a0cbfd5b055fada771"
+        "revision" : "5b1bf55da7f79d5e168bf074e994a8cb6b08a8ac"
       }
     },
     {

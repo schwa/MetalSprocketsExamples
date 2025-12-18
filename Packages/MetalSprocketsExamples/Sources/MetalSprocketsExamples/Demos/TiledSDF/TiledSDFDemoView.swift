@@ -30,7 +30,9 @@ public struct TiledSDFDemoView: View {
 
     private let maxPrimitives = 200
 
-    public init() {}
+    public init() {
+        // Intentionally empty
+    }
 
     public var body: some View {
         VStack(spacing: 0) {
@@ -210,16 +212,16 @@ struct TiledSDFPipeline: Element {
         )
 
         // Tile primitive indices buffer
-        tilePrimitivesBuffer = try device.makeBuffer(
-            length: totalTiles * maxPrimitivesPerTile * MemoryLayout<UInt32>.size,
-            options: .storageModeShared
-        ).orThrow(.resourceCreationFailure("Failed to create tile primitives buffer"))
+        tilePrimitivesBuffer = try device
+            .makeBuffer(
+                length: totalTiles * maxPrimitivesPerTile * MemoryLayout<UInt32>.size,
+                options: .storageModeShared
+            )
+            .orThrow(.resourceCreationFailure("Failed to create tile primitives buffer"))
 
         // Tile primitive counts buffer
-        tilePrimitiveCountsBuffer = try device.makeBuffer(
-            length: totalTiles * MemoryLayout<UInt32>.size,
-            options: .storageModeShared
-        ).orThrow(.resourceCreationFailure("Failed to create tile counts buffer"))
+        tilePrimitiveCountsBuffer = try device.makeBuffer(length: totalTiles * MemoryLayout<UInt32>.size, options: .storageModeShared)
+            .orThrow(.resourceCreationFailure("Failed to create tile counts buffer"))
 
         // Uniforms
         let uniforms = TiledSDFUniforms(
@@ -263,11 +265,13 @@ struct TiledSDFPipeline: Element {
                 // Pass 2: Evaluate SDF and blit to screen (render pass with tile memory)
                 try RenderPass {
                     // Full-screen triangle vertices (shared by both pipelines)
+                    // swiftlint:disable comma
                     let vertices: [SIMD2<Float>] = [
                         [-1, -1],
                         [ 3, -1],
                         [-1,  3]
                     ]
+                    // swiftlint:enable comma
 
                     // Step 1: Write SDF results to imageblock (tile memory)
                     try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
@@ -309,11 +313,11 @@ struct TiledSDFPipeline: Element {
         primitives.reserveCapacity(maxPrimitives)
 
         // Use a seeded random for consistency
-        var seed: UInt32 = 12345
+        var seed: UInt32 = 12_345
 
         func random() -> Float {
-            seed = seed &* 1103515245 &+ 12345
-            return Float(seed % 1000) / 1000.0
+            seed = seed &* 1_103_515_245 &+ 12_345
+            return Float(seed % 1_000) / 1_000.0
         }
 
         for i in 0..<count {
@@ -420,6 +424,7 @@ struct TiledSDFPipeline: Element {
         while primitives.count < maxPrimitives {
             var dummy = SDFPrimitive()
             dummy.type = 0
+            // swiftlint:disable:next number_separator
             dummy.bbox = SIMD4<Float>(-1000, -1000, -1000, -1000)
             primitives.append(dummy)
         }

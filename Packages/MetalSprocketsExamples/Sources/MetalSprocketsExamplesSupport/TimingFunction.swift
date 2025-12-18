@@ -18,6 +18,7 @@ public extension TimingFunction {
 
 public struct LinearTimingFunction: TimingFunction {
     public init() {
+        // Intentionally empty
     }
 
     public func solve(_ x: Float) -> Float {
@@ -27,6 +28,7 @@ public struct LinearTimingFunction: TimingFunction {
 
 public struct SinusoidalTimingFunction: TimingFunction {
     public init() {
+        // Intentionally empty
     }
     public func solve(_ x: Float) -> Float {
         0.5 * (1 + sin(.pi * x - .pi / 2))
@@ -35,6 +37,7 @@ public struct SinusoidalTimingFunction: TimingFunction {
 
 public struct EaseInOutTimingFunction: TimingFunction {
     public init() {
+        // Intentionally empty
     }
     public func solve(_ x: Float) -> Float {
         let r = CubicBezier(p1x: 0.65, p1y: 0, p2x: 0.35, p2y: 1).solve(for: Double(x)) ?? 0
@@ -44,6 +47,7 @@ public struct EaseInOutTimingFunction: TimingFunction {
 
 public struct EaseInOutTimingFunction2: TimingFunction {
     public init() {
+        // Intentionally empty
     }
     public func solve(_ x: Float) -> Float {
         x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2

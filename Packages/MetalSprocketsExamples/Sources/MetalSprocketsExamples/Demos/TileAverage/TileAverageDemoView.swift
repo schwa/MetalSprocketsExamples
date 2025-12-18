@@ -17,7 +17,9 @@ public struct TileAverageDemoView: View {
     @State
     private var time: Float = 0.0
 
-    public init() {}
+    public init() {
+        // Intentionally empty
+    }
 
     public var body: some View {
         VStack(spacing: 0) {
@@ -161,11 +163,13 @@ struct TileAveragePipeline: Element {
         get throws {
             try RenderPass {
                 // Full-screen triangle vertices
+                // swiftlint:disable comma
                 let vertices: [SIMD2<Float>] = [
                     [-1, -1],
                     [ 3, -1],
                     [-1,  3]
                 ]
+                // swiftlint:enable comma
 
                 // Step 1: Compute per-tile averages and write to imageblock
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {

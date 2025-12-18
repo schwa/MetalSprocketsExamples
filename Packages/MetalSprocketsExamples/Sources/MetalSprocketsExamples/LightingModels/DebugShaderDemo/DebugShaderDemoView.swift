@@ -44,7 +44,7 @@ public struct DebugShadersDemoView: View {
                             viewportSize: SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
                         )
 
-                        try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
+                        AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
 
                         try DebugRenderPipeline(modelMatrix: .identity, normalMatrix: .init(diagonal: [1, 1, 1]), debugMode: debugMode, lightPosition: [0, 10, 0], cameraPosition: cameraMatrix.translation, viewProjectionMatrix: viewProjectionMatrix) {
                             Draw(mtkMesh: teapot)
