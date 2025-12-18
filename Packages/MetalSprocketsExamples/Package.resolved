@@ -1,6 +1,15 @@
 {
-  "originHash" : "3815df5d40b2b1cf32231b5e4b229ada6ceaae07c7490f309f41d737ad954488",
+  "originHash" : "a6dcf023352a4e14947e3c98b03b6de9169cd122396ee2d0565feb652fd466d6",
   "pins" : [
+    {
+      "identity" : "demokit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/DemoKit",
+      "state" : {
+        "revision" : "e3e8fb2166fc1e478bbd628b98593bf7029f5e54",
+        "version" : "0.1.1"
+      }
+    },
     {
       "identity" : "earcut-swift",
       "kind" : "remoteSourceControl",
