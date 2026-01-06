@@ -58,7 +58,7 @@ public struct SDFDemoView: View {
     }
 }
 
-struct SDFRenderPipeline: Element {
+public struct SDFRenderPipeline: Element {
     let time: Float
     let projectionMatrix: simd_float4x4
     let cameraMatrix: simd_float4x4
@@ -71,7 +71,7 @@ struct SDFRenderPipeline: Element {
     @MSState
     var fragmentShader: FragmentShader
 
-    init(time: Float, projectionMatrix: simd_float4x4, cameraMatrix: simd_float4x4, drawableSize: CGSize, showDepth: Bool) throws {
+    public init(time: Float, projectionMatrix: simd_float4x4, cameraMatrix: simd_float4x4, drawableSize: CGSize, showDepth: Bool) throws {
         self.time = time
         self.projectionMatrix = projectionMatrix
         self.cameraMatrix = cameraMatrix
@@ -83,7 +83,7 @@ struct SDFRenderPipeline: Element {
         fragmentShader = try shaderLibrary.fragment_main
     }
 
-    var body: some Element {
+    public var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 // Full-screen quad vertices (triangle strip order)

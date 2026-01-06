@@ -12,8 +12,10 @@ let package = Package(
     products: [
         .library(name: "MetalSprocketsExamples", targets: ["MetalSprocketsExamples"]),
         .library(name: "MetalSprocketsExamplesSupport", targets: ["MetalSprocketsExamplesSupport"]),
+        .executable(name: "CLI", targets: ["CLI"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.2.0"),
         .package(url: "https://github.com/schwa/earcut-swift", from: "0.1.0"),
@@ -83,6 +85,18 @@ let package = Package(
         .testTarget(
             name: "MetalSprocketsExamplesTests",
             dependencies: ["MetalSprocketsExamples"],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
+        .executableTarget(
+            name: "CLI",
+            dependencies: [
+                "MetalSprocketsExamples",
+                "MetalSprocketsExampleShaders",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "MetalSprockets", package: "MetalSprockets"),
+            ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
             ]

@@ -1,15 +1,6 @@
 {
-  "originHash" : "57eaa20ad7187183d1636a7858120709bb0c192072d4635ad30c19f36a7d2274",
+  "originHash" : "847344419f326f243655dd1930da309af28ad689a32c815d809eaad947790366",
   "pins" : [
-    {
-      "identity" : "demokit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/DemoKit",
-      "state" : {
-        "revision" : "e3e8fb2166fc1e478bbd628b98593bf7029f5e54",
-        "version" : "0.1.1"
-      }
-    },
     {
       "identity" : "earcut-swift",
       "kind" : "remoteSourceControl",
@@ -89,6 +80,15 @@
       "state" : {
         "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
         "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "c5d11a805e765f52ba34ec7284bd4fcd6ba68615",
+        "version" : "1.7.0"
       }
     },
     {
