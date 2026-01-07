@@ -58,7 +58,7 @@ public struct SDFDemoView: View {
     }
 }
 
-public struct SDFRenderPipeline: Element {
+public struct SDFRenderPipeline {
     let time: Float
     let projectionMatrix: simd_float4x4
     let cameraMatrix: simd_float4x4
@@ -71,7 +71,7 @@ public struct SDFRenderPipeline: Element {
     @MSState
     var fragmentShader: FragmentShader
 
-    public init(time: Float, projectionMatrix: simd_float4x4, cameraMatrix: simd_float4x4, drawableSize: CGSize, showDepth: Bool) throws {
+    public init(time: Float, projectionMatrix: simd_float4x4, cameraMatrix: simd_float4x4, drawableSize: CGSize, showDepth: Bool = false) throws {
         self.time = time
         self.projectionMatrix = projectionMatrix
         self.cameraMatrix = cameraMatrix
@@ -123,4 +123,42 @@ public struct SDFRenderPipeline: Element {
             .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
         }
     }
+}
+
+extension SDFRenderPipeline: Element {
+}
+
+// MARK: - SDFRenderPass
+
+public struct SDFRenderPass {
+    let frameUniforms: MetalSprocketsUI.FrameUniforms
+    let projectionMatrix: simd_float4x4
+    let cameraMatrix: simd_float4x4
+
+    public init(frameUniforms: MetalSprocketsUI.FrameUniforms, projectionMatrix: simd_float4x4, cameraMatrix: simd_float4x4) {
+        self.frameUniforms = frameUniforms
+        self.projectionMatrix = projectionMatrix
+        self.cameraMatrix = cameraMatrix
+    }
+}
+
+extension SDFRenderPass: Element {
+    public var body: some Element {
+        get throws {
+            let drawableSize = CGSize(width: CGFloat(frameUniforms.viewportSize.x), height: CGFloat(frameUniforms.viewportSize.y))
+            try RenderPass {
+                try SDFRenderPipeline(
+                    time: frameUniforms.time,
+                    projectionMatrix: projectionMatrix,
+                    cameraMatrix: cameraMatrix,
+                    drawableSize: drawableSize,
+                    showDepth: false
+                )
+            }
+        }
+    }
+}
+
+extension SDFRenderPass: DemoRenderPass {
+    public static var name: String { "SDF Ray Marching" }
 }

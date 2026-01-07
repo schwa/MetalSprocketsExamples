@@ -1,48 +1,45 @@
 import ArgumentParser
-import CoreGraphics
-import Darwin
 import Foundation
-import Metal
-import MetalSprockets
 import MetalSprocketsExamples
-import MetalSprocketsExampleShaders
-import MetalSprocketsSupport
+import MetalSprocketsUI
 import simd
 
-enum CharacterRamp: String, CaseIterable, ExpressibleByArgument {
-    case bourke      // Paul Bourke's full 70-char ramp
-    case short       // Short & punchy (10 chars)
-    case geometric   // Geometric/detailed
-    case minimal     // Box-like minimal
-    case binary      // Two-tone
+extension CharacterRamp: ExpressibleByArgument {
+}
 
-    var characters: [UInt8] {
-        switch self {
-        case .bourke:
-            return Array(" .:-=+*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^`'. ".utf8)
-        case .short:
-            return Array(" .:-=+*#%@".utf8)
-        case .geometric:
-            return Array(" .'`^\",:;Il!i~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$".utf8)
-        case .minimal:
-            return Array(" ._-~:;=!*#$@".utf8)
-        case .binary:
-            return Array(" 1".utf8)
-        }
-    }
-
-    static var defaultValue: CharacterRamp { .short }
+enum RenderMode: String, CaseIterable, ExpressibleByArgument {
+    case ansi   // ANSI true-color ASCII art
+    case sixel  // Sixel graphics (requires compatible terminal)
+    case iterm  // iTerm2 inline images (requires iTerm2)
+    case kitty  // Kitty graphics protocol (requires Kitty terminal)
 }
 
 @main
 struct CLI: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "cli",
-        abstract: "Render SDF demo to terminal using ASCII art"
+        abstract: "Render demo to terminal using ASCII art or Sixel graphics"
     )
 
-    @Option(name: .shortAndLong, help: "Character ramp to use: \(CharacterRamp.allCases.map(\.rawValue).joined(separator: ", "))")
+    static var availableDemos: String {
+        allDemoRenderPasses.map(\.name).joined(separator: ", ")
+    }
+
+    static var defaultDemo: String {
+        allDemoRenderPasses.first!.name
+    }
+
+    @Option(name: .shortAndLong, help: "Demo to run (available: \(Self.availableDemos))")
+    var demo: String?
+
+    @Option(name: .shortAndLong, help: "Render mode: \(RenderMode.allCases.map(\.rawValue).joined(separator: ", "))")
+    var mode: RenderMode = .ansi
+
+    @Option(name: .shortAndLong, help: "Character ramp (ANSI mode): \(CharacterRamp.allCases.map(\.rawValue).joined(separator: ", "))")
     var ramp: CharacterRamp = .short
+
+    @Option(name: .shortAndLong, help: "Color levels per channel for Sixel (2-6, 6³=216 max due to Sixel 256 color limit)")
+    var colors: Int = 6
 
     @Option(name: .shortAndLong, help: "Target frames per second")
     var fps: Float = 30.0
@@ -51,127 +48,168 @@ struct CLI: ParsableCommand {
     var speed: Float = 2.0
 
     func run() throws {
-        var winsize = winsize()
-        let termWidth: Int
-        let termHeight: Int
-        if ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize) == 0, winsize.ws_col > 0, winsize.ws_row > 0 {
-            termWidth = Int(winsize.ws_col)
-            termHeight = Int(winsize.ws_row) - 1  // Leave room for status line
-        } else {
-            // Fallback for non-TTY (e.g., piped output)
-            termWidth = 160
-            termHeight = 48
+        let demoName = demo ?? Self.defaultDemo
+        let terminal = Terminal.current()
+
+        // Match demo by name and run with concrete type
+        for demoType in allDemoRenderPasses {
+            if demoType.name == demoName {
+                switch mode {
+                case .ansi:
+                    try runANSIRenderLoop(demoType, terminal: terminal)
+                case .sixel:
+                    try runSixelRenderLoop(demoType, terminal: terminal)
+                case .iterm:
+                    try runITermRenderLoop(demoType, terminal: terminal)
+                case .kitty:
+                    try runKittyRenderLoop(demoType, terminal: terminal)
+                }
+                return
+            }
         }
-        let size = CGSize(width: termWidth, height: termHeight)
 
-        let bytesPerCell = 20  // "\x1b[38;2;RRR;GGG;BBBmX"
+        throw ValidationError("Unknown demo '\(demoName)'. Available: \(Self.availableDemos)")
+    }
 
-        // Create the Metal device
-        let device = _MTLCreateSystemDefaultDevice()
-
-        // Create color texture
-        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: termWidth, height: termHeight, mipmapped: false)
-        colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-        guard let colorTexture = device.makeTexture(descriptor: colorTextureDescriptor) else {
-            fatalError("Failed to create color texture")
-        }
-        colorTexture.label = "Color Texture"
-
-        // Create depth texture
-        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .depth32Float,
-            width: termWidth,
-            height: termHeight,
-            mipmapped: false
-        )
-        depthTextureDescriptor.usage = [.renderTarget, .shaderRead]
-        guard let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor) else {
-            fatalError("Failed to create depth texture")
-        }
-        depthTexture.label = "Depth Texture"
-
-        let bufferSize = termWidth * termHeight * bytesPerCell
-        guard let ansiBuffer = device.makeBuffer(length: bufferSize, options: .storageModeShared) else {
-            fatalError("Failed to create ANSI output buffer")
-        }
-        ansiBuffer.label = "ANSI Output Buffer"
-
-        // Character ramp from command line option
-        let shadeChars = ramp.characters
-        let shadeCount = UInt32(shadeChars.count)
-        guard let shadeCharsBuffer = device.makeBuffer(bytes: shadeChars, length: shadeChars.count, options: .storageModeShared) else {
-            fatalError("Failed to create shade chars buffer")
-        }
-        shadeCharsBuffer.label = "Shade Chars Buffer"
-
-        // Load the compute kernel
-        let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("TextToANSI")
-        let computeKernel: ComputeKernel = try shaderLibrary.colorToANSI
-
-        // Create the OffscreenRenderer with our textures
-        let offscreenRenderer = try OffscreenRenderer(
-            size: size,
-            colorTexture: colorTexture,
-            depthTexture: depthTexture
-        )
-
+    private func runANSIRenderLoop<Demo: DemoRenderPass>(_ demoType: Demo.Type, terminal: Terminal) throws {
+        let renderer = try ANSIRenderer(terminal: terminal, ramp: ramp, demoType: demoType)
         let cameraMatrix = simd_float4x4(translation: [0, 0, 3.5])
 
-        // Hide cursor
-        print("\u{001B}[?25l", terminator: "")
+        terminal.hideCursor()
+        defer {
+            terminal.showCursor()
+            terminal.resetColors()
+        }
 
-        var frame = 0
+        var frame: UInt32 = 0
+        var lastTime = CFAbsoluteTimeGetCurrent()
         while true {
             try autoreleasepool {
-                let time = Float(frame) / fps * speed
+                let currentTime = CFAbsoluteTimeGetCurrent()
+                let deltaTime = Float(currentTime - lastTime)
+                lastTime = currentTime
 
-                // Create the render + compute element for this frame
-                let element = try Group {
-                    // First: render the SDF scene
-                    try RenderPass {
-                        try SDFRenderPipeline(
-                            time: time,
-                            projectionMatrix: .identity,
-                            cameraMatrix: cameraMatrix,
-                            drawableSize: size,
-                            showDepth: false
-                        )
-                    }
+                let frameUniforms = MetalSprocketsUI.FrameUniforms(
+                    index: frame,
+                    time: Float(frame) / fps * speed,
+                    deltaTime: deltaTime,
+                    viewportSize: SIMD2<UInt32>(UInt32(terminal.width), UInt32(terminal.height))
+                )
 
-                    // Second: convert to ANSI using compute shader
-                    try ComputePass {
-                        try ComputePipeline(computeKernel: computeKernel) {
-                            try ComputeDispatch(
-                                threadsPerGrid: MTLSize(width: termWidth, height: termHeight, depth: 1),
-                                threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1)
-                            )
-                            .parameter("inputTexture", texture: colorTexture)
-                            .parameter("outputBuffer", buffer: ansiBuffer)
-                            .parameter("shadeChars", buffer: shadeCharsBuffer)
-                            .parameter("shadeCount", value: shadeCount)
-                        }
-                    }
-                }
+                try renderer.render(frameUniforms: frameUniforms, cameraMatrix: cameraMatrix)
+                renderer.printFrame()
 
-                // Render
-                _ = try offscreenRenderer.render(element)
+                Thread.sleep(forTimeInterval: 1.0 / Double(fps))
+                frame += 1
+            }
+        }
+    }
 
-                // Move cursor to top-left
-                print("\u{001B}[H", terminator: "")
+    private func runSixelRenderLoop<Demo: DemoRenderPass>(_ demoType: Demo.Type, terminal: Terminal) throws {
+        let colorLevels = max(2, min(6, colors))
+        var renderer = try SixelRenderer(terminal: terminal, colorLevels: colorLevels, demoType: demoType)
+        let cameraMatrix = simd_float4x4(translation: [0, 0, 3.5])
 
-                // Read buffer and print to terminal
-                let bufferPointer = ansiBuffer.contents().bindMemory(to: CChar.self, capacity: bufferSize)
+        terminal.hideCursor()
+        defer {
+            terminal.showCursor()
+            terminal.resetColors()
+            // Clear sixel graphics
+            print("\u{1B}[2J", terminator: "")
+        }
 
-                for y in 0..<termHeight {
-                    let rowStart = y * termWidth * bytesPerCell
-                    let rowData = Data(bytes: bufferPointer + rowStart, count: termWidth * bytesPerCell)
-                    if let rowString = String(data: rowData, encoding: .utf8) {
-                        print(rowString, terminator: "")
-                    }
-                    print("\u{001B}[0m")  // Reset colors at end of line
-                }
+        var frame: UInt32 = 0
+        var lastTime = CFAbsoluteTimeGetCurrent()
+        while true {
+            try autoreleasepool {
+                let currentTime = CFAbsoluteTimeGetCurrent()
+                let deltaTime = Float(currentTime - lastTime)
+                lastTime = currentTime
 
-                // Shhhhh, just sleep.
+                let frameUniforms = MetalSprocketsUI.FrameUniforms(
+                    index: frame,
+                    time: Float(frame) / fps * speed,
+                    deltaTime: deltaTime,
+                    viewportSize: SIMD2<UInt32>(UInt32(renderer.imageWidth), UInt32(renderer.imageHeight))
+                )
+
+                try renderer.render(frameUniforms: frameUniforms, cameraMatrix: cameraMatrix)
+                renderer.printFrame()
+
+                Thread.sleep(forTimeInterval: 1.0 / Double(fps))
+                frame += 1
+            }
+        }
+    }
+
+    private func runITermRenderLoop<Demo: DemoRenderPass>(_ demoType: Demo.Type, terminal: Terminal) throws {
+        var renderer = try ITermRenderer(terminal: terminal, demoType: demoType)
+        let cameraMatrix = simd_float4x4(translation: [0, 0, 3.5])
+
+        terminal.hideCursor()
+        defer {
+            terminal.showCursor()
+            terminal.resetColors()
+            // Clear screen
+            print("\u{1B}[2J", terminator: "")
+        }
+
+        var frame: UInt32 = 0
+        var lastTime = CFAbsoluteTimeGetCurrent()
+        while true {
+            try autoreleasepool {
+                let currentTime = CFAbsoluteTimeGetCurrent()
+                let deltaTime = Float(currentTime - lastTime)
+                lastTime = currentTime
+
+                let frameUniforms = MetalSprocketsUI.FrameUniforms(
+                    index: frame,
+                    time: Float(frame) / fps * speed,
+                    deltaTime: deltaTime,
+                    viewportSize: SIMD2<UInt32>(UInt32(renderer.imageWidth), UInt32(renderer.imageHeight))
+                )
+
+                try renderer.render(frameUniforms: frameUniforms, cameraMatrix: cameraMatrix)
+                renderer.printFrame()
+
+                Thread.sleep(forTimeInterval: 1.0 / Double(fps))
+                frame += 1
+            }
+        }
+    }
+
+    private func runKittyRenderLoop<Demo: DemoRenderPass>(_ demoType: Demo.Type, terminal: Terminal) throws {
+        var renderer = try KittyRenderer(terminal: terminal, demoType: demoType)
+        let cameraMatrix = simd_float4x4(translation: [0, 0, 3.5])
+
+        terminal.hideCursor()
+        defer {
+            terminal.showCursor()
+            terminal.resetColors()
+            // Clear screen and any kitty graphics
+            print("\u{1B}[2J", terminator: "")
+            // Delete all kitty graphics: ESC _ G a=d ; ESC \
+            print("\u{1B}_Ga=d;\u{1B}\\", terminator: "")
+        }
+
+        var frame: UInt32 = 0
+        var lastTime = CFAbsoluteTimeGetCurrent()
+        while true {
+            try autoreleasepool {
+                let currentTime = CFAbsoluteTimeGetCurrent()
+                let deltaTime = Float(currentTime - lastTime)
+                lastTime = currentTime
+
+                let frameUniforms = MetalSprocketsUI.FrameUniforms(
+                    index: frame,
+                    time: Float(frame) / fps * speed,
+                    deltaTime: deltaTime,
+                    viewportSize: SIMD2<UInt32>(UInt32(renderer.imageWidth), UInt32(renderer.imageHeight))
+                )
+
+                try renderer.render(frameUniforms: frameUniforms, cameraMatrix: cameraMatrix)
+                renderer.printFrame()
+
                 Thread.sleep(forTimeInterval: 1.0 / Double(fps))
                 frame += 1
             }
