@@ -30,7 +30,7 @@ struct ColorRemapComputePipeline: Element {
         get throws {
             let shaderLibrary = try ShaderLibrary(
                 bundle: .metalSprocketsExampleShaders(),
-            )
+                )
             .namespaced("ColorRemap")
 
             try ComputePipeline(

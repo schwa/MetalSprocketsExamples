@@ -27,7 +27,7 @@ struct ThermalVideoBlendPipeline: Element {
     var body: some Element {
         get throws {
             let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
-            .namespaced("ThermalVideoBlend")
+                .namespaced("ThermalVideoBlend")
 
             if let videoTexture {
                 // Use full blending kernel when video is available

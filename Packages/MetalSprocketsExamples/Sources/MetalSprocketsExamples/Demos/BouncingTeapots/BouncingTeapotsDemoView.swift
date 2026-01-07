@@ -65,7 +65,7 @@ public struct BouncingTeapotsDemoView: View {
                         }
                     }
                 }
-                #endif
+            #endif
         }
     }
 
@@ -200,4 +200,3 @@ struct FlyingTeapotsRenderPass: Element {
         }
     }
 }
-
