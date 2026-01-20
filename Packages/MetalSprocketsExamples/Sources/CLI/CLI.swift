@@ -22,7 +22,8 @@ struct CLI: ParsableCommand {
     )
 
     static var availableDemos: String {
-        allDemoRenderPasses.map(\.name).joined(separator: ", ")
+        // Avoid keypath syntax on existential types to work around Swift compiler crash
+        allDemoRenderPasses.map { $0.name }.joined(separator: ", ")
     }
 
     static var defaultDemo: String {
