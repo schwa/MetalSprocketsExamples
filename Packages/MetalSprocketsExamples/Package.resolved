@@ -1,6 +1,15 @@
 {
-  "originHash" : "bdadb7c83a131b475c09addfb861a21c8a13c5f64ca02245af608ab77d5e912b",
+  "originHash" : "a3ed1b8f6adc78ae6fd5cac5b2db1f66b9ee2ea9acf333b75df4f0789f2a8b8f",
   "pins" : [
+    {
+      "identity" : "demokit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/DemoKit",
+      "state" : {
+        "revision" : "e3e8fb2166fc1e478bbd628b98593bf7029f5e54",
+        "version" : "0.1.1"
+      }
+    },
     {
       "identity" : "earcut-swift",
       "kind" : "remoteSourceControl",
@@ -13,10 +22,10 @@
     {
       "identity" : "everything",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/Everything.git",
+      "location" : "https://github.com/schwa/Everything",
       "state" : {
-        "revision" : "15e3b60f56fd6488c7e910717317e781219ca35c",
-        "version" : "1.2.2"
+        "revision" : "d154f83ae4f95cdeb107c3f908cb84d485480158",
+        "version" : "1.2.3"
       }
     },
     {

@@ -1,4 +1,3 @@
-import MetalSprocketsSnapshotUI
 import SwiftUI
 
 @main
@@ -13,8 +12,6 @@ struct MetalSprocketsExamplesApp: App {
             ContentView()
         }
         #endif
-
-        SnapshotViewerDocumentScene()
 
         #if os(macOS)
         Settings {
