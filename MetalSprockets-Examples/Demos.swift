@@ -33,7 +33,6 @@ import SwiftUI
         GrassDemoView.self,
         SpiralParticlesDemoView.self,
         GraphicsContext3DDemoView.self,
-        EdgeLinesDemoView.self,
         MetalCanvasDemoView.self,
         TiledSDFDemoView.self,
         TileAverageDemoView.self
@@ -416,17 +415,6 @@ extension GraphicsContext3DDemoView: @retroactive DemoView {
             description: "SwiftUI.Canvas-style API for rendering 3D geometry with Path3D and stroke/fill operations",
             group: "Basic",
             keywords: ["3d", "path", "canvas"]
-        )
-    }
-}
-
-extension EdgeLinesDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Edge Rendering",
-            description: "Screen-space edge rendering with rounded endcaps using mesh shaders. Each mesh edge is rendered as a screen-aligned line with adaptive tessellation.",
-            group: "Complex",
-            keywords: ["mesh-shaders", "wireframe", "edges", "animated"]
         )
     }
 }
