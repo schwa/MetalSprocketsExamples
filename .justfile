@@ -42,6 +42,20 @@ format:
     swiftlint --fix --format --quiet
     fd --extension metal --extension h --exec clang-format -i {}
 
+PACKAGE_SWIFT := "Packages/MetalSprocketsExamples/Package.swift"
+
+# Use local MetalSprockets from /Users/schwa/Projects/MetalSprockets
+use-local:
+    sed -i '' 's|^        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),|//        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),|' {{PACKAGE_SWIFT}}
+    sed -i '' 's|^//        .package(path: "/Users/schwa/Projects/MetalSprockets"),|        .package(path: "/Users/schwa/Projects/MetalSprockets"),|' {{PACKAGE_SWIFT}}
+    @echo "Switched to local MetalSprockets"
+
+# Use remote MetalSprockets from GitHub main branch
+use-remote:
+    sed -i '' 's|^        .package(path: "/Users/schwa/Projects/MetalSprockets"),|//        .package(path: "/Users/schwa/Projects/MetalSprockets"),|' {{PACKAGE_SWIFT}}
+    sed -i '' 's|^//        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),|        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),|' {{PACKAGE_SWIFT}}
+    @echo "Switched to remote MetalSprockets"
+
 update-deps:
     rm Packages/MetalSprocketsExamples/Package.resolved
     #rm MetalSprockets-Examples.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved

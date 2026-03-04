@@ -1,7 +1,6 @@
 ---
 excluded:
   - "**/.build"
-  - "**/Package.swift"
   - "temp"
 force_cast: warning
 force_try: warning
@@ -273,4 +272,10 @@ custom_rules:
     name: "String(format:) usage"
     regex: "String\\s*\\(\\s*format:"
     message: "Prefer value.format() or Text(value, format:) over String(format:)"
+    severity: warning
+  no_local_package_deps:
+    included: ".*Package\\.swift"
+    name: "Local package dependency"
+    regex: "^\\s+\\.package\\(path:"
+    message: "Local .package(path:) dependency found."
     severity: warning

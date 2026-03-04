@@ -1,6 +1,15 @@
 {
-  "originHash" : "bdadb7c83a131b475c09addfb861a21c8a13c5f64ca02245af608ab77d5e912b",
+  "originHash" : "1bd2da6168303e67e761a4c024ec8cc1d32e8bab4fa1accb5f435975abef6a59",
   "pins" : [
+    {
+      "identity" : "demokit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/DemoKit",
+      "state" : {
+        "revision" : "e3e8fb2166fc1e478bbd628b98593bf7029f5e54",
+        "version" : "0.1.1"
+      }
+    },
     {
       "identity" : "earcut-swift",
       "kind" : "remoteSourceControl",
@@ -25,7 +34,7 @@
       "location" : "https://github.com/schwa/GeometryLite3D",
       "state" : {
         "branch" : "main",
-        "revision" : "2b63646cf7290361567cafaf89f82206ee0ff3e7"
+        "revision" : "554f96b2465e8bd52305ce4abf8709bd05b60208"
       }
     },
     {
@@ -34,7 +43,7 @@
       "location" : "https://github.com/schwa/Interaction3D",
       "state" : {
         "branch" : "main",
-        "revision" : "20486647f04d66d4d297a3403cc3b6061be97de1"
+        "revision" : "b8a08213091674c7e85c566a1eeec86ef1bbd25c"
       }
     },
     {
@@ -52,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "c1ff35c2d6b361bfe9d38c2def54e6e7f5dfedfb"
+        "revision" : "cec14b11f75b396ed6708b989551a2a505c762df"
       }
     },
     {
@@ -61,7 +70,7 @@
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
         "branch" : "main",
-        "revision" : "0ba51c5319fae4729a2a469437c2b25b76dc9301"
+        "revision" : "625b73a349c6ef0914d1febf4607ce571a91a09b"
       }
     },
     {
@@ -96,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms",
       "state" : {
-        "revision" : "6c050d5ef8e1aa6342528460db614e9770d7f804",
-        "version" : "1.1.1"
+        "revision" : "2971dd5d9f6e0515664b01044826bcea16e59fac",
+        "version" : "1.1.2"
       }
     },
     {
@@ -142,7 +151,7 @@
       "location" : "https://github.com/schwa/SwiftGLTF",
       "state" : {
         "branch" : "main",
-        "revision" : "5b1bf55da7f79d5e168bf074e994a8cb6b08a8ac"
+        "revision" : "4f095df84411a6953870ab995665936af7e0a663"
       }
     },
     {
