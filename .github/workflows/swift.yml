@@ -18,7 +18,9 @@ jobs:
                   xcode-version: ${{ env.XCODE_VERSION }}
             - uses: actions/checkout@v3
             - name: Download MetalToolchain
-              run: xcodebuild -downloadComponent MetalToolchain
+              run: |
+                xcodebuild -downloadComponent MetalToolchain
+                xcrun --find metal
             - name: Trust plugins
               run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
             - run: swift build -v
@@ -41,7 +43,9 @@ jobs:
               with:
                   submodules: true
             - name: Download MetalToolchain
-              run: xcodebuild -downloadComponent MetalToolchain
+              run: |
+                xcodebuild -downloadComponent MetalToolchain
+                xcrun --find metal
             - run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
             - name: Build for macOS
               run: |
