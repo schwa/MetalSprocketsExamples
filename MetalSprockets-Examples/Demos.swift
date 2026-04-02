@@ -232,8 +232,8 @@ extension MixedDemoView: @retroactive DemoView {
 extension ColorAdjustDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "ColorAdjustDemoView",
-            description: "TODO",
+            name: "Color Adjust",
+            description: "Color adjustment using compute shaders.",
             group: "In-progress",
             keywords: []
         )
