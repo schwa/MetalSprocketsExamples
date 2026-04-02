@@ -2,12 +2,16 @@
 
 # Collect screenshots for all MetalSprockets examples.
 # Prerequisites: steveo installed, app built and launchable via xcb.
-# Usage: ./Documentation/collect-screenshots.fish [--settle-time 3] [--output-dir Documentation]
+# Usage: ./Documentation/collect-screenshots.fish [--settle-time 3] [--output-dir Documentation/screenshots]
 
 set app_name "MetalSprockets-Examples"
 set settle_time 3
-set output_dir (status dirname)
-set skip_demos "Empty"
+set script_dir (status dirname)
+set output_dir "$script_dir/screenshots"
+set thumb_dir "$output_dir/thumbnails"
+set thumb_width 320
+set window_width 1024
+set window_height 768
 
 # Parse arguments
 set i 1
@@ -19,6 +23,7 @@ while test $i -le (count $argv)
         case --output-dir
             set i (math $i + 1)
             set output_dir $argv[$i]
+            set thumb_dir "$output_dir/thumbnails"
         case --help -h
             echo "Usage: collect-screenshots.fish [--settle-time SECS] [--output-dir DIR]"
             exit 0
@@ -26,10 +31,9 @@ while test $i -le (count $argv)
     set i (math $i + 1)
 end
 
-mkdir -p $output_dir
+mkdir -p $output_dir $thumb_dir
 
 # Demo name -> filename mapping
-# Menu names map to PascalCase filenames matching README.md references
 set demo_entries \
     "Blinn-Phong Lighting|BlinnPhongLighting" \
     "Skybox|Skybox" \
@@ -71,6 +75,21 @@ if not steveo --app $app_name windows --quiet &>/dev/null
     exit 1
 end
 
+# Get window URL
+set win_url (steveo --app $app_name windows 2>&1 | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['url'])")
+
+# Resize window to 4:3
+echo "Resizing window to {$window_width}x{$window_height}..."
+steveo --app $app_name window resize $win_url $window_width $window_height &>/dev/null
+
+# Hide sidebar if visible
+set sidebar_btn (steveo --app $app_name find --text "Hide Sidebar" 2>&1)
+if string match -q '*Hide Sidebar*' $sidebar_btn
+    echo "Hiding sidebar..."
+    steveo --app $app_name find --text "Hide Sidebar" --click &>/dev/null
+    sleep 0.5
+end
+
 set total (count $demo_entries)
 set captured 0
 set failed 0
@@ -82,6 +101,7 @@ for entry in $demo_entries
     set menu_name (string split "|" $entry)[1]
     set filename (string split "|" $entry)[2]
     set outpath "$output_dir/$filename.png"
+    set thumbpath "$thumb_dir/$filename.png"
 
     printf "[%2d/%2d] %-30s " (math $captured + $failed + 1) $total $menu_name
 
@@ -96,12 +116,11 @@ for entry in $demo_entries
     # Wait for render to settle
     sleep $settle_time
 
-    # Verify window title changed
-    set win_title (steveo --app $app_name windows 2>&1 | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['title'])" 2>/dev/null)
-
     # Take screenshot
     set result (steveo --app $app_name screenshot -o $outpath 2>&1)
     if string match -q '*"ok":true*' $result
+        # Generate thumbnail
+        sips -Z $thumb_width $outpath --out $thumbpath &>/dev/null
         echo "✓ $outpath"
         set captured (math $captured + 1)
     else
@@ -113,3 +132,7 @@ end
 echo ""
 echo "Done: $captured captured, $failed failed out of $total demos."
 echo "Screenshots saved to: $output_dir/"
+echo "Thumbnails saved to: $thumb_dir/"
+
+# Show sidebar again
+steveo --app $app_name find --text "Show Sidebar" --click &>/dev/null
