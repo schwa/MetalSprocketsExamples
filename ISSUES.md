@@ -256,7 +256,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T17:29:04.663414+00:00: 00: 00: 00: 00: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
+- 2026-04-02T17:29:04.833237+00:00: 00: 00: 00: 00: 00: 00: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
 
 ---
 
@@ -267,7 +267,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T17:29:04.663640+00:00: 00: 00: 00: 00: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
+- 2026-04-02T17:29:04.833460+00:00: 00: 00: 00: 00: 00: 00: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
 
 ---
 
@@ -278,7 +278,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T17:29:04.663892+00:00: 00: 00: 00: 00: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
+- 2026-04-02T17:29:04.833683+00:00: 00: 00: 00: 00: 00: 00: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
 
 ---
 
@@ -289,7 +289,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T17:29:04.664117+00:00: 00: 00: 00: 00: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
+- 2026-04-02T17:29:04.833907+00:00: 00: 00: 00: 00: 00: 00: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
 
 ---
 
@@ -520,7 +520,7 @@ Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Reuse
 
 Performance improvement: Reduces per-vertex computation, especially beneficial for high-poly meshes.
 
-- 2026-04-02T17:29:04.668085+00:00: 00: 00: 00: 00: Pre-calculated matrices on CPU side to avoid per-vertex computation:
+- 2026-04-02T17:29:04.837844+00:00: 00: 00: 00: 00: 00: 00: Pre-calculated matrices on CPU side to avoid per-vertex computation:
 
 ---
 
@@ -918,7 +918,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices (projectionMatrix, cameraMatrix, modelMatrix). Calculate viewMatrix, modelViewMatrix, and modelViewProjectionMatrix in shader. This is the FIRST example to fix.
 
-- 2026-04-02T17:29:04.673338+00:00: 00: 00: 00: 00: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
+- 2026-04-02T17:29:04.843153+00:00: 00: 00: 00: 00: 00: 00: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
 
 ---
 
@@ -933,7 +933,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update BlinnPhongDemoView to pass separate matrices instead of Transforms struct. Uses .transforms() modifier at line 62.
 
-- 2026-04-02T17:29:04.673563+00:00: 00: 00: 00: 00: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
+- 2026-04-02T17:29:04.843379+00:00: 00: 00: 00: 00: 00: 00: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
 
 ---
 
@@ -948,7 +948,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in Panorama shader (line 21).
 
-- 2026-04-02T17:29:04.673787+00:00: 00: 00: 00: 00: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- 2026-04-02T17:29:04.843604+00:00: 00: 00: 00: 00: 00: 00: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -989,7 +989,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in Skybox shader (line 16).
 
-- 2026-04-02T17:29:04.674448+00:00: 00: 00: 00: 00: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- 2026-04-02T17:29:04.844269+00:00: 00: 00: 00: 00: 00: 00: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -1030,7 +1030,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update SceneGraphRenderPass to pass separate matrices instead of Transforms (line 75).
 
-- 2026-04-02T17:29:04.675110+00:00: 00: 00: 00: 00: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
+- 2026-04-02T17:29:04.844944+00:00: 00: 00: 00: 00: 00: 00: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
 
 ---
 
@@ -1045,7 +1045,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update HitTestDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T17:29:04.675336+00:00: 00: 00: 00: 00: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
+- 2026-04-02T17:29:04.845171+00:00: 00: 00: 00: 00: 00: 00: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
 
 ---
 
@@ -1060,7 +1060,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update TrivialMeshDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T17:29:04.675561+00:00: 00: 00: 00: 00: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
+- 2026-04-02T17:29:04.845397+00:00: 00: 00: 00: 00: 00: 00: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
 
 ---
 
@@ -1075,7 +1075,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update PanoramaElements to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T17:29:04.675787+00:00: 00: 00: 00: 00: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- 2026-04-02T17:29:04.845622+00:00: 00: 00: 00: 00: 00: 00: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1090,7 +1090,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update SkyboxDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T17:29:04.676017+00:00: 00: 00: 00: 00: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- 2026-04-02T17:29:04.845846+00:00: 00: 00: 00: 00: 00: 00: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1169,8 +1169,8 @@ kind: none
 created: 2025-10-29T00:00:00+00:00
 closed: 2025-10-29T00:00:00+00:00
 
-- 2026-04-02T17:29:04.677557+00:00: 00: 00: 00: 00: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
-- 2026-04-02T17:29:04.677560+00:00: 00: 00: 00: 00: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
+- 2026-04-02T17:29:04.847384+00:00: 00: 00: 00: 00: 00: 00: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
+- 2026-04-02T17:29:04.847387+00:00: 00: 00: 00: 00: 00: 00: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
 
 ---
 
@@ -1220,7 +1220,7 @@ Note: MikkTSpace is identical in both projects and can be ignored.
 - Examples project builds successfully
 - No duplication of AddOns code between projects
 
-- 2026-04-02T17:29:04.677788+00:00: 00: 00: 00: 00: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
+- 2026-04-02T17:29:04.847622+00:00: 00: 00: 00: 00: 00: 00: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
 
 ---
 
@@ -1255,7 +1255,7 @@ Hard-coded absolute paths make the project non-portable and cause issues when:
 3. Update MetalCompilerPlugin to auto-detect paths based on target structure
 4. Use environment variables or build-time substitution
 
-- 2026-04-02T17:29:04.678013+00:00: 00: 00: 00: 00: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
+- 2026-04-02T17:29:04.847852+00:00: 00: 00: 00: 00: 00: 00: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
 
 ---
 
@@ -1295,7 +1295,7 @@ Once the required MetalCompilerPlugin fixes are released:
 2. Remove or comment out line 24 with the local path
 3. Update to the new version that supports cross-package shader dependencies
 
-- 2026-04-02T17:29:04.678236+00:00: 00: 00: 00: 00: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
+- 2026-04-02T17:29:04.848078+00:00: 00: 00: 00: 00: 00: 00: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
 
 ---
 
@@ -1309,17 +1309,21 @@ closed: 2026-04-02T17:29:04.638879+00:00
 
 Add a 'Demos' menu to the app's menu bar listing all demos by name. This enables reliable automation via 'steveo menu --app ... Demos Triangle' since menus are the most robust accessibility targets. The sidebar list rows are AXUnknown and clicks don't trigger selection.
 
-- 2026-04-02T17:29:04.678905+00:00: Added Demos menu to menu bar listing all demos
+- 2026-04-02T17:29:04.848302+00:00: 00: 00: Added Demos menu to menu bar listing all demos
 
 ---
 
 ## 307: Add URL scheme for direct demo navigation
-status: new
+status: closed
 priority: medium
 kind: feature
 created: 2026-04-02T17:21:49.207464+00:00
+updated: 2026-04-02T17:29:04.809008+00:00
+closed: 2026-04-02T17:29:04.809008+00:00
 
 Register a URL scheme (e.g. metalsprockets-examples://demo/triangle) so demos can be opened directly from the command line via 'open metalsprockets-examples://demo/triangle'. This enables screenshot automation without any accessibility dependency. The app should handle the URL, navigate to the matching demo, and render it.
+
+- 2026-04-02T17:29:04.848759+00:00: Added metalsprockets-examples:// URL scheme for direct demo navigation
 
 ---
 
