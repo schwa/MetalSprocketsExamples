@@ -2,9 +2,9 @@
 status: closed
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
 Create a demo that demonstrates hit testing capabilities.
 
@@ -16,8 +16,8 @@ Origin: GitHub issue #273
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 e.g. TextureBillboard vs BillboardShader etc
 
@@ -31,8 +31,8 @@ Origin: GitHub issue #250
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Go through all demo code and look for code reuse opportunities.
 
@@ -48,8 +48,8 @@ Origin: GitHub issue #246
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 It's MacPaint but Metal!
 
@@ -63,8 +63,8 @@ Origin: GitHub issue #235
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Enable additional demos to work with the offscreen video renderer.
 
@@ -76,9 +76,9 @@ Origin: GitHub issue #215
 status: closed
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
 Separate the demos into their own repository.
 
@@ -90,8 +90,8 @@ Origin: GitHub issue #213
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Create the simplest possible demo that can run independently.
 
@@ -103,9 +103,9 @@ Origin: GitHub issue #212
 status: closed
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-24
-closed: 2025-10-24
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-24T00:00:00+00:00
+closed: 2025-10-24T00:00:00+00:00
 
 ## Current Behavior
 The AxisLines element currently uses a fixed scale parameter to set the length of axis lines in world space. This means the lines have a fixed length regardless of camera position or zoom level.
@@ -134,8 +134,8 @@ Origin: GitHub issue #262
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Convert the .metal-sprocketsExampleShaders() method into a property for cleaner API.
 
@@ -147,8 +147,8 @@ Origin: GitHub issue #261
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Clean up and standardize vertex descriptors across the examples project.
 
@@ -160,9 +160,9 @@ Origin: GitHub issue #259
 status: closed
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-24
-closed: 2025-10-24
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-24T00:00:00+00:00
+closed: 2025-10-24T00:00:00+00:00
 
 {"id":"uv-eg-20","title":"Make sure all compute examples are using good sizes","description":"Review all compute shader examples to ensure they're using appropriate thread group sizes and dispatch sizes for optimal performance.\n\nOrigin: GitHub issue #252","status":"open","priority":2,"issue_type":"task","created_at":"2025-10-20T19:42:22.465146-07:00","updated_at":"2025-10-21T13:08:41.019653-07:00"}
 
@@ -172,8 +172,8 @@ closed: 2025-10-24
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Currently each demo creates textures on-demand in init/onChange handlers with no reuse strategy. Issues: potential resource leaks in long-running demos, no centralized lifecycle management, repeated allocation/deallocation overhead. Should implement texture pooling for common sizes/formats to improve performance and resource management.
 
@@ -183,8 +183,8 @@ Currently each demo creates textures on-demand in init/onChange handlers with no
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Many demos duplicate similar UI patterns: slider controls for parameters, color pickers, dropdown menus, reset/download buttons. Should create reusable SwiftUI components in Support/ or new UI/ directory: ParameterSlider, DemoColorPicker, DemoOptionPicker, etc. This will reduce code duplication and ensure consistent UI across demos.
 
@@ -194,8 +194,8 @@ Many demos duplicate similar UI patterns: slider controls for parameters, color 
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Complex demos lack sufficient inline documentation: PBR shader calculations, scene graph traversal logic, compute shader algorithms (Game of Life, particle systems), GLTF parsing. Should add: doc comments explaining what each demo demonstrates, inline comments for complex algorithms, references to graphics programming concepts, links to relevant papers/resources. This makes the examples more educational.
 
@@ -205,8 +205,8 @@ Complex demos lack sufficient inline documentation: PBR shader calculations, sce
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Currently have inconsistent shader source management: some demos embed Metal shader code as strings (TriangleDemoView), others use external shader bundles via MetalCompilerPlugin, no shader validation at compile time for string-embedded shaders. Should establish standard approach, document when to use each method, prefer external shaders for complex code, add compile-time validation where possible, standardize namespace usage.
 
@@ -216,8 +216,8 @@ Currently have inconsistent shader source management: some demos embed Metal sha
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Should enable Metal API validation and shader validation in development builds to catch: incorrect resource usage, memory leaks, invalid render state, shader compilation warnings, performance issues. Add conditional compilation to enable validation layers in debug builds while keeping release builds optimized.
 
@@ -227,8 +227,8 @@ Should enable Metal API validation and shader validation in development builds t
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 Found in Sources/MetalSprocketsExamples/Support/Texture2DSpecifier.swift:20, :28, :36
 
@@ -242,8 +242,8 @@ Origin: GitHub issue #287
 status: new
 priority: none
 kind: none
-created: 2025-10-22
-updated: 2025-10-23
+created: 2025-10-22T00:00:00+00:00
+updated: 2025-10-23T00:00:00+00:00
 
 {"id":"uv-eg-41","title":"Flesh out Mesh","description":"","status":"open","priority":2,"issue_type":"task","created_at":"2025-10-20T19:42:22.465146-07:00","updated_at":"2025-10-21T13:08:41.02548-07:00"}
 
@@ -253,10 +253,10 @@ updated: 2025-10-23
 status: closed
 priority: high
 kind: task
-created: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
-- 2025-10-23: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
+- 2025-10-23T00:00:00+00:00: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
 
 ---
 
@@ -264,10 +264,10 @@ closed: 2025-10-23
 status: closed
 priority: high
 kind: task
-created: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
-- 2025-10-23: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
+- 2025-10-23T00:00:00+00:00: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
 
 ---
 
@@ -275,10 +275,10 @@ closed: 2025-10-23
 status: closed
 priority: high
 kind: task
-created: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
-- 2025-10-23: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
+- 2025-10-23T00:00:00+00:00: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
 
 ---
 
@@ -286,10 +286,10 @@ closed: 2025-10-23
 status: closed
 priority: high
 kind: task
-created: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
-- 2025-10-23: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
+- 2025-10-23T00:00:00+00:00: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
 
 ---
 
@@ -297,8 +297,8 @@ closed: 2025-10-23
 status: closed
 priority: high
 kind: task
-created: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
 
 ---
@@ -307,8 +307,8 @@ closed: 2025-10-23
 status: closed
 priority: medium
 kind: bug
-created: 2025-10-23
-closed: 2025-10-23
+created: 2025-10-23T00:00:00+00:00
+closed: 2025-10-23T00:00:00+00:00
 
 EdgeLinesRenderPass validates 32-byte vertex stride (position+normal+texCoord) but ARKit meshes only have 12-byte position data. Need to either relax validation or pad ARKit vertices.
 
@@ -318,9 +318,9 @@ EdgeLinesRenderPass validates 32-byte vertex stride (position+normal+texCoord) b
 status: closed
 priority: high
 kind: task
-created: 2025-10-23
-updated: 2025-10-24
-closed: 2025-10-24
+created: 2025-10-23T00:00:00+00:00
+updated: 2025-10-24T00:00:00+00:00
+closed: 2025-10-24T00:00:00+00:00
 
 
 ---
@@ -329,7 +329,7 @@ closed: 2025-10-24
 status: open
 priority: high
 kind: task
-created: 2025-10-24
+created: 2025-10-24T00:00:00+00:00
 
 
 ---
@@ -338,7 +338,7 @@ created: 2025-10-24
 status: open
 priority: high
 kind: task
-created: 2025-10-24
+created: 2025-10-24T00:00:00+00:00
 
 
 ---
@@ -347,7 +347,7 @@ created: 2025-10-24
 status: new
 priority: none
 kind: task
-created: 2025-10-24
+created: 2025-10-24T00:00:00+00:00
 
 
 ---
@@ -356,7 +356,7 @@ created: 2025-10-24
 status: new
 priority: none
 kind: task
-created: 2025-10-24
+created: 2025-10-24T00:00:00+00:00
 
 
 ---
@@ -365,7 +365,7 @@ created: 2025-10-24
 status: new
 priority: none
 kind: task
-created: 2025-10-24
+created: 2025-10-24T00:00:00+00:00
 
 
 ---
@@ -375,7 +375,7 @@ status: open
 priority: none
 kind: none
 labels: effort:l, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 We need some way to make controlling the camera and/or a model generic.
 
@@ -401,7 +401,6 @@ Common (optional) properties might be:
 
 Some implementations will need min/max values for various properties and stuff like distance from camera etc.
 
----
 *Imported from #57*
 
 ---
@@ -411,11 +410,10 @@ status: open
 priority: none
 kind: none
 labels: effort:m, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 We have DemoView (via DemoKit) and Examples in UltraviolenceExamples/ExampleElements.
 
----
 *Imported from #64*
 
 ---
@@ -425,7 +423,7 @@ status: open
 priority: none
 kind: none
 labels: effort:l, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 *Imported from #66*
 
@@ -436,7 +434,7 @@ status: open
 priority: none
 kind: none
 labels: effort:l, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 *Imported from #67*
 
@@ -447,7 +445,7 @@ status: open
 priority: none
 kind: none
 labels: effort:xl, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 *Imported from #70*
 
@@ -458,7 +456,7 @@ status: open
 priority: none
 kind: none
 labels: effort:l, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 *Imported from #72*
 
@@ -469,11 +467,10 @@ status: open
 priority: none
 kind: none
 labels: effort:xs, source:todo, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceSupport/MetalSupport.swift at line 790
 
----
 *Imported from #106*
 
 ---
@@ -483,11 +480,10 @@ status: open
 priority: none
 kind: none
 labels: effort:s, source:todo, testing, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Support/TypedMTLBuffer.swift at line 3
 
----
 *Imported from #112*
 
 ---
@@ -497,11 +493,10 @@ status: open
 priority: none
 kind: none
 labels: effort:s, source:todo, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Interaction/TurntableCameraController.swift at line 14
 
----
 *Imported from #116*
 
 ---
@@ -511,22 +506,21 @@ status: closed
 priority: none
 kind: none
 labels: effort:s, source:todo, MetalSprocketExamples
-created: 2025-10-26
-updated: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-26T00:00:00+00:00
+updated: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/ReuseableElements/LambertianShader.metal at line 32
 
----
 *Imported from #128*
-
-- 2025-10-29: Pre-calculated matrices on CPU side to avoid per-vertex computation:
 - Added normalMatrix parameter (float3x3) to both vertex_main and vertex_instanced
 - CPU now pre-computes normal matrix (upper-left 3x3 of model matrix)
 - For instanced rendering, CPU now pre-computes all MVP matrices and normal matrices per instance
 - Removed per-vertex matrix extraction and multiplication from shaders
 
 Performance improvement: Reduces per-vertex computation, especially beneficial for high-poly meshes.
+
+- 2025-10-29T00:00:00+00:00: Pre-calculated matrices on CPU side to avoid per-vertex computation:
 
 ---
 
@@ -535,7 +529,7 @@ status: open
 priority: none
 kind: enhancement
 labels: enhancement, demo, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 ## Summary
 Implement GPU-accelerated text rendering using signed distance fields or glyph atlases.
@@ -564,7 +558,6 @@ Create a text rendering system that renders text entirely on the GPU for high-pe
 - [ ] Basic text effects
 - [ ] Good performance with many text elements
 
----
 *Imported from #149*
 
 ---
@@ -574,7 +567,7 @@ status: open
 priority: none
 kind: enhancement
 labels: enhancement, demo, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 ## Summary
 Port VisionOS-specific immersive and spatial computing features for Apple Vision Pro.
@@ -608,7 +601,6 @@ Implement spatial computing demos leveraging VisionOS capabilities like immersiv
 - VisionOS 2.0+
 - Apple Vision Pro hardware or simulator
 
----
 *Imported from #161*
 
 ---
@@ -618,11 +610,10 @@ status: open
 priority: none
 kind: none
 labels: demo, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 Implement https://www.4rknova.com/blog/2025/08/30/foil-sticker
 
----
 *Imported from #173*
 
 ---
@@ -632,11 +623,10 @@ status: open
 priority: none
 kind: enhancement
 labels: enhancement, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 It's really just as simple as the offscreen renderer but doing extra work every frame.
 
----
 *Imported from #218*
 
 ---
@@ -646,13 +636,12 @@ status: closed
 priority: none
 kind: feature
 labels: feature, MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 It's MacPaint but Metal!
 
 
----
 *Imported from #219*
 
 ---
@@ -662,8 +651,8 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 *Imported from #245*
 
@@ -674,8 +663,8 @@ status: closed
 priority: none
 kind: feature
 labels: feature, MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 *Imported from #253*
 
@@ -686,8 +675,8 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 *Imported from #254*
 
@@ -698,7 +687,7 @@ status: open
 priority: none
 kind: enhancement
 labels: enhancement, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 *Imported from #255*
 
@@ -709,8 +698,8 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 *Imported from #256*
 
@@ -721,8 +710,8 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 *Imported from #257*
 
@@ -733,8 +722,8 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 *Imported from #258*
 
@@ -745,14 +734,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustDemoView.swift:39
 
 The ColorAdjustDemoView should use Ultraviolence's standard shader loading mechanism instead of custom loading code.
 
----
 *Imported from #262*
 
 ---
@@ -762,14 +750,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustDemoView.swift:40
 
 The demo currently requires all functions to be named the same. Should use proper Metal function loading instead.
 
----
 *Imported from #263*
 
 ---
@@ -779,14 +766,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustComputePipeline.swift:25
 
 Consider using .argumentBuffer() as a better solution for handling parameters.
 
----
 *Imported from #264*
 
 ---
@@ -796,14 +782,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustComputePipeline.swift:37
 
 This code needs to be moved to a more appropriate location in the codebase.
 
----
 *Imported from #265*
 
 ---
@@ -813,14 +798,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Demos/DepthDemo/DepthDemoView.swift:58
 
 The DepthDemoView should use Ultraviolence's standard shader loading mechanism instead of custom loading code.
 
----
 *Imported from #267*
 
 ---
@@ -830,14 +814,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Demos/DepthDemo/DepthDemoView.swift:59
 
 The demo currently requires all functions to be named the same. Should use proper Metal function loading instead.
 
----
 *Imported from #268*
 
 ---
@@ -847,14 +830,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Demos/DepthDemo/DepthDemoView.swift:60
 
 The current implementation is a terrible example of stitchable functions and needs improvement.
 
----
 *Imported from #269*
 
 ---
@@ -864,14 +846,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Support/Texture2DSpecifier.swift:5
 
 The Texture2DSpecifier class should be renamed to TextureSpecifier or something more descriptive.
 
----
 *Imported from #270*
 
 ---
@@ -881,14 +862,13 @@ status: closed
 priority: none
 kind: none
 labels: MetalSprocketExamples
-created: 2025-10-26
-closed: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
+closed: 2025-10-26T00:00:00+00:00
 
 Found in Sources/UltraviolenceExamples/Support/Texture2DSpecifier.swift:20, :28, :36
 
 Need to add proper assertions to verify that values are correct in Texture2DSpecifier methods.
 
----
 *Imported from #271*
 
 ---
@@ -898,7 +878,7 @@ status: open
 priority: high
 kind: feature
 labels: effort:m, priority:high, feature, MetalSprocketExamples
-created: 2025-10-26
+created: 2025-10-26T00:00:00+00:00
 
 We really need to support visible functions. This would unlock/enable a lot of cool "CoreImage-lite" effects where you provide a mini function to (say) convert a color or manipulate a vertex and then the main kernel/shader uses it to manipulate a texture or a mesh.
 
@@ -911,7 +891,6 @@ It would be usable from all of these:
 #156: Demo: Color Transform Filters
 #261: Make a generic distort (vertex) shader that we can provide functions to
 
----
 *Imported from #273*
 
 ---
@@ -920,9 +899,9 @@ It would be usable from all of these:
 status: closed
 priority: medium
 kind: none
-labels: refactor,cleanup
-created: 2025-10-29
-closed: 2025-10-29
+labels: refactor, cleanup
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Replace all uses of the deprecated Transforms struct with separate matrices (projectionMatrix, cameraMatrix, viewMatrix, modelMatrix, modelViewMatrix, modelViewProjectionMatrix). Pass the richest matrix needed to shaders. viewMatrix = cameraMatrix.inverse, modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
 
@@ -932,14 +911,14 @@ Replace all uses of the deprecated Transforms struct with separate matrices (pro
 status: closed
 priority: medium
 kind: none
-labels: refactor,shader
+labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices (projectionMatrix, cameraMatrix, modelMatrix). Calculate viewMatrix, modelViewMatrix, and modelViewProjectionMatrix in shader. This is the FIRST example to fix.
 
-- 2025-10-29: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
+- 2025-10-29T00:00:00+00:00: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
 
 ---
 
@@ -947,14 +926,14 @@ Replace Transforms buffer parameter with separate matrices (projectionMatrix, ca
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update BlinnPhongDemoView to pass separate matrices instead of Transforms struct. Uses .transforms() modifier at line 62.
 
-- 2025-10-29: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
+- 2025-10-29T00:00:00+00:00: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
 
 ---
 
@@ -962,14 +941,14 @@ Update BlinnPhongDemoView to pass separate matrices instead of Transforms struct
 status: closed
 priority: medium
 kind: none
-labels: refactor,shader
+labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in Panorama shader (line 21).
 
-- 2025-10-29: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- 2025-10-29T00:00:00+00:00: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -977,10 +956,10 @@ Replace Transforms buffer parameter with separate matrices in Panorama shader (l
 status: closed
 priority: medium
 kind: none
-labels: refactor,shader
+labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in HitTest shader (line 34).
 
@@ -990,10 +969,10 @@ Replace Transforms buffer parameter with separate matrices in HitTest shader (li
 status: closed
 priority: medium
 kind: none
-labels: refactor,shader
+labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in Depth shader (line 16).
 
@@ -1003,14 +982,14 @@ Replace Transforms buffer parameter with separate matrices in Depth shader (line
 status: closed
 priority: medium
 kind: none
-labels: refactor,shader
+labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in Skybox shader (line 16).
 
-- 2025-10-29: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- 2025-10-29T00:00:00+00:00: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -1018,10 +997,10 @@ Replace Transforms buffer parameter with separate matrices in Skybox shader (lin
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update BouncingTeapotsDemoView to pass separate matrices instead of Transforms struct (lines 73, 127, 147).
 
@@ -1031,10 +1010,10 @@ Update BouncingTeapotsDemoView to pass separate matrices instead of Transforms s
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update TeapotDemo to use separate matrices instead of storing Transforms (lines 19, 22, 24, 31).
 
@@ -1044,14 +1023,14 @@ Update TeapotDemo to use separate matrices instead of storing Transforms (lines 
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update SceneGraphRenderPass to pass separate matrices instead of Transforms (line 75).
 
-- 2025-10-29: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
+- 2025-10-29T00:00:00+00:00: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
 
 ---
 
@@ -1059,14 +1038,14 @@ Update SceneGraphRenderPass to pass separate matrices instead of Transforms (lin
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update HitTestDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2025-10-29: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
+- 2025-10-29T00:00:00+00:00: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
 
 ---
 
@@ -1074,14 +1053,14 @@ Update HitTestDemoView to use new matrix parameters instead of .transforms() mod
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update TrivialMeshDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2025-10-29: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
+- 2025-10-29T00:00:00+00:00: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
 
 ---
 
@@ -1089,14 +1068,14 @@ Update TrivialMeshDemoView to use new matrix parameters instead of .transforms()
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update PanoramaElements to use new matrix parameters instead of .transforms() modifier.
 
-- 2025-10-29: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- 2025-10-29T00:00:00+00:00: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1104,14 +1083,14 @@ Update PanoramaElements to use new matrix parameters instead of .transforms() mo
 status: closed
 priority: medium
 kind: none
-labels: refactor,swift
+labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Update SkyboxDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2025-10-29: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- 2025-10-29T00:00:00+00:00: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1119,10 +1098,10 @@ Update SkyboxDemoView to use new matrix parameters instead of .transforms() modi
 status: closed
 priority: medium
 kind: none
-labels: refactor,cleanup
+labels: refactor, cleanup
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Remove the deprecated .transforms() extension from Transforms.swift (lines 26-34) after all usages are replaced.
 
@@ -1132,10 +1111,10 @@ Remove the deprecated .transforms() extension from Transforms.swift (lines 26-34
 status: closed
 priority: medium
 kind: none
-labels: refactor,cleanup
+labels: refactor, cleanup
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Remove the Transforms struct definition from Support.h (lines 69-80) after all usages are replaced.
 
@@ -1145,10 +1124,10 @@ Remove the Transforms struct definition from Support.h (lines 69-80) after all u
 status: closed
 priority: medium
 kind: none
-labels: refactor,cleanup
+labels: refactor, cleanup
 depends: MetalSprocketsExamples#282
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Remove Transforms.swift file entirely after all usages are replaced and the struct is removed from Support.h.
 
@@ -1158,8 +1137,8 @@ Remove Transforms.swift file entirely after all usages are replaced and the stru
 status: closed
 priority: none
 kind: task
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 
 ---
@@ -1168,7 +1147,7 @@ closed: 2025-10-29
 status: new
 priority: none
 kind: task
-created: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
 
 
 ---
@@ -1177,7 +1156,7 @@ created: 2025-10-29
 status: new
 priority: medium
 kind: enhancement
-created: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
 
 Use 4x3 matrixes instead of 4x4 where possible. This incurs some ceremony on both the CPU and GPU
 
@@ -1187,11 +1166,11 @@ Use 4x3 matrixes instead of 4x4 where possible. This incurs some ceremony on bot
 status: closed
 priority: medium
 kind: none
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
-- 2025-10-29: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
-- 2025-10-29: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
+- 2025-10-29T00:00:00+00:00: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
+- 2025-10-29T00:00:00+00:00: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
 
 ---
 
@@ -1199,8 +1178,8 @@ closed: 2025-10-29
 status: closed
 priority: medium
 kind: none
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Move the MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets from MetalSprocketsExamples to the MetalSprocketsAddOns companion project.
 
@@ -1241,7 +1220,7 @@ Note: MikkTSpace is identical in both projects and can be ignored.
 - Examples project builds successfully
 - No duplication of AddOns code between projects
 
-- 2025-10-29: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
+- 2025-10-29T00:00:00+00:00: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
 
 ---
 
@@ -1249,8 +1228,8 @@ Note: MikkTSpace is identical in both projects and can be ignored.
 status: closed
 priority: medium
 kind: none
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 Both MetalSprocketsExamples and MetalSprocketsAddOns have hard-coded absolute paths in their metal-compiler-plugin.json files.
 
@@ -1276,7 +1255,7 @@ Hard-coded absolute paths make the project non-portable and cause issues when:
 3. Update MetalCompilerPlugin to auto-detect paths based on target structure
 4. Use environment variables or build-time substitution
 
-- 2025-10-29: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
+- 2025-10-29T00:00:00+00:00: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
 
 ---
 
@@ -1284,8 +1263,8 @@ Hard-coded absolute paths make the project non-portable and cause issues when:
 status: closed
 priority: medium
 kind: none
-created: 2025-10-29
-closed: 2025-10-29
+created: 2025-10-29T00:00:00+00:00
+closed: 2025-10-29T00:00:00+00:00
 
 The Examples Package.swift has a hard-coded absolute path to the MetalCompilerPlugin package dependency.
 
@@ -1316,7 +1295,17 @@ Once the required MetalCompilerPlugin fixes are released:
 2. Remove or comment out line 24 with the local path
 3. Update to the new version that supports cross-package shader dependencies
 
-- 2025-10-29: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
+- 2025-10-29T00:00:00+00:00: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
+
+---
+
+## 306: Add Demos menu to menu bar for accessibility-driven navigation
+status: new
+priority: medium
+kind: feature
+created: 2026-04-02T17:21:43.828932+00:00
+
+Add a 'Demos' menu to the app's menu bar listing all demos by name. This enables reliable automation via 'steveo menu --app ... Demos Triangle' since menus are the most robust accessibility targets. The sidebar list rows are AXUnknown and clicks don't trigger selection.
 
 ---
 
