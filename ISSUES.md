@@ -98,7 +98,7 @@ Create the simplest possible demo that can run independently.
 
 Origin: GitHub issue #212
 
-- 2026-04-02T22:18:00.726446+00:00: 00: 00: 00: 00: Too vague to be actionable.
+- 2026-04-02T22:18:00.726446+00:00: Too vague to be actionable.
 
 ---
 
@@ -240,7 +240,7 @@ Need to add proper assertions to verify that values are correct in Texture2DSpec
 
 Origin: GitHub issue #287
 
-- 2026-04-02T22:18:00.728729+00:00: 00: 00: 00: 00: Duplicate of #279 which is already closed/done.
+- 2026-04-02T22:18:00.728729+00:00: Duplicate of #279 which is already closed/done.
 
 ---
 
@@ -262,7 +262,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T22:18:00.729331+00:00: 00: 00: 00: 00: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
+- 2026-04-02T22:18:00.729331+00:00: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
 
 ---
 
@@ -273,7 +273,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T22:18:00.729829+00:00: 00: 00: 00: 00: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
+- 2026-04-02T22:18:00.729829+00:00: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
 
 ---
 
@@ -284,7 +284,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T22:18:00.730289+00:00: 00: 00: 00: 00: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
+- 2026-04-02T22:18:00.730289+00:00: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
 
 ---
 
@@ -295,7 +295,7 @@ kind: task
 created: 2025-10-23T00:00:00+00:00
 closed: 2025-10-23T00:00:00+00:00
 
-- 2026-04-02T22:18:00.730726+00:00: 00: 00: 00: 00: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
+- 2026-04-02T22:18:00.730726+00:00: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
 
 ---
 
@@ -339,7 +339,7 @@ created: 2025-10-24T00:00:00+00:00
 updated: 2026-04-02T22:02:52.481046+00:00
 closed: 2026-04-02T22:02:52.481046+00:00
 
-- 2026-04-02T22:18:00.732397+00:00: 00: 00: 00: 00: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
+- 2026-04-02T22:18:00.732397+00:00: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
 
 ---
 
@@ -351,7 +351,7 @@ created: 2025-10-24T00:00:00+00:00
 updated: 2026-04-02T22:02:52.658595+00:00
 closed: 2026-04-02T22:02:52.658595+00:00
 
-- 2026-04-02T22:18:00.732825+00:00: 00: 00: 00: 00: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
+- 2026-04-02T22:18:00.732825+00:00: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
 
 ---
 
@@ -363,7 +363,7 @@ created: 2025-10-24T00:00:00+00:00
 updated: 2026-04-02T22:02:52.831976+00:00
 closed: 2026-04-02T22:02:52.831976+00:00
 
-- 2026-04-02T22:18:00.733255+00:00: 00: 00: 00: 00: No longer relevant.
+- 2026-04-02T22:18:00.733255+00:00: No longer relevant.
 
 ---
 
@@ -436,7 +436,7 @@ We have DemoView (via DemoKit) and Examples in UltraviolenceExamples/ExampleElem
 
 *Imported from #64*
 
-- 2026-04-02T22:18:00.734926+00:00: 00: 00: 00: 00: Done — all demos are registered in allDemos.
+- 2026-04-02T22:18:00.734926+00:00: Done — all demos are registered in allDemos.
 
 ---
 
@@ -515,7 +515,7 @@ Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Suppo
 
 *Imported from #112*
 
-- 2026-04-02T22:18:00.737246+00:00: 00: 00: 00: 00: TypedMTLBuffer no longer exists.
+- 2026-04-02T22:18:00.737246+00:00: TypedMTLBuffer no longer exists.
 
 ---
 
@@ -532,7 +532,7 @@ Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Inter
 
 *Imported from #116*
 
-- 2026-04-02T22:18:00.737623+00:00: 00: 00: 00: 00: No longer relevant.
+- 2026-04-02T22:18:00.737623+00:00: No longer relevant.
 
 ---
 
@@ -555,7 +555,7 @@ Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Reuse
 
 Performance improvement: Reduces per-vertex computation, especially beneficial for high-poly meshes.
 
-- 2026-04-02T22:18:00.737948+00:00: 00: 00: 00: 00: Pre-calculated matrices on CPU side to avoid per-vertex computation:
+- 2026-04-02T22:18:00.737948+00:00: Pre-calculated matrices on CPU side to avoid per-vertex computation:
 
 ---
 
@@ -639,7 +639,7 @@ Implement spatial computing demos leveraging VisionOS capabilities like immersiv
 
 *Imported from #161*
 
-- 2026-04-02T22:18:00.738370+00:00: 00: 00: 00: 00: Duplicate of #74.
+- 2026-04-02T22:18:00.738370+00:00: Duplicate of #74.
 
 ---
 
@@ -726,7 +726,7 @@ closed: 2026-04-02T21:57:01.203164+00:00
 
 *Imported from #255*
 
-- 2026-04-02T22:18:00.739906+00:00: 00: 00: 00: 00: CachingImportWell no longer exists (renamed to SuperImportWell). Reopen with specifics if needed.
+- 2026-04-02T22:18:00.739906+00:00: CachingImportWell no longer exists (renamed to SuperImportWell). Reopen with specifics if needed.
 
 ---
 
@@ -944,7 +944,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices (projectionMatrix, cameraMatrix, modelMatrix). Calculate viewMatrix, modelViewMatrix, and modelViewProjectionMatrix in shader. This is the FIRST example to fix.
 
-- 2026-04-02T22:18:00.743731+00:00: 00: 00: 00: 00: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
+- 2026-04-02T22:18:00.743731+00:00: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
 
 ---
 
@@ -959,7 +959,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update BlinnPhongDemoView to pass separate matrices instead of Transforms struct. Uses .transforms() modifier at line 62.
 
-- 2026-04-02T22:18:00.743944+00:00: 00: 00: 00: 00: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
+- 2026-04-02T22:18:00.743944+00:00: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
 
 ---
 
@@ -974,7 +974,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in Panorama shader (line 21).
 
-- 2026-04-02T22:18:00.744157+00:00: 00: 00: 00: 00: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- 2026-04-02T22:18:00.744157+00:00: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -1015,7 +1015,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Replace Transforms buffer parameter with separate matrices in Skybox shader (line 16).
 
-- 2026-04-02T22:18:00.744780+00:00: 00: 00: 00: 00: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- 2026-04-02T22:18:00.744780+00:00: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -1056,7 +1056,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update SceneGraphRenderPass to pass separate matrices instead of Transforms (line 75).
 
-- 2026-04-02T22:18:00.745409+00:00: 00: 00: 00: 00: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
+- 2026-04-02T22:18:00.745409+00:00: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
 
 ---
 
@@ -1071,7 +1071,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update HitTestDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.745624+00:00: 00: 00: 00: 00: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
+- 2026-04-02T22:18:00.745624+00:00: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
 
 ---
 
@@ -1086,7 +1086,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update TrivialMeshDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.745835+00:00: 00: 00: 00: 00: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
+- 2026-04-02T22:18:00.745835+00:00: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
 
 ---
 
@@ -1101,7 +1101,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update PanoramaElements to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.746047+00:00: 00: 00: 00: 00: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- 2026-04-02T22:18:00.746047+00:00: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1116,7 +1116,7 @@ closed: 2025-10-29T00:00:00+00:00
 
 Update SkyboxDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.746357+00:00: 00: 00: 00: 00: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- 2026-04-02T22:18:00.746357+00:00: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1177,7 +1177,7 @@ labels: effort:s
 created: 2025-10-29T00:00:00+00:00
 updated: 2026-04-02T22:05:53.902826+00:00
 
-- 2026-04-02T22:18:00.748004+00:00: 00: 00: 00: 00: Duplicate of #316.
+- 2026-04-02T22:18:00.748004+00:00: Duplicate of #316.
 
 ---
 
@@ -1199,8 +1199,8 @@ kind: none
 created: 2025-10-29T00:00:00+00:00
 closed: 2025-10-29T00:00:00+00:00
 
-- 2026-04-02T22:18:00.748669+00:00: 00: 00: 00: 00: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
-- 2026-04-02T22:18:00.748675+00:00: 00: 00: 00: 00: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
+- 2026-04-02T22:18:00.748669+00:00: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
+- 2026-04-02T22:18:00.748675+00:00: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
 
 ---
 
@@ -1250,7 +1250,7 @@ Note: MikkTSpace is identical in both projects and can be ignored.
 - Examples project builds successfully
 - No duplication of AddOns code between projects
 
-- 2026-04-02T22:18:00.749017+00:00: 00: 00: 00: 00: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
+- 2026-04-02T22:18:00.749017+00:00: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
 
 ---
 
@@ -1285,7 +1285,7 @@ Hard-coded absolute paths make the project non-portable and cause issues when:
 3. Update MetalCompilerPlugin to auto-detect paths based on target structure
 4. Use environment variables or build-time substitution
 
-- 2026-04-02T22:18:00.749356+00:00: 00: 00: 00: 00: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
+- 2026-04-02T22:18:00.749356+00:00: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
 
 ---
 
@@ -1325,7 +1325,7 @@ Once the required MetalCompilerPlugin fixes are released:
 2. Remove or comment out line 24 with the local path
 3. Update to the new version that supports cross-package shader dependencies
 
-- 2026-04-02T22:18:00.749694+00:00: 00: 00: 00: 00: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
+- 2026-04-02T22:18:00.749694+00:00: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
 
 ---
 
@@ -1339,7 +1339,7 @@ closed: 2026-04-02T17:29:04.638879+00:00
 
 Add a 'Demos' menu to the app's menu bar listing all demos by name. This enables reliable automation via 'steveo menu --app ... Demos Triangle' since menus are the most robust accessibility targets. The sidebar list rows are AXUnknown and clicks don't trigger selection.
 
-- 2026-04-02T22:18:00.750029+00:00: 00: 00: 00: 00: Added Demos menu to menu bar listing all demos
+- 2026-04-02T22:18:00.750029+00:00: Added Demos menu to menu bar listing all demos
 
 ---
 
@@ -1353,7 +1353,7 @@ closed: 2026-04-02T17:29:04.809008+00:00
 
 Register a URL scheme (e.g. metalsprockets-examples://demo/triangle) so demos can be opened directly from the command line via 'open metalsprockets-examples://demo/triangle'. This enables screenshot automation without any accessibility dependency. The app should handle the URL, navigate to the matching and render it.
 
-- 2026-04-02T22:18:00.750367+00:00: 00: 00: 00: 00: Added metalsprockets-examples:// URL scheme for direct demo navigation
+- 2026-04-02T22:18:00.750367+00:00: Added metalsprockets-examples:// URL scheme for direct demo navigation
 
 ---
 
@@ -1367,7 +1367,7 @@ closed: 2026-04-02T21:45:23.020140+00:00
 
 Write a script that cycles through all demos, navigates to each one (via URL scheme or menu), waits for render, and saves a screenshot to Documentation/<DemoName>.png. Depends on #307 (URL scheme) or #306 (Demos menu). Should skip Empty demo and handle demos that need extra settle time (animated demos).
 
-- 2026-04-02T22:18:00.750704+00:00: 00: 00: 00: 00: Done — screenshot collection script exists and works.
+- 2026-04-02T22:18:00.750704+00:00: Done — screenshot collection script exists and works.
 
 ---
 
@@ -1381,7 +1381,7 @@ closed: 2026-04-02T21:46:10.524663+00:00
 
 Many demos have oversized or inconsistent configuration panels (Point Cloud, Video Playback, Particle Effects, Grass Sphere, Spiral Particles, Tiled SDF, etc.). The control panels often dominate the viewport or obscure the rendering. Standardize on a consistent, compact configuration UI pattern — e.g., a collapsible inspector panel or popover — that all demos share.
 
-- 2026-04-02T22:18:00.751040+00:00: 00: 00: 00: 00: Duplicate of #24.
+- 2026-04-02T22:18:00.751040+00:00: Duplicate of #24.
 
 ---
 
@@ -1407,7 +1407,7 @@ closed: 2026-04-02T22:13:34.775587+00:00
 
 The -Z axis label is rendered on the skybox face and should be hidden by default (make it a toggle). Also the skybox texture is a bit dull — consider a more vibrant cubemap.
 
-- 2026-04-02T22:18:00.751694+00:00: 00: 00: 00: 00: Face labels now hidden by default with a toolbar toggle.
+- 2026-04-02T22:18:00.751694+00:00: Face labels now hidden by default with a toolbar toggle.
 
 ---
 
@@ -1467,7 +1467,7 @@ closed: 2026-04-02T21:45:29.651786+00:00
 
 Shows 'No File' placeholder. Bundle a default equirectangular panorama so the demo works without user interaction.
 
-- 2026-04-02T22:18:00.752777+00:00: 00: 00: 00: 00: Duplicate of #300.
+- 2026-04-02T22:18:00.752777+00:00: Duplicate of #300.
 
 ---
 
