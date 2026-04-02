@@ -94,13 +94,16 @@ struct ITermRenderer<Demo: DemoRenderPass> {
         colorTexture.getBytes(
             &pixelBuffer,
             bytesPerRow: imageWidth * 4,
-            from: MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
-                            size: MTLSize(width: imageWidth, height: imageHeight, depth: 1)),
+            from: MTLRegion(
+                origin: MTLOrigin(x: 0, y: 0, z: 0),
+                size: MTLSize(width: imageWidth, height: imageHeight, depth: 1)
+            ),
             mipmapLevel: 0
         )
 
         // Encode as PNG
         guard let pngData = pixelBuffer.withUnsafeBufferPointer({ buffer in
+            // swiftlint:disable:next force_unwrapping
             encodePNG(pixels: buffer.baseAddress!, width: imageWidth, height: imageHeight)
         }) else {
             return
@@ -128,7 +131,7 @@ struct ITermRenderer<Demo: DemoRenderPass> {
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
 
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB),
-              let context = CGContext(
+            let context = CGContext(
                 data: UnsafeMutableRawPointer(mutating: pixels),
                 width: width,
                 height: height,
@@ -136,8 +139,8 @@ struct ITermRenderer<Demo: DemoRenderPass> {
                 bytesPerRow: bytesPerRow,
                 space: colorSpace,
                 bitmapInfo: bitmapInfo.rawValue
-              ),
-              let cgImage = context.makeImage() else {
+            ),
+            let cgImage = context.makeImage() else {
             return nil
         }
 

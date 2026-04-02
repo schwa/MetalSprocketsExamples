@@ -23,10 +23,11 @@ struct CLI: ParsableCommand {
 
     static var availableDemos: String {
         // Avoid keypath syntax on existential types to work around Swift compiler crash
-        allDemoRenderPasses.map { $0.name }.joined(separator: ", ")
+        allDemoRenderPasses.map(\.name).joined(separator: ", ")
     }
 
     static var defaultDemo: String {
+        // swiftlint:disable:next force_unwrapping
         allDemoRenderPasses.first!.name
     }
 
@@ -53,20 +54,18 @@ struct CLI: ParsableCommand {
         let terminal = Terminal.current()
 
         // Match demo by name and run with concrete type
-        for demoType in allDemoRenderPasses {
-            if demoType.name == demoName {
-                switch mode {
-                case .ansi:
-                    try runANSIRenderLoop(demoType, terminal: terminal)
-                case .sixel:
-                    try runSixelRenderLoop(demoType, terminal: terminal)
-                case .iterm:
-                    try runITermRenderLoop(demoType, terminal: terminal)
-                case .kitty:
-                    try runKittyRenderLoop(demoType, terminal: terminal)
-                }
-                return
+        for demoType in allDemoRenderPasses where demoType.name == demoName {
+            switch mode {
+            case .ansi:
+                try runANSIRenderLoop(demoType, terminal: terminal)
+            case .sixel:
+                try runSixelRenderLoop(demoType, terminal: terminal)
+            case .iterm:
+                try runITermRenderLoop(demoType, terminal: terminal)
+            case .kitty:
+                try runKittyRenderLoop(demoType, terminal: terminal)
             }
+            return
         }
 
         throw ValidationError("Unknown demo '\(demoName)'. Available: \(Self.availableDemos)")

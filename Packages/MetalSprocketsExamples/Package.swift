@@ -12,7 +12,7 @@ let package = Package(
     products: [
         .library(name: "MetalSprocketsExamples", targets: ["MetalSprocketsExamples"]),
         .library(name: "MetalSprocketsExamplesSupport", targets: ["MetalSprocketsExamplesSupport"]),
-        .executable(name: "CLI", targets: ["CLI"]),
+        .executable(name: "CLI", targets: ["CLI"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
@@ -24,11 +24,10 @@ let package = Package(
         .package(url: "https://github.com/schwa/Interaction3D", branch: "main"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.4"),
         .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
-//        .package(path: "/Users/schwa/Projects/MetalSprockets"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", from: "0.1.1"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
-        .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0"),
+        .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0")
     ],
     targets: [
         .target(
@@ -47,7 +46,7 @@ let package = Package(
                 .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns"),
                 .product(name: "MetalSprocketsAddOnsShaders", package: "MetalSprocketsAddOns"),
                 .product(name: "Panels", package: "Panels"),
-                .product(name: "SwiftGLTF", package: "SwiftGLTF"),
+                .product(name: "SwiftGLTF", package: "SwiftGLTF")
             ],
             exclude: ["Demos/TiledSDF/README.md"],
             resources: [
@@ -59,7 +58,7 @@ let package = Package(
                 .copy("Resources/HD-Testcard-original.jpg"),
                 .copy("Resources/IndoorEnvironmentHDRI013_1K-HDR.exr"),
                 .copy("Resources/Samples"),
-                .copy("Resources/teapot.obj"),
+                .copy("Resources/teapot.obj")
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
@@ -69,7 +68,7 @@ let package = Package(
             name: "MetalSprocketsExamplesSupport",
             dependencies: [
                 .product(name: "MetalSprockets", package: "MetalSprockets"),
-                .product(name: "ZIPFoundation", package: "ZIPFoundation"),
+                .product(name: "ZIPFoundation", package: "ZIPFoundation")
             ]
         ),
         .target(
@@ -81,7 +80,7 @@ let package = Package(
             exclude: ["Metal"],
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ],
+            ]
         ),
         .testTarget(
             name: "MetalSprocketsExamplesTests",
@@ -96,12 +95,12 @@ let package = Package(
                 "MetalSprocketsExamples",
                 "MetalSprocketsExampleShaders",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "MetalSprockets", package: "MetalSprockets"),
+                .product(name: "MetalSprockets", package: "MetalSprockets")
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
             ]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )

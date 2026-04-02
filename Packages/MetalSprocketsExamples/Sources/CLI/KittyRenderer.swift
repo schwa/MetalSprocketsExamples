@@ -108,8 +108,10 @@ struct KittyRenderer<Demo: DemoRenderPass> {
         colorTexture.getBytes(
             &pixelBuffer,
             bytesPerRow: imageWidth * 4,
-            from: MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
-                            size: MTLSize(width: imageWidth, height: imageHeight, depth: 1)),
+            from: MTLRegion(
+                origin: MTLOrigin(x: 0, y: 0, z: 0),
+                size: MTLSize(width: imageWidth, height: imageHeight, depth: 1)
+            ),
             mipmapLevel: 0
         )
 
@@ -181,6 +183,7 @@ struct KittyRenderer<Demo: DemoRenderPass> {
             // Base64 encode this chunk directly to output
             rgbBuffer.withUnsafeBufferPointer { buffer in
                 let slice = UnsafeBufferPointer(
+                    // swiftlint:disable:next force_unwrapping
                     start: buffer.baseAddress! + offset,
                     count: bytesToEncode
                 )

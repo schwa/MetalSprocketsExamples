@@ -135,7 +135,9 @@ struct SixelRenderer<Demo: DemoRenderPass> {
 
     // Convert int to ASCII digits
     private static func intToASCII(_ value: Int) -> [UInt8] {
-        if value == 0 { return [0x30] }
+        if value == 0 {
+            return [0x30]
+        }
         var digits = [UInt8]()
         var v = value
         while v > 0 {
@@ -160,12 +162,15 @@ struct SixelRenderer<Demo: DemoRenderPass> {
         colorTexture.getBytes(
             &pixelBuffer,
             bytesPerRow: imageWidth * 4,
-            from: MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
-                            size: MTLSize(width: imageWidth, height: imageHeight, depth: 1)),
+            from: MTLRegion(
+                origin: MTLOrigin(x: 0, y: 0, z: 0),
+                size: MTLSize(width: imageWidth, height: imageHeight, depth: 1)
+            ),
             mipmapLevel: 0
         )
 
         pixelBuffer.withUnsafeBufferPointer { pixels in
+            // swiftlint:disable:next force_unwrapping
             encodeSixel(pixels: pixels.baseAddress!)
         }
 
@@ -265,7 +270,9 @@ struct SixelRenderer<Demo: DemoRenderPass> {
 
     private func rleEncodeTo(_ output: inout [UInt8], data: [UInt8]) {
         let count = data.count
-        guard count > 0 else { return }
+        guard count > 0 else {
+            return
+        }
 
         var i = 0
         while i < count {
@@ -296,7 +303,9 @@ struct SixelRenderer<Demo: DemoRenderPass> {
 
 // Helper for init
 private func intToASCII(_ value: Int) -> [UInt8] {
-    if value == 0 { return [0x30] }
+    if value == 0 {
+        return [0x30]
+    }
     var digits = [UInt8]()
     var v = value
     while v > 0 {
