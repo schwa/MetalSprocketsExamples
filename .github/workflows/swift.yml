@@ -1,86 +1,65 @@
 # This workflow will build a Swift project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
-# https://github.com/schwa/MetalSprockets-Examples/actions
-
 name: Swift
 on:
-    push:
-    pull_request:
-jobs:
-    swift-build-26:
-        env:
-            XCODE_VERSION: "latest-stable"
-        runs-on: macos-26
-        steps:
-            - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
-              with:
-                  xcode-version: ${{ env.XCODE_VERSION }}
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-            - name: Download MetalToolchain
-              run: |
-                xcodebuild -downloadComponent MetalToolchain
-                xcrun --find metal
-            - name: Trust plugins
-              run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-            - run: swift build -v
-              working-directory: Packages/MetalSprocketsExamples
-            - run: swift test -v
-              working-directory: Packages/MetalSprocketsExamples
+  push:
+  pull_request:
 
-    xcode-build-26:
-        env:
-            XCODE_VERSION: "latest-stable"
-            XCODE_PROJECT: "MetalSprockets-Examples.xcodeproj"
-            XCODE_SCHEME: "MetalSprockets-Examples"
-            XCODE_CONFIGURATION: "Release"
-        runs-on: macos-26
-        steps:
-            - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
-              with:
-                  xcode-version: ${{ env.XCODE_VERSION }}
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-              with:
-                  submodules: true
-            - name: Download MetalToolchain
-              run: |
-                xcodebuild -downloadComponent MetalToolchain
-                xcrun --find metal
-            - run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-            - name: Build for macOS
-              run: |
-                  xcodebuild \
-                    -project "${{ env.XCODE_PROJECT }}" \
-                    -scheme "${{ env.XCODE_SCHEME }}" \
-                    -configuration "${{ env.XCODE_CONFIGURATION }}" \
-                    -destination "generic/platform=macOS" \
-                    -skipPackagePluginValidation \
-                    -skipMacroValidation \
-                    build \
-                    ARCHS=arm64 \
-                    ONLY_ACTIVE_ARCH=NO \
-                    CODE_SIGNING_ALLOWED=NO
-            - name: Build for visionOS Simulator
-              run: |
-                  xcodebuild \
-                    -project "${{ env.XCODE_PROJECT }}" \
-                    -scheme "${{ env.XCODE_SCHEME }}" \
-                    -configuration "${{ env.XCODE_CONFIGURATION }}" \
-                    -destination "generic/platform=visionOS Simulator" \
-                    -skipPackagePluginValidation \
-                    -skipMacroValidation \
-                    build \
-                    ONLY_ACTIVE_ARCH=NO \
-                    CODE_SIGNING_ALLOWED=NO
-            - name: Build for visionOS
-              run: |
-                  xcodebuild \
-                    -project "${{ env.XCODE_PROJECT }}" \
-                    -scheme "${{ env.XCODE_SCHEME }}" \
-                    -configuration "${{ env.XCODE_CONFIGURATION }}" \
-                    -destination "generic/platform=visionOS" \
-                    -skipPackagePluginValidation \
-                    -skipMacroValidation \
-                    build \
-                    ONLY_ACTIVE_ARCH=NO \
-                    CODE_SIGNING_ALLOWED=NO
+env:
+  XCODE_VERSION: "26.2"
+
+jobs:
+  swiftlint:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install SwiftLint
+        run: brew install swiftlint
+      - name: Run SwiftLint
+        run: swiftlint --strict
+
+  build-and-test:
+    runs-on: "macos-26"
+    steps:
+      - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Download MetalToolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+      - name: Trust plugins
+        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+      - name: Build (macOS)
+        run: swift build -v --disable-sandbox
+        working-directory: Packages/MetalSprocketsExamples
+      - name: Test (macOS)
+        run: swift test -v --disable-sandbox
+        working-directory: Packages/MetalSprocketsExamples
+
+  build-example:
+    runs-on: "macos-26"
+    strategy:
+      matrix:
+        destination:
+          - "platform=macOS"
+          - "generic/platform=iOS"
+          - "generic/platform=xrOS"
+    steps:
+      - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Download MetalToolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+      - name: Trust plugins
+        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+      - name: Build Example App (${{ matrix.destination }})
+        run: |
+          xcodebuild build \
+            -project MetalSprockets-Examples.xcodeproj \
+            -scheme MetalSprockets-Examples \
+            -destination '${{ matrix.destination }}' \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO
