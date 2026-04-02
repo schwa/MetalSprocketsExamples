@@ -16,6 +16,9 @@ public struct SkyboxDemoView: View {
     @State
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 1])
 
+    @State
+    private var showFaceLabels = false
+
     public init() {
         // This line intentionally left blank.
     }
@@ -30,9 +33,12 @@ public struct SkyboxDemoView: View {
                 }
             }
         }
-        .task {
+        .toolbar {
+            Toggle("Face Labels", isOn: $showFaceLabels)
+        }
+        .task(id: showFaceLabels) {
             do {
-                texture = try testTexture()
+                texture = try testTexture(showFaceLabels: showFaceLabels)
             }
             catch {
                 fatalError("Failed to create skybox texture: \(error)")
@@ -40,43 +46,45 @@ public struct SkyboxDemoView: View {
         }
     }
 
-    func testTexture() throws -> MTLTexture {
+    func testTexture(showFaceLabels: Bool) throws -> MTLTexture {
         let testView = ZStack {
             Image("Skybox")
                 .resizable()
                 .accessibilityHidden(true)
 
-            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-                GridRow {
-                    Spacer()
-                        .frame(width: 1_024, height: 1_024)
-                    Color.green.opacity(0.2)
-                        .overlay(Text("+Y").scaleEffect(10))
-                        .frame(width: 1_024, height: 1_024)
-                }
-                GridRow {
-                    Color.blue.opacity(0.2)
-                        .overlay(Text("+X").scaleEffect(10))
-                        .frame(width: 1_024, height: 1_024)
+            if showFaceLabels {
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    GridRow {
+                        Spacer()
+                            .frame(width: 1_024, height: 1_024)
+                        Color.green.opacity(0.2)
+                            .overlay(Text("+Y").scaleEffect(10))
+                            .frame(width: 1_024, height: 1_024)
+                    }
+                    GridRow {
+                        Color.blue.opacity(0.2)
+                            .overlay(Text("+X").scaleEffect(10))
+                            .frame(width: 1_024, height: 1_024)
 
-                    Color.red.opacity(0.2)
-                        .overlay(Text("+Z").scaleEffect(10))
-                        .frame(width: 1_024, height: 1_024)
+                        Color.red.opacity(0.2)
+                            .overlay(Text("+Z").scaleEffect(10))
+                            .frame(width: 1_024, height: 1_024)
 
-                    Color.blue.opacity(0.2)
-                        .overlay(Text("-X").scaleEffect(10))
-                        .frame(width: 1_024, height: 1_024)
+                        Color.blue.opacity(0.2)
+                            .overlay(Text("-X").scaleEffect(10))
+                            .frame(width: 1_024, height: 1_024)
 
-                    Color.red.opacity(0.2)
-                        .overlay(Text("-Z").scaleEffect(10))
-                        .frame(width: 1_024, height: 1_024)
-                }
-                GridRow {
-                    Spacer()
-                        .frame(width: 1_024, height: 1_024)
-                    Color.green.opacity(0.2)
-                        .overlay(Text("-Y").scaleEffect(10))
-                        .frame(width: 1_024, height: 1_024)
+                        Color.red.opacity(0.2)
+                            .overlay(Text("-Z").scaleEffect(10))
+                            .frame(width: 1_024, height: 1_024)
+                    }
+                    GridRow {
+                        Spacer()
+                            .frame(width: 1_024, height: 1_024)
+                        Color.green.opacity(0.2)
+                            .overlay(Text("-Y").scaleEffect(10))
+                            .frame(width: 1_024, height: 1_024)
+                    }
                 }
             }
         }
