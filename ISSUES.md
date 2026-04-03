@@ -2104,3 +2104,12 @@ created: 2026-04-03T05:19:21.896483+00:00
 
 ---
 
+## 365: Grass shader shading looks wrong - flipped
+status: new
+priority: medium
+kind: bug
+created: 2026-04-03T05:27:48.070435+00:00
+
+
+---
+
