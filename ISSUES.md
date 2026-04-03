@@ -1978,3 +1978,13 @@ The AVPlayer in VideoTexturePipeline continues playing audio/video after the use
 
 ---
 
+## 363: Stencil demo: checkerboard stencil clipping not working
+status: new
+priority: high
+kind: bug
+created: 2026-04-03T03:45:28.696144+00:00
+
+The StencilDemoView renders the triangle without any checkerboard stencil clipping — the triangle appears as a full unclipped triangle. The clear color was also removed in commit xqx and has been restored, but that didn't fix the stencil issue. The stencil pipeline (BlitPass copying checkerboard texture into stencil attachment, then RenderPass with .load and compareFunction .equal) may be broken due to an upstream MetalSprockets change affecting how BlitPass accesses the render pass descriptor's stencil attachment.
+
+---
+
