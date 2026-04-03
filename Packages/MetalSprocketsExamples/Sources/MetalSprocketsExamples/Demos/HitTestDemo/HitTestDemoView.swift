@@ -194,6 +194,8 @@ public struct HitTestDemoView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black.opacity(0.8))
         .demoConfiguration {
             Form {
             Picker("Visualization", selection: $visualizationMode) {

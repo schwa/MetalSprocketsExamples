@@ -75,9 +75,10 @@ public struct LUTDemoView: View {
             }
         }
         .metalColorPixelFormat(.rgba16Float) //
-        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fill)
+        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
         .clipped()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
         .demoConfiguration {
             Form {
             Picker("LUT", selection: $lutURL) {

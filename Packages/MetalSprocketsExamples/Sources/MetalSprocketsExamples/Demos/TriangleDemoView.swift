@@ -87,5 +87,7 @@ public struct TriangleDemoView: View {
                 color = [Float(red), Float(green), Float(blue), 1]
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
     }
 }

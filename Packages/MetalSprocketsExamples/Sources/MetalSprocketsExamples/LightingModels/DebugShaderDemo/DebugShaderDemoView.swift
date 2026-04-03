@@ -26,36 +26,35 @@ public struct DebugShadersDemoView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            DebugModePicker(debugMode: $debugMode)
-                .padding()
+        WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
+            RenderView { _, drawableSize in
+                let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+                let viewMatrix = cameraMatrix.inverse
+                let viewProjectionMatrix = projectionMatrix * viewMatrix
 
-            WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                RenderView { _, drawableSize in
-                    let projectionMatrix = projection.projectionMatrix(for: drawableSize)
-                    let viewMatrix = cameraMatrix.inverse
-                    let viewProjectionMatrix = projectionMatrix * viewMatrix
+                try RenderPass(label: "Debug") {
+                    try AxisLinesRenderPipeline(
+                        mvpMatrix: viewProjectionMatrix,
+                        viewMatrix: viewMatrix,
+                        projectionMatrix: projectionMatrix,
+                        viewportSize: SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
+                    )
 
-                    try RenderPass(label: "Debug") {
-                        try AxisLinesRenderPipeline(
-                            mvpMatrix: viewProjectionMatrix,
-                            viewMatrix: viewMatrix,
-                            projectionMatrix: projectionMatrix,
-                            viewportSize: SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
-                        )
+                    AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
 
-                        AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
-
-                        try DebugRenderPipeline(modelMatrix: .identity, normalMatrix: .init(diagonal: [1, 1, 1]), debugMode: debugMode, lightPosition: [0, 10, 0], cameraPosition: cameraMatrix.translation, viewProjectionMatrix: viewProjectionMatrix) {
-                            Draw(mtkMesh: teapot)
-                        }
-                        .vertexDescriptor(teapot.vertexDescriptor)
-                        .depthCompare(function: .less, enabled: true)
+                    try DebugRenderPipeline(modelMatrix: .identity, normalMatrix: .init(diagonal: [1, 1, 1]), debugMode: debugMode, lightPosition: [0, 10, 0], cameraPosition: cameraMatrix.translation, viewProjectionMatrix: viewProjectionMatrix) {
+                        Draw(mtkMesh: teapot)
                     }
+                    .vertexDescriptor(teapot.vertexDescriptor)
+                    .depthCompare(function: .less, enabled: true)
                 }
-                .metalDepthStencilPixelFormat(.depth32Float)
             }
+            .metalDepthStencilPixelFormat(.depth32Float)
         }
+        .demoConfiguration {
+            DebugModePicker(debugMode: $debugMode)
+
+    }
     }
 }
 
