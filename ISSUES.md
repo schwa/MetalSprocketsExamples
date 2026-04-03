@@ -1173,12 +1173,13 @@ closed: 2025-10-29T00:00:00+00:00
 ---
 
 ## 300: Include a default panorama image.
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
 created: 2025-10-29T00:00:00+00:00
-updated: 2026-04-02T22:05:53.902826+00:00
+updated: 2026-04-03T02:15:37.266785+00:00
+closed: 2026-04-03T02:15:37.266784+00:00
 
 - 2026-04-02T22:18:00.748004+00:00: Duplicate of #316.
 
