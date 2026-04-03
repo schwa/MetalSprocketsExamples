@@ -54,17 +54,21 @@ public struct PointCloudDemoView: View {
             Form {
                 LabeledContent("Points") {
                     Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000)
+                        .accessibilityLabel("Points")
                         .onChange(of: pointCount) { _, _ in generatePointCloud() }
                 }
                 LabeledContent("Point Size") {
                     Slider(value: $pointSize, in: 1...30)
+                        .accessibilityLabel("Point Size")
                 }
                 LabeledContent("Major Radius") {
                     Slider(value: $majorRadius, in: 1...3)
+                        .accessibilityLabel("Major Radius")
                         .onChange(of: majorRadius) { _, _ in generatePointCloud() }
                 }
                 LabeledContent("Minor Radius") {
                     Slider(value: $minorRadius, in: 0.2...1.5)
+                        .accessibilityLabel("Minor Radius")
                         .onChange(of: minorRadius) { _, _ in generatePointCloud() }
                 }
                 Button("Regenerate") {

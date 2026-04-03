@@ -107,9 +107,11 @@ public struct ParticleEffectsDemoView: View {
 
                     LabeledContent("Particles") {
                         Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000)
+                            .accessibilityLabel("Particles")
                     }
                     LabeledContent("Size") {
                         Slider(value: $particleSize, in: 5...50)
+                            .accessibilityLabel("Size")
                     }
                 }
                 .frame(width: 250)
@@ -117,9 +119,11 @@ public struct ParticleEffectsDemoView: View {
                 Form {
                     LabeledContent("Gravity") {
                         Slider(value: $gravity.y, in: -10...10)
+                            .accessibilityLabel("Gravity")
                     }
                     LabeledContent("Emission") {
                         Slider(value: $emissionRate, in: 100...2_000)
+                            .accessibilityLabel("Emission")
                     }
                     Button("Reset") {
                         initializeParticles()

@@ -62,6 +62,7 @@ public struct BouncingTeapotsDemoView: View {
                             Text("Render Size: \(scaleFactor * drawableSize.width, format: .number) x \(scaleFactor * drawableSize.height, format: .number)")
                             Text("Scale Factor: \(scaleFactor)")
                             Slider(value: $scaleFactor, in: 0.0125...1.0)
+                                .accessibilityLabel("Scale Factor")
                         }
                     }
                 }

@@ -122,6 +122,7 @@ public struct DepthDemoView: View {
             HStack {
                 Text("Contrast:")
                 Slider(value: $exponent, in: 0.1...10)
+                    .accessibilityLabel("Contrast")
                 Text("\(exponent, format: .number.precision(.fractionLength(2)))")
                     .frame(width: 50)
             }

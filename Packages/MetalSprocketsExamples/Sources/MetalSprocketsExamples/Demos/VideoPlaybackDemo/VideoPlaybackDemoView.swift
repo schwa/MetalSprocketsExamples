@@ -126,48 +126,62 @@ public struct VideoPlaybackDemoView: View {
                             }
                             LabeledContent("Curvature") {
                                 Slider(value: $vcrParameters.curvature, in: 0...10)
+                                    .accessibilityLabel("Curvature")
                             }
                             LabeledContent("Tracking") {
                                 Slider(value: $vcrParameters.skip, in: 0...1)
+                                    .accessibilityLabel("Tracking")
                             }
                             LabeledContent("Flicker") {
                                 Slider(value: $vcrParameters.imageFlicker, in: 0...2)
+                                    .accessibilityLabel("Flicker")
                             }
                             LabeledContent("Scanlines") {
                                 Slider(value: $vcrParameters.scanlinesOpacity, in: 0...2)
+                                    .accessibilityLabel("Scanlines")
                             }
                             LabeledContent("Vignette") {
                                 Slider(value: $vcrParameters.vignetteStrength, in: 0...2)
+                                    .accessibilityLabel("Vignette")
                             }
                             LabeledContent("Noise") {
                                 Slider(value: $vcrParameters.noiseAmount, in: 0...2)
+                                    .accessibilityLabel("Noise")
                             }
                         }
                         .frame(width: 300)
                         Form {
                             LabeledContent("Color Shift") {
                                 Slider(value: $vcrParameters.chromaticAberration, in: 0...2)
+                                    .accessibilityLabel("Color Shift")
                             }
                             LabeledContent("Vignette Pulse") {
                                 Slider(value: $vcrParameters.vignetteFlickerSpeed, in: 0...2)
+                                    .accessibilityLabel("Vignette Pulse")
                             }
                             LabeledContent("Scanline Speed") {
                                 Slider(value: $vcrParameters.scanlinesSpeed, in: 0...2)
+                                    .accessibilityLabel("Scanline Speed")
                             }
                             LabeledContent("Scanline Thickness") {
                                 Slider(value: $vcrParameters.scanlineThickness, in: 0...1)
+                                    .accessibilityLabel("Scanline Thickness")
                             }
                             LabeledContent("Scanline Spacing") {
                                 Slider(value: $vcrParameters.scanlinesSpacing, in: 0...2)
+                                    .accessibilityLabel("Scanline Spacing")
                             }
                             LabeledContent("Fast Scanlines") {
                                 Slider(value: $vcrParameters.smallScanlinesOpacity, in: 0...2)
+                                    .accessibilityLabel("Fast Scanlines")
                             }
                             LabeledContent("Fast Scanline Speed") {
                                 Slider(value: $vcrParameters.smallScanlinesSpeed, in: 0...2)
+                                    .accessibilityLabel("Fast Scanline Speed")
                             }
                             LabeledContent("Fast Scanline Density") {
                                 Slider(value: $vcrParameters.smallScanlinesProximity, in: 0...2)
+                                    .accessibilityLabel("Fast Scanline Density")
                             }
                         }
                         .frame(width: 300)

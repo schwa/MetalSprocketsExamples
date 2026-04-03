@@ -95,6 +95,7 @@ public struct GrassDemoView: View {
                     LabeledContent("Length") {
                         HStack {
                             Slider(value: $grassLength, in: 0.05...10.0)
+                                .accessibilityLabel("Length")
                             Text(grassLength, format: .number.precision(.fractionLength(2)))
                                 .frame(minWidth: 40)
                         }
@@ -102,6 +103,7 @@ public struct GrassDemoView: View {
                     LabeledContent("Width") {
                         HStack {
                             Slider(value: $bladeWidthMultiplier, in: 0.1...3.0)
+                                .accessibilityLabel("Width")
                             Text(bladeWidthMultiplier, format: .number.precision(.fractionLength(2)))
                                 .frame(minWidth: 40)
                         }
@@ -113,6 +115,7 @@ public struct GrassDemoView: View {
                     LabeledContent("Blades/Pt") {
                         HStack {
                             Slider(value: $bladesPerPoint, in: 1...16)
+                                .accessibilityLabel("Blades per Point")
                             Text(bladesPerPoint, format: .number.precision(.fractionLength(0)))
                                 .frame(minWidth: 40)
                         }
@@ -120,6 +123,7 @@ public struct GrassDemoView: View {
                     LabeledContent("Points") {
                         HStack {
                             Slider(value: $grassDensity, in: 100...Double(maxGrassPoints))
+                                .accessibilityLabel("Points")
                             Text(grassDensity, format: .number.precision(.fractionLength(0)))
                                 .frame(minWidth: 40)
                         }

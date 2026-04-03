@@ -93,6 +93,7 @@ public struct LUTDemoView: View {
             }
             LabeledContent("Blend") {
                 Slider(value: $blend, in: 0...1)
+                    .accessibilityLabel("Blend")
             }
             }
             .fixedSize()

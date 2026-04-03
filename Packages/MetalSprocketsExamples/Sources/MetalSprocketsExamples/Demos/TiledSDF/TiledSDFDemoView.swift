@@ -80,6 +80,7 @@ public struct TiledSDFDemoView: View {
                     ),
                     in: 10...Double(maxPrimitives)
                 )
+                .accessibilityLabel("Primitives")
                 Text("\(primitiveCount)")
                     .monospacedDigit()
                     .frame(minWidth: 40)
@@ -92,6 +93,7 @@ public struct TiledSDFDemoView: View {
                 Text("32×32").tag(32)
             }
             .pickerStyle(.segmented)
+            .accessibilityLabel("Tile Size")
         }
 
         LabeledContent("Visualization") {
@@ -102,6 +104,7 @@ public struct TiledSDFDemoView: View {
                 Text("Tiles").tag(VisualizationMode.tiles)
             }
             .pickerStyle(.segmented)
+            .accessibilityLabel("Visualization")
         }
 
         Toggle("Animate", isOn: $animatePrimitives)

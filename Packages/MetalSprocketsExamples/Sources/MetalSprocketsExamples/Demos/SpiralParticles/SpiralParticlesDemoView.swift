@@ -75,6 +75,7 @@ public struct SpiralParticlesDemoView: View {
                         ),
                         in: 1...Double(maxParticles)
                     )
+                    .accessibilityLabel("Particles")
                     Text("\(particleCount)")
                         .monospacedDigit()
                         .frame(minWidth: 30)
@@ -90,6 +91,7 @@ public struct SpiralParticlesDemoView: View {
                         ),
                         in: 3...Double(maxTriangles)
                     )
+                    .accessibilityLabel("Triangles")
                     Text("\(trianglesPerSpiral)")
                         .monospacedDigit()
                         .frame(minWidth: 30)
@@ -99,6 +101,7 @@ public struct SpiralParticlesDemoView: View {
             LabeledContent("Speed") {
                 HStack {
                     Slider(value: $rotationSpeed, in: 0.0...3.0)
+                        .accessibilityLabel("Speed")
                     Text(rotationSpeed, format: .number.precision(.fractionLength(2)))
                         .frame(minWidth: 40)
                 }
@@ -107,6 +110,7 @@ public struct SpiralParticlesDemoView: View {
             LabeledContent("Orbit") {
                 HStack {
                     Slider(value: $orbitRadius, in: 0.0...5.0)
+                        .accessibilityLabel("Orbit")
                     Text(orbitRadius, format: .number.precision(.fractionLength(2)))
                         .frame(minWidth: 40)
                 }
@@ -115,6 +119,7 @@ public struct SpiralParticlesDemoView: View {
             LabeledContent("Size") {
                 HStack {
                     Slider(value: $spiralSize, in: 0.1...2.0)
+                        .accessibilityLabel("Size")
                     Text(spiralSize, format: .number.precision(.fractionLength(2)))
                         .frame(minWidth: 40)
                 }

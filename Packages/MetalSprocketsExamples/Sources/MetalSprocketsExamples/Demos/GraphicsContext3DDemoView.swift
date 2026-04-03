@@ -111,6 +111,7 @@ public struct GraphicsContext3DDemoView: View {
         LabeledContent("Line Width") {
             HStack {
                 Slider(value: $lineWidthMultiplier, in: 0.1...20.0)
+                    .accessibilityLabel("Line Width")
                 Text(lineWidthMultiplier, format: .number.precision(.fractionLength(2)))
                     .frame(minWidth: 40)
             }
@@ -119,6 +120,7 @@ public struct GraphicsContext3DDemoView: View {
         LabeledContent("Random Lines") {
             HStack {
                 Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000)
+                    .accessibilityLabel("Random Lines")
                 Text("\(randomLineCount)")
                     .frame(minWidth: 40)
             }

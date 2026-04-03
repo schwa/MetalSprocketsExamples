@@ -172,6 +172,7 @@ public struct ColorAdjustDemoView: View {
                     LabeledContent("Multiply Factor:") {
                         HStack {
                             Slider(value: $multiplyValue, in: 0...10)
+                                .accessibilityLabel("Multiply Factor")
                             Text(multiplyValue, format: .number.precision(.fractionLength(2)))
                                 .frame(minWidth: 50)
                         }
@@ -181,6 +182,7 @@ public struct ColorAdjustDemoView: View {
                     LabeledContent("Gamma:") {
                         HStack {
                             Slider(value: $gammaValue, in: 0.1...5.0)
+                                .accessibilityLabel("Gamma")
                             Text(gammaValue, format: .number.precision(.fractionLength(2)))
                                 .frame(minWidth: 50)
                         }
@@ -348,6 +350,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Brightness:") {
                             HStack {
                                 Slider(value: $brightnessContrastValues.x, in: -1...1)
+                                    .accessibilityLabel("Brightness")
                                 Text(brightnessContrastValues.x, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -355,6 +358,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Contrast:") {
                             HStack {
                                 Slider(value: $brightnessContrastValues.y, in: 0...2)
+                                    .accessibilityLabel("Contrast")
                                 Text(brightnessContrastValues.y, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -366,6 +370,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Hue:") {
                             HStack {
                                 Slider(value: $hsvValues.x, in: -180...180)
+                                    .accessibilityLabel("Hue")
                                 Text("\(hsvValues.x, format: .number.precision(.fractionLength(0)))°")
                                     .frame(minWidth: 50)
                             }
@@ -373,6 +378,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Saturation:") {
                             HStack {
                                 Slider(value: $hsvValues.y, in: 0...2)
+                                    .accessibilityLabel("Saturation")
                                 Text(hsvValues.y, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -380,6 +386,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Value:") {
                             HStack {
                                 Slider(value: $hsvValues.z, in: 0...2)
+                                    .accessibilityLabel("Value")
                                 Text(hsvValues.z, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -392,6 +399,7 @@ public struct ColorAdjustDemoView: View {
                             LabeledContent("R/C:") {
                                 HStack {
                                     Slider(value: $colorBalanceValues[0][0], in: -0.5...0.5)
+                                        .accessibilityLabel("Shadows Red/Cyan")
                                     Text(colorBalanceValues[0][0], format: .number.precision(.fractionLength(2)))
                                         .frame(minWidth: 50)
                                 }
@@ -399,6 +407,7 @@ public struct ColorAdjustDemoView: View {
                             LabeledContent("G/M:") {
                                 HStack {
                                     Slider(value: $colorBalanceValues[1][0], in: -0.5...0.5)
+                                        .accessibilityLabel("Shadows Green/Magenta")
                                     Text(colorBalanceValues[1][0], format: .number.precision(.fractionLength(2)))
                                         .frame(minWidth: 50)
                                 }
@@ -406,6 +415,7 @@ public struct ColorAdjustDemoView: View {
                             LabeledContent("B/Y:") {
                                 HStack {
                                     Slider(value: $colorBalanceValues[2][0], in: -0.5...0.5)
+                                        .accessibilityLabel("Shadows Blue/Yellow")
                                     Text(colorBalanceValues[2][0], format: .number.precision(.fractionLength(2)))
                                         .frame(minWidth: 50)
                                 }
@@ -415,6 +425,7 @@ public struct ColorAdjustDemoView: View {
                             LabeledContent("R/C:") {
                                 HStack {
                                     Slider(value: $colorBalanceValues[0][1], in: -0.5...0.5)
+                                        .accessibilityLabel("Highlights Red/Cyan")
                                     Text(colorBalanceValues[0][1], format: .number.precision(.fractionLength(2)))
                                         .frame(minWidth: 50)
                                 }
@@ -422,6 +433,7 @@ public struct ColorAdjustDemoView: View {
                             LabeledContent("G/M:") {
                                 HStack {
                                     Slider(value: $colorBalanceValues[1][1], in: -0.5...0.5)
+                                        .accessibilityLabel("Highlights Green/Magenta")
                                     Text(colorBalanceValues[1][1], format: .number.precision(.fractionLength(2)))
                                         .frame(minWidth: 50)
                                 }
@@ -429,6 +441,7 @@ public struct ColorAdjustDemoView: View {
                             LabeledContent("B/Y:") {
                                 HStack {
                                     Slider(value: $colorBalanceValues[2][1], in: -0.5...0.5)
+                                        .accessibilityLabel("Highlights Blue/Yellow")
                                     Text(colorBalanceValues[2][1], format: .number.precision(.fractionLength(2)))
                                         .frame(minWidth: 50)
                                 }
@@ -441,6 +454,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Black Point:") {
                             HStack {
                                 Slider(value: $levelsValues.x, in: 0...1)
+                                    .accessibilityLabel("Black Point")
                                 Text(levelsValues.x, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -448,6 +462,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("White Point:") {
                             HStack {
                                 Slider(value: $levelsValues.y, in: 0...1)
+                                    .accessibilityLabel("White Point")
                                 Text(levelsValues.y, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -455,6 +470,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Gamma:") {
                             HStack {
                                 Slider(value: $levelsValues.z, in: 0.1...10)
+                                    .accessibilityLabel("Gamma")
                                 Text(levelsValues.z, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -462,6 +478,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Output Range:") {
                             HStack {
                                 Slider(value: $levelsValues.w, in: 0...1)
+                                    .accessibilityLabel("Output Range")
                                 Text(levelsValues.w, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -473,6 +490,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Temperature:") {
                             HStack {
                                 Slider(value: $temperatureTintValues.x, in: -1...1)
+                                    .accessibilityLabel("Temperature")
                                 Text(temperatureTintValues.x, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -480,6 +498,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Tint:") {
                             HStack {
                                 Slider(value: $temperatureTintValues.y, in: -1...1)
+                                    .accessibilityLabel("Tint")
                                 Text(temperatureTintValues.y, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -491,6 +510,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Threshold:") {
                             HStack {
                                 Slider(value: $thresholdValues.x, in: 0...1)
+                                    .accessibilityLabel("Threshold")
                                 Text(thresholdValues.x, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -498,6 +518,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Smoothness:") {
                             HStack {
                                 Slider(value: $thresholdValues.y, in: 0...0.5)
+                                    .accessibilityLabel("Smoothness")
                                 Text(thresholdValues.y, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -509,6 +530,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Center X:") {
                             HStack {
                                 Slider(value: $vignetteValues.x, in: 0...1)
+                                    .accessibilityLabel("Center X")
                                 Text(vignetteValues.x, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -516,6 +538,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Center Y:") {
                             HStack {
                                 Slider(value: $vignetteValues.y, in: 0...1)
+                                    .accessibilityLabel("Center Y")
                                 Text(vignetteValues.y, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -523,6 +546,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Intensity:") {
                             HStack {
                                 Slider(value: $vignetteValues.z, in: 0...1)
+                                    .accessibilityLabel("Intensity")
                                 Text(vignetteValues.z, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }
@@ -530,6 +554,7 @@ public struct ColorAdjustDemoView: View {
                         LabeledContent("Radius:") {
                             HStack {
                                 Slider(value: $vignetteValues.w, in: 0.1...2)
+                                    .accessibilityLabel("Radius")
                                 Text(vignetteValues.w, format: .number.precision(.fractionLength(2)))
                                     .frame(minWidth: 50)
                             }

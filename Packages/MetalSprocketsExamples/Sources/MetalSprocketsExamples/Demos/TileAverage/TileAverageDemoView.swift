@@ -61,6 +61,7 @@ public struct TileAverageDemoView: View {
                     Text("32×32").tag(32)
                 }
                 .pickerStyle(.segmented)
+                .accessibilityLabel("Tile Size")
             }
         }
         .fixedSize()

@@ -87,6 +87,7 @@ public struct MetalFXDemoView: View {
             LabeledContent("Scale Factor") {
                 HStack {
                     Slider(value: $scaleFactor, in: 1...16)
+                        .accessibilityLabel("Scale Factor")
                         .frame(width: 320)
 
                     Text("\(scaleFactor, format: .number)")

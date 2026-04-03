@@ -47,6 +47,7 @@ public struct MetalCanvasDemoView: View {
             LabeledContent("Line Width") {
                 HStack {
                     Slider(value: $lineWidth, in: 1...10)
+                        .accessibilityLabel("Line Width")
                     Text(lineWidth, format: .number.precision(.fractionLength(1)))
                         .frame(minWidth: 30)
                 }
