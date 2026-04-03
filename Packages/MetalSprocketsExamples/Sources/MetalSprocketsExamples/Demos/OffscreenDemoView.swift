@@ -12,7 +12,7 @@ public struct OffscreenDemoView: View {
 
     public var body: some View {
         ZStack {
-            Color.black
+            Color.clear
             if case let .success(image) = result {
                 Image(nsImage: NSImage(cgImage: image, size: .zero))
                     .resizable()
@@ -20,9 +20,7 @@ public struct OffscreenDemoView: View {
             }
         }
         .aspectRatio(1, contentMode: .fit)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
-        .overlay(alignment: .bottom) {
+        .demoConfiguration {
             Group {
                 if case let .success(image) = result {
                     Text("\(image.width) × \(image.height)")
@@ -31,9 +29,6 @@ public struct OffscreenDemoView: View {
                     Text(verbatim: "Failure: \(String(describing: error))")
                 }
             }
-            .padding()
-            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10))
-            .padding()
         }
         .task {
             do {

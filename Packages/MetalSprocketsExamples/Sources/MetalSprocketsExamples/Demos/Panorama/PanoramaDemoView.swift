@@ -18,7 +18,7 @@ public struct PanoramaDemoView: View {
         case box = "Box"
     }
 
-    @State private var panoramaURL: URL?
+    @State private var panoramaURL: URL? = Bundle.module.url(forResource: "IndoorEnvironmentHDRI013_1K-HDR", withExtension: "exr")
     @State private var panoramaTexture: MTLTexture?
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
     @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 1])

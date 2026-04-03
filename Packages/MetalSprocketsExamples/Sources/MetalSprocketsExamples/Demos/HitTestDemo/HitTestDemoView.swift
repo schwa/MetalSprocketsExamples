@@ -199,7 +199,7 @@ public struct HitTestDemoView: View {
                 }
             }
         }
-        .background(Color.black)
+        .background(.black)
         .demoConfiguration {
             Form {
             Picker("Visualization", selection: $visualizationMode) {
