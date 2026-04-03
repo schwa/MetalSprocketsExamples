@@ -208,6 +208,15 @@ public struct HitTestDemoView: View {
                     .cornerRadius(6)
                     .padding(8)
                     .allowsHitTesting(false)
+                } else if lastHitResult != nil {
+                    Text("no hit")
+                        .font(.system(.caption, design: .monospaced))
+                        .padding(8)
+                        .background(.black.opacity(0.7))
+                        .foregroundStyle(.white)
+                        .cornerRadius(6)
+                        .padding(8)
+                        .allowsHitTesting(false)
                 }
             }
         }
