@@ -2122,3 +2122,14 @@ created: 2026-04-03T05:59:54.158699+00:00
 
 ---
 
+## 367: Accessibility pass: add labels to all interactive controls
+status: new
+priority: medium
+kind: task
+labels: accessibility
+created: 2026-04-03T06:27:01.170849+00:00
+
+Sliders, pickers, and popups across demos are missing accessibility labels. SwiftUI doesn't automatically associate adjacent StaticText with controls. Need to add `.accessibilityLabel()` to all interactive controls (sliders, toggles, pickers, buttons) across all demos. This also blocks automated UI testing with steveo since controls can't be found by name.
+
+---
+
