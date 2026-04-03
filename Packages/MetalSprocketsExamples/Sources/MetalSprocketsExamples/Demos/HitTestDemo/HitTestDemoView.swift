@@ -193,6 +193,21 @@ public struct HitTestDemoView: View {
                     }
                 }
             }
+            .overlay(alignment: .topLeading) {
+                if let result = lastHitResult, result.geometryID >= 0 {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Geometry: \(result.geometryID)  Instance: \(result.instanceID)")
+                        Text("Triangle: \(result.triangleID)  Depth: \(result.depth, format: .number.precision(.fractionLength(2)))")
+                    }
+                    .font(.system(.caption, design: .monospaced))
+                    .padding(8)
+                    .background(.black.opacity(0.7))
+                    .foregroundStyle(.white)
+                    .cornerRadius(6)
+                    .padding(8)
+                    .allowsHitTesting(false)
+                }
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black.opacity(0.8))

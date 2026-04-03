@@ -1860,11 +1860,14 @@ Many demos had their UI controls moved to demoConfiguration and camera angles ch
 ---
 
 ## 342: Hit Test Demo: needs to show what's being hit
-status: new
+status: closed
 priority: medium
 kind: enhancement
 created: 2026-04-03T02:01:48.339942+00:00
+updated: 2026-04-03T04:53:28.096476+00:00
+closed: 2026-04-03T04:53:28.096476+00:00
 
+- 2026-04-03T04:53:28.154055+00:00: Added HUD overlay on the render view showing geometry/instance/triangle ID and depth on hover.
 
 ---
 
