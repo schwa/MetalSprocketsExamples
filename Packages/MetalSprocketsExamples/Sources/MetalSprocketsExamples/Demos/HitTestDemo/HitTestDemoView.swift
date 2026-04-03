@@ -196,8 +196,10 @@ public struct HitTestDemoView: View {
             .overlay(alignment: .topLeading) {
                 if let result = lastHitResult, result.geometryID >= 0 {
                     VStack(alignment: .leading, spacing: 4) {
+                        Text("Location: (\(Int(result.location.x)), \(Int(result.location.y)))")
                         Text("Geometry: \(result.geometryID)  Instance: \(result.instanceID)")
-                        Text("Triangle: \(result.triangleID)  Depth: \(result.depth, format: .number.precision(.fractionLength(2)))")
+                        Text("Triangle: \(result.triangleID)  Depth: \(result.depth, format: .number.precision(.fractionLength(3)))")
+                        Text("Barycentric: (\(result.triangleCoords.x, format: .number.precision(.fractionLength(3))), \(result.triangleCoords.y, format: .number.precision(.fractionLength(3))), \(result.triangleCoords.z, format: .number.precision(.fractionLength(3))))")
                     }
                     .font(.system(.caption, design: .monospaced))
                     .padding(8)
@@ -222,19 +224,6 @@ public struct HitTestDemoView: View {
 
             Button("Export Hit Grid") {
                 performFullGridHitTest()
-            }
-
-            if let result = lastHitResult {
-                Section("Hit Test Result") {
-                    LabeledContent("Location", value: "(\(Int(result.location.x)), \(Int(result.location.y)))")
-                    if result.geometryID != -1 {
-                        LabeledContent("Geometry ID", value: "\(result.geometryID)")
-                        LabeledContent("Instance ID", value: "\(result.instanceID)")
-                        LabeledContent("Triangle ID", value: "\(result.triangleID)")
-                        LabeledContent("Depth", value: result.depth.formatted(.number.precision(.fractionLength(3))))
-                        LabeledContent("Barycentric", value: "(\(result.triangleCoords.x.formatted(.number.precision(.fractionLength(3)))), \(result.triangleCoords.y.formatted(.number.precision(.fractionLength(3)))), \(result.triangleCoords.z.formatted(.number.precision(.fractionLength(3)))))")
-                    }
-                }
             }
             }
             .fixedSize()
