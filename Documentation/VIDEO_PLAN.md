@@ -12,21 +12,31 @@ Automatically record a demo video showcasing all MetalSprocketsExamples demos us
 - **Description toggle** — Can hide/show description banner via the (i) button.
 - **Window resize** — `steveo window resize` works for consistent sizing.
 - **demos.yaml** — Canonical index of all demos with metadata, interest levels, and choreography hints.
+- **Drag/rotate** — `steveo focus` then `steveo drag x1 y1 x2 y2 --duration ms` rotates 3D views. **IMPORTANT: must `steveo focus` the app before any drag, or the drag events won't register.**
+- **Screen recording** — `steveo record --window "Title" --duration N -o file.mp4` captures per-window video. Can run in background while performing drags.
+- **generate-docs.py** — Single script for both screenshot capture and DEMOS.md generation from demos.yaml.
 
 ## Bugs to Fix
 
 ### DemoKit
 
-- **#DemoKit#11** — URL scheme navigation not working reliably. `open` with a URL scheme launches a NEW app instance instead of routing to the running one. Even `open -a` sometimes spawns duplicates. This is the **critical blocker** for video recording — we need URL-based navigation so we don't see the Demos menu flash on screen.
-- **#DemoKit#12** — `kebabCase` produces double hyphens (e.g., `game-of--life` instead of `game-of-life`). Cosmetic but affects URL usability.
-- **Window title not updating** — When navigating via URL, the window title bar doesn't always reflect the current demo. May be related to `navigationTitle` not being triggered on URL-driven selection changes.
+- **#DemoKit#11** — URL scheme navigation launches NEW app instances instead of routing to the running one. URLs do work when they reach the right instance. Not a blocker since menu navigation works, but would be cleaner for video.
+- **#DemoKit#12** — `kebabCase` produces double hyphens (e.g., `game-of--life` instead of `game-of-life`).
 
 ### steveo
 
-- **#steveo#10** — No screen recording support. Need to start/stop recording manually for now.
 - **#steveo#11** — `steveo key "cmd+]"` doesn't work. Bracket characters aren't sent correctly as key events.
+- **#steveo#13** — Drag requires `steveo focus` first — not auto-focused. (UX improvement, not a blocker.)
+- Screen recording captures full screen instead of just the window. Fix in progress.
 
-## Navigation Options (for video)
+### MetalSprocketsExamples
+
+- **#MSE#367** — Accessibility pass needed: sliders, pickers, popups missing `.accessibilityLabel()`. Blocks driving controls by name via steveo.
+- **#MSE#368** — Interaction3D Turntable controls missing AX labels (upstream fix).
+
+## Navigation for Video
+
+The Demos menu works reliably but flashes on screen. Options:
 
 | Method | Works? | Video-safe? | Notes |
 |--------|--------|-------------|-------|
@@ -35,35 +45,28 @@ Automatically record a demo video showcasing all MetalSprocketsExamples demos us
 | Cmd+[/] via steveo | ❌ | ✅ | steveo key bug |
 | Sidebar click | ✅ | ❌ | Sidebar visible in frame |
 
-**Best path forward:** Fix the URL scheme so `open` routes to the running instance. This requires:
-1. Ensuring the app uses `handlesExternalEvents(matching:)` on the Window/WindowGroup scene.
-2. Possibly adding `LSMultipleInstancesProhibited = YES` to Info.plist to prevent duplicate launches.
-3. Or using an alternative IPC mechanism (e.g., Distributed Notifications, XPC) to send demo selection to the running app.
-
-## Alternative: Sidebar Click + Hide
-
-A workaround that works today:
-1. Show sidebar, click demo name, hide sidebar, wait, screenshot/record.
-2. Downside: brief sidebar flash during transitions. Might be acceptable if transitions are cut in post.
+**Current approach:** Use Demos menu between recordings. Each demo gets its own recording clip (start recording → perform gestures → stop recording), so menu flash between clips doesn't matter.
 
 ## Video Choreography
 
-Once navigation is fixed, the recording script should:
+Per-demo recording approach:
 
-1. Launch app, resize to 1024×768, hide sidebar, hide description
-2. Start screen recording (manual or steveo #10)
-3. For each demo (ordered by `demos.yaml`):
-   a. Navigate to demo (via URL — no menu flash)
+1. Launch app, resize to 1024×768, hide sidebar
+2. For each demo (ordered by `demos.yaml`):
+   a. Navigate via Demos menu
    b. Wait for settle time
-   c. Perform gestures (rotate, click) per choreography in yaml
-   d. Adjust UI controls per yaml
-   e. Hold for `duration` seconds
-4. Stop recording
-5. Optionally: split into per-demo clips in post
+   c. Focus app (`steveo focus`)
+   d. Start recording (`steveo record --window "Title" --duration N -o clip.mp4 &`)
+   e. Perform gestures (drag to rotate) per choreography in yaml
+   f. Adjust UI controls per yaml (once AX labels are added)
+   g. Wait for recording to finish
+3. Concatenate clips in post (ffmpeg)
 
 ## Files
 
 - `Documentation/demos.yaml` — Canonical demo index with video choreography fields
+- `Documentation/generate-docs.py` — Screenshot capture + DEMOS.md generation
+- `Documentation/DEMOS.md` — Generated from demos.yaml
 - `Documentation/screenshots/` — Fresh screenshots (34 demos, 1024×768 @2x)
-- `Documentation/collect-screenshots.fish` — Old screenshot script (superseded)
-- `Documentation/DEMOS.md` — Old demo docs (outdated, superseded by demos.yaml)
+- `Documentation/collect-screenshots.fish` — Old screenshot script (legacy)
+- `Documentation/VIDEO_PLAN.md` — This file
