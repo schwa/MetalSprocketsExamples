@@ -74,9 +74,21 @@ public struct StencilDemoView: View {
                 let fragmentShader = try FragmentShader(source: source)
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                     Draw { encoder in
-                        let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
-                        encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
-                        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                        // 5-pointed star as triangle fan from center
+                        let points = 5
+                        let center = SIMD2<Float>(0, 0)
+                        var vertices: [SIMD2<Float>] = []
+                        for i in 0..<points {
+                            let outerAngle = Float.pi / 2 + Float(i) * 2 * .pi / Float(points)
+                            let innerAngle = outerAngle + .pi / Float(points)
+                            let outer = SIMD2<Float>(cos(outerAngle) * 0.8, sin(outerAngle) * 0.8)
+                            let inner = SIMD2<Float>(cos(innerAngle) * 0.35, sin(innerAngle) * 0.35)
+                            let nextOuter = SIMD2<Float>(cos(outerAngle + 2 * .pi / Float(points)) * 0.8, sin(outerAngle + 2 * .pi / Float(points)) * 0.8)
+                            vertices.append(contentsOf: [center, outer, inner])
+                            vertices.append(contentsOf: [center, inner, nextOuter])
+                        }
+                        encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * vertices.count, index: 0)
+                        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
                     }
                     .parameter("color", value: SIMD4<Float>([0.5, 1, 0.5, 1]))
                 }

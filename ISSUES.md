@@ -1427,13 +1427,16 @@ Currently displays 'Optional(Swift.Result<(), Swift.Error>.success())' on a blan
 ---
 
 ## 313: Stencil Buffer: use a more interesting stencil shape and pattern
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2026-04-02T21:41:10.342366+00:00
-updated: 2026-04-02T21:47:29.576+00:00
+updated: 2026-04-03T04:47:49.685412+00:00
+closed: 2026-04-03T04:47:49.685412+00:00
 
 The triangle shape and green checkerboard are functional but dull. Use a more interesting stencil mask shape and a more visually appealing pattern.
+
+- 2026-04-03T04:47:49.736680+00:00: Replaced triangle with a 5-pointed star shape.
 
 ---
 
