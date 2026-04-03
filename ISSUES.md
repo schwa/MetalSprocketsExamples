@@ -2113,3 +2113,12 @@ created: 2026-04-03T05:27:48.070435+00:00
 
 ---
 
+## 366: replace /2 *2 buttons in voxel with a slider
+status: new
+priority: medium
+kind: none
+created: 2026-04-03T05:59:54.158699+00:00
+
+
+---
+
