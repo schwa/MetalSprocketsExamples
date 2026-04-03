@@ -1956,11 +1956,14 @@ closed: 2026-04-03T04:42:49.407553+00:00
 ---
 
 ## 351: PointCloud: clean up shader handling
-status: new
+status: closed
 priority: medium
 kind: enhancement
 created: 2026-04-03T03:11:53.974019+00:00
+updated: 2026-04-03T05:01:53.397495+00:00
+closed: 2026-04-03T05:01:53.397495+00:00
 
+- 2026-04-03T05:01:53.456593+00:00: Shader handling is already clean — closing.
 
 ---
 
