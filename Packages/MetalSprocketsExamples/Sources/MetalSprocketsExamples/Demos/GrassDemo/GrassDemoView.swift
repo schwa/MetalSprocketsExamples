@@ -29,7 +29,7 @@ public struct GrassDemoView: View {
     private let maxGrassPoints = 2_000
 
     @State
-    private var grassLength: Double = 0.15
+    private var grassLength: Double = 0.5
 
     @State
     private var bladeWidthMultiplier: Double = 1.0
