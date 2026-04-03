@@ -2095,3 +2095,12 @@ The StencilDemoView renders the triangle without any checkerboard stencil clippi
 
 ---
 
+## 364: the .frame(infinite, infinite).black() is causing black to leak into sidebar
+status: new
+priority: medium
+kind: none
+created: 2026-04-03T05:19:21.896483+00:00
+
+
+---
+
