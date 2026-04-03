@@ -13,11 +13,12 @@ Origin: GitHub issue #273
 ---
 
 ## 2: Fix up names of shaders vs demos vs demo views vs elements
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:26.965348+00:00
+updated: 2026-04-03T04:25:23.810705+00:00
+closed: 2026-04-03T04:25:23.810705+00:00
 
 e.g. TextureBillboard vs BillboardShader etc
 
@@ -25,14 +26,17 @@ Need to standardize naming conventions across the examples project.
 
 Origin: GitHub issue #250
 
+- 2026-04-03T04:25:23.862908+00:00: Closing as stale/no longer relevant.
+
 ---
 
 ## 3: Code Reuse Pass
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:27.143514+00:00
+updated: 2026-04-03T04:25:23.916016+00:00
+closed: 2026-04-03T04:25:23.916015+00:00
 
 Go through all demo code and look for code reuse opportunities.
 
@@ -41,6 +45,8 @@ Lots of shaders are doing very similar things now and the demos are bloating a l
 Also look for chances to make these part of Batteries Included.
 
 Origin: GitHub issue #246
+
+- 2026-04-03T04:25:23.968435+00:00: Closing as stale/no longer relevant.
 
 ---
 
@@ -60,15 +66,18 @@ Origin: GitHub issue #235
 ---
 
 ## 5: Make more demos runable in offscreen(video)renderer
-status: new
+status: closed
 priority: none
 kind: feature
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:12.072595+00:00
+updated: 2026-04-03T04:35:11.260022+00:00
+closed: 2026-04-03T04:35:11.260022+00:00
 
 Enable additional demos to work with the offscreen video renderer.
 
 Origin: GitHub issue #215
+
+- 2026-04-03T04:35:11.313176+00:00: Closing — OffscreenVideoRenderer lives in MetalSprockets now.
 
 ---
 
@@ -134,28 +143,34 @@ Origin: GitHub issue #262
 ---
 
 ## 9: Make .metal-sprocketsExampleShaders() into property
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:27.280482+00:00
+updated: 2026-04-03T04:25:23.494204+00:00
+closed: 2026-04-03T04:25:23.494204+00:00
 
 Convert the .metal-sprocketsExampleShaders() method into a property for cleaner API.
 
 Origin: GitHub issue #261
 
+- 2026-04-03T04:25:23.546310+00:00: Closing as stale/no longer relevant.
+
 ---
 
 ## 10: Sanitize vertex descriptors
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:27.413747+00:00
+updated: 2026-04-03T04:33:15.500197+00:00
+closed: 2026-04-03T04:33:15.500196+00:00
 
 Clean up and standardize vertex descriptors across the examples project.
 
 Origin: GitHub issue #259
+
+- 2026-04-03T04:33:15.552447+00:00: Too vague.
 
 ---
 
@@ -172,13 +187,16 @@ closed: 2025-10-24T00:00:00+00:00
 ---
 
 ## 23: Implement texture pooling/reuse strategy
-status: new
+status: closed
 priority: none
 kind: feature
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:13.405556+00:00
+updated: 2026-04-03T04:34:18.941514+00:00
+closed: 2026-04-03T04:34:18.941514+00:00
 
 Currently each demo creates textures on-demand in init/onChange handlers with no reuse strategy. Issues: potential resource leaks in long-running demos, no centralized lifecycle management, repeated allocation/deallocation overhead. Should implement texture pooling for common sizes/formats to improve performance and resource management.
+
+- 2026-04-03T04:34:18.992843+00:00: Closing as stale/no longer relevant.
 
 ---
 
@@ -197,35 +215,44 @@ Many demos duplicate similar UI patterns: slider controls for parameters, color 
 ---
 
 ## 25: Add inline documentation to complex demos
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:27.679593+00:00
+updated: 2026-04-03T04:34:19.045708+00:00
+closed: 2026-04-03T04:34:19.045708+00:00
 
 Complex demos lack sufficient inline documentation: PBR shader calculations, scene graph traversal logic, compute shader algorithms (Game of Life, particle systems), GLTF parsing. Should add: doc comments explaining what each demo demonstrates, inline comments for complex algorithms, references to graphics programming concepts, links to relevant papers/resources. This makes the examples more educational.
+
+- 2026-04-03T04:34:19.095453+00:00: Closing as stale/no longer relevant.
 
 ---
 
 ## 26: Standardize shader management approach
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:27.815714+00:00
+updated: 2026-04-03T04:34:19.145968+00:00
+closed: 2026-04-03T04:34:19.145967+00:00
 
 Currently have inconsistent shader source management: some demos embed Metal shader code as strings (TriangleDemoView), others use external shader bundles via MetalCompilerPlugin, no shader validation at compile time for string-embedded shaders. Should establish standard approach, document when to use each method, prefer external shaders for complex code, add compile-time validation where possible, standardize namespace usage.
+
+- 2026-04-03T04:34:19.196283+00:00: Closing as stale/no longer relevant.
 
 ---
 
 ## 27: Add Metal validation layer checks for development builds
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:27.952658+00:00
+updated: 2026-04-03T04:34:19.245991+00:00
+closed: 2026-04-03T04:34:19.245991+00:00
 
 Should enable Metal API validation and shader validation in development builds to catch: incorrect resource usage, memory leaks, invalid render state, shader compilation warnings, performance issues. Add conditional compilation to enable validation layers in debug builds while keeping release builds optimized.
+
+- 2026-04-03T04:34:19.296392+00:00: Closing as stale/no longer relevant.
 
 ---
 
@@ -248,13 +275,16 @@ Origin: GitHub issue #287
 ---
 
 ## 29: Use Mesh instead of MTKMesh more
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T22:02:52.320466+00:00
+updated: 2026-04-03T04:34:19.346449+00:00
+closed: 2026-04-03T04:34:19.346449+00:00
 
 Migrate demos that still use MTKMesh to the custom Mesh type where possible.
+
+- 2026-04-03T04:34:19.396078+00:00: Closing as stale/no longer relevant.
 
 ---
 
@@ -371,32 +401,37 @@ closed: 2026-04-02T22:02:52.831976+00:00
 ---
 
 ## 40: Clean up dead code
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-24T00:00:00+00:00
-updated: 2026-04-02T21:47:28.372081+00:00
+updated: 2026-04-03T04:25:23.598445+00:00
+closed: 2026-04-03T04:25:23.598445+00:00
 
+- 2026-04-03T04:25:23.650948+00:00: Closing as stale/no longer relevant.
 
 ---
 
 ## 41: Clean up duplicate code
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-24T00:00:00+00:00
-updated: 2026-04-02T21:47:28.505909+00:00
+updated: 2026-04-03T04:25:23.704911+00:00
+closed: 2026-04-03T04:25:23.704911+00:00
 
+- 2026-04-03T04:25:23.757769+00:00: Closing as stale/no longer relevant.
 
 ---
 
 ## 65: Finish World Controller
-status: open
+status: closed
 priority: none
 kind: feature
 labels: effort:l
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:13.136068+00:00
+updated: 2026-04-03T04:34:19.446023+00:00
+closed: 2026-04-03T04:34:19.446023+00:00
 
 We need some way to make controlling the camera and/or a model generic.
 
@@ -423,6 +458,8 @@ Common (optional) properties might be:
 Some implementations will need min/max values for various properties and stuff like distance from camera etc.
 
 *Imported from #57*
+
+- 2026-04-03T04:34:19.495566+00:00: Closing as stale/no longer relevant.
 
 ---
 
@@ -492,16 +529,19 @@ updated: 2026-04-02T21:47:41.949801+00:00
 ---
 
 ## 114: Handle file extensions properly when loading textures
-status: open
+status: closed
 priority: none
 kind: bug
 labels: effort:xs, source:todo
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:03.820404+00:00
+updated: 2026-04-03T04:26:14.304544+00:00
+closed: 2026-04-03T04:26:14.304544+00:00
 
 Found in Sources/UltraviolenceSupport/MetalSupport.swift at line 790
 
 *Imported from #106*
+
+- 2026-04-03T04:26:14.355861+00:00: Stale — referenced file no longer exists.
 
 ---
 
@@ -649,9 +689,9 @@ Implement spatial computing demos leveraging VisionOS capabilities like immersiv
 ## 181: [NEW DEMO] Foil Stickers
 status: open
 priority: none
-kind: none
+kind: feature
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:42.361166+00:00
+updated: 2026-04-03T04:29:46.112492+00:00
 
 Implement https://www.4rknova.com/blog/2025/08/30/foil-sticker
 
@@ -660,15 +700,18 @@ Implement https://www.4rknova.com/blog/2025/08/30/foil-sticker
 ---
 
 ## 226: Break out the video code from the OffscreenVideoRecorder
-status: open
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:28.908670+00:00
+updated: 2026-04-03T04:35:11.363525+00:00
+closed: 2026-04-03T04:35:11.363524+00:00
 
 It's really just as simple as the offscreen renderer but doing extra work every frame.
 
 *Imported from #218*
+
+- 2026-04-03T04:35:11.413628+00:00: Closing — OffscreenVideoRenderer lives in MetalSprockets now.
 
 ---
 
@@ -902,12 +945,13 @@ Need to add proper assertions to verify that values are correct in Texture2DSpec
 ---
 
 ## 281: First class visible function support
-status: open
+status: closed
 priority: none
 kind: feature
 labels: effort:m, priority:high
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:13.269119+00:00
+updated: 2026-04-03T04:34:19.545368+00:00
+closed: 2026-04-03T04:34:19.545367+00:00
 
 We really need to support visible functions. This would unlock/enable a lot of cool "CoreImage-lite" effects where you provide a mini function to (say) convert a color or manipulate a vertex and then the main kernel/shader uses it to manipulate a texture or a mesh.
 
@@ -921,6 +965,8 @@ It would be usable from all of these:
 #261: Make a generic distort (vertex) shader that we can provide functions to
 
 *Imported from #273*
+
+- 2026-04-03T04:34:19.594955+00:00: Closing as stale/no longer relevant.
 
 ---
 
@@ -1186,13 +1232,16 @@ closed: 2026-04-03T02:15:37.266784+00:00
 ---
 
 ## 301: Use 4x3 matrices instead of 4x4
-status: new
+status: closed
 priority: none
 kind: enhancement
 created: 2025-10-29T00:00:00+00:00
-updated: 2026-04-02T21:47:29.308559+00:00
+updated: 2026-04-03T04:34:19.644603+00:00
+closed: 2026-04-03T04:34:19.644603+00:00
 
 Use 4x3 matrixes instead of 4x4 where possible. This incurs some ceremony on both the CPU and GPU
+
+- 2026-04-03T04:34:19.694723+00:00: Closing as stale/no longer relevant.
 
 ---
 
@@ -1390,13 +1439,16 @@ Many demos have oversized or inconsistent configuration panels (Point Cloud, Vid
 ---
 
 ## 310: Improve default camera angles across demos
-status: new
+status: closed
 priority: high
 kind: enhancement
 created: 2026-04-02T21:40:56.405502+00:00
-updated: 2026-04-02T22:04:02.725631+00:00
+updated: 2026-04-03T04:20:49.079595+00:00
+closed: 2026-04-03T04:20:49.079594+00:00
 
 Many demos have poor default camera angles that don't showcase the rendering well. The teapot sits too high, scenes have too much empty space, or the camera is too far away. Affected demos: Blinn-Phong, Skybox, Debug Shaders, Point Cloud, Wireframe Teapot, Trivial Mesh, Scene Graph, Hit Test, Depth Buffer, Mixed Techniques, Bouncing Teapots, SDF Raymarching, PBR Rendering. Consider standardizing a default camera setup that frames the subject well.
+
+- 2026-04-03T04:20:49.132277+00:00: Default camera angles have been improved across demos.
 
 ---
 
@@ -1456,14 +1508,17 @@ Default should use a more visually dramatic LUT preset and set the blend slider 
 ---
 
 ## 315: Video Playback: bundle a default video
-status: new
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
 created: 2026-04-02T21:41:22.070028+00:00
-updated: 2026-04-02T22:05:53.770904+00:00
+updated: 2026-04-03T04:21:48.882492+00:00
+closed: 2026-04-03T04:21:48.882492+00:00
 
 The demo shows an empty player with 'No default video found' error. Bundle a short default video so the demo works out of the box. Also reduce the VCR settings panel size (see #309).
+
+- 2026-04-03T04:21:48.934471+00:00: Fixed.
 
 ---
 
@@ -1543,14 +1598,17 @@ The side-by-side layout only shows half the upscaled mandrill. Need a more drama
 ---
 
 ## 322: Mixed Techniques: fix rendering and allow animation settle time
-status: new
+status: closed
 priority: medium
 kind: bug
 labels: effort:m
 created: 2026-04-02T21:41:35.130329+00:00
-updated: 2026-04-02T22:05:53.589940+00:00
+updated: 2026-04-03T04:20:32.320443+00:00
+closed: 2026-04-03T04:20:32.320442+00:00
 
 Only a barely-visible silhouette outline renders — the lighting, color, and animation appear missing or broken. Also needs a few frames of animation to settle before screenshots look good.
+
+- 2026-04-03T04:20:32.373140+00:00: Fixed by adjusting the light position.
 
 ---
 
@@ -1614,14 +1672,17 @@ Default of 8 particles looks sparse. Increase the default to show a more impress
 ---
 
 ## 327: Voxel Renderer: start at higher resolution with a better default dataset
-status: new
+status: closed
 priority: none
 kind: enhancement
 labels: needs-info, effort:m
 created: 2026-04-02T21:41:57.338229+00:00
-updated: 2026-04-02T23:00:48.140395+00:00
+updated: 2026-04-03T04:36:53.957576+00:00
+closed: 2026-04-03T04:36:53.957576+00:00
 
 The default 4×4×4 voxel grid looks like a color test pattern. Start at a higher resolution with a more recognizable 3D shape to demonstrate voxel rendering.
+
+- 2026-04-03T04:36:54.011690+00:00: Done.
 
 ---
 
@@ -1874,11 +1935,14 @@ created: 2026-04-03T03:11:53.815865+00:00
 ---
 
 ## 350: ColorAdjust: consider using .argumentBuffer() instead
-status: new
+status: closed
 priority: medium
 kind: enhancement
 created: 2026-04-03T03:11:53.895139+00:00
+updated: 2026-04-03T04:42:49.407553+00:00
+closed: 2026-04-03T04:42:49.407553+00:00
 
+- 2026-04-03T04:42:49.463774+00:00: Low impact — not worth pursuing.
 
 ---
 
@@ -1916,11 +1980,14 @@ closed: 2026-04-03T04:45:49.178607+00:00
 ---
 
 ## 354: MetalCanvas: use pipelineState.maxTotalThreadsPerThreadgroup instead of hardcoded value
-status: new
+status: closed
 priority: medium
 kind: enhancement
 created: 2026-04-03T03:11:54.214833+00:00
+updated: 2026-04-03T04:50:19.517886+00:00
+closed: 2026-04-03T04:50:19.517886+00:00
 
+- 2026-04-03T04:50:19.573918+00:00: Duplicate of #355.
 
 ---
 
