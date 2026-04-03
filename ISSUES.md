@@ -1726,6 +1726,7 @@ priority: high
 kind: bug
 created: 2026-04-03T00:48:51.657195+00:00
 
+- 2026-04-03T04:11:47.926785+00:00: Likely same root cause as #363 — MetalSprockets d7f64a82 deferred viewModel creation to .onAppear, so first-frame environment access could fail silently. Fixed in MetalSprockets #306.
 
 ---
 
