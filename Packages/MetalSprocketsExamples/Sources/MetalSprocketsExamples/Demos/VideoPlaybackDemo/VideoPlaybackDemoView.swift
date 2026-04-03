@@ -92,6 +92,22 @@ public struct VideoPlaybackDemoView: View {
                 if enableVCR {
                     HStack(alignment: .top, spacing: 16) {
                         Form {
+                            Button("Randomize") {
+                                vcrParameters.curvature = .random(in: 0...10)
+                                vcrParameters.skip = .random(in: 0...1)
+                                vcrParameters.imageFlicker = .random(in: 0...2)
+                                vcrParameters.vignetteFlickerSpeed = .random(in: 0...2)
+                                vcrParameters.vignetteStrength = .random(in: 0...2)
+                                vcrParameters.smallScanlinesSpeed = .random(in: 0...2)
+                                vcrParameters.smallScanlinesProximity = .random(in: 0...2)
+                                vcrParameters.smallScanlinesOpacity = .random(in: 0...2)
+                                vcrParameters.scanlinesOpacity = .random(in: 0...2)
+                                vcrParameters.scanlinesSpeed = .random(in: 0...2)
+                                vcrParameters.scanlineThickness = .random(in: 0...1)
+                                vcrParameters.scanlinesSpacing = .random(in: 0...2)
+                                vcrParameters.noiseAmount = .random(in: 0...2)
+                                vcrParameters.chromaticAberration = .random(in: 0...2)
+                            }
                             Button("Set All to Zero") {
                                 vcrParameters.curvature = 0
                                 vcrParameters.skip = 0
