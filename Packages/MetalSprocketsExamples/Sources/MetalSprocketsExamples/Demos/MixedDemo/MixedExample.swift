@@ -30,9 +30,6 @@ struct MixedExample: Element {
 
             try RenderPass {
                 try TeapotDemo(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
-                    // TODO: #352 Next two lines are only needed for the offscreen examples?
-                    .colorAttachment0(colorTexture, index: 0)
-                    .depthAttachment(depthTexture)
             }
             .renderPassDescriptorModifier { renderPassDescriptor in
                 renderPassDescriptor.depthAttachment.storeAction = .store

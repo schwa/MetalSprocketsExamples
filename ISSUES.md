@@ -1889,11 +1889,14 @@ created: 2026-04-03T03:11:53.974019+00:00
 ---
 
 ## 352: MixedExample: clarify if offscreen-only lines are dead code
-status: new
+status: closed
 priority: medium
 kind: task
 created: 2026-04-03T03:11:54.053774+00:00
+updated: 2026-04-03T04:44:03.250427+00:00
+closed: 2026-04-03T04:44:03.250427+00:00
 
+- 2026-04-03T04:44:03.305394+00:00: Removed redundant explicit color/depth attachment setters — only needed for offscreen path.
 
 ---
 
