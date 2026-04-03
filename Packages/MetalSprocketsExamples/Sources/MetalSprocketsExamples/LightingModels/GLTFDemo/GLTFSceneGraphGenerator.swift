@@ -93,7 +93,6 @@ class GLTGSceneGraphGenerator {
     }
 
     func update(node: SceneGraph.Node, from mesh: SwiftGLTF.Mesh) throws {
-        // assert(mesh.primitives.count == 1)
         guard let primitive = mesh.primitives.first else {
             throw Error.primitiveMissing
         }
@@ -106,11 +105,11 @@ class GLTGSceneGraphGenerator {
             trivialMesh.normals = normals
         }
         if let tangents = try primitive.value(semantic: .TANGENT, type: SIMD4<Float>.self, in: container) {
-            // TODO: GLTF tangents are (x, y, z, w)???????? [FILE ME]
+            // TODO: #345 GLTF tangents are (x, y, z, w)
             trivialMesh.tangents = tangents.map(\.xyz)
         }
 
-        // TODO: this is inefficient - we are getting and discarding this info already
+        // TODO: #346 this is inefficient - we are getting and discarding this info already
         if let normals = try primitive.value(semantic: .NORMAL, type: SIMD3<Float>.self, in: container), let tangents = try primitive.value(semantic: .TANGENT, type: SIMD4<Float>.self, in: container) {
             trivialMesh.bitangents = zip(normals, tangents).map { normal, tangent in
                 cross(normal, tangent.xyz) * tangent.w

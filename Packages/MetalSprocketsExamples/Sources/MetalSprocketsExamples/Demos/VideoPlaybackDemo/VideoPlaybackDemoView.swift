@@ -18,7 +18,7 @@ public struct VideoPlaybackDemoView: View {
     private var isPlaying = false
 
     @State
-    private var videoURL: URL?
+    private var videoURL: URL? = URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8")
 
     @State
     private var errorMessage: String?
@@ -38,7 +38,6 @@ public struct VideoPlaybackDemoView: View {
 
     public var body: some View {
         ZStack {
-            Color.clear
             RenderView { context, _ in
                 if let videoTexture = videoPlayer.currentTexture {
                     if enableVCR, let distortedTexture = getOrCreateDistortedTexture(for: videoTexture) {
@@ -67,88 +66,96 @@ public struct VideoPlaybackDemoView: View {
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
         }
         .demoConfiguration {
-            Form {
-                Button(action: togglePlayPause) {
-                    Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.fill" : "play.fill")
-                }
-                .disabled(videoURL == nil)
+            HStack(alignment: .top, spacing: 20) {
+                Form {
+                    Button(action: togglePlayPause) {
+                        Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.fill" : "play.fill")
+                    }
+                    .disabled(videoURL == nil)
 
-                Button("Load Video") {
-                    selectVideo()
-                }
+                    Button("Load Video") {
+                        selectVideo()
+                    }
 
-                Toggle("VCR Effects", isOn: $enableVCR)
+                    Toggle("VCR Effects", isOn: $enableVCR)
 
-                if let errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.caption)
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
                 }
+                .fixedSize()
 
                 if enableVCR {
-                    Section("VCR Settings") {
-                        Button("Set All to Zero") {
-                            vcrParameters.curvature = 0
-                            vcrParameters.skip = 0
-                            vcrParameters.imageFlicker = 0
-                            vcrParameters.vignetteFlickerSpeed = 0
-                            vcrParameters.vignetteStrength = 0
-                            vcrParameters.smallScanlinesSpeed = 0
-                            vcrParameters.smallScanlinesProximity = 0
-                            vcrParameters.smallScanlinesOpacity = 0
-                            vcrParameters.scanlinesOpacity = 0
-                            vcrParameters.scanlinesSpeed = 0
-                            vcrParameters.scanlineThickness = 0
-                            vcrParameters.scanlinesSpacing = 0
-                            vcrParameters.noiseAmount = 0
-                            vcrParameters.chromaticAberration = 0
+                    HStack(alignment: .top, spacing: 16) {
+                        Form {
+                            Button("Set All to Zero") {
+                                vcrParameters.curvature = 0
+                                vcrParameters.skip = 0
+                                vcrParameters.imageFlicker = 0
+                                vcrParameters.vignetteFlickerSpeed = 0
+                                vcrParameters.vignetteStrength = 0
+                                vcrParameters.smallScanlinesSpeed = 0
+                                vcrParameters.smallScanlinesProximity = 0
+                                vcrParameters.smallScanlinesOpacity = 0
+                                vcrParameters.scanlinesOpacity = 0
+                                vcrParameters.scanlinesSpeed = 0
+                                vcrParameters.scanlineThickness = 0
+                                vcrParameters.scanlinesSpacing = 0
+                                vcrParameters.noiseAmount = 0
+                                vcrParameters.chromaticAberration = 0
+                            }
+                            LabeledContent("Curvature") {
+                                Slider(value: $vcrParameters.curvature, in: 0...10)
+                            }
+                            LabeledContent("Tracking") {
+                                Slider(value: $vcrParameters.skip, in: 0...1)
+                            }
+                            LabeledContent("Flicker") {
+                                Slider(value: $vcrParameters.imageFlicker, in: 0...2)
+                            }
+                            LabeledContent("Scanlines") {
+                                Slider(value: $vcrParameters.scanlinesOpacity, in: 0...2)
+                            }
+                            LabeledContent("Vignette") {
+                                Slider(value: $vcrParameters.vignetteStrength, in: 0...2)
+                            }
+                            LabeledContent("Noise") {
+                                Slider(value: $vcrParameters.noiseAmount, in: 0...2)
+                            }
                         }
-                        LabeledContent("Curvature") {
-                            Slider(value: $vcrParameters.curvature, in: 0...10)
+                        .frame(width: 300)
+                        Form {
+                            LabeledContent("Color Shift") {
+                                Slider(value: $vcrParameters.chromaticAberration, in: 0...2)
+                            }
+                            LabeledContent("Vignette Pulse") {
+                                Slider(value: $vcrParameters.vignetteFlickerSpeed, in: 0...2)
+                            }
+                            LabeledContent("Scanline Speed") {
+                                Slider(value: $vcrParameters.scanlinesSpeed, in: 0...2)
+                            }
+                            LabeledContent("Scanline Thickness") {
+                                Slider(value: $vcrParameters.scanlineThickness, in: 0...1)
+                            }
+                            LabeledContent("Scanline Spacing") {
+                                Slider(value: $vcrParameters.scanlinesSpacing, in: 0...2)
+                            }
+                            LabeledContent("Fast Scanlines") {
+                                Slider(value: $vcrParameters.smallScanlinesOpacity, in: 0...2)
+                            }
+                            LabeledContent("Fast Scanline Speed") {
+                                Slider(value: $vcrParameters.smallScanlinesSpeed, in: 0...2)
+                            }
+                            LabeledContent("Fast Scanline Density") {
+                                Slider(value: $vcrParameters.smallScanlinesProximity, in: 0...2)
+                            }
                         }
-                        LabeledContent("Tracking") {
-                            Slider(value: $vcrParameters.skip, in: 0...1)
-                        }
-                        LabeledContent("Flicker") {
-                            Slider(value: $vcrParameters.imageFlicker, in: 0...2)
-                        }
-                        LabeledContent("Scanlines") {
-                            Slider(value: $vcrParameters.scanlinesOpacity, in: 0...2)
-                        }
-                        LabeledContent("Vignette") {
-                            Slider(value: $vcrParameters.vignetteStrength, in: 0...2)
-                        }
-                        LabeledContent("Noise") {
-                            Slider(value: $vcrParameters.noiseAmount, in: 0...2)
-                        }
-                        LabeledContent("Color Shift") {
-                            Slider(value: $vcrParameters.chromaticAberration, in: 0...2)
-                        }
-                        LabeledContent("Vignette Pulse") {
-                            Slider(value: $vcrParameters.vignetteFlickerSpeed, in: 0...2)
-                        }
-                        LabeledContent("Scanline Speed") {
-                            Slider(value: $vcrParameters.scanlinesSpeed, in: 0...2)
-                        }
-                        LabeledContent("Scanline Thickness") {
-                            Slider(value: $vcrParameters.scanlineThickness, in: 0...1)
-                        }
-                        LabeledContent("Scanline Spacing") {
-                            Slider(value: $vcrParameters.scanlinesSpacing, in: 0...2)
-                        }
-                        LabeledContent("Fast Scanlines") {
-                            Slider(value: $vcrParameters.smallScanlinesOpacity, in: 0...2)
-                        }
-                        LabeledContent("Fast Scanline Speed") {
-                            Slider(value: $vcrParameters.smallScanlinesSpeed, in: 0...2)
-                        }
-                        LabeledContent("Fast Scanline Density") {
-                            Slider(value: $vcrParameters.smallScanlinesProximity, in: 0...2)
-                        }
+                        .frame(width: 300)
                     }
                 }
             }
-            .fixedSize()
         }
         .onAppear {
             loadDefaultVideo()
@@ -158,6 +165,8 @@ public struct VideoPlaybackDemoView: View {
     private func loadDefaultVideo() {
         if let url = Bundle.module.url(forResource: "sample", withExtension: "mov") ??
             Bundle.module.url(forResource: "sample", withExtension: "mp4") {
+            loadVideo(url: url)
+        } else if let url = videoURL {
             loadVideo(url: url)
         } else {
             errorMessage = "No default video found. Click 'Load Video' to select one."

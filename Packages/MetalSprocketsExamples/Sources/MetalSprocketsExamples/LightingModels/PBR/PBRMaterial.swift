@@ -23,9 +23,9 @@ extension PBRMaterialNew {
     init() {
         albedo = .color([1, 1, 1])
         normal = nil
-        metallic = .color(0) // TODO: use 1 scalar
-        roughness = .color(0) // TODO: use 1 scalar
-        ambientOcclusion = .color(1) // TODO: use 1 scalar
+        metallic = .color(0) // TODO: #348 use 1 scalar
+        roughness = .color(0) // TODO: #348 use 1 scalar
+        ambientOcclusion = .color(1) // TODO: #348 use 1 scalar
         emissive = .color([0, 0, 0])
         emissiveIntensity = 0.0
         clearcoat = 0.0
@@ -40,7 +40,6 @@ extension PBRMaterialNew {
     func toArgumentBuffer() -> PBRMaterialArgumentBuffer {
         var argumentBuffer = PBRMaterialArgumentBuffer()
         argumentBuffer.albedo = albedo.toArgumentBuffer()
-        //        argumentBuffer.normal = normal?.gpuResourceID
         argumentBuffer.metallic = metallic.toArgumentBuffer()
         argumentBuffer.roughness = roughness.toArgumentBuffer()
         argumentBuffer.ambientOcclusion = ambientOcclusion.toArgumentBuffer()

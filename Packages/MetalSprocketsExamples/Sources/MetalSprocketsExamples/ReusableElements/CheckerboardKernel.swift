@@ -19,7 +19,7 @@ struct CheckerboardKernel: Element {
     var body: some Element {
         get throws {
             try ComputePipeline(computeKernel: kernel) {
-                // TODO: #52 Compute threads per threadgroup
+                // TODO: #355 Compute threads per threadgroup
                 try ComputeDispatch(threadsPerGrid: .init(width: outputTexture.width, height: outputTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))
                     .parameter("outputTexture", texture: outputTexture)
                     .parameter("checkerSize", value: checkerSize)
@@ -45,7 +45,7 @@ struct CheckerboardKernel_ushort: Element {
     var body: some Element {
         get throws {
             try ComputePipeline(computeKernel: kernel) {
-                // TODO: #52 Compute threads per threadgroup
+                // TODO: #355 Compute threads per threadgroup
                 try ComputeDispatch(threadsPerGrid: .init(width: outputTexture.width, height: outputTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))
                     .parameter("outputTexture", texture: outputTexture)
                     .parameter("checkerSize", value: checkerSize)

@@ -54,7 +54,7 @@ struct MetalCanvasRenderPipeline: Element {
             }
 
             return try MeshRenderPipeline(objectShader: objectShader, meshShader: meshShader, fragmentShader: fragmentShader) {
-                // TODO: pipelineState.maxTotalThreadsPerThreadgroup
+                // TODO: #354 pipelineState.maxTotalThreadsPerThreadgroup
                 Draw { encoder in
                     encoder.label = "MetalCanvas Mesh Encoder"
                     guard operationCount > 0 else {

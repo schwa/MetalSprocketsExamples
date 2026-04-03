@@ -12,7 +12,6 @@ public struct OffscreenDemoView: View {
 
     public var body: some View {
         ZStack {
-            Color.clear
             if case let .success(image) = result {
                 Image(nsImage: NSImage(cgImage: image, size: .zero))
                     .resizable()

@@ -33,7 +33,7 @@ struct PBRShader<Content>: Element where Content: Element {
 // MARK: - Element Extensions for PBR
 
 public extension Element {
-    // TODO: Break out model uniforms from here.
+    // TODO: #347 Break out model uniforms from here.
     func pbrUniforms(modelTransform: float4x4, cameraMatrix: float4x4, projectionMatrix: float4x4) -> some Element {
         // Calculate matrices
         let normalMatrix = float3x3(modelTransform[0].xyz, modelTransform[1].xyz, modelTransform[2].xyz).transpose.inverse

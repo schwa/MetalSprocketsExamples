@@ -175,11 +175,6 @@ public struct HitTestDemoView: View {
                             hitTestTextures = HitTestTextures(device: device, size: size)
                         }
                     }
-                    .onChange(of: timeline.date) {
-                        //                    LightingAnimator.run(date: timeline.date, lighting: &lighting)
-                        // Rotate the teapot
-                        //                    modelMatrix = float4x4(yRotation: Float(timeline.date.timeIntervalSinceReferenceDate))
-                    }
                     .onTapGesture(coordinateSpace: .named("RenderView")) { location in
                         performHitTest(at: location)
                     }
@@ -199,7 +194,6 @@ public struct HitTestDemoView: View {
                 }
             }
         }
-        .background(.black)
         .demoConfiguration {
             Form {
             Picker("Visualization", selection: $visualizationMode) {

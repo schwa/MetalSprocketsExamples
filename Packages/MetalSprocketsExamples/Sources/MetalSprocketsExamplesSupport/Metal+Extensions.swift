@@ -4,6 +4,18 @@ import MetalSprockets
 import MetalSprocketsSupport
 import SwiftUI
 
+public extension SIMD4<Float> {
+    init(color: Color) {
+        let resolved = color.resolve(in: .init())
+        self = [
+            Float(resolved.linearRed),
+            Float(resolved.linearGreen),
+            Float(resolved.linearBlue),
+            Float(resolved.opacity)
+        ]
+    }
+}
+
 public extension MTLDevice {
     @MainActor
     func makeTexture(content: some View) throws -> MTLTexture {
@@ -82,14 +94,6 @@ public extension MTLLinkedFunctions {
     convenience init(functions: [MTLFunction]) {
         self.init()
         self.functions = functions
-    }
-}
-
-public extension MTLStitchedLibraryDescriptor {
-    convenience init(functions: [MTLFunction], functionGraphs: [MTLFunctionStitchingGraph]) {
-        self.init()
-        self.functions = functions
-        self.functionGraphs = functionGraphs
     }
 }
 

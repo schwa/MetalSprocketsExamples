@@ -35,7 +35,6 @@ public struct PanoramaDemoView: View {
 
     public var body: some View {
         ZStack {
-            Color.clear
             SuperImportWell(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image]) { _ in
                 WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
                     if let panoramaTexture, let mesh {

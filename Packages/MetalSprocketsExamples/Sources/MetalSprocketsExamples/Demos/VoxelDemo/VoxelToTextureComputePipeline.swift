@@ -42,7 +42,7 @@ struct VoxelToTextureComputePipeline: Element {
                 if case let .standard(zRange) = projection.depthMode {
                     try ComputeDispatch(
                         threadsPerGrid: outputTexture.size,
-                        threadsPerThreadgroup: MTLSize(width: 32, height: 32, depth: 1) // TODO: hard coded
+                        threadsPerThreadgroup: MTLSize(width: 32, height: 32, depth: 1) // TODO: #355 hard coded threadsPerThreadgroup
                     )
                     .parameter("voxelTexture", texture: voxelTexture)
                     .parameter("outputTexture", texture: outputTexture)

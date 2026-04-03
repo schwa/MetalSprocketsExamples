@@ -5,7 +5,7 @@ import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import simd
 
-// TODO: Lighing is static once generated.
+// TODO: #344 Lighting is static once generated.
 
 struct SceneGraphRenderPass: Element {
     var sceneGraph: SceneGraph
@@ -26,7 +26,7 @@ struct SceneGraphRenderPass: Element {
         }
         self.nodesWithWorldTransforms = worldTransforms
 
-        // TODO: We are generating this every frame! [FILE ME]
+        // TODO: #344 We are generating this every frame!
         let lights = worldTransforms.compactMap { node, worldTransform -> (SIMD3<Float>, Light)? in
             guard let light = node.light else {
                 return nil

@@ -123,7 +123,6 @@ public struct ParticleEffectsDemoView: View {
             .fixedSize()
         }
         #if os(macOS)
-        .screenshotButton()
         #endif
     }
 

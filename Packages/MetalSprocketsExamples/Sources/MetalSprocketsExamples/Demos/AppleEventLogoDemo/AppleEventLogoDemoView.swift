@@ -225,6 +225,5 @@ public struct AppleEventLogoDemoView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
     }
 }

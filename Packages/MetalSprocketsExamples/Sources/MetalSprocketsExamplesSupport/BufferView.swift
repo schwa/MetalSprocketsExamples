@@ -1,18 +1,6 @@
 import Metal
 import MetalSprocketsSupport
 
-public struct RawBufferView: Equatable, Sendable {
-    public var stride: Int
-    public var offset: Int
-    public var count: Int
-
-    public init(stride: Int, offset: Int = 0, count: Int) {
-        self.stride = stride
-        self.offset = offset
-        self.count = count
-    }
-}
-
 public struct BufferView<T>: Equatable, Sendable {
     public var stride: Int
     public var offset: Int
@@ -41,21 +29,6 @@ public extension MTLDevice {
 // MARK: -
 
 public extension MTLBuffer {
-    subscript(view: RawBufferView, range: Range<Int>) -> UnsafeRawBufferPointer {
-        get {
-            let pointer = contents().advanced(by: view.offset + range.lowerBound * view.stride)
-            return UnsafeRawBufferPointer(start: pointer, count: range.count)
-        }
-        set {
-            precondition(newValue.count == range.count, "New value count must match range count")
-            let pointer = contents().advanced(by: view.offset + range.lowerBound * view.stride)
-            guard let baseAddress = newValue.baseAddress else {
-                return
-            }
-            pointer.copyMemory(from: baseAddress, byteCount: newValue.count * view.stride)
-        }
-    }
-
     subscript<T>(view: BufferView<T>, index: Int) -> T {
         get {
             let pointer = contents().advanced(by: view.offset + index * view.stride)

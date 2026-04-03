@@ -16,7 +16,7 @@ public struct VoxelDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: float4x4 = .identity
+    private var cameraMatrix: float4x4 = float4x4(yRotation: .degrees(30)) * float4x4(xRotation: .degrees(20)) * .init(translation: [0, 0, 3])
 
     @State
     private var voxelTexture: MTLTexture?
@@ -25,10 +25,10 @@ public struct VoxelDemoView: View {
     private var colorTexture: MTLTexture?
 
     @State
-    private var voxelSize = MTLSize(width: 4, height: 4, depth: 4)
+    private var voxelSize = MTLSize(width: 32, height: 32, depth: 32)
 
     @State
-    private var voxelScale: SIMD3<Float> = [1, 1, 1]
+    private var voxelScale: SIMD3<Float> = [0.125, 0.125, 0.125]
 
     @State
     private var magicaVoxelURL: URL?

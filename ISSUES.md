@@ -1501,12 +1501,13 @@ The random lines demo works but the feature needs a bigger plan. Consider deprec
 ---
 
 ## 319: Hello Imageblock: fix rotated image
-status: new
+status: closed
 priority: medium
 kind: bug
 labels: needs-info, effort:s
 created: 2026-04-02T21:41:34.688774+00:00
-updated: 2026-04-02T23:04:17.239471+00:00
+updated: 2026-04-03T02:16:30.275657+00:00
+closed: 2026-04-03T02:16:30.275657+00:00
 
 The puppy image appears rotated in the imageblock demo. This is a timing issue — the image starts rotating. Needs investigation into why rotation is happening on launch.
 
@@ -1801,6 +1802,168 @@ status: new
 priority: medium
 kind: enhancement
 created: 2026-04-03T02:09:46.833736+00:00
+
+
+---
+
+## 344: SceneGraph: lighting is regenerated every frame
+status: new
+priority: medium
+kind: bug
+created: 2026-04-03T03:11:53.436656+00:00
+
+
+---
+
+## 345: GLTF: tangents are (x,y,z,w) — needs investigation
+status: new
+priority: medium
+kind: bug
+created: 2026-04-03T03:11:53.511169+00:00
+
+
+---
+
+## 346: GLTF: inefficient accessor info getting and discarding
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:11:53.587174+00:00
+
+
+---
+
+## 347: PBR: break out model uniforms from PBRShader
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:11:53.661992+00:00
+
+
+---
+
+## 348: PBR: use scalar instead of color for metallic/roughness/AO
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:11:53.738032+00:00
+
+
+---
+
+## 349: ColorAdjust: document the two VisibleFunction parameters
+status: new
+priority: medium
+kind: task
+created: 2026-04-03T03:11:53.815865+00:00
+
+
+---
+
+## 350: ColorAdjust: consider using .argumentBuffer() instead
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:11:53.895139+00:00
+
+
+---
+
+## 351: PointCloud: clean up shader handling
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:11:53.974019+00:00
+
+
+---
+
+## 352: MixedExample: clarify if offscreen-only lines are dead code
+status: new
+priority: medium
+kind: task
+created: 2026-04-03T03:11:54.053774+00:00
+
+
+---
+
+## 353: BlinnPhongShader+Support: expand vertex descriptor handling
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:11:54.133747+00:00
+
+
+---
+
+## 354: MetalCanvas: use pipelineState.maxTotalThreadsPerThreadgroup instead of hardcoded value
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:11:54.214833+00:00
+
+
+---
+
+## 355: Centralize threadsPerThreadgroup computation instead of hardcoding
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:12:53.973301+00:00
+
+
+---
+
+## 356: Extract shader library convenience to eliminate 16x boilerplate
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:15:29.067348+00:00
+
+
+---
+
+## 357: Centralize _MTLCreateSystemDefaultDevice() access (45 ad-hoc calls)
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:15:29.150928+00:00
+
+
+---
+
+## 358: Extract texture creation helper to reduce boilerplate
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:15:29.232097+00:00
+
+
+---
+
+## 359: Consolidate lighting setup patterns across demos
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:15:29.313195+00:00
+
+
+---
+
+## 360: Standardize onDrawableSizeChange texture recreation pattern
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T03:15:29.395346+00:00
+
+
+---
+
+## 361: Research: convert each demo to its own target (or two targets if including shaders)
+status: new
+priority: medium
+kind: task
+created: 2026-04-03T03:15:59.333403+00:00
 
 
 ---

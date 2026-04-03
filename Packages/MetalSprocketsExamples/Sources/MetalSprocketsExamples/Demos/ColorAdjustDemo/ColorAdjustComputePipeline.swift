@@ -12,7 +12,7 @@ struct ColorAdjustComputePipeline<T>: Element {
     let mapTextureCoordinateGraph: SimpleStitchedFunctionGraph
     let colorAdjustGraph: SimpleStitchedFunctionGraph
 
-    // TODO: the two VisibleFunction parameters should be documented well.
+    // TODO: #349 the two VisibleFunction parameters should be documented well.
     init(inputSpecifier: ColorSource, inputParameters: T, outputTexture: MTLTexture, mapTextureCoordinateFunction: VisibleFunction? = nil, colorAdjustFunction: VisibleFunction) throws {
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
@@ -29,7 +29,7 @@ struct ColorAdjustComputePipeline<T>: Element {
         get throws {
             try ComputePipeline(computeKernel: kernel) {
                 try ComputeDispatch(threadsPerGrid: [outputTexture.width, outputTexture.height, 1], threadsPerThreadgroup: [16, 16, 1])
-                    // TODO: #280 Maybe a .argumentBuffer() is a better solution
+                    // TODO: #350 Maybe a .argumentBuffer() is a better solution
                     .parameter("inputSpecifier", value: inputSpecifier.toArgumentBuffer())
                     .parameter("inputParameters", value: inputParameters)
                     .parameter("outputTexture", texture: outputTexture)

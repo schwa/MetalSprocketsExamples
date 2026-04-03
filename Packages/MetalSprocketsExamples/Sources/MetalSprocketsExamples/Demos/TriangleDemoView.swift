@@ -69,7 +69,6 @@ public struct TriangleDemoView: View {
                 }
             }
             .aspectRatio(1.0, contentMode: .fit)
-            .background(Color.black)
             .demoConfiguration {
                 Form {
                 let gpuTime = Measurement(value: gpuTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
