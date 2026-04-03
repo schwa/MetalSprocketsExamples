@@ -12,7 +12,15 @@ struct ColorAdjustComputePipeline<T>: Element {
     let mapTextureCoordinateGraph: SimpleStitchedFunctionGraph
     let colorAdjustGraph: SimpleStitchedFunctionGraph
 
-    // TODO: #349 the two VisibleFunction parameters should be documented well.
+    /// Creates a color adjustment compute pipeline.
+    /// - Parameters:
+    ///   - inputSpecifier: The input color source (texture2D, textureCube, etc.).
+    ///   - inputParameters: Per-effect parameters passed to the color adjust function (e.g. gamma value as `Float`).
+    ///   - outputTexture: The output texture to write adjusted colors to.
+    ///   - mapTextureCoordinateFunction: A visible function that transforms texture coordinates before sampling.
+    ///     Signature: `float2 fn(float2 uv, float2 textureSize)`. Defaults to identity (passthrough).
+    ///   - colorAdjustFunction: A visible function that transforms the sampled color.
+    ///     Signature: `float4 fn(float4 color, T parameters, float2 uv)`. This is the core color adjustment operation.
     init(inputSpecifier: ColorSource, inputParameters: T, outputTexture: MTLTexture, mapTextureCoordinateFunction: VisibleFunction? = nil, colorAdjustFunction: VisibleFunction) throws {
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters

@@ -1932,11 +1932,14 @@ created: 2026-04-03T03:11:53.738032+00:00
 ---
 
 ## 349: ColorAdjust: document the two VisibleFunction parameters
-status: new
+status: closed
 priority: medium
 kind: task
 created: 2026-04-03T03:11:53.815865+00:00
+updated: 2026-04-03T04:57:59.509544+00:00
+closed: 2026-04-03T04:57:59.509544+00:00
 
+- 2026-04-03T04:57:59.561714+00:00: Added doc comments for mapTextureCoordinateFunction and colorAdjustFunction parameters.
 
 ---
 
