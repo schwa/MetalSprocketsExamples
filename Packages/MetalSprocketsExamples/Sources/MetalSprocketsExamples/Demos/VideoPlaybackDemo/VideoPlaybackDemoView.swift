@@ -162,6 +162,10 @@ public struct VideoPlaybackDemoView: View {
         .onAppear {
             loadDefaultVideo()
         }
+        .onDisappear {
+            videoPlayer.pause()
+            isPlaying = false
+        }
     }
 
     private func loadDefaultVideo() {
