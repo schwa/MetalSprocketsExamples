@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -20,7 +21,7 @@ public struct SpiralParticlesDemoView: View {
     private var time: Float = 0.0
 
     @State
-    private var particleCount: Int = 8
+    private var particleCount: Int = 32
 
     @State
     private var rotationSpeed: Double = 1.0
@@ -50,102 +51,83 @@ public struct SpiralParticlesDemoView: View {
                     }
             }
         }
-        .overlay(alignment: .topLeading) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Spiral Particles")
-                    .font(.headline)
+        .demoConfiguration {
+            Form {
+            let totalTriangles = particleCount * trianglesPerSpiral
+            let totalVertices = totalTriangles * 3
 
-                Text("Each particle generates a spiral using mesh shaders")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            HStack {
+                Text("Particles: \(particleCount)")
+                Text("•")
+                Text("Triangles: \(totalTriangles)")
+                Text("•")
+                Text("Vertices: \(totalVertices)")
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
 
-                let totalTriangles = particleCount * trianglesPerSpiral
-                let totalVertices = totalTriangles * 3
-
+            LabeledContent("Particles") {
                 HStack {
-                    Text("Particles: \(particleCount)")
-                    Text("•")
-                    Text("Triangles: \(totalTriangles)")
-                    Text("•")
-                    Text("Vertices: \(totalVertices)")
+                    Slider(
+                        value: Binding(
+                            get: { Double(particleCount) },
+                            set: { particleCount = Int($0) }
+                        ),
+                        in: 1...Double(maxParticles),
+                        step: 1
+                    )
+                    Text("\(particleCount)")
+                        .monospacedDigit()
+                        .frame(minWidth: 30)
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            }
 
-                Form {
-                    LabeledContent("Particles") {
-                        HStack {
-                            Slider(
-                                value: Binding(
-                                    get: { Double(particleCount) },
-                                    set: { particleCount = Int($0) }
-                                ),
-                                in: 1...Double(maxParticles),
-                                step: 1
-                            )
-                            Text("\(particleCount)")
-                                .monospacedDigit()
-                                .frame(minWidth: 30)
-                        }
-                    }
-
-                    LabeledContent("Triangles") {
-                        HStack {
-                            Slider(
-                                value: Binding(
-                                    get: { Double(trianglesPerSpiral) },
-                                    set: { trianglesPerSpiral = Int($0) }
-                                ),
-                                in: 3...Double(maxTriangles),
-                                step: 1
-                            )
-                            Text("\(trianglesPerSpiral)")
-                                .monospacedDigit()
-                                .frame(minWidth: 30)
-                        }
-                    }
-
-                    LabeledContent("Speed") {
-                        HStack {
-                            Slider(value: $rotationSpeed, in: 0.0...3.0)
-                            Text(rotationSpeed, format: .number.precision(.fractionLength(2)))
-                                .frame(minWidth: 40)
-                        }
-                    }
-
-                    LabeledContent("Orbit") {
-                        HStack {
-                            Slider(value: $orbitRadius, in: 0.0...5.0)
-                            Text(orbitRadius, format: .number.precision(.fractionLength(2)))
-                                .frame(minWidth: 40)
-                        }
-                    }
-
-                    LabeledContent("Size") {
-                        HStack {
-                            Slider(value: $spiralSize, in: 0.1...2.0)
-                            Text(spiralSize, format: .number.precision(.fractionLength(2)))
-                                .frame(minWidth: 40)
-                        }
-                    }
+            LabeledContent("Triangles") {
+                HStack {
+                    Slider(
+                        value: Binding(
+                            get: { Double(trianglesPerSpiral) },
+                            set: { trianglesPerSpiral = Int($0) }
+                        ),
+                        in: 3...Double(maxTriangles),
+                        step: 1
+                    )
+                    Text("\(trianglesPerSpiral)")
+                        .monospacedDigit()
+                        .frame(minWidth: 30)
                 }
-                .font(.caption)
             }
-            .frame(maxWidth: 400)
-            .padding()
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
-        }
-        .toolbar {
-            ToolbarItem {
-                Button(action: {
-                    cameraMatrix = .init(translation: [0, 0, 8])
-                    time = 0.0
-                }, label: {
-                    Image(systemName: "arrow.counterclockwise")
-                        .accessibilityLabel("Reset")
-                })
+
+            LabeledContent("Speed") {
+                HStack {
+                    Slider(value: $rotationSpeed, in: 0.0...3.0)
+                    Text(rotationSpeed, format: .number.precision(.fractionLength(2)))
+                        .frame(minWidth: 40)
+                }
             }
+
+            LabeledContent("Orbit") {
+                HStack {
+                    Slider(value: $orbitRadius, in: 0.0...5.0)
+                    Text(orbitRadius, format: .number.precision(.fractionLength(2)))
+                        .frame(minWidth: 40)
+                }
+            }
+
+            LabeledContent("Size") {
+                HStack {
+                    Slider(value: $spiralSize, in: 0.1...2.0)
+                    Text(spiralSize, format: .number.precision(.fractionLength(2)))
+                        .frame(minWidth: 40)
+                }
+            }
+
+            Button("Reset") {
+                cameraMatrix = .init(translation: [0, 0, 8])
+                time = 0.0
+            }
+            }
+            .fixedSize()
         }
     }
 

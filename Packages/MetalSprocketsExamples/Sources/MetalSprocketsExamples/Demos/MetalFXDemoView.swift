@@ -1,4 +1,5 @@
 #if canImport(MetalFX)
+import DemoKit
 import Metal
 import MetalKit
 import MetalSprockets
@@ -64,7 +65,8 @@ public struct MetalFXDemoView: View {
             }
             .padding()
         }
-        Form {
+        .demoConfiguration {
+            Form {
             LabeledContent("Scale Factor") {
                 HStack {
                     Slider(value: $scaleFactor, in: 1...16)
@@ -74,7 +76,8 @@ public struct MetalFXDemoView: View {
                         .frame(width: 100)
                 }
             }
-            .padding()
+            }
+            .fixedSize()
         }
         .onChange(of: scaleFactor, initial: true) {
             let device = _MTLCreateSystemDefaultDevice()

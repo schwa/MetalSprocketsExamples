@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import Metal
@@ -38,7 +39,7 @@ public struct HitTestDemoView: View {
     @State
     private var projection: any ProjectionProtocol = PerspectiveProjection()
     @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 4, 8])
     @State
     private var hitTestTextures: HitTestTextures?
     @State
@@ -198,47 +199,33 @@ public struct HitTestDemoView: View {
                 }
             }
         }
-        .toolbar {
-            ToolbarItem {
-                Picker("Visualization", selection: $visualizationMode) {
-                    ForEach(HitTestVisualizationMode.allCases, id: \.self) { mode in
-                        Text(mode.rawValue).tag(mode)
-                    }
+        .demoConfiguration {
+            Form {
+            Picker("Visualization", selection: $visualizationMode) {
+                ForEach(HitTestVisualizationMode.allCases, id: \.self) { mode in
+                    Text(mode.rawValue).tag(mode)
                 }
-                .pickerStyle(MenuPickerStyle())
+            }
+            .pickerStyle(MenuPickerStyle())
+
+            Button("Export Hit Grid") {
+                performFullGridHitTest()
             }
 
-            ToolbarItem {
-                Button("Export Hit Grid") {
-                    performFullGridHitTest()
-                }
-            }
-        }
-        .overlay(alignment: .topLeading) {
             if let result = lastHitResult {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Location: (\(Int(result.location.x)), \(Int(result.location.y)))")
+                Section("Hit Test Result") {
+                    LabeledContent("Location", value: "(\(Int(result.location.x)), \(Int(result.location.y)))")
                     if result.geometryID != -1 {
-                        Text("Geometry ID: \(result.geometryID)")
-                        Text("Instance ID: \(result.instanceID)")
-                        Text("Triangle ID: \(result.triangleID)")
-                        Text("Depth: \(result.depth, format: .number.precision(.fractionLength(3)))")
-                        Text("Barycentric: (\(result.triangleCoords.x, format: .number.precision(.fractionLength(3))), \(result.triangleCoords.y, format: .number.precision(.fractionLength(3))), \(result.triangleCoords.z, format: .number.precision(.fractionLength(3))))")
+                        LabeledContent("Geometry ID", value: "\(result.geometryID)")
+                        LabeledContent("Instance ID", value: "\(result.instanceID)")
+                        LabeledContent("Triangle ID", value: "\(result.triangleID)")
+                        LabeledContent("Depth", value: result.depth.formatted(.number.precision(.fractionLength(3))))
+                        LabeledContent("Barycentric", value: "(\(result.triangleCoords.x.formatted(.number.precision(.fractionLength(3)))), \(result.triangleCoords.y.formatted(.number.precision(.fractionLength(3)))), \(result.triangleCoords.z.formatted(.number.precision(.fractionLength(3)))))")
                     }
                 }
-                .frame(width: 250)
-                .padding()
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-                .padding()
-                .allowsHitTesting(false)
-            } else {
-                VStack {
-                    Text("No Hit Test Result")
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-                .frame(width: 250)
             }
+            }
+            .fixedSize()
         }
     }
 

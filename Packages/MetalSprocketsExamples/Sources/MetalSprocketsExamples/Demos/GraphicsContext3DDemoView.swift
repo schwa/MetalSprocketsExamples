@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -42,14 +43,10 @@ public struct GraphicsContext3DDemoView: View {
     @State
     private var lineWidthMultiplier: Double = 1.0
 
-    @State
-    private var showLineWidthPopover: Bool = false
 
     @State
     private var randomLineCount: Int = 1_000
 
-    @State
-    private var showRandomLineCountPopover: Bool = false
 
     @State
     private var randomLines: [(start: SIMD3<Float>, end: SIMD3<Float>, color: Color)] = []
@@ -79,8 +76,8 @@ public struct GraphicsContext3DDemoView: View {
                 }
             }
         }
-        .toolbar {
-            toolbarContent
+        .demoConfiguration {
+            configurationContent
         }
         .onAppear {
             generateRandomLines()
@@ -100,73 +97,41 @@ public struct GraphicsContext3DDemoView: View {
         }
     }
 
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem {
-            Picker("Sample", selection: $selectedSample) {
-                ForEach(Sample.allCases) { sample in
-                    Text(sample.rawValue).tag(sample)
-                }
-            }
-            .pickerStyle(.segmented)
-        }
-        ToolbarItem {
-            Button(action: { isPlaying.toggle() }, label: {
-                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-            })
-            .accessibilityLabel(isPlaying ? "Pause" : "Play")
-        }
-        ToolbarItem {
-            Button(action: { debugWireframe.toggle() }, label: {
-                Image(systemName: debugWireframe ? "grid.circle.fill" : "grid.circle")
-            })
-            .accessibilityLabel("Toggle Debug Wireframe")
-        }
-        ToolbarItem {
-            Button(action: {
-                cameraMatrix = .init(translation: [0, 0, 8])
-                rotation = 0.0
-            }, label: {
-                Image(systemName: "arrow.counterclockwise")
-            })
-            .accessibilityLabel("Reset Camera")
-        }
-        ToolbarItem {
-            Button(action: { showLineWidthPopover.toggle() }, label: {
-                Image(systemName: "lineweight")
-            })
-            .accessibilityLabel("Line Width Settings")
-            .popover(isPresented: $showLineWidthPopover) {
-                VStack {
-                    Text("Line Width Multiplier")
-                        .font(.headline)
-                    Slider(value: $lineWidthMultiplier, in: 0.1...20.0)
-                    Text(lineWidthMultiplier, format: .number.precision(.fractionLength(2)))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding()
-                .frame(minWidth: 200)
+    @ViewBuilder
+    private var configurationContent: some View {
+        Form {
+        Picker("Sample", selection: $selectedSample) {
+            ForEach(Sample.allCases) { sample in
+                Text(sample.rawValue).tag(sample)
             }
         }
-        ToolbarItem {
-            Button(action: { showRandomLineCountPopover.toggle() }, label: {
-                Image(systemName: "number")
-            })
-            .accessibilityLabel("Random Line Count")
-            .popover(isPresented: $showRandomLineCountPopover) {
-                VStack {
-                    Text("Random Line Count")
-                        .font(.headline)
-                    Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000, step: 10)
-                    Text("\(randomLineCount)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding()
-                .frame(minWidth: 200)
+
+        Toggle("Animate", isOn: $isPlaying)
+
+        Toggle("Debug Wireframe", isOn: $debugWireframe)
+
+        LabeledContent("Line Width") {
+            HStack {
+                Slider(value: $lineWidthMultiplier, in: 0.1...20.0)
+                Text(lineWidthMultiplier, format: .number.precision(.fractionLength(2)))
+                    .frame(minWidth: 40)
             }
         }
+
+        LabeledContent("Random Lines") {
+            HStack {
+                Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000, step: 10)
+                Text("\(randomLineCount)")
+                    .frame(minWidth: 40)
+            }
+        }
+
+        Button("Reset Camera") {
+            cameraMatrix = .init(translation: [0, 0, 8])
+            rotation = 0.0
+        }
+        }
+        .fixedSize()
     }
 
     private var currentContext: GraphicsContext3D {

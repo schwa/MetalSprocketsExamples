@@ -1,3 +1,4 @@
+import DemoKit
 import MetalKit
 import MetalSprockets
 import MetalSprocketsUI
@@ -68,18 +69,14 @@ public struct TriangleDemoView: View {
                 }
             }
             .aspectRatio(1.0, contentMode: .fit)
-            .overlay(alignment: .topLeading) {
+            .demoConfiguration {
                 Form {
-                    let gpuTime = Measurement(value: gpuTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
-                    let kernelTime = Measurement(value: kernelTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
-                    LabeledContent("GPU Time", value: gpuTime.formatted())
-                    LabeledContent("Kernel Time", value: kernelTime.formatted())
+                let gpuTime = Measurement(value: gpuTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
+                let kernelTime = Measurement(value: kernelTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
+                LabeledContent("GPU Time", value: gpuTime.formatted())
+                LabeledContent("Kernel Time", value: kernelTime.formatted())
                 }
-                .monospacedDigit()
-                .frame(width: 300)
-                .padding()
-                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                .padding()
+                .fixedSize()
             }
             .metalDepthStencilPixelFormat(.depth32Float)
             .onChange(of: timeline.date) { _, new in

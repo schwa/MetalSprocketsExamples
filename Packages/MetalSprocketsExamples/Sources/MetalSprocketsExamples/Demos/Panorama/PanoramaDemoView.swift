@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 @preconcurrency import Metal
@@ -111,7 +112,8 @@ public struct PanoramaDemoView: View {
                 }
             }
         }
-        .toolbar {
+        .demoConfiguration {
+            Form {
             Picker("Mesh", selection: $meshType) {
                 ForEach(MeshType.allCases, id: \.self) { type in
                     Text(type.rawValue).tag(type)
@@ -123,6 +125,8 @@ public struct PanoramaDemoView: View {
             Toggle("Gamma Correction", isOn: $applyGammaCorrection)
 
             SuperImportWidget(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image])
+            }
+            .fixedSize()
         }
         .onChange(of: panoramaURL, initial: true) {
             if let panoramaURL {

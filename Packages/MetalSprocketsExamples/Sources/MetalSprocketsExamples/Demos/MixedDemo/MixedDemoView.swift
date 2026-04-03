@@ -12,10 +12,10 @@ public struct MixedDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 4, 8])
 
     @State
-    private var lightDirection: SIMD3<Float> = [-1, -2, -1]
+    private var lightDirection: SIMD3<Float> = [1, -2, 0]
 
     @State
     private var color: SIMD3<Float> = [1, 0, 0]
@@ -45,7 +45,7 @@ public struct MixedDemoView: View {
                 .onChange(of: timeline.date) {
                     let degreesPerSecond = 90.0
                     let angle = Angle(degrees: (degreesPerSecond * timeline.date.timeIntervalSince1970).truncatingRemainder(dividingBy: 360))
-                    lightDirection = SIMD3<Float>(sin(Float(angle.radians)), -2, cos(Float(angle.radians)))
+                    lightDirection = SIMD3<Float>(cos(Float(angle.radians)), -2, sin(Float(angle.radians)))
                 }
                 .onDrawableSizeChange { drawableSize = $0 }
             }

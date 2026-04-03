@@ -223,9 +223,8 @@ public struct AppleEventLogoDemoView: View {
                     fatalError("Error: \(error)")
                 }
             }
-
-            // Debug label showing mouse position
-            Text("Mouse: (\(debugMousePosition.x, format: .number.precision(.fractionLength(2))), \(debugMousePosition.y, format: .number.precision(.fractionLength(2))))")
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
     }
 }

@@ -13,7 +13,7 @@ import SwiftUI
 
 public struct PBRDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
-    @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
+    @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 4, 8])
     @State private var selectedMaterial = MaterialPreset.gold
     @State private var customMaterial = PBRMaterialNew()
     @State private var animateLights = true
@@ -86,17 +86,7 @@ public struct PBRDemoView: View {
                 }
             }
         }
-        .overlay(alignment: .topTrailing) {
-            // TODO: This technically wont work with the turntable modifier because the turn table has a radius from the rotation point
-            VStack {
-                RotationWidget(rotation: $cameraMatrix.rotation)
-                    .frame(width: 120, height: 120)
-                Text("(broken)").foregroundStyle(.orange)
-            }
-            .padding()
-            .background(Color.black, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
-        }
+
         .onChange(of: selectedMaterial, initial: false) {
             if selectedMaterial == .custom {
                 customMaterial = PBRMaterialNew()

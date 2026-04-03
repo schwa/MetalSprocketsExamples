@@ -18,6 +18,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.2.0"),
+        .package(url: "https://github.com/schwa/DemoKit", from: "0.1.3"),
         .package(url: "https://github.com/schwa/earcut-swift", from: "0.1.0"),
         .package(url: "https://github.com/schwa/Everything", from: "1.2.0"),
         .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
@@ -25,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.4"),
         .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
-        .package(url: "https://github.com/schwa/Panels", from: "0.1.1"),
+        .package(url: "https://github.com/schwa/Panels", from: "0.1.2"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0")
     ],
@@ -37,6 +38,7 @@ let package = Package(
                 "MetalSprocketsExampleShaders",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                 .product(name: "Collections", package: "swift-collections"),
+                .product(name: "DemoKit", package: "DemoKit"),
                 .product(name: "earcut", package: "earcut-swift"),
                 .product(name: "Everything", package: "Everything"),
                 .product(name: "GeometryLite3D", package: "GeometryLite3D"),
@@ -58,7 +60,8 @@ let package = Package(
                 .copy("Resources/HD-Testcard-original.jpg"),
                 .copy("Resources/IndoorEnvironmentHDRI013_1K-HDR.exr"),
                 .copy("Resources/Samples"),
-                .copy("Resources/teapot.obj")
+                .copy("Resources/teapot.obj"),
+                .copy("Resources/VirtualCity.glb")
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)

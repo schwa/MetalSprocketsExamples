@@ -1,3 +1,4 @@
+import DemoKit
 import Metal
 import MetalKit
 import MetalSprockets
@@ -23,7 +24,7 @@ public struct LUTDemoView: View {
     ]
 
     @State
-    private var blend: Float = 0.0
+    private var blend: Float = 0.75
 
     @State
     private var sourceTexture: MTLTexture
@@ -47,7 +48,7 @@ public struct LUTDemoView: View {
                 .SRGB: true
             ])
             let resourceURL = Bundle.module.resourceURL.orFatalError("Failed to get module resource URL")
-            let lutTextureURL = resourceURL.appendingPathComponent("Samples/Blue Bias.png").assertFileExists()
+            let lutTextureURL = resourceURL.appendingPathComponent("Samples/Sepia Tone.png").assertFileExists()
             self._lutURL = .init(initialValue: lutTextureURL)
             let lutTexture = try Self.make3DLUTTexture(from: lutTextureURL)
             let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
@@ -74,22 +75,24 @@ public struct LUTDemoView: View {
             }
         }
         .metalColorPixelFormat(.rgba16Float) //
-        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
-        .overlay(alignment: .bottom) {
-            VStack {
-                Picker("LUT", selection: $lutURL) {
-                    let resourceURL = Bundle.module.resourceURL.orFatalError("Failed to get module resource URL")
-                    ForEach(builtInLUTNames, id: \.self) { name in
-                        let url = resourceURL.appendingPathComponent("Samples/\(name)").assertFileExists()
-                        Text(name).tag(url)
-                    }
+        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fill)
+        .clipped()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .demoConfiguration {
+            Form {
+            Picker("LUT", selection: $lutURL) {
+                let resourceURL = Bundle.module.resourceURL.orFatalError("Failed to get module resource URL")
+                ForEach(builtInLUTNames, id: \.self) { name in
+                    let url = resourceURL.appendingPathComponent("Samples/\(name)").assertFileExists()
+                    let displayName = URL(fileURLWithPath: name).deletingPathExtension().lastPathComponent
+                    Text(displayName).tag(url)
                 }
+            }
+            LabeledContent("Blend") {
                 Slider(value: $blend, in: 0...1)
             }
-            .frame(maxWidth: 320)
-            .padding()
-            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10))
-            .padding()
+            }
+            .fixedSize()
         }
         .onChange(of: lutURL) {
             do {

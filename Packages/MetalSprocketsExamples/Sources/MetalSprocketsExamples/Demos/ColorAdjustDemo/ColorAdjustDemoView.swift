@@ -1,3 +1,4 @@
+import DemoKit
 import Metal
 import MetalKit
 import MetalSprockets
@@ -40,7 +41,7 @@ public struct ColorAdjustDemoView: View {
     let shaderLibrary: MetalSprockets.ShaderNamespace
 
     @State
-    private var selectedFunction: AdjustmentFunction = .gamma
+    private var selectedFunction: AdjustmentFunction = .vignette
 
     @State
     private var multiplyValue: Float = 2.0
@@ -79,7 +80,7 @@ public struct ColorAdjustDemoView: View {
     private var thresholdValues = SIMD2<Float>(0.5, 0.05) // threshold, smoothness
 
     @State
-    private var vignetteValues = SIMD4<Float>(0.5, 0.5, 0.8, 0.8) // center x, center y, intensity, radius
+    private var vignetteValues = SIMD4<Float>(0.5, 0.5, 0.8, 0.4) // center x, center y, intensity, radius
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
@@ -114,11 +115,8 @@ public struct ColorAdjustDemoView: View {
             }
         }
         .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
-        .overlay(alignment: .topTrailing) {
+        .demoConfiguration {
             config()
-                .padding()
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-                .padding()
         }
     }
 

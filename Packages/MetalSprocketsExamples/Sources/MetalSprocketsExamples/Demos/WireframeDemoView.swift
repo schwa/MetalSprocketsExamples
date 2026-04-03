@@ -18,7 +18,7 @@ public struct WireframeDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 4, 8])
 
     let teapotMesh = MTKMesh.teapot().relabeled("wireframe-teapot")
 

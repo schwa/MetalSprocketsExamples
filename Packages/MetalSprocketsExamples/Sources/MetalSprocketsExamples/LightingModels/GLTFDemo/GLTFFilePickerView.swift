@@ -17,7 +17,7 @@ struct GLTFFilePickerView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List(filteredFiles, id: \.self) { fileURL in
                 Button {
                     selectedURL = fileURL

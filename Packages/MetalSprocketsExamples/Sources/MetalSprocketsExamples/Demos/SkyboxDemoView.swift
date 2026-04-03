@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -33,7 +34,7 @@ public struct SkyboxDemoView: View {
                 }
             }
         }
-        .toolbar {
+        .demoConfiguration {
             Toggle("Face Labels", isOn: $showFaceLabels)
         }
         .task(id: showFaceLabels) {

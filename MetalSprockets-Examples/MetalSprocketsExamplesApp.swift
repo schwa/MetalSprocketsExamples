@@ -13,7 +13,7 @@ struct MetalSprocketsExamplesApp: App {
         }
         .handleDemoURL(scheme: urlScheme)
         .commands {
-            DemosMenuCommands()
+            DemosCommandMenu()
         }
         #else
         WindowGroup("MetalSprockets", id: "main") {
@@ -30,27 +30,3 @@ struct MetalSprocketsExamplesApp: App {
     }
 }
 
-#if os(macOS)
-struct DemosMenuCommands: Commands {
-    @Environment(\.openURL)
-    private var openURL
-
-    private var demoMetadata: [DemoMetadata] {
-        // swiftlint:disable:next prefer_key_path
-        allDemos.map { $0.metadata }
-    }
-
-    var body: some Commands {
-        CommandMenu("Demos") {
-            ForEach(demoMetadata) { metadata in
-                Button(metadata.name) {
-                    guard let url = URL(string: "\(urlScheme)://\(metadata.id.rawValue)") else {
-                        return
-                    }
-                    openURL(url)
-                }
-            }
-        }
-    }
-}
-#endif

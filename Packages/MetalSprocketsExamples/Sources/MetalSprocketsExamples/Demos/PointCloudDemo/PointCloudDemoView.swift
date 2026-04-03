@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import Metal
@@ -49,40 +50,34 @@ public struct PointCloudDemoView: View {
                 generatePointCloud()
             }
         }
-        .overlay(alignment: .topLeading) {
-            VStack(alignment: .leading) {
-                Text("Point Cloud Demo")
-                    .font(.headline)
-
-                Label("Points: \(pointCount)", systemImage: "circle.grid.3x3.fill")
-                Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000, step: 1_000)
-                    .onChange(of: pointCount) { _, _ in
-                        generatePointCloud()
-                    }
-
-                Label("Point Size: \(pointSize, specifier: "%.1f")", systemImage: "circle.fill")
-                Slider(value: $pointSize, in: 1...30)
-
-                Label("Major Radius: \(majorRadius, specifier: "%.1f")", systemImage: "circle")
-                Slider(value: $majorRadius, in: 1...3)
-                    .onChange(of: majorRadius) { _, _ in
-                        generatePointCloud()
-                    }
-
-                Label("Minor Radius: \(minorRadius, specifier: "%.1f")", systemImage: "circle")
-                Slider(value: $minorRadius, in: 0.2...1.5)
-                    .onChange(of: minorRadius) { _, _ in
-                        generatePointCloud()
-                    }
-
-                Button("Regenerate") {
+        .demoConfiguration {
+            Form {
+            Label("Points: \(pointCount)", systemImage: "circle.grid.3x3.fill")
+            Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000, step: 1_000)
+                .onChange(of: pointCount) { _, _ in
                     generatePointCloud()
                 }
+
+            Label("Point Size: \(pointSize, specifier: "%.1f")", systemImage: "circle.fill")
+            Slider(value: $pointSize, in: 1...30)
+
+            Label("Major Radius: \(majorRadius, specifier: "%.1f")", systemImage: "circle")
+            Slider(value: $majorRadius, in: 1...3)
+                .onChange(of: majorRadius) { _, _ in
+                    generatePointCloud()
+                }
+
+            Label("Minor Radius: \(minorRadius, specifier: "%.1f")", systemImage: "circle")
+            Slider(value: $minorRadius, in: 0.2...1.5)
+                .onChange(of: minorRadius) { _, _ in
+                    generatePointCloud()
+                }
+
+            Button("Regenerate") {
+                generatePointCloud()
             }
-            .frame(width: 300)
-            .padding()
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
+            }
+            .fixedSize()
         }
     }
 

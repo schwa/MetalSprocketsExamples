@@ -1,4 +1,5 @@
 import AsyncAlgorithms
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -17,7 +18,7 @@ public struct SDFDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 5])
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 4])
 
     @State
     private var drawableSize: CGSize = .zero
@@ -30,30 +31,29 @@ public struct SDFDemoView: View {
     }
 
     public var body: some View {
-        VStack {
-            WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                RenderView { _, _ in
-                    try RenderPass {
-                        try SDFRenderPipeline(
-                            time: time,
-                            projectionMatrix: projection.projectionMatrix(for: drawableSize),
-                            cameraMatrix: cameraMatrix,
-                            drawableSize: drawableSize,
-                            showDepth: showDepth
-                        )
-                    }
-                }
-                .metalDepthStencilPixelFormat(.depth32Float)
-                .onDrawableSizeChange { drawableSize = $0 }
-                .task {
-                    for await _ in AsyncTimerSequence(interval: .milliseconds(16), clock: .continuous) {
-                        time += 0.016 // ~60 FPS
-                    }
+        WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
+            RenderView { _, _ in
+                try RenderPass {
+                    try SDFRenderPipeline(
+                        time: time,
+                        projectionMatrix: projection.projectionMatrix(for: drawableSize),
+                        cameraMatrix: cameraMatrix,
+                        drawableSize: drawableSize,
+                        showDepth: showDepth
+                    )
                 }
             }
-
+            .metalDepthStencilPixelFormat(.depth32Float)
+            .metalClearColor(.init(red: 0, green: 0, blue: 0, alpha: 1))
+            .onDrawableSizeChange { drawableSize = $0 }
+            .task {
+                for await _ in AsyncTimerSequence(interval: .milliseconds(16), clock: .continuous) {
+                    time += 0.016 // ~60 FPS
+                }
+            }
+        }
+        .demoConfiguration {
             Toggle("Show Depth", isOn: $showDepth)
-                .padding()
         }
     }
 }

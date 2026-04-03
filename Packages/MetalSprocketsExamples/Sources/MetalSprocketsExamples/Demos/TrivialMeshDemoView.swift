@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import Metal
@@ -24,7 +25,7 @@ public struct TrivialMeshDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 1, 5])
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0.5, 2, 6])
 
     @State
     private var startTime = Date()
@@ -338,14 +339,8 @@ public struct TrivialMeshDemoView: View {
         .onAppear {
             startTime = Date()
         }
-        .overlay(alignment: .topLeading) {
-            VStack(alignment: .leading) {
-                Toggle("Wireframe", isOn: $showWireframe)
-                    .toggleStyle(.switch)
-                    .padding()
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            }
-            .padding()
+        .demoConfiguration {
+            Toggle("Wireframe", isOn: $showWireframe)
         }
     }
 

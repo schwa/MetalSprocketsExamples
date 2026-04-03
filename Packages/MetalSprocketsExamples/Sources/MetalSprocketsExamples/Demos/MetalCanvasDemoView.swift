@@ -1,3 +1,4 @@
+import DemoKit
 import MetalSprockets
 import MetalSprocketsUI
 import SwiftUI
@@ -32,18 +33,24 @@ public struct MetalCanvasDemoView: View {
                 }
             }
 
-            HStack {
-                Text("Line Width: \(lineWidth, format: .number.precision(.fractionLength(1)))")
-                Slider(value: $lineWidth, in: 1...10)
-            }
-            .padding()
         }
-        .toolbar {
+        .demoConfiguration {
+            Form {
             Picker("Demo", selection: $selectedDemo) {
                 ForEach(DemoType.allCases) { demo in
                     Text(demo.rawValue).tag(demo)
                 }
             }
+
+            LabeledContent("Line Width") {
+                HStack {
+                    Slider(value: $lineWidth, in: 1...10)
+                    Text(lineWidth, format: .number.precision(.fractionLength(1)))
+                        .frame(minWidth: 30)
+                }
+            }
+            }
+            .fixedSize()
         }
     }
 

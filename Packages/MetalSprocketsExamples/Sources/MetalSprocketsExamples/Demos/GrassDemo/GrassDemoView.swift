@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -75,89 +76,65 @@ public struct GrassDemoView: View {
                 }
             }
         }
-        .overlay(alignment: .bottom) {
-            VStack(spacing: 12) {
-                let segmentsPerBlade = 4
-                let totalBlades = Int(grassDensity) * Int(bladesPerPoint)
-                let verticesPerBlade = (segmentsPerBlade + 1) * 2
-                let totalVertices = totalBlades * verticesPerBlade
+        .demoConfiguration {
+            Form {
+            let segmentsPerBlade = 4
+            let totalBlades = Int(grassDensity) * Int(bladesPerPoint)
+            let verticesPerBlade = (segmentsPerBlade + 1) * 2
+            let totalVertices = totalBlades * verticesPerBlade
 
+            HStack {
+                Text("Blades: \(totalBlades.formatted())")
+                Text("•")
+                Text("Vertices: \(totalVertices.formatted())")
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+            LabeledContent("Length") {
                 HStack {
-                    Text("Blades: \(totalBlades.formatted())")
-                    Text("•")
-                    Text("Vertices: \(totalVertices.formatted())")
+                    Slider(value: $grassLength, in: 0.05...10.0)
+                    Text(grassLength, format: .number.precision(.fractionLength(2)))
+                        .frame(minWidth: 40)
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            }
 
-                Form {
-                    LabeledContent("Length") {
-                        HStack {
-                            Slider(value: $grassLength, in: 0.05...10.0)
-                            Text(grassLength, format: .number.precision(.fractionLength(2)))
-                                .frame(minWidth: 40)
-                        }
-                    }
-
-                    LabeledContent("Width") {
-                        HStack {
-                            Slider(value: $bladeWidthMultiplier, in: 0.1...3.0)
-                            Text(bladeWidthMultiplier, format: .number.precision(.fractionLength(2)))
-                                .frame(minWidth: 40)
-                        }
-                    }
-
-                    LabeledContent("Blades/Pt") {
-                        HStack {
-                            Slider(value: $bladesPerPoint, in: 1...16, step: 1)
-                            Text(bladesPerPoint, format: .number.precision(.fractionLength(0)))
-                                .frame(minWidth: 40)
-                        }
-                    }
-
-                    LabeledContent("Points") {
-                        HStack {
-                            Slider(value: $grassDensity, in: 100...Double(maxGrassPoints), step: 100)
-                            Text(grassDensity, format: .number.precision(.fractionLength(0)))
-                                .frame(minWidth: 40)
-                        }
-                    }
-
-                    LabeledContent("Droop") {
-                        Toggle("", isOn: $droopEnabled)
-                            .labelsHidden()
-                    }
+            LabeledContent("Width") {
+                HStack {
+                    Slider(value: $bladeWidthMultiplier, in: 0.1...3.0)
+                    Text(bladeWidthMultiplier, format: .number.precision(.fractionLength(2)))
+                        .frame(minWidth: 40)
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
-            .frame(maxWidth: 400)
-            .padding()
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
-        }
-        .toolbar {
-            ToolbarItem {
-                Button(action: { isPlaying.toggle() }, label: {
-                    Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                        .accessibilityLabel(isPlaying ? "Pause" : "Play")
-                })
+
+            LabeledContent("Blades/Pt") {
+                HStack {
+                    Slider(value: $bladesPerPoint, in: 1...16, step: 1)
+                    Text(bladesPerPoint, format: .number.precision(.fractionLength(0)))
+                        .frame(minWidth: 40)
+                }
             }
-            ToolbarItem {
-                Button(action: { showSphere.toggle() }, label: {
-                    Image(systemName: showSphere ? "circle.fill" : "circle")
-                        .accessibilityLabel("Toggle sphere")
-                })
+
+            LabeledContent("Points") {
+                HStack {
+                    Slider(value: $grassDensity, in: 100...Double(maxGrassPoints), step: 100)
+                    Text(grassDensity, format: .number.precision(.fractionLength(0)))
+                        .frame(minWidth: 40)
+                }
             }
-            ToolbarItem {
-                Button(action: {
-                    cameraMatrix = .init(translation: [0, 0, 4])
-                    rotation = 0.0
-                }, label: {
-                    Image(systemName: "arrow.counterclockwise")
-                        .accessibilityLabel("Reset camera")
-                })
+
+            Toggle("Droop", isOn: $droopEnabled)
+
+            Toggle("Animate", isOn: $isPlaying)
+
+            Toggle("Show Sphere", isOn: $showSphere)
+
+            Button("Reset Camera") {
+                cameraMatrix = .init(translation: [0, 0, 4])
+                rotation = 0.0
             }
+            }
+            .fixedSize()
         }
     }
 

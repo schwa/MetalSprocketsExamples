@@ -16,7 +16,7 @@ public struct SceneGraphDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix = simd_float4x4(translation: [0, 2, 5])
+    private var cameraMatrix = simd_float4x4(translation: [0.5, 2, 6])
 
     let environmentTexture: MTLTexture
 

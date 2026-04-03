@@ -1,13 +1,13 @@
 {
-  "originHash" : "6bdb141fa617b6759070147b969a1fd7677f308718b559ef02c513671baa2b90",
+  "originHash" : "a038da1f2d1436b35fd076c57bb3110e6e8eda1b400990772fecf075bd2296b1",
   "pins" : [
     {
       "identity" : "demokit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/DemoKit",
       "state" : {
-        "revision" : "e3e8fb2166fc1e478bbd628b98593bf7029f5e54",
-        "version" : "0.1.1"
+        "revision" : "0c2616c79340980be0c0504690651413001087b0",
+        "version" : "0.1.3"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Panels",
       "state" : {
-        "revision" : "2f850df1b092e137ac309a1300b645aca7120102",
-        "version" : "0.1.1"
+        "revision" : "81fb9369c945ec383acddcc5063f75f3e65c1d17",
+        "version" : "0.1.2"
       }
     },
     {

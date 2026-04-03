@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import Metal
@@ -73,7 +74,7 @@ public struct VoxelDemoView: View {
             }
         }
 
-        .overlay(alignment: .bottom) {
+        .demoConfiguration {
             Form {
                 Text("Voxel Size: \(voxelSize.width) x \(voxelSize.height) x \(voxelSize.depth)")
 
@@ -91,13 +92,10 @@ public struct VoxelDemoView: View {
                         voxelScale *= 0.5
                     }
                 }
+
+                SuperImportWidget(url: $magicaVoxelURL, identifier: "magica-voxel", allowedContentTypes: [.magicaVoxel])
             }
-            .padding()
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
-        }
-        .toolbar {
-            SuperImportWidget(url: $magicaVoxelURL, identifier: "magica-voxel", allowedContentTypes: [.magicaVoxel])
+            .fixedSize()
         }
     }
 

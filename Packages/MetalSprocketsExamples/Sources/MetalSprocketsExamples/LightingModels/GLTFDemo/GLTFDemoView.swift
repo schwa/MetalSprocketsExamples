@@ -1,3 +1,4 @@
+import DemoKit
 import MetalSprocketsExamplesSupport
 import MetalSprocketsUI
 import SwiftGLTF
@@ -24,14 +25,23 @@ public struct GLTFDemoView: View {
     private var availableFiles: [URL] = []
 
     public init() {
-        // This line intentionally left blank.
+        if let defaultURL = Bundle.module.url(forResource: "VirtualCity", withExtension: "glb") {
+            _url = State(initialValue: defaultURL)
+        }
     }
 
     public var body: some View {
         VStack {
-            HStack {
-                let url = URL(string: "https://github.com/KhronosGroup/glTF-Sample-Assets/archive/refs/heads/main.zip").orFatalError("Failed to create url")
-                DownloadButton(url: url, destinationName: "GLTFDownloads") { path in
+            if let sceneGraph {
+                SceneGraphDemoView(sceneGraph: sceneGraph)
+            } else {
+                ContentUnavailableView("No Model Loaded", systemImage: "cube", description: Text("Use the configuration panel to load a glTF model."))
+            }
+        }
+        .demoConfiguration {
+            Form {
+                let downloadURL = URL(string: "https://github.com/KhronosGroup/glTF-Sample-Assets/archive/refs/heads/main.zip").orFatalError("Failed to create url")
+                DownloadButton(url: downloadURL, destinationName: "GLTFDownloads") { path in
                     downloadedPath = path
                     loadAvailableFiles(from: path)
                 }
@@ -40,20 +50,27 @@ public struct GLTFDemoView: View {
                     Button("Browse Files") {
                         showingFilePicker = true
                     }
-                    .buttonStyle(.borderedProminent)
+                }
+                #if os(macOS)
+                if let downloadedPath {
+                    Button("Reveal in Finder") {
+                        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: downloadedPath.path)
+                    }
+                }
+                #endif
+
+                SuperImportWidget(url: $url, identifier: "GLTFDemo", allowedContentTypes: [.gltf, .glb])
+                if let url {
+                    Text(url.lastPathComponent)
+                        .font(.caption)
+                }
+                if let document {
+                    Text("\(document.scenes.count) scene(s), \(document.meshes.count) mesh(es)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
-            .padding(.horizontal)
-
-            SuperImportWidget(url: $url, identifier: "GLTFDemo", allowedContentTypes: [.gltf, .glb])
-            Text("\(String(describing: url))")
-            if let document {
-                Text("\(document.scenes.count) scene(s)")
-                Text("\(document.meshes.count) mesh(s)")
-            }
-            if let sceneGraph {
-                SceneGraphDemoView(sceneGraph: sceneGraph)
-            }
+            .fixedSize()
         }
         .onChange(of: url, initial: true) {
             do {

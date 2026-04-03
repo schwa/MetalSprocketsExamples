@@ -1,3 +1,4 @@
+import DemoKit
 import Metal
 import MetalKit
 import MetalSprockets
@@ -31,20 +32,15 @@ public struct TileAverageDemoView: View {
             }
             .onDrawableSizeChange { drawableSize = $0 }
 
-            controlPanel
+            .demoConfiguration {
+                controlPanel
+            }
         }
     }
 
     @ViewBuilder
     private var controlPanel: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Per-Tile Average Color")
-                .font(.headline)
-
-            Text("Hello Imageblock: Demonstrates per-tile color averaging using Metal imageblocks")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
+        Form {
             if drawableSize != .zero {
                 let tileCountX = Int(drawableSize.width) / tileSize
                 let tileCountY = Int(drawableSize.height) / tileSize
@@ -59,20 +55,15 @@ public struct TileAverageDemoView: View {
                 .foregroundStyle(.secondary)
             }
 
-            Form {
-                LabeledContent("Tile Size") {
-                    Picker("", selection: $tileSize) {
-                        Text("16×16").tag(16)
-                        Text("32×32").tag(32)
-                    }
-                    .pickerStyle(.segmented)
+            LabeledContent("Tile Size") {
+                Picker("", selection: $tileSize) {
+                    Text("16×16").tag(16)
+                    Text("32×32").tag(32)
                 }
+                .pickerStyle(.segmented)
             }
-            .font(.caption)
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(.regularMaterial, in: Rectangle())
+        .fixedSize()
     }
 
     @ViewBuilder

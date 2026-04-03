@@ -1,3 +1,4 @@
+import DemoKit
 import MetalSprocketsUI
 import SwiftUI
 
@@ -15,34 +16,23 @@ public struct GameOfLifeDemoView: View {
             GameOfLife(isRunning: isRunning, pattern: pattern)
         }
 
-        .overlay(alignment: .bottom) {
-            HStack {
-                Button {
-                    isRunning.toggle()
+        .demoConfiguration {
+            Form {
+            Toggle("Animate", isOn: $isRunning)
+
+            Menu("Fill Pattern") {
+                Button("Glider") {
+                    pattern = .glider
                 }
-                label: {
-                    Image(systemName: isRunning ? "pause.fill" : "play.fill")
-                        .accessibilityHidden(true)
+                Button("Random") {
+                    pattern = .random
                 }
-                .accessibilityLabel(isRunning ? "Pause" : "Play")
-
-                Menu("Fill") {
-                    Button("Glider") {
-                        pattern = .glider
-                    }
-
-                    Button("Random") {
-                        pattern = .random
-                    }
-
-                    Button("Clear") {
-                        pattern = .clear
-                    }
+                Button("Clear") {
+                    pattern = .clear
                 }
             }
-            .padding()
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
+            }
+            .fixedSize()
         }
     }
 }

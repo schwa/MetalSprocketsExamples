@@ -1,3 +1,4 @@
+import DemoKit
 import MetalKit
 import MetalSprockets
 import MetalSprocketsExampleShaders
@@ -45,82 +46,69 @@ public struct TiledSDFDemoView: View {
                     }
             }
             .onDrawableSizeChange { drawableSize = $0 }
-
-            controlPanel
+            .demoConfiguration {
+                controlPanel
+            }
         }
     }
 
     @ViewBuilder
     private var controlPanel: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Tiled SDF Rendering")
-                .font(.headline)
+        Form {
+        if showStats {
+            let tileCountX = Int(drawableSize.width) / tileSize
+            let tileCountY = Int(drawableSize.height) / tileSize
+            let totalTiles = tileCountX * tileCountY
 
-            Text("Demonstrates tile-based culling for 2D signed distance fields")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            if showStats {
-                let tileCountX = Int(drawableSize.width) / tileSize
-                let tileCountY = Int(drawableSize.height) / tileSize
-                let totalTiles = tileCountX * tileCountY
-
-                HStack {
-                    Text("Primitives: \(primitiveCount)")
-                    Text("•")
-                    Text("Tiles: \(totalTiles)")
-                    Text("•")
-                    Text("Tile size: \(tileSize)×\(tileSize)")
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
-
-            Form {
-                LabeledContent("Primitives") {
-                    HStack {
-                        Slider(
-                            value: Binding(
-                                get: { Double(primitiveCount) },
-                                set: { primitiveCount = Int($0) }
-                            ),
-                            in: 10...Double(maxPrimitives),
-                            step: 10
-                        )
-                        Text("\(primitiveCount)")
-                            .monospacedDigit()
-                            .frame(minWidth: 40)
-                    }
-                }
-
-                LabeledContent("Tile Size") {
-                    HStack {
-                        Picker("", selection: $tileSize) {
-                            Text("16×16").tag(16)
-                            Text("32×32").tag(32)
-                        }
-                        .pickerStyle(.segmented)
-                    }
-                }
-
-                LabeledContent("Visualization") {
-                    Picker("", selection: $visualMode) {
-                        Text("Normal").tag(VisualizationMode.normal)
-                        Text("Distance").tag(VisualizationMode.distance)
-                        Text("Contours").tag(VisualizationMode.contours)
-                        Text("Tiles").tag(VisualizationMode.tiles)
-                    }
-                    .pickerStyle(.segmented)
-                }
-
-                Toggle("Animate", isOn: $animatePrimitives)
-                Toggle("Show Stats", isOn: $showStats)
+            HStack {
+                Text("Primitives: \(primitiveCount)")
+                Text("•")
+                Text("Tiles: \(totalTiles)")
+                Text("•")
+                Text("Tile size: \(tileSize)×\(tileSize)")
             }
             .font(.caption)
+            .foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(.regularMaterial, in: Rectangle())
+
+        LabeledContent("Primitives") {
+            HStack {
+                Slider(
+                    value: Binding(
+                        get: { Double(primitiveCount) },
+                        set: { primitiveCount = Int($0) }
+                    ),
+                    in: 10...Double(maxPrimitives),
+                    step: 10
+                )
+                Text("\(primitiveCount)")
+                    .monospacedDigit()
+                    .frame(minWidth: 40)
+            }
+        }
+
+        LabeledContent("Tile Size") {
+            Picker("", selection: $tileSize) {
+                Text("16×16").tag(16)
+                Text("32×32").tag(32)
+            }
+            .pickerStyle(.segmented)
+        }
+
+        LabeledContent("Visualization") {
+            Picker("", selection: $visualMode) {
+                Text("Normal").tag(VisualizationMode.normal)
+                Text("Distance").tag(VisualizationMode.distance)
+                Text("Contours").tag(VisualizationMode.contours)
+                Text("Tiles").tag(VisualizationMode.tiles)
+            }
+            .pickerStyle(.segmented)
+        }
+
+        Toggle("Animate", isOn: $animatePrimitives)
+        Toggle("Show Stats", isOn: $showStats)
+        }
+        .fixedSize()
     }
 
     @ViewBuilder

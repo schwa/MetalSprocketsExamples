@@ -183,13 +183,16 @@ Currently each demo creates textures on-demand in init/onChange handlers with no
 ---
 
 ## 24: Extract common UI controls into reusable components
-status: new
+status: closed
 priority: high
 kind: enhancement
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T22:04:02.587890+00:00
+updated: 2026-04-03T00:57:21.975346+00:00
+closed: 2026-04-03T00:57:21.975346+00:00
 
 Many demos duplicate similar UI patterns: slider controls for parameters, color pickers, dropdown menus, reset/download buttons. Should create reusable SwiftUI components in Support/ or new UI/ directory: ParameterSlider, DemoColorPicker, DemoOptionPicker, etc. This will reduce code duplication and ensure consistent UI across demos.
+
+- 2026-04-03T00:57:22.020570+00:00: Done — all demos ported to DemoKit demoConfiguration, custom menu replaced with DemosCommandMenu
 
 ---
 
@@ -1434,14 +1437,17 @@ The triangle shape and green checkerboard are functional but dull. Use a more in
 ---
 
 ## 314: LUT Color Grading: better default LUT and 50% blend
-status: new
+status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
 created: 2026-04-02T21:41:10.486483+00:00
-updated: 2026-04-02T22:04:52.219512+00:00
+updated: 2026-04-02T22:51:55.309103+00:00
+closed: 2026-04-02T22:51:55.309103+00:00
 
 Default should use a more visually dramatic LUT preset and set the blend slider to ~50% so the effect is clearly visible in screenshots.
+
+- 2026-04-02T22:51:55.351726+00:00: Default LUT changed to Sepia Tone at 75% blend. Image now fills window.
 
 ---
 
@@ -1497,23 +1503,26 @@ The random lines demo works but the feature needs a bigger plan. Consider deprec
 status: new
 priority: medium
 kind: bug
-labels: effort:xs
+labels: needs-info, effort:s
 created: 2026-04-02T21:41:34.688774+00:00
-updated: 2026-04-02T22:05:54.034400+00:00
+updated: 2026-04-02T23:04:17.239471+00:00
 
-The puppy test image appears rotated in the imageblock demo. Investigate and fix the image orientation.
+The puppy image appears rotated in the imageblock demo. This is a timing issue — the image starts rotating. Needs investigation into why rotation is happening on launch.
 
 ---
 
 ## 320: Offscreen Rendering: clean up debug info and fix white sidebars
-status: new
+status: closed
 priority: none
 kind: bug
 labels: low-hanging-fruit, effort:xs
 created: 2026-04-02T21:41:34.839345+00:00
-updated: 2026-04-02T22:04:51.820003+00:00
+updated: 2026-04-02T22:54:32.093210+00:00
+closed: 2026-04-02T22:54:32.093209+00:00
 
 Raw CGImage description (memory address, color space, pixel format) is displayed over the rendered image. Hide this behind a debug toggle. Also has white sidebars that shouldn't be there.
+
+- 2026-04-02T22:54:32.134802+00:00: Replaced raw CGImage debug dump with clean size label. Added black background.
 
 ---
 
@@ -1541,49 +1550,61 @@ Only a barely-visible silhouette outline renders — the lighting, color, and an
 ---
 
 ## 323: Apple Event Logo: remove debug text and fix white sidebars
-status: new
+status: closed
 priority: none
 kind: bug
 labels: low-hanging-fruit, effort:xs
 created: 2026-04-02T21:41:46.009758+00:00
-updated: 2026-04-02T22:04:51.547127+00:00
+updated: 2026-04-02T22:47:40.123069+00:00
+closed: 2026-04-02T22:47:40.123069+00:00
 
 Mouse coordinate debug text 'Mouse: (0.00, 0.00)' is visible below the rendered logo. Remove it or hide behind a toggle. Also has white sidebars.
+
+- 2026-04-02T22:47:40.167195+00:00: Removed debug mouse text, added black background filling the window.
 
 ---
 
 ## 324: SDF Raymarching: change background color for better contrast
-status: new
+status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
 created: 2026-04-02T21:41:46.166881+00:00
-updated: 2026-04-02T22:04:52.611026+00:00
+updated: 2026-04-02T22:59:10.760525+00:00
+closed: 2026-04-02T22:59:10.760525+00:00
 
 The flat gray background makes the SDF shapes look muted. Use a darker or more contrasting background color to make the shapes pop.
+
+- 2026-04-02T22:59:10.802350+00:00: Changed missed ray color to black, added black clear color, moved toggle to toolbar.
 
 ---
 
 ## 325: glTF Model Viewer: bundle a default model and fix nil text
-status: new
+status: closed
 priority: medium
 kind: bug
 created: 2026-04-02T21:41:46.317090+00:00
-updated: 2026-04-02T22:04:02.858527+00:00
+updated: 2026-04-02T23:35:31.707315+00:00
+closed: 2026-04-02T23:35:31.707315+00:00
 
-Shows empty state with 'Download & Unzip' and 'Import' buttons plus a 'nil' text bug. Bundle a default glTF model so the demo renders something on launch. Fix the nil text display.
+The nil text bug is fixed. Still needs: 1) Bundle a default glTF model (BarramundiFish.glb crashed SwiftGLTF — need to find a compatible model). 2) Fix the file browser dialog — filenames, sizes, and categories are all truncated because columns are too narrow.
+
+- 2026-04-02T23:35:31.749026+00:00: Fixed nil text, bundled VirtualCity.glb as default model, fixed file picker two-column layout (NavigationStack), added Reveal in Finder button.
 
 ---
 
 ## 326: Spiral Particles: increase default particle count
-status: new
+status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
 created: 2026-04-02T21:41:46.468035+00:00
-updated: 2026-04-02T22:04:51.951083+00:00
+updated: 2026-04-02T22:48:33.159337+00:00
+closed: 2026-04-02T22:48:33.159337+00:00
 
 Default of 8 particles looks sparse. Increase the default to show a more impressive spiral effect.
+
+- 2026-04-02T22:48:33.200924+00:00: Default particle count increased from 8 to 32.
 
 ---
 
@@ -1591,35 +1612,173 @@ Default of 8 particles looks sparse. Increase the default to show a more impress
 status: new
 priority: none
 kind: enhancement
-labels: low-hanging-fruit, effort:xs
+labels: needs-info, effort:m
 created: 2026-04-02T21:41:57.338229+00:00
-updated: 2026-04-02T22:04:52.084686+00:00
+updated: 2026-04-02T23:00:48.140395+00:00
 
 The default 4×4×4 voxel grid looks like a color test pattern. Start at a higher resolution with a more recognizable 3D shape to demonstrate voxel rendering.
 
 ---
 
 ## 328: PBR Rendering: remove broken orientation widget
-status: new
+status: closed
 priority: none
 kind: bug
 labels: low-hanging-fruit, effort:xs
 created: 2026-04-02T21:41:57.496227+00:00
-updated: 2026-04-02T22:04:52.480376+00:00
+updated: 2026-04-02T23:02:21.353810+00:00
+closed: 2026-04-02T23:02:21.353810+00:00
 
 The PBR teapot rendering itself looks good (golden metallic with environment reflections), but there's a broken orientation widget displaying '(broken)' in orange text. Remove the widget entirely. The demo should also be moved out of the '* Broken' group.
+
+- 2026-04-02T23:02:21.394987+00:00: Removed broken orientation widget, moved PBR from '* Broken' to 'Complex' group.
 
 ---
 
 ## 329: Color Adjust: better default settings
-status: new
+status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
 created: 2026-04-02T21:41:57.648542+00:00
-updated: 2026-04-02T22:04:52.350315+00:00
+updated: 2026-04-02T22:43:42.710300+00:00
+closed: 2026-04-02T22:43:42.710300+00:00
 
 The default gamma 2.20 with Gamma function selected is functional but not visually dramatic. Consider defaulting to a more visually interesting adjustment function or value.
+
+- 2026-04-02T22:43:42.752845+00:00: Default changed to vignette with radius 0.4 for a more dramatic screenshot.
+
+---
+
+## 330: Triangle: needs black background
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:48:19.619654+00:00
+
+
+---
+
+## 331: Stencil Buffer: lost checkerboard pattern, needs black background
+status: new
+priority: high
+kind: bug
+created: 2026-04-03T00:48:24.131565+00:00
+
+
+---
+
+## 332: Video Playback: port to DemoKit demoConfiguration
+status: closed
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:48:28.635+00:00
+updated: 2026-04-03T00:56:54.903706+00:00
+closed: 2026-04-03T00:56:54.903706+00:00
+
+- 2026-04-03T00:56:54.948468+00:00: Fixed in demoConfiguration and camera angle commits
+
+---
+
+## 333: Trivial Mesh: camera needs to move up a touch and slightly right
+status: closed
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:48:32.088536+00:00
+updated: 2026-04-03T00:56:54.991926+00:00
+closed: 2026-04-03T00:56:54.991926+00:00
+
+- 2026-04-03T00:56:55.038860+00:00: Fixed in demoConfiguration and camera angle commits
+
+---
+
+## 334: Scene Graph: use same camera angle as Trivial Mesh
+status: closed
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:48:35.439143+00:00
+updated: 2026-04-03T00:56:55.083806+00:00
+closed: 2026-04-03T00:56:55.083806+00:00
+
+- 2026-04-03T00:56:55.127198+00:00: Fixed in demoConfiguration and camera angle commits
+
+---
+
+## 335: Hello Imageblock: port to DemoKit demoConfiguration
+status: closed
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:48:38.675135+00:00
+updated: 2026-04-03T00:56:55.171925+00:00
+closed: 2026-04-03T00:56:55.171925+00:00
+
+- 2026-04-03T00:56:55.215951+00:00: Fixed in demoConfiguration and camera angle commits
+
+---
+
+## 336: Bouncing Teapots: sometimes doesn't load at all
+status: new
+priority: high
+kind: bug
+created: 2026-04-03T00:48:51.657195+00:00
+
+
+---
+
+## 337: PBR Rendering: use standard teapot camera [0, 4, 8]
+status: closed
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:48:55.981467+00:00
+updated: 2026-04-03T00:56:55.260459+00:00
+closed: 2026-04-03T00:56:55.260459+00:00
+
+- 2026-04-03T00:56:55.303509+00:00: Fixed in demoConfiguration and camera angle commits
+
+---
+
+## 338: SDF Raymarching: use standard teapot camera [0, 4, 8]
+status: closed
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:48:59.549358+00:00
+updated: 2026-04-03T00:56:55.348321+00:00
+closed: 2026-04-03T00:56:55.348321+00:00
+
+- 2026-04-03T00:56:55.391698+00:00: Fixed in demoConfiguration and camera angle commits
+
+---
+
+## 339: glTF Viewer: port toolbar controls to DemoKit demoConfiguration
+status: closed
+priority: medium
+kind: enhancement
+created: 2026-04-03T00:49:04.342375+00:00
+updated: 2026-04-03T00:56:55.436620+00:00
+closed: 2026-04-03T00:56:55.436620+00:00
+
+Move the controls from the top of the VStack into demoConfiguration. Slightly more complex case than other demos.
+
+- 2026-04-03T00:56:55.479816+00:00: Fixed in demoConfiguration and camera angle commits
+
+---
+
+## 340: Color Adjust: use .fill instead of .fit for aspect ratio
+status: new
+priority: medium
+kind: bug
+created: 2026-04-03T00:49:08.385642+00:00
+
+
+---
+
+## 341: Update per-demo documentation after demoConfiguration migration
+status: new
+priority: medium
+kind: task
+created: 2026-04-03T00:57:08.458100+00:00
+
+Many demos had their UI controls moved to demoConfiguration and camera angles changed. The per-demo documentation and screenshots need updating to reflect the new layouts.
 
 ---
 

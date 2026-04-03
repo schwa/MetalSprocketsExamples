@@ -20,10 +20,12 @@ public struct OffscreenDemoView: View {
             }
         }
         .aspectRatio(1, contentMode: .fit)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
         .overlay(alignment: .bottom) {
             Group {
                 if case let .success(image) = result {
-                    Text(verbatim: String(describing: image))
+                    Text("\(image.width) × \(image.height)")
                 }
                 if case let .failure(error) = result {
                     Text(verbatim: "Failure: \(String(describing: error))")

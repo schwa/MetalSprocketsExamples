@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -13,7 +14,7 @@ public struct DepthDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 5])
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 4, 8])
 
     @State
     private var drawableSize: CGSize = .zero
@@ -115,20 +116,17 @@ public struct DepthDemoView: View {
                 adjustedDepthTexture?.label = "Adjusted Depth Texture"
             }
         }
-        .overlay(alignment: .topLeading) {
+        .demoConfiguration {
             Form {
-                Toggle("Show Depth Map", isOn: $showDepthMap)
-                HStack {
-                    Text("Contrast:")
-                    Slider(value: $exponent, in: 0.1...10)
-                    Text("\(exponent, format: .number.precision(.fractionLength(2)))")
-                        .frame(width: 50)
-                }
+            Toggle("Show Depth Map", isOn: $showDepthMap)
+            HStack {
+                Text("Contrast:")
+                Slider(value: $exponent, in: 0.1...10)
+                Text("\(exponent, format: .number.precision(.fractionLength(2)))")
+                    .frame(width: 50)
             }
-            .frame(maxWidth: 200)
-            .padding()
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
+            }
+            .fixedSize()
         }
     }
 

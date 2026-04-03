@@ -223,7 +223,7 @@ namespace SDFShader {
         }
 
         // Solid background color - no hit
-        result.color = float3(0.08, 0.08, 0.12);
+        result.color = float3(0.0, 0.0, 0.0);
         result.distance = maxDist; // Far plane
         return result;
     }

@@ -73,7 +73,7 @@ extension TriangleDemoView: @retroactive DemoView {
             name: "Triangle",
             description: "Basic triangle rendering with animated colors and performance metrics",
             group: "Basic",
-            keywords: ["animated"]
+            keywords: ["animated", "configurable"]
         )
     }
 }
@@ -84,7 +84,7 @@ extension GameOfLifeDemoView: @retroactive DemoView {
             name: "Game of Life",
             description: "Conway's Game of Life cellular automaton simulation using GPU compute shaders",
             group: "Basic",
-            keywords: ["animated"]
+            keywords: ["animated", "configurable"]
         )
     }
 }
@@ -119,7 +119,7 @@ extension DepthDemoView: @retroactive DemoView {
             Demonstrates rendering depth buffer to texture. It also shows how to use customisable private functions.
             """,
             group: "Complex",
-            keywords: []
+            keywords: ["configurable"]
         )
     }
 }
@@ -131,7 +131,7 @@ extension MetalFXDemoView: @retroactive DemoView {
             name: "MetalFX Upscaling",
             description: "Image upscaling using MetalFX spatial upsampling for enhanced image quality",
             group: "Basic",
-            keywords: ["metalfx", "needs-work"]
+            keywords: ["metalfx", "needs-work", "configurable"]
         )
     }
 }
@@ -170,7 +170,7 @@ extension HitTestDemoView: @retroactive DemoView {
             instance ID, triangle ID, depth, and barycentric coordinates
             """,
             group: "Complex",
-            keywords: ["hit-test", "picking", "multipass"]
+            keywords: ["hit-test", "picking", "multipass", "configurable"]
         )
     }
 }
@@ -181,7 +181,7 @@ extension SkyboxDemoView: @retroactive DemoView {
             name: "Skybox",
             description: "Environment mapping demonstration using cube textures for 360-degree backgrounds",
             group: "Basic",
-            keywords: []
+            keywords: ["configurable"]
         )
     }
 }
@@ -198,7 +198,7 @@ extension LUTDemoView: @retroactive DemoView {
             name: "LUT Color Grading",
             description: "Color grading and correction using Look-Up Tables (LUTs) for cinematic effects",
             group: "Basic",
-            keywords: ["post-processing"]
+            keywords: ["post-processing", "configurable"]
         )
     }
 }
@@ -235,7 +235,7 @@ extension ColorAdjustDemoView: @retroactive DemoView {
             name: "Color Adjust",
             description: "Color adjustment using compute shaders.",
             group: "In-progress",
-            keywords: []
+            keywords: ["configurable"]
         )
     }
 }
@@ -261,7 +261,7 @@ extension PBRDemoView: @retroactive DemoView {
             description: """
             Physically Based Rendering with multiple material presets, environment reflections, and animated lighting
             """,
-            group: "* Broken",
+            group: "Complex",
             keywords: []
         )
     }
@@ -275,7 +275,7 @@ extension SDFDemoView: @retroactive DemoView {
             Real-time signed distance field raymarching with animated shapes, smooth blending, and dynamic lighting
             """,
             group: "Complex",
-            keywords: ["animated", "raymarching"]
+            keywords: ["animated", "raymarching", "configurable"]
         )
     }
 }
@@ -288,7 +288,7 @@ extension PointCloudDemoView: @retroactive DemoView {
             Interactive point cloud visualization with thousands of colored points arranged in a torus shape
             """,
             group: "Basic",
-            keywords: ["points", "interactive"]
+            keywords: ["points", "interactive", "configurable"]
         )
     }
 }
@@ -302,7 +302,7 @@ extension ParticleEffectsDemoView: @retroactive DemoView {
             emitter types like fountains, explosions, and fireworks
             """,
             group: "Complex",
-            keywords: ["compute", "animated"]
+            keywords: ["compute", "animated", "configurable"]
         )
     }
 }
@@ -313,7 +313,7 @@ extension VideoPlaybackDemoView: @retroactive DemoView {
             name: "Video Playback",
             description: "Full screen video playback with streaming textures rendered through billboard pipeline",
             group: "Basic",
-            keywords: ["video", "billboard"]
+            keywords: ["video", "billboard", "configurable"]
         )
     }
 }
@@ -326,7 +326,7 @@ extension PanoramaDemoView: @retroactive DemoView {
             Interactive 360-degree panoramic photo viewer with spherical projection and WorldView rotation
             """,
             group: "Basic",
-            keywords: []
+            keywords: ["configurable"]
         )
     }
 }
@@ -351,7 +351,7 @@ extension TrivialMeshDemoView: @retroactive DemoView {
             (box, tetrahedron, octahedron) with Blinn-Phong lighting
             """,
             group: "Basic",
-            keywords: ["mesh", "procedural", "lighting", "animated"]
+            keywords: ["mesh", "procedural", "lighting", "animated", "configurable"]
         )
     }
 }
@@ -381,7 +381,8 @@ extension GLTFDemoView: @retroactive DemoView {
 extension VoxelDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Voxel Renderer"
+            name: "Voxel Renderer",
+            keywords: ["configurable"]
         )
     }
 }
@@ -392,7 +393,7 @@ extension GrassDemoView: @retroactive DemoView {
             name: "Grass Sphere",
             description: "Procedural grass rendering on a sphere using Object and Mesh shaders with uniform point distribution",
             group: "Complex",
-            keywords: ["mesh-shaders", "procedural", "animated"]
+            keywords: ["mesh-shaders", "procedural", "animated", "configurable"]
         )
     }
 }
@@ -403,7 +404,7 @@ extension SpiralParticlesDemoView: @retroactive DemoView {
             name: "Spiral Particles",
             description: "Particle system where each particle generates a colorful spiral of triangles using Object and Mesh shaders with parallel thread execution",
             group: "Complex",
-            keywords: ["mesh-shaders", "particles", "animated", "procedural"]
+            keywords: ["mesh-shaders", "particles", "animated", "procedural", "configurable"]
         )
     }
 }
@@ -414,7 +415,7 @@ extension GraphicsContext3DDemoView: @retroactive DemoView {
             name: "GraphicsContext3D",
             description: "SwiftUI.Canvas-style API for rendering 3D geometry with Path3D and stroke/fill operations",
             group: "Basic",
-            keywords: ["3d", "path", "canvas"]
+            keywords: ["3d", "path", "canvas", "configurable"]
         )
     }
 }
@@ -425,7 +426,7 @@ extension MetalCanvasDemoView: @retroactive DemoView {
             name: "MetalCanvas",
             description: "2D Canvas-style API for rendering SwiftUI Paths with stroke operations using mesh shaders",
             group: "Basic",
-            keywords: ["2d", "path", "canvas", "mesh-shaders"]
+            keywords: ["2d", "path", "canvas", "mesh-shaders", "configurable"]
         )
     }
 }
@@ -438,7 +439,7 @@ extension TiledSDFDemoView: @retroactive DemoView {
             Demonstrates tile-based culling for 2D signed distance fields. Primitives are culled to tiles and stored in threadgroup memory, reducing global memory access per pixel.
             """,
             group: "Complex",
-            keywords: ["compute", "sdf", "tiled", "animated", "2d"]
+            keywords: ["compute", "sdf", "tiled", "animated", "2d", "configurable"]
         )
     }
 }
@@ -451,7 +452,7 @@ extension TileAverageDemoView: @retroactive DemoView {
             The simplest imageblock demo: computes per-tile average color creating a pixelated/mosaic effect. Demonstrates basic imageblock usage with tile memory allocation, loading, and writing.
             """,
             group: "Basic",
-            keywords: ["imageblock", "tile", "2d"]
+            keywords: ["imageblock", "tile", "2d", "configurable"]
         )
     }
 }
