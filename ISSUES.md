@@ -1664,11 +1664,14 @@ closed: 2026-04-03T01:59:07.600073+00:00
 ---
 
 ## 331: Stencil Buffer: lost checkerboard pattern, needs black background
-status: new
+status: closed
 priority: high
 kind: bug
 created: 2026-04-03T00:48:24.131565+00:00
+updated: 2026-04-03T04:17:11.135072+00:00
+closed: 2026-04-03T04:17:11.135072+00:00
 
+- 2026-04-03T04:17:11.187775+00:00: Fixed in MetalSprockets #306 — viewModel deferred creation broke BlitPass environment access. Clear color also restored.
 
 ---
 
@@ -1721,12 +1724,15 @@ closed: 2026-04-03T00:56:55.171925+00:00
 ---
 
 ## 336: Bouncing Teapots: sometimes doesn't load at all
-status: new
+status: closed
 priority: high
 kind: bug
 created: 2026-04-03T00:48:51.657195+00:00
+updated: 2026-04-03T04:17:11.244109+00:00
+closed: 2026-04-03T04:17:11.244109+00:00
 
 - 2026-04-03T04:11:47.926785+00:00: Likely same root cause as #363 — MetalSprockets d7f64a82 deferred viewModel creation to .onAppear, so first-frame environment access could fail silently. Fixed in MetalSprockets #306.
+- 2026-04-03T04:17:11.296386+00:00: Fixed in MetalSprockets #306 — viewModel deferred creation caused first-frame failures.
 
 ---
 
