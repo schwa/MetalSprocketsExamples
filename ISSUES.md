@@ -1651,10 +1651,12 @@ The default gamma 2.20 with Gamma function selected is functional but not visual
 ---
 
 ## 330: Triangle: needs black background
-status: new
+status: closed
 priority: medium
 kind: enhancement
 created: 2026-04-03T00:48:19.619654+00:00
+updated: 2026-04-03T01:59:07.600073+00:00
+closed: 2026-04-03T01:59:07.600073+00:00
 
 
 ---
@@ -1764,10 +1766,12 @@ Move the controls from the top of the VStack into demoConfiguration. Slightly mo
 ---
 
 ## 340: Color Adjust: use .fill instead of .fit for aspect ratio
-status: new
+status: closed
 priority: medium
 kind: bug
 created: 2026-04-03T00:49:08.385642+00:00
+updated: 2026-04-03T01:59:07.673304+00:00
+closed: 2026-04-03T01:59:07.673304+00:00
 
 
 ---
@@ -1779,6 +1783,15 @@ kind: task
 created: 2026-04-03T00:57:08.458100+00:00
 
 Many demos had their UI controls moved to demoConfiguration and camera angles changed. The per-demo documentation and screenshots need updating to reflect the new layouts.
+
+---
+
+## 342: Hit Test Demo: needs to show what's being hit
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T02:01:48.339942+00:00
+
 
 ---
 
