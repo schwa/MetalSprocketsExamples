@@ -195,30 +195,31 @@ public struct HitTestDemoView: View {
                 }
             }
             .overlay(alignment: .topLeading) {
-                if let result = lastHitResult, result.geometryID >= 0 {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Location: (\(Int(result.location.x)), \(Int(result.location.y)))")
-                        Text("Geometry: \(result.geometryID)  Instance: \(result.instanceID)")
-                        Text("Triangle: \(result.triangleID)  Depth: \(result.depth, format: .number.precision(.fractionLength(3)))")
-                        Text("Barycentric: (\(result.triangleCoords.x, format: .number.precision(.fractionLength(3))), \(result.triangleCoords.y, format: .number.precision(.fractionLength(3))), \(result.triangleCoords.z, format: .number.precision(.fractionLength(3))))")
+                Group {
+                    if let result = lastHitResult, result.geometryID >= 0 {
+                        let locationStr = "(\(Int(result.location.x)), \(Int(result.location.y)))"
+                        let depthStr = String(format: "%.3f", result.depth)
+                        let baryStr = String(format: "(%.2f, %.2f, %.2f)", result.triangleCoords.x, result.triangleCoords.y, result.triangleCoords.z)
+                        VStack(alignment: .leading, spacing: 6) {
+                            hitTestRow("Location", value: locationStr)
+                            hitTestRow("Geometry ID", value: "\(result.geometryID)")
+                            hitTestRow("Instance ID", value: "\(result.instanceID)")
+                            hitTestRow("Triangle ID", value: "\(result.triangleID)")
+                            hitTestRow("Depth", value: depthStr)
+                            hitTestRow("Barycentric", value: baryStr)
+                        }
+                    } else {
+                        Text("No Hit")
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(.gray)
                     }
-                    .font(.system(.caption, design: .monospaced))
-                    .padding(8)
-                    .background(.black.opacity(0.7))
-                    .foregroundStyle(.white)
-                    .cornerRadius(6)
-                    .padding(8)
-                    .allowsHitTesting(false)
-                } else if lastHitResult != nil {
-                    Text("no hit")
-                        .font(.system(.caption, design: .monospaced))
-                        .padding(8)
-                        .background(.black.opacity(0.7))
-                        .foregroundStyle(.white)
-                        .cornerRadius(6)
-                        .padding(8)
-                        .allowsHitTesting(false)
                 }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .padding(12)
+                .allowsHitTesting(false)
             }
         }
         .background(.black.opacity(0.8))
@@ -236,6 +237,19 @@ public struct HitTestDemoView: View {
             }
             }
             .fixedSize()
+        }
+    }
+
+    @ViewBuilder
+    func hitTestRow(_ label: String, value: String) -> some View {
+        HStack(spacing: 8) {
+            Text(label)
+                .font(.system(.caption2, design: .monospaced))
+                .foregroundStyle(.gray)
+                .frame(width: 80, alignment: .trailing)
+            Text(value)
+                .font(.system(.caption, design: .monospaced))
+                .foregroundStyle(.green)
         }
     }
 

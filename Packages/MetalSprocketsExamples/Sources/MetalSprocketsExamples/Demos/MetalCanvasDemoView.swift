@@ -25,11 +25,13 @@ public struct MetalCanvasDemoView: View {
     public var body: some View {
         VStack {
             RenderView { _, drawableSize in
-                let canvas = makeCanvas(for: selectedDemo)
-                let viewport = SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
+                if drawableSize.width > 1, drawableSize.height > 1 {
+                    let canvas = makeCanvas(for: selectedDemo)
+                    let viewport = SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
 
-                try RenderPass {
-                    try MetalCanvasRenderPipeline(canvas: canvas, viewport: viewport, limits: .init(maxDrawOperations: 16_384))
+                    try RenderPass {
+                        try MetalCanvasRenderPipeline(canvas: canvas, viewport: viewport, limits: .init(maxDrawOperations: 16_384))
+                    }
                 }
             }
 

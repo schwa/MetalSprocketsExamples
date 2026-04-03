@@ -52,32 +52,26 @@ public struct PointCloudDemoView: View {
         }
         .demoConfiguration {
             Form {
-            Label("Points: \(pointCount)", systemImage: "circle.grid.3x3.fill")
-            Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000)
-                .onChange(of: pointCount) { _, _ in
+                LabeledContent("Points") {
+                    Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000)
+                        .onChange(of: pointCount) { _, _ in generatePointCloud() }
+                }
+                LabeledContent("Point Size") {
+                    Slider(value: $pointSize, in: 1...30)
+                }
+                LabeledContent("Major Radius") {
+                    Slider(value: $majorRadius, in: 1...3)
+                        .onChange(of: majorRadius) { _, _ in generatePointCloud() }
+                }
+                LabeledContent("Minor Radius") {
+                    Slider(value: $minorRadius, in: 0.2...1.5)
+                        .onChange(of: minorRadius) { _, _ in generatePointCloud() }
+                }
+                Button("Regenerate") {
                     generatePointCloud()
                 }
-
-            Label("Point Size: \(pointSize, specifier: "%.1f")", systemImage: "circle.fill")
-            Slider(value: $pointSize, in: 1...30)
-
-            Label("Major Radius: \(majorRadius, specifier: "%.1f")", systemImage: "circle")
-            Slider(value: $majorRadius, in: 1...3)
-                .onChange(of: majorRadius) { _, _ in
-                    generatePointCloud()
-                }
-
-            Label("Minor Radius: \(minorRadius, specifier: "%.1f")", systemImage: "circle")
-            Slider(value: $minorRadius, in: 0.2...1.5)
-                .onChange(of: minorRadius) { _, _ in
-                    generatePointCloud()
-                }
-
-            Button("Regenerate") {
-                generatePointCloud()
             }
-            }
-            .fixedSize()
+            .frame(width: 300)
         }
     }
 
