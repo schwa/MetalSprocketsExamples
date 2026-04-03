@@ -30,8 +30,40 @@ public struct MetalFXDemoView: View {
     }
 
     public var body: some View {
-        VStack {
-            HStack {
+        Group {
+            if let upscaledTexture {
+                ScrollView([.horizontal, .vertical]) {
+                    RenderView { _, _ in
+                        MetalFXSpatial(inputTexture: sourceTexture, outputTexture: upscaledTexture)
+                        try RenderPass {
+                            try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
+                        }
+                    }
+                    .frame(width: Double(upscaledTexture.width), height: Double(upscaledTexture.height))
+                    .overlay(alignment: .topLeading) {
+                        badge(name: "metalfx")
+                    }
+                    .overlay(alignment: .bottom) {
+                        label(texture: upscaledTexture)
+                    }
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    RenderView { _, _ in
+                        try RenderPass {
+                            try TextureBillboardPipeline(specifier: .texture2D(sourceTexture))
+                        }
+                    }
+                    .frame(width: Double(sourceTexture.width), height: Double(sourceTexture.height))
+                    .border(.white, width: 2)
+                    .overlay(alignment: .topLeading) {
+                        badge(name: "metal")
+                    }
+                    .overlay(alignment: .bottom) {
+                        label(texture: sourceTexture)
+                    }
+                    .padding(12)
+                }
+            } else {
                 RenderView { _, _ in
                     try RenderPass {
                         try TextureBillboardPipeline(specifier: .texture2D(sourceTexture))
@@ -44,26 +76,7 @@ public struct MetalFXDemoView: View {
                 .overlay(alignment: .bottom) {
                     label(texture: sourceTexture)
                 }
-
-                if let upscaledTexture {
-                    ScrollView([.horizontal, .vertical]) {
-                        RenderView { _, _ in
-                            MetalFXSpatial(inputTexture: sourceTexture, outputTexture: upscaledTexture)
-                            try RenderPass {
-                                try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
-                            }
-                        }
-                        .frame(width: Double(upscaledTexture.width), height: Double(upscaledTexture.height))
-                        .overlay(alignment: .topLeading) {
-                            badge(name: "metalfx")
-                        }
-                        .overlay(alignment: .bottom) {
-                            label(texture: upscaledTexture)
-                        }
-                    }
-                }
             }
-            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black.opacity(0.8))
