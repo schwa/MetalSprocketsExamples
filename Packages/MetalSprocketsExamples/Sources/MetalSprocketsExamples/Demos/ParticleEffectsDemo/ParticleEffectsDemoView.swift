@@ -96,31 +96,37 @@ public struct ParticleEffectsDemoView: View {
             }
         }
         .demoConfiguration {
-            Form {
-            Picker("Emitter", selection: $emitterType) {
-                ForEach(EmitterType.allCases, id: \.self) { type in
-                    Text(type.rawValue).tag(type)
+            HStack(alignment: .top, spacing: 16) {
+                Form {
+                    Picker("Emitter", selection: $emitterType) {
+                        ForEach(EmitterType.allCases, id: \.self) { type in
+                            Text(type.rawValue).tag(type)
+                        }
+                    }
+                    .pickerStyle(.menu)
+
+                    LabeledContent("Particles") {
+                        Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000, step: 1_000)
+                    }
+                    LabeledContent("Size") {
+                        Slider(value: $particleSize, in: 5...50)
+                    }
                 }
+                .frame(width: 250)
+
+                Form {
+                    LabeledContent("Gravity") {
+                        Slider(value: $gravity.y, in: -10...10)
+                    }
+                    LabeledContent("Emission") {
+                        Slider(value: $emissionRate, in: 100...2_000)
+                    }
+                    Button("Reset") {
+                        initializeParticles()
+                    }
+                }
+                .frame(width: 250)
             }
-            .pickerStyle(.menu)
-
-            Label("Particles: \(particleCount)", systemImage: "sparkles")
-            Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000, step: 1_000)
-
-            Label("Size: \(particleSize, specifier: "%.1f")", systemImage: "circle.fill")
-            Slider(value: $particleSize, in: 5...50)
-
-            Label("Gravity: \(gravity.y, specifier: "%.1f")", systemImage: "arrow.down")
-            Slider(value: $gravity.y, in: -10...10)
-
-            Label("Emission: \(Int(emissionRate))/s", systemImage: "sparkle")
-            Slider(value: $emissionRate, in: 100...2_000)
-
-            Button("Reset") {
-                initializeParticles()
-            }
-            }
-            .fixedSize()
         }
         #if os(macOS)
         #endif

@@ -77,64 +77,65 @@ public struct GrassDemoView: View {
             }
         }
         .demoConfiguration {
-            Form {
             let segmentsPerBlade = 4
             let totalBlades = Int(grassDensity) * Int(bladesPerPoint)
             let verticesPerBlade = (segmentsPerBlade + 1) * 2
             let totalVertices = totalBlades * verticesPerBlade
 
-            HStack {
-                Text("Blades: \(totalBlades.formatted())")
-                Text("•")
-                Text("Vertices: \(totalVertices.formatted())")
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            HStack(alignment: .top, spacing: 16) {
+                Form {
+                    HStack {
+                        Text("Blades: \(totalBlades.formatted())")
+                        Text("•")
+                        Text("Vertices: \(totalVertices.formatted())")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
 
-            LabeledContent("Length") {
-                HStack {
-                    Slider(value: $grassLength, in: 0.05...10.0)
-                    Text(grassLength, format: .number.precision(.fractionLength(2)))
-                        .frame(minWidth: 40)
+                    LabeledContent("Length") {
+                        HStack {
+                            Slider(value: $grassLength, in: 0.05...10.0)
+                            Text(grassLength, format: .number.precision(.fractionLength(2)))
+                                .frame(minWidth: 40)
+                        }
+                    }
+                    LabeledContent("Width") {
+                        HStack {
+                            Slider(value: $bladeWidthMultiplier, in: 0.1...3.0)
+                            Text(bladeWidthMultiplier, format: .number.precision(.fractionLength(2)))
+                                .frame(minWidth: 40)
+                        }
+                    }
                 }
-            }
+                .frame(width: 280)
 
-            LabeledContent("Width") {
-                HStack {
-                    Slider(value: $bladeWidthMultiplier, in: 0.1...3.0)
-                    Text(bladeWidthMultiplier, format: .number.precision(.fractionLength(2)))
-                        .frame(minWidth: 40)
+                Form {
+                    LabeledContent("Blades/Pt") {
+                        HStack {
+                            Slider(value: $bladesPerPoint, in: 1...16, step: 1)
+                            Text(bladesPerPoint, format: .number.precision(.fractionLength(0)))
+                                .frame(minWidth: 40)
+                        }
+                    }
+                    LabeledContent("Points") {
+                        HStack {
+                            Slider(value: $grassDensity, in: 100...Double(maxGrassPoints), step: 100)
+                            Text(grassDensity, format: .number.precision(.fractionLength(0)))
+                                .frame(minWidth: 40)
+                        }
+                    }
+                    HStack {
+                        Toggle("Droop", isOn: $droopEnabled)
+                        Toggle("Animate", isOn: $isPlaying)
+                        Toggle("Sphere", isOn: $showSphere)
+                    }
+                    Button("Reset Camera") {
+                        cameraMatrix = .init(translation: [0, 0, 4])
+                        rotation = 0.0
+                    }
                 }
+                .frame(width: 280)
             }
-
-            LabeledContent("Blades/Pt") {
-                HStack {
-                    Slider(value: $bladesPerPoint, in: 1...16, step: 1)
-                    Text(bladesPerPoint, format: .number.precision(.fractionLength(0)))
-                        .frame(minWidth: 40)
-                }
-            }
-
-            LabeledContent("Points") {
-                HStack {
-                    Slider(value: $grassDensity, in: 100...Double(maxGrassPoints), step: 100)
-                    Text(grassDensity, format: .number.precision(.fractionLength(0)))
-                        .frame(minWidth: 40)
-                }
-            }
-
-            Toggle("Droop", isOn: $droopEnabled)
-
-            Toggle("Animate", isOn: $isPlaying)
-
-            Toggle("Show Sphere", isOn: $showSphere)
-
-            Button("Reset Camera") {
-                cameraMatrix = .init(translation: [0, 0, 4])
-                rotation = 0.0
-            }
-            }
-            .fixedSize()
         }
     }
 
