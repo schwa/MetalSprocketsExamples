@@ -114,7 +114,7 @@ public struct ColorAdjustDemoView: View {
                 try TextureBillboardPipeline(specifier: .texture2D(adjustedTexture))
             }
         }
-        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
+        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fill)
         .demoConfiguration {
             config()
         }

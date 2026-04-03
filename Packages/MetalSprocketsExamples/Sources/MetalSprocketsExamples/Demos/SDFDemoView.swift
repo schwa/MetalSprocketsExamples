@@ -44,7 +44,6 @@ public struct SDFDemoView: View {
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
-            .metalClearColor(.init(red: 0, green: 0, blue: 0, alpha: 1))
             .onDrawableSizeChange { drawableSize = $0 }
             .task {
                 for await _ in AsyncTimerSequence(interval: .milliseconds(16), clock: .continuous) {

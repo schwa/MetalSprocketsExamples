@@ -34,81 +34,83 @@ public struct PanoramaDemoView: View {
     }
 
     public var body: some View {
-        SuperImportWell(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image]) { _ in
-            WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                if let panoramaTexture, let mesh {
-                    RenderView { _, drawableSize in
-                        if applyGammaCorrection, let intermediateTexture, let outputTexture {
-                            // Render panorama to intermediate texture
-                            try RenderPass {
-                                try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
-                            }
-                            .renderPassDescriptorModifier { descriptor in
-                                descriptor.colorAttachments[0].texture = intermediateTexture
-                                descriptor.colorAttachments[0].loadAction = .clear
-                                descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-                                descriptor.colorAttachments[0].storeAction = .store
-                            }
+        ZStack {
+            Color.clear
+            SuperImportWell(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image]) { _ in
+                WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
+                    if let panoramaTexture, let mesh {
+                        RenderView { _, drawableSize in
+                            if applyGammaCorrection, let intermediateTexture, let outputTexture {
+                                // Render panorama to intermediate texture
+                                try RenderPass {
+                                    try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
+                                }
+                                .renderPassDescriptorModifier { descriptor in
+                                    descriptor.colorAttachments[0].texture = intermediateTexture
+                                    descriptor.colorAttachments[0].loadAction = .clear
+                                    descriptor.colorAttachments[0].storeAction = .store
+                                }
 
-                            // Apply gamma correction using ColorAdjustComputePipeline
-                            try ComputePass(label: "GammaCorrection") {
-                                try ColorAdjustComputePipeline.gammaAdjustPipeline(inputSpecifier: .texture2D(intermediateTexture), inputParameters: 2.2, outputTexture: outputTexture)
-                            }
+                                // Apply gamma correction using ColorAdjustComputePipeline
+                                try ComputePass(label: "GammaCorrection") {
+                                    try ColorAdjustComputePipeline.gammaAdjustPipeline(inputSpecifier: .texture2D(intermediateTexture), inputParameters: 2.2, outputTexture: outputTexture)
+                                }
 
-                            // Render gamma-corrected result to screen
-                            try RenderPass {
-                                try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
-                            }
-                        } else {
-                            // Render directly without gamma correction
-                            try RenderPass {
-                                try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
+                                // Render gamma-corrected result to screen
+                                try RenderPass {
+                                    try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
+                                }
+                            } else {
+                                // Render directly without gamma correction
+                                try RenderPass {
+                                    try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
+                                }
                             }
                         }
-                    }
-                    .onDrawableSizeChange { size in
-                        let device = _MTLCreateSystemDefaultDevice()
-                        let width = Int(size.width)
-                        let height = Int(size.height)
+                        .onDrawableSizeChange { size in
+                            let device = _MTLCreateSystemDefaultDevice()
+                            let width = Int(size.width)
+                            let height = Int(size.height)
 
-                        let intermediateDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-                            pixelFormat: .rgba8Unorm,
-                            width: width,
-                            height: height,
-                            mipmapped: false
-                        )
-                        intermediateDescriptor.usage = [.renderTarget, .shaderRead]
-                        intermediateDescriptor.storageMode = .private
-                        intermediateTexture = device.makeTexture(descriptor: intermediateDescriptor)
-                        intermediateTexture?.label = "Panorama Intermediate Texture"
+                            let intermediateDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+                                pixelFormat: .rgba8Unorm,
+                                width: width,
+                                height: height,
+                                mipmapped: false
+                            )
+                            intermediateDescriptor.usage = [.renderTarget, .shaderRead]
+                            intermediateDescriptor.storageMode = .private
+                            intermediateTexture = device.makeTexture(descriptor: intermediateDescriptor)
+                            intermediateTexture?.label = "Panorama Intermediate Texture"
 
-                        let outputDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-                            pixelFormat: .rgba8Unorm,
-                            width: width,
-                            height: height,
-                            mipmapped: false
-                        )
-                        outputDescriptor.usage = [.shaderRead, .shaderWrite]
-                        outputDescriptor.storageMode = .private
-                        outputTexture = device.makeTexture(descriptor: outputDescriptor)
-                        outputTexture?.label = "Panorama Gamma Output Texture"
+                            let outputDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+                                pixelFormat: .rgba8Unorm,
+                                width: width,
+                                height: height,
+                                mipmapped: false
+                            )
+                            outputDescriptor.usage = [.shaderRead, .shaderWrite]
+                            outputDescriptor.storageMode = .private
+                            outputTexture = device.makeTexture(descriptor: outputDescriptor)
+                            outputTexture?.label = "Panorama Gamma Output Texture"
+                        }
+                    } else {
+                        Text("Use 'Load Panorama' to load a 360° image")
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                } else {
-                    Text("Use 'Load Panorama' to load a 360° image")
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            }
-            .overlay(alignment: .bottomTrailing) {
-                if let panoramaTexture {
-                    ZStack {
-                        PanoramaMiniMapView(panoramaTexture: panoramaTexture, cameraMatrix: cameraMatrix)
+                .overlay(alignment: .bottomTrailing) {
+                    if let panoramaTexture {
+                        ZStack {
+                            PanoramaMiniMapView(panoramaTexture: panoramaTexture, cameraMatrix: cameraMatrix)
+                        }
+                        .frame(width: 320, height: 320)
+                        .padding(8)
+                        .background(.thinMaterial, in: Circle())
+                        .padding()
+                        .allowsHitTesting(false)
                     }
-                    .frame(width: 320, height: 320)
-                    .padding(8)
-                    .background(.thinMaterial, in: Circle())
-                    .padding()
-                    .allowsHitTesting(false)
                 }
             }
         }

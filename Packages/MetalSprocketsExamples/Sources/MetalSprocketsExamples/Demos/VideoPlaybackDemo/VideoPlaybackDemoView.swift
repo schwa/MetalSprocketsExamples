@@ -37,7 +37,8 @@ public struct VideoPlaybackDemoView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
+        ZStack {
+            Color.clear
             RenderView { context, _ in
                 if let videoTexture = videoPlayer.currentTexture {
                     if enableVCR, let distortedTexture = getOrCreateDistortedTexture(for: videoTexture) {
@@ -64,8 +65,6 @@ public struct VideoPlaybackDemoView: View {
                 }
             }
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
-            .background(Color.black)
-
         }
         .demoConfiguration {
             Form {
