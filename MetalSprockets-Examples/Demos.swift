@@ -35,7 +35,8 @@ import SwiftUI
         GraphicsContext3DDemoView.self,
         MetalCanvasDemoView.self,
         TiledSDFDemoView.self,
-        TileAverageDemoView.self
+        TileAverageDemoView.self,
+        RayTracingDemoView.self
     ]
 
     #if os(macOS)
@@ -451,6 +452,18 @@ extension TiledSDFDemoView: @retroactive DemoView {
             longDescription: "**Tile-based compute dispatch** with threadgroup-level primitive culling — primitives are binned per tile into **threadgroup memory** to reduce global memory traffic.",
             group: "Complex",
             keywords: ["compute", "sdf", "tiled", "animated", "2d", "configurable"]
+        )
+    }
+}
+
+extension RayTracingDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Ray Tracing",
+            description: "Cornell box path tracer",
+            longDescription: "Metal **ray tracing** APIs with hardware-accelerated `AccelerationStructure` intersection. Progressive path tracing of the classic Cornell box scene with diffuse global illumination.",
+            group: "Complex",
+            keywords: ["ray-tracing", "path-tracing", "acceleration-structure", "compute"]
         )
     }
 }

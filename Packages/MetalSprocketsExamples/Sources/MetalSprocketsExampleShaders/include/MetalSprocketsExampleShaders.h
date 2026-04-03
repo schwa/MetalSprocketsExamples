@@ -13,6 +13,7 @@
 #import "PBRShaders.h"
 #import "SDFShader.h"
 #import "SpiralParticlesShader.h"
+#import "RayTracingShaders.h"
 #import "VoxelShaders.h"
 
 #ifdef __OBJC__
