@@ -2133,3 +2133,14 @@ Sliders, pickers, and popups across demos are missing accessibility labels. Swif
 
 ---
 
+## 368: Interaction3D: Turntable/WorldView controls missing accessibility labels
+status: new
+priority: medium
+kind: task
+labels: accessibility,upstream
+created: 2026-04-03T06:27:31.177660+00:00
+
+The Turntable camera control popup and related WorldView interaction controls from the Interaction3D package have no accessibility labels. Need to add `.accessibilityLabel()` to the camera mode picker and any other interactive elements. This blocks automated UI testing via steveo. Upstream fix needed in Interaction3D project.
+
+---
+
