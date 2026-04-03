@@ -23,7 +23,7 @@ public struct GraphicsContext3DDemoView: View {
     }
 
     @State
-    private var selectedSample: Sample = .lineCaps
+    private var selectedSample: Sample = .curves
 
     @State
     private var rotation: Float = 0.0
@@ -38,7 +38,7 @@ public struct GraphicsContext3DDemoView: View {
     private var isPlaying: Bool = false
 
     @State
-    private var debugWireframe: Bool = false
+    private var debugWireframe: Bool = true
 
     @State
     private var lineWidthMultiplier: Double = 1.0
