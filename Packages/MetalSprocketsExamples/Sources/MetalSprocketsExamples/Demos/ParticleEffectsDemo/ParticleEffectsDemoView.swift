@@ -106,7 +106,7 @@ public struct ParticleEffectsDemoView: View {
                     .pickerStyle(.menu)
 
                     LabeledContent("Particles") {
-                        Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000, step: 1_000)
+                        Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000)
                     }
                     LabeledContent("Size") {
                         Slider(value: $particleSize, in: 5...50)

@@ -118,7 +118,7 @@ public struct GraphicsContext3DDemoView: View {
 
         LabeledContent("Random Lines") {
             HStack {
-                Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000, step: 10)
+                Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000)
                 Text("\(randomLineCount)")
                     .frame(minWidth: 40)
             }

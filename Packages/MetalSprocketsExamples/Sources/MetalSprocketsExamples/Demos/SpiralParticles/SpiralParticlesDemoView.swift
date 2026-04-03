@@ -73,8 +73,7 @@ public struct SpiralParticlesDemoView: View {
                             get: { Double(particleCount) },
                             set: { particleCount = Int($0) }
                         ),
-                        in: 1...Double(maxParticles),
-                        step: 1
+                        in: 1...Double(maxParticles)
                     )
                     Text("\(particleCount)")
                         .monospacedDigit()
@@ -89,8 +88,7 @@ public struct SpiralParticlesDemoView: View {
                             get: { Double(trianglesPerSpiral) },
                             set: { trianglesPerSpiral = Int($0) }
                         ),
-                        in: 3...Double(maxTriangles),
-                        step: 1
+                        in: 3...Double(maxTriangles)
                     )
                     Text("\(trianglesPerSpiral)")
                         .monospacedDigit()

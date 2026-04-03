@@ -78,8 +78,7 @@ public struct TiledSDFDemoView: View {
                         get: { Double(primitiveCount) },
                         set: { primitiveCount = Int($0) }
                     ),
-                    in: 10...Double(maxPrimitives),
-                    step: 10
+                    in: 10...Double(maxPrimitives)
                 )
                 Text("\(primitiveCount)")
                     .monospacedDigit()

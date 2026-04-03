@@ -53,7 +53,7 @@ public struct PointCloudDemoView: View {
         .demoConfiguration {
             Form {
             Label("Points: \(pointCount)", systemImage: "circle.grid.3x3.fill")
-            Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000, step: 1_000)
+            Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000)
                 .onChange(of: pointCount) { _, _ in
                     generatePointCloud()
                 }

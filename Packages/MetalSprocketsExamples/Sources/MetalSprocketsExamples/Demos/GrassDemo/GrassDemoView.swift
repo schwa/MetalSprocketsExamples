@@ -112,14 +112,14 @@ public struct GrassDemoView: View {
                 Form {
                     LabeledContent("Blades/Pt") {
                         HStack {
-                            Slider(value: $bladesPerPoint, in: 1...16, step: 1)
+                            Slider(value: $bladesPerPoint, in: 1...16)
                             Text(bladesPerPoint, format: .number.precision(.fractionLength(0)))
                                 .frame(minWidth: 40)
                         }
                     }
                     LabeledContent("Points") {
                         HStack {
-                            Slider(value: $grassDensity, in: 100...Double(maxGrassPoints), step: 100)
+                            Slider(value: $grassDensity, in: 100...Double(maxGrassPoints))
                             Text(grassDensity, format: .number.precision(.fractionLength(0)))
                                 .frame(minWidth: 40)
                         }
