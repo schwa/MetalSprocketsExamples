@@ -28,6 +28,7 @@ public struct PanoramaDemoView: View {
     @State private var applyGammaCorrection = false
     @State private var intermediateTexture: MTLTexture?
     @State private var outputTexture: MTLTexture?
+    @State private var loadTask: Task<Void, Never>?
 
     public init() {
         // This line intentionally left blank.
@@ -145,16 +146,20 @@ public struct PanoramaDemoView: View {
     }
 
     func loadPanoramaFromURL(_ url: URL) {
-        Task {
+        loadTask?.cancel()
+        loadTask = Task {
             do {
                 let device = _MTLCreateSystemDefaultDevice()
                 let textureLoader = MTKTextureLoader(device: device)
                 let texture = try await textureLoader.newTexture(URL: url, options: [.textureUsage: MTLTextureUsage.shaderRead.rawValue, .textureStorageMode: MTLStorageMode.private.rawValue])
+                guard !Task.isCancelled else { return }
                 await MainActor.run {
                     panoramaTexture = texture
                 }
             } catch {
-                fatalError("Failed to load panorama: \(error)")
+                if !Task.isCancelled {
+                    fatalError("Failed to load panorama: \(error)")
+                }
             }
         }
     }
