@@ -8,22 +8,14 @@ private let urlScheme = "metalsprockets-examples"
 struct MetalSprocketsExamplesApp: App {
     var body: some Scene {
         #if os(macOS)
-        Window("MetalSprockets", id: "main") {
-            ContentView()
-                .handleDemoURL(scheme: urlScheme)
-                .onOpenURL { url in
-                    print("onOpenURL received: \(url)")
-                }
-        }
-        .handlesExternalEvents(matching: [urlScheme])
-        .commands {
-            DemosCommandMenu()
-        }
+        DemoPickerScene(demos: allDemos)
+            .handleDemoURL(scheme: urlScheme)
+            .commands {
+                DemosCommandMenu()
+            }
         #else
-        WindowGroup("MetalSprockets", id: "main") {
-            ContentView()
-                .handleDemoURL(scheme: urlScheme)
-        }
+        DemoPickerScene(demos: allDemos)
+            .handleDemoURL(scheme: urlScheme)
         #endif
 
         #if os(macOS)
