@@ -64,19 +64,22 @@ public struct LUTDemoView: View {
     }
 
     public var body: some View {
-        RenderView { _, _ in
-            try Group {
-                try ComputePass(label: "LUTDemo") {
-                    try LUTComputePipeline(inputTexture: sourceTexture, lutTexture: lutTexture, blend: blend, outputTexture: outputTexture)
-                }
-                try RenderPass(label: "Billboard") {
-                    try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
+        ZStack {
+            Color.clear
+            RenderView { _, _ in
+                try Group {
+                    try ComputePass(label: "LUTDemo") {
+                        try LUTComputePipeline(inputTexture: sourceTexture, lutTexture: lutTexture, blend: blend, outputTexture: outputTexture)
+                    }
+                    try RenderPass(label: "Billboard") {
+                        try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
+                    }
                 }
             }
+            .metalColorPixelFormat(.rgba16Float) //
+            .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
+            .clipped()
         }
-        .metalColorPixelFormat(.rgba16Float) //
-        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
-        .clipped()
         .background(.black)
         .demoConfiguration {
             Form {

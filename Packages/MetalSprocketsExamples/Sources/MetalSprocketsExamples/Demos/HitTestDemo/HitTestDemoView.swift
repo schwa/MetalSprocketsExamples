@@ -67,6 +67,7 @@ public struct HitTestDemoView: View {
 
     public var body: some View {
         ZStack {
+            Color.clear
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
                 TimelineView(.animation) { _ in
                     // swiftlint:disable:next accessibility_trait_for_button

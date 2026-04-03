@@ -12,6 +12,7 @@ public struct ComputeDemoView: View {
 
     public var body: some View {
         ZStack {
+            Color.clear
             Text("\(String(describing: state))").foregroundStyle(.white)
             .task {
                 do {
@@ -52,7 +53,7 @@ public struct ComputeDemoView: View {
                     state = .failure(error)
                 }
             }
-            .background(.black)
         }
+        .background(.black)
     }
 }

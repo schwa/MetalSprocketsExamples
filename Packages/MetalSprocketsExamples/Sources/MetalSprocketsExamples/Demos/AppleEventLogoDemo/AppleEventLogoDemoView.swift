@@ -60,7 +60,9 @@ public struct AppleEventLogoDemoView: View {
     }
 
     public var body: some View {
-        VStack {
+        ZStack {
+            Color.clear
+            VStack {
             TimelineView(.animation) { timeline in
                 RenderView { _, _ in
                     try ComputePass {
@@ -223,6 +225,7 @@ public struct AppleEventLogoDemoView: View {
                     fatalError("Error: \(error)")
                 }
             }
+        }
         }
         .background(.black.opacity(0.8))
     }

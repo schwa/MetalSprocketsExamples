@@ -48,7 +48,9 @@ public struct TriangleDemoView: View {
     }
 
     public var body: some View {
-        TimelineView(.animation()) { timeline in
+        ZStack {
+            Color.clear
+            TimelineView(.animation()) { timeline in
             RenderView { _, _ in
                 try RenderPass {
                     let vertexShader = try VertexShader(source: source)
@@ -86,6 +88,7 @@ public struct TriangleDemoView: View {
                 let blue = (1 + sin(timeInterval * 2 * .pi / 0.7)) / 2
                 color = [Float(red), Float(green), Float(blue), 1]
             }
+        }
         }
         .background(.black)
     }

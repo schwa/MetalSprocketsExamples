@@ -30,7 +30,9 @@ public struct MetalFXDemoView: View {
     }
 
     public var body: some View {
-        Group {
+        ZStack {
+            Color.clear
+            Group {
             if let upscaledTexture {
                 ScrollView([.horizontal, .vertical]) {
                     RenderView { _, _ in
@@ -77,6 +79,7 @@ public struct MetalFXDemoView: View {
                     label(texture: sourceTexture)
                 }
             }
+        }
         }
         .background(.black.opacity(0.8))
         .demoConfiguration {

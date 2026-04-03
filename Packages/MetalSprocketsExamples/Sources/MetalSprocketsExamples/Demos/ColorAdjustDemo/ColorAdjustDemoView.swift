@@ -106,15 +106,18 @@ public struct ColorAdjustDemoView: View {
     }
 
     public var body: some View {
-        RenderView { _, _ in
-            try ComputePass(label: "ColorAdjust") {
-                try colorAdjustComputePipeline
+        ZStack {
+            Color.clear
+            RenderView { _, _ in
+                try ComputePass(label: "ColorAdjust") {
+                    try colorAdjustComputePipeline
+                }
+                try RenderPass {
+                    try TextureBillboardPipeline(specifier: .texture2D(adjustedTexture))
+                }
             }
-            try RenderPass {
-                try TextureBillboardPipeline(specifier: .texture2D(adjustedTexture))
-            }
+            .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
         }
-        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
         .background(.black)
         .demoConfiguration {
             config()

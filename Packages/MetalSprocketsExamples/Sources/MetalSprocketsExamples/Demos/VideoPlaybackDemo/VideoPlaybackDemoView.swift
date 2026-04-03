@@ -38,6 +38,7 @@ public struct VideoPlaybackDemoView: View {
 
     public var body: some View {
         ZStack {
+            Color.clear
             RenderView { context, _ in
                 if let videoTexture = videoPlayer.currentTexture {
                     if enableVCR, let distortedTexture = getOrCreateDistortedTexture(for: videoTexture) {

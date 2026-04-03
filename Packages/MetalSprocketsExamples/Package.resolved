@@ -1,13 +1,13 @@
 {
-  "originHash" : "a038da1f2d1436b35fd076c57bb3110e6e8eda1b400990772fecf075bd2296b1",
+  "originHash" : "705942d530afb04c1c9167af0753105611083c5834ff748d047424e560141bb0",
   "pins" : [
     {
       "identity" : "demokit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/DemoKit",
       "state" : {
-        "revision" : "0c2616c79340980be0c0504690651413001087b0",
-        "version" : "0.1.3"
+        "branch" : "main",
+        "revision" : "aa25fee86b8ec70de87c0f5b80a8f2ca4eebd3f9"
       }
     },
     {

@@ -49,7 +49,9 @@ public struct StencilDemoView: View {
     }
 
     public var body: some View {
-        RenderView { _, _ in
+        ZStack {
+            Color.clear
+            RenderView { _, _ in
             try BlitPass {
                 EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
                     if let descriptor = renderPassDescriptor, let stencilAttachmentTexture = descriptor.stencilAttachment.texture, let sourceTexture = texture {
@@ -121,6 +123,7 @@ public struct StencilDemoView: View {
                 debugPrint("Stencil texture update failed: \(error)")
                 texture = nil
             }
+        }
         }
         .background(.black)
     }
