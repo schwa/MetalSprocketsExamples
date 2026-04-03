@@ -87,10 +87,12 @@ public struct VoxelDemoView: View {
                         voxelSize = MTLSize(width: voxelSize.width / 2, height: voxelSize.height / 2, depth: voxelSize.depth / 2)
                         voxelScale *= 2
                     }
+                    .disabled(voxelSize.width <= 4 || voxelSize.height <= 4 || voxelSize.depth <= 4)
                     Button("x2") {
                         voxelSize = MTLSize(width: voxelSize.width * 2, height: voxelSize.height * 2, depth: voxelSize.depth * 2)
                         voxelScale *= 0.5
                     }
+                    .disabled(voxelSize.width >= 512 || voxelSize.height >= 512 || voxelSize.depth >= 512)
                 }
 
                 SuperImportWidget(url: $magicaVoxelURL, identifier: "magica-voxel", allowedContentTypes: [.magicaVoxel])
