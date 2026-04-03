@@ -2,32 +2,47 @@
 
 ## Goal
 
-Automatically record a demo video showcasing all MetalSprocketsExamples demos using `steveo` for UI automation and screen recording.
+Automatically record a demo video showcasing all MetalSprocketsExamples demos using `steveo` for UI automation and `screenrecording-tool` for per-window video capture.
 
-## What Works
+## Tooling
 
-- **Demos menu** — Fixed! The `FocusedViewModelRetainer` in DemoKit keeps the viewModel available even when the window isn't focused. Navigation via `steveo --app "MetalSprockets-Examples" menu "Demos" "Triangle"` works reliably.
-- **Screenshot collection** — Fully automated via `steveo screenshot`. All 34 demos captured successfully at 1024×768.
-- **Sidebar toggle** — Can hide/show sidebar via `steveo find --text "Hide Sidebar" --click`.
-- **Description toggle** — Can hide/show description banner via the (i) button.
-- **Window resize** — `steveo window resize` works for consistent sizing.
+### steveo (UI automation)
+
+- **Demos menu** — Navigation via `steveo --app "MetalSprockets-Examples" menu "Demos" "Triangle"` works reliably.
+- **Screenshot collection** — Fully automated via `steveo screenshot`. All 34 demos captured at 1024×768.
+- **Sidebar toggle** — `steveo find --text "Hide Sidebar" --click`.
+- **Description toggle** — Hide/show description banner via the (i) button.
+- **Window resize** — `steveo window resize` works.
+- **Drag/rotate** — `steveo focus` then `steveo drag x1 y1 x2 y2 --duration ms` rotates 3D views. Must `steveo focus` before drag.
+- **Bezier drag** — `steveo drag-path` for smooth curved camera movements.
+- **Key combos** — `steveo key` supports named keys and modifiers. Bracket keys (`]`, `[`) not in the named key list but `--raw <keycode>` can send any keycode.
+
+### screenrecording-tool (video capture)
+
+- **Per-window recording** — `screenrecording-tool record --window "Title" -d 10 clip.mov` captures a single window.
+- **Per-app recording** — `screenrecording-tool record --app "AppName"` captures all windows of an app.
+- **Output profiles** — `--profile social` (small), `edit` (high quality), `raw` (maximum), `lossless`.
+- **Click highlights** — `--click-highlight` overlays visual feedback on clicks in the video.
+- **Cursor control** — `--no-show-cursor` to hide cursor, `--cursor-image` for custom cursor.
+- **Event logging** — `--event-log events.jsonl` records mouse + keyboard events alongside video.
+- **System audio** — `--audio` captures system audio if needed.
+- **Padding** — `--padding N` adds pixels around the capture area.
+
+### Other tooling
+
 - **demos.yaml** — Canonical index of all demos with metadata, interest levels, and choreography hints.
-- **Drag/rotate** — `steveo focus` then `steveo drag x1 y1 x2 y2 --duration ms` rotates 3D views. **IMPORTANT: must `steveo focus` the app before any drag, or the drag events won't register.**
-- **Screen recording** — `steveo record --window "Title" --duration N -o file.mp4` captures per-window video. Can run in background while performing drags.
 - **generate-docs.py** — Single script for both screenshot capture and DEMOS.md generation from demos.yaml.
 
-## Bugs to Fix
+## Remaining Bugs / Blockers
 
 ### DemoKit
 
-- **#DemoKit#11** — URL scheme navigation launches NEW app instances instead of routing to the running one. URLs do work when they reach the right instance. Not a blocker since menu navigation works, but would be cleaner for video.
-- **#DemoKit#12** — `kebabCase` produces double hyphens (e.g., `game-of--life` instead of `game-of-life`).
+- **#DemoKit#11** — URL scheme navigation launches new app instances instead of routing to the running one. Not a blocker — menu navigation works.
+- **#DemoKit#12** — `kebabCase` produces double hyphens (e.g., `game-of--life`). Minor.
 
 ### steveo
 
-- **#steveo#11** — `steveo key "cmd+]"` doesn't work. Bracket characters aren't sent correctly as key events.
-- **#steveo#13** — Drag requires `steveo focus` first — not auto-focused. (UX improvement, not a blocker.)
-- Screen recording captures full screen instead of just the window. Fix in progress.
+- **#steveo#11** — Named key list doesn't include bracket characters. Workaround: `steveo key --raw 30` for `]`, `--raw 33` for `[`. May be fixed; needs verification.
 
 ### MetalSprocketsExamples
 
@@ -36,16 +51,14 @@ Automatically record a demo video showcasing all MetalSprocketsExamples demos us
 
 ## Navigation for Video
 
-The Demos menu works reliably but flashes on screen. Options:
-
 | Method | Works? | Video-safe? | Notes |
 |--------|--------|-------------|-------|
-| Demos menu | ✅ | ❌ | Menu flashes on screen |
-| URL scheme | ⚠️ | ✅ | Launches new app instances |
-| Cmd+[/] via steveo | ❌ | ✅ | steveo key bug |
+| Demos menu | ✅ | ✅ | Per-clip recording means menu flash is between clips |
+| URL scheme | ⚠️ | ✅ | Launches new app instances (#DemoKit#11) |
+| Cmd+]/[ via steveo --raw | ✅ | ✅ | Needs verification |
 | Sidebar click | ✅ | ❌ | Sidebar visible in frame |
 
-**Current approach:** Use Demos menu between recordings. Each demo gets its own recording clip (start recording → perform gestures → stop recording), so menu flash between clips doesn't matter.
+**Current approach:** Use Demos menu to navigate between demos. Each demo gets its own recording via `screenrecording-tool record --window`, so menu flash happens outside the capture window.
 
 ## Video Choreography
 
@@ -56,8 +69,8 @@ Per-demo recording approach:
    a. Navigate via Demos menu
    b. Wait for settle time
    c. Focus app (`steveo focus`)
-   d. Start recording (`steveo record --window "Title" --duration N -o clip.mp4 &`)
-   e. Perform gestures (drag to rotate) per choreography in yaml
+   d. Start recording: `screenrecording-tool record --window "Title" --profile edit -d N clip.mov &`
+   e. Perform gestures (drag/drag-path to rotate) per choreography in yaml
    f. Adjust UI controls per yaml (once AX labels are added)
    g. Wait for recording to finish
 3. Concatenate clips in post (ffmpeg)
