@@ -52,10 +52,11 @@ Origin: GitHub issue #246
 
 ## 4: [NEW DEMO] MetalPaint
 status: open
-priority: none
+priority: low
 kind: feature
+labels: effort:l
 created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:47:41.538893+00:00
+updated: 2026-04-03T17:30:56.957378+00:00
 
 It's MacPaint but Metal!
 
@@ -482,11 +483,11 @@ We have DemoView (via DemoKit) and Examples in UltraviolenceExamples/ExampleElem
 
 ## 74: VisionOS demo
 status: open
-priority: none
+priority: low
 kind: feature
 labels: effort:l
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T22:02:53.169121+00:00
+updated: 2026-04-03T17:30:57.021765+00:00
 
 Add visionOS-specific demos, e.g. immersive mode rendering.
 
@@ -494,11 +495,11 @@ Add visionOS-specific demos, e.g. immersive mode rendering.
 
 ## 75: [NEW DEMO] Gooch shader
 status: open
-priority: none
+priority: low
 kind: feature
 labels: effort:l
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:41.677004+00:00
+updated: 2026-04-03T17:30:57.079497+00:00
 
 *Imported from #67*
 
@@ -506,11 +507,11 @@ updated: 2026-04-02T21:47:41.677004+00:00
 
 ## 78: [NEW DEMO] Ray Tracing
 status: open
-priority: none
+priority: low
 kind: feature
 labels: effort:xl
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:41.813850+00:00
+updated: 2026-04-03T17:30:57.136534+00:00
 
 *Imported from #70*
 
@@ -518,11 +519,11 @@ updated: 2026-04-02T21:47:41.813850+00:00
 
 ## 80: [NEW DEMO] Toon shader
 status: open
-priority: none
+priority: low
 kind: feature
 labels: effort:l
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:41.949801+00:00
+updated: 2026-04-03T17:30:57.193819+00:00
 
 *Imported from #72*
 
@@ -604,10 +605,11 @@ Performance improvement: Reduces per-vertex computation, especially beneficial f
 
 ## 157: [NEW DEMO] GPU Text Rendering Pipeline
 status: open
-priority: none
-kind: enhancement
+priority: low
+kind: feature
+labels: effort:xl
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:47:42.086139+00:00
+updated: 2026-04-03T17:30:57.251271+00:00
 
 ## Summary
 Implement GPU-accelerated text rendering using signed distance fields or glyph atlases.
@@ -688,10 +690,11 @@ Implement spatial computing demos leveraging VisionOS capabilities like immersiv
 
 ## 181: [NEW DEMO] Foil Stickers
 status: open
-priority: none
+priority: low
 kind: feature
+labels: effort:m
 created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T04:29:46.112492+00:00
+updated: 2026-04-03T17:30:57.308584+00:00
 
 Implement https://www.4rknova.com/blog/2025/08/30/foil-sticker
 
@@ -1468,11 +1471,12 @@ The -Z axis label is rendered on the skybox face and should be hidden by default
 ---
 
 ## 312: Compute: needs a proper UI instead of raw debug dump
-status: new
-priority: none
+status: open
+priority: low
 kind: enhancement
+labels: effort:m
 created: 2026-04-02T21:41:10.197698+00:00
-updated: 2026-04-02T21:52:34.640887+00:00
+updated: 2026-04-03T17:30:51.096561+00:00
 
 Currently displays 'Optional(Swift.Result<(), Swift.Error>.success())' on a blank white background. Needs a real UI that visually demonstrates the compute operation. Brainstorm ideas for making a compute-only demo visually interesting.
 
@@ -1537,22 +1541,24 @@ Shows 'No File' placeholder. Bundle a default equirectangular panorama so the de
 ---
 
 ## 317: GraphicsContext3D: consider deprecating or improving demo scene
-status: new
-priority: none
+status: open
+priority: low
 kind: enhancement
+labels: effort:m
 created: 2026-04-02T21:41:22.369174+00:00
-updated: 2026-04-02T21:47:29.977975+00:00
+updated: 2026-04-03T17:30:51.156674+00:00
 
 Currently shows three flat colored bars which don't showcase 3D path capabilities. Either improve the demo scene to show compelling 3D Path content, or consider deprecating this demo.
 
 ---
 
 ## 318: MetalCanvas: consider deprecating or expanding with a bigger plan
-status: new
-priority: none
+status: open
+priority: low
 kind: enhancement
+labels: effort:m
 created: 2026-04-02T21:41:22.516616+00:00
-updated: 2026-04-02T21:47:30.112646+00:00
+updated: 2026-04-03T17:30:51.216685+00:00
 
 The random lines demo works but the feature needs a bigger plan. Consider deprecating or developing a proper roadmap for the Canvas API.
 
@@ -1587,11 +1593,12 @@ Raw CGImage description (memory address, color space, pixel format) is displayed
 ---
 
 ## 321: MetalFX Upscaling: more dramatic comparison view
-status: new
-priority: none
+status: open
+priority: low
 kind: enhancement
+labels: effort:s
 created: 2026-04-02T21:41:34.983689+00:00
-updated: 2026-04-02T21:47:30.246122+00:00
+updated: 2026-04-03T17:30:51.276924+00:00
 
 The side-by-side layout only shows half the upscaled mandrill. Need a more dramatic comparison that better illustrates the upscaling quality — e.g., a slider wipe or a more zoomed-in detail comparison.
 
@@ -1850,10 +1857,12 @@ closed: 2026-04-03T01:59:07.673304+00:00
 ---
 
 ## 341: Update per-demo documentation after demoConfiguration migration
-status: new
+status: open
 priority: medium
 kind: task
+labels: effort:m
 created: 2026-04-03T00:57:08.458100+00:00
+updated: 2026-04-03T17:30:51.342833+00:00
 
 Many demos had their UI controls moved to demoConfiguration and camera angles changed. The per-demo documentation and screenshots need updating to reflect the new layouts.
 
@@ -1896,37 +1905,45 @@ closed: 2026-04-03T04:28:58.576304+00:00
 ---
 
 ## 345: GLTF: tangents are (x,y,z,w) — needs investigation
-status: new
+status: open
 priority: medium
 kind: bug
+labels: effort:m
 created: 2026-04-03T03:11:53.511169+00:00
+updated: 2026-04-03T17:30:51.403432+00:00
 
 
 ---
 
 ## 346: GLTF: inefficient accessor info getting and discarding
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:s
 created: 2026-04-03T03:11:53.587174+00:00
+updated: 2026-04-03T17:30:51.747585+00:00
 
 
 ---
 
 ## 347: PBR: break out model uniforms from PBRShader
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:m
 created: 2026-04-03T03:11:53.661992+00:00
+updated: 2026-04-03T17:30:51.814306+00:00
 
 
 ---
 
 ## 348: PBR: use scalar instead of color for metallic/roughness/AO
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:s
 created: 2026-04-03T03:11:53.738032+00:00
+updated: 2026-04-03T17:30:51.877850+00:00
 
 
 ---
@@ -2004,64 +2021,84 @@ closed: 2026-04-03T04:50:19.517886+00:00
 ---
 
 ## 355: Centralize threadsPerThreadgroup computation instead of hardcoding
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:s
 created: 2026-04-03T03:12:53.973301+00:00
+updated: 2026-04-03T17:31:02.810581+00:00
 
+- 2026-04-03T17:31:02.889071+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
 ## 356: Extract shader library convenience to eliminate 16x boilerplate
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:m
 created: 2026-04-03T03:15:29.067348+00:00
+updated: 2026-04-03T17:31:02.915446+00:00
 
+- 2026-04-03T17:31:02.992195+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
 ## 357: Centralize _MTLCreateSystemDefaultDevice() access (45 ad-hoc calls)
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:s
 created: 2026-04-03T03:15:29.150928+00:00
+updated: 2026-04-03T17:31:03.017796+00:00
 
+- 2026-04-03T17:31:03.094773+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
 ## 358: Extract texture creation helper to reduce boilerplate
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:s
 created: 2026-04-03T03:15:29.232097+00:00
+updated: 2026-04-03T17:31:03.120360+00:00
 
+- 2026-04-03T17:31:03.196469+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
 ## 359: Consolidate lighting setup patterns across demos
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:m
 created: 2026-04-03T03:15:29.313195+00:00
+updated: 2026-04-03T17:31:03.222200+00:00
 
+- 2026-04-03T17:31:03.298667+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
 ## 360: Standardize onDrawableSizeChange texture recreation pattern
-status: new
+status: open
 priority: medium
 kind: enhancement
+labels: effort:s
 created: 2026-04-03T03:15:29.395346+00:00
+updated: 2026-04-03T17:31:03.324205+00:00
 
+- 2026-04-03T17:31:03.400389+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
 ## 361: Research: convert each demo to its own target (or two targets if including shaders)
-status: new
+status: open
 priority: medium
 kind: task
+labels: effort:l
 created: 2026-04-03T03:15:59.333403+00:00
+updated: 2026-04-03T17:30:52.309517+00:00
 
 
 ---
@@ -2096,51 +2133,63 @@ The StencilDemoView renders the triangle without any checkerboard stencil clippi
 ---
 
 ## 364: the .frame(infinite, infinite).black() is causing black to leak into sidebar
-status: new
+status: open
 priority: medium
-kind: none
+kind: bug
+labels: effort:s
 created: 2026-04-03T05:19:21.896483+00:00
+updated: 2026-04-03T17:30:52.369748+00:00
 
 
 ---
 
 ## 365: Grass shader shading looks wrong - flipped
-status: new
+status: open
 priority: medium
 kind: bug
+labels: effort:m
 created: 2026-04-03T05:27:48.070435+00:00
+updated: 2026-04-03T17:30:52.426852+00:00
 
 
 ---
 
 ## 366: replace /2 *2 buttons in voxel with a slider
-status: new
+status: open
 priority: medium
-kind: none
+kind: enhancement
+labels: effort:xs
 created: 2026-04-03T05:59:54.158699+00:00
+updated: 2026-04-03T17:30:52.487463+00:00
 
 
 ---
 
 ## 367: Accessibility pass: add labels to all interactive controls
-status: new
+status: open
 priority: medium
 kind: task
-labels: accessibility
+labels: accessibility, effort:l
 created: 2026-04-03T06:27:01.170849+00:00
+updated: 2026-04-03T17:31:02.586908+00:00
 
 Sliders, pickers, and popups across demos are missing accessibility labels. SwiftUI doesn't automatically associate adjacent StaticText with controls. Need to add `.accessibilityLabel()` to all interactive controls (sliders, toggles, pickers, buttons) across all demos. This also blocks automated UI testing with steveo since controls can't be found by name.
+
+- 2026-04-03T17:31:02.670984+00:00: Related: #368 (Interaction3D accessibility is a subset of this)
 
 ---
 
 ## 368: Interaction3D: Turntable/WorldView controls missing accessibility labels
-status: new
+status: open
 priority: medium
 kind: task
-labels: accessibility,upstream
+labels: accessibility, upstream, effort:m
 created: 2026-04-03T06:27:31.177660+00:00
+updated: 2026-04-03T17:31:02.701434+00:00
 
 The Turntable camera control popup and related WorldView interaction controls from the Interaction3D package have no accessibility labels. Need to add `.accessibilityLabel()` to the camera mode picker and any other interactive elements. This blocks automated UI testing via steveo. Upstream fix needed in Interaction3D project.
+
+- 2026-04-03T17:31:02.779763+00:00: Related: #367 (parent accessibility pass covering all controls)
 
 ---
 
