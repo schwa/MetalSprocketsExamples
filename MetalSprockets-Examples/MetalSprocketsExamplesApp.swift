@@ -10,16 +10,20 @@ struct MetalSprocketsExamplesApp: App {
         #if os(macOS)
         Window("MetalSprockets", id: "main") {
             ContentView()
+                .handleDemoURL(scheme: urlScheme)
+                .onOpenURL { url in
+                    print("onOpenURL received: \(url)")
+                }
         }
-        .handleDemoURL(scheme: urlScheme)
+        .handlesExternalEvents(matching: [urlScheme])
         .commands {
             DemosCommandMenu()
         }
         #else
         WindowGroup("MetalSprockets", id: "main") {
             ContentView()
+                .handleDemoURL(scheme: urlScheme)
         }
-        .handleDemoURL(scheme: urlScheme)
         #endif
 
         #if os(macOS)

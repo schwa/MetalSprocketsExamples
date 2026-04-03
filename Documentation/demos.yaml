@@ -1,0 +1,597 @@
+# Canonical demo index for MetalSprocketsExamples
+# Source of truth: MetalSprockets-Examples/Demos.swift
+#
+# Fields:
+#   name:             Display name (from metadata)
+#   id:               Filename-safe identifier
+#   description:      Short description (from metadata)
+#   long_description: Long description (from metadata)
+#   group:            Demo group (from metadata)
+#   keywords:         Keywords (from metadata)
+#   screenshot:       Screenshot filename
+#   platform:         Platform restriction (null = all)
+#   video:
+#     duration:       How long to record (seconds)
+#     interest:       low / medium / high
+#     gestures:       List of gestures to perform during recording
+#     adjustments:    List of UI adjustments to make during recording
+#     notes:          Freeform notes for choreography
+
+demos:
+  - name: Empty
+    id: Empty
+    description: An empty view.
+    long_description: null
+    group: null
+    keywords: []
+    screenshot: null
+    platform: null
+    video:
+      duration: 2
+      interest: low
+      gestures: []
+      adjustments: []
+      notes: "Placeholder — skip in final video."
+
+  - name: Blinn-Phong Lighting
+    id: BlinnPhongLighting
+    description: Blinn-Phong lit teapots with skybox
+    long_description: >
+      BlinnPhongShader element with multiple models, animated lighting,
+      skybox, and WorldView camera controls.
+    group: Basic
+    keywords: [lighting, multipass, animated]
+    screenshot: BlinnPhongLighting.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: []
+      notes: "Animated light orbits — let it run. Rotate to show highlights."
+
+  - name: Hit Test Demo
+    id: HitTestDemo
+    description: GPU-based object picking
+    long_description: >
+      Multi-pass rendering with a parallel hit-test pass writing geometry ID,
+      instance ID, triangle ID, depth, and barycentric coordinates to offscreen
+      textures. Includes CPU readback of hit results.
+    group: Complex
+    keywords: [hit-test, picking, multipass, configurable]
+    screenshot: HitTestDemo.png
+    platform: null
+    video:
+      duration: 8
+      interest: medium
+      gestures: [click, rotate]
+      adjustments: []
+      notes: "Click on teapot to show hit data. Rotate view."
+
+  - name: Skybox
+    id: Skybox
+    description: Cube-map skybox rendering
+    long_description: >
+      SkyboxRenderPipeline with a cube texture built from a cross-layout image.
+      Also shows generating textures from SwiftUI views.
+    group: Basic
+    keywords: [configurable]
+    screenshot: Skybox.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: []
+      notes: "Rotate to show full panoramic skybox."
+
+  - name: Triangle
+    id: Triangle
+    description: Colored triangle with GPU timing
+    long_description: >
+      The simplest MetalSprockets render pipeline: inline Metal source compiled
+      at runtime into VertexShader/FragmentShader, wired up with RenderView and Draw.
+    group: Basic
+    keywords: [animated, configurable]
+    screenshot: Triangle.png
+    platform: null
+    video:
+      duration: 4
+      interest: low
+      gestures: []
+      adjustments: []
+      notes: "Hello world — brief."
+
+  - name: Compute
+    id: Compute
+    description: Buffer-to-buffer copy via compute
+    long_description: >
+      Standalone ComputePass and ComputeDispatch without any rendering —
+      just buffer-to-buffer data movement on the GPU.
+    group: Basic
+    keywords: [needs-work]
+    screenshot: Compute.png
+    platform: null
+    video:
+      duration: 3
+      interest: low
+      gestures: []
+      adjustments: []
+      notes: "No visual output — very brief."
+
+  - name: Depth Buffer
+    id: DepthBuffer
+    description: Depth buffer visualization
+    long_description: >
+      Render-to-texture with separate color and depth outputs. Uses stitchable
+      visible functions for post-processing the depth buffer.
+    group: Complex
+    keywords: [configurable]
+    screenshot: DepthBuffer.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: [contrast-slider, show-depth-toggle]
+      notes: "Toggle depth map on/off, adjust contrast slider."
+
+  - name: Mixed Techniques
+    id: MixedTechniques
+    description: Combined render and compute passes
+    long_description: >
+      Mixing render and compute passes in a single frame — geometry rendering
+      followed by an edge-detection compute post-process that reads depth/color
+      attachments.
+    group: Complex
+    keywords: [multipass, animated]
+    screenshot: MixedTechniques.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: []
+      notes: "Let animation run, rotate to show edge detection."
+
+  - name: Bouncing Teapots
+    id: BouncingTeapots
+    description: Physics-driven instanced teapots
+    long_description: >
+      Instanced rendering to an offscreen texture with optional MetalFX upscaling
+      before presentation.
+    group: Complex
+    keywords: [metalfx, animated, multipass]
+    screenshot: BouncingTeapots.png
+    platform: null
+    video:
+      duration: 10
+      interest: high
+      gestures: [rotate]
+      adjustments: []
+      notes: "Crowd-pleaser. Let physics run, rotate camera."
+
+  - name: Stencil Buffer
+    id: StencilBuffer
+    description: Stencil-masked triangle
+    long_description: >
+      Stencil texture creation, blit pass to populate the stencil attachment,
+      and StencilState configuration to clip rendered geometry.
+    group: Basic
+    keywords: []
+    screenshot: StencilBuffer.png
+    platform: null
+    video:
+      duration: 4
+      interest: low
+      gestures: []
+      adjustments: []
+      notes: "Static — brief."
+
+  - name: LUT Color Grading
+    id: LUTColorGrading
+    description: Image color grading via LUTs
+    long_description: >
+      Compute-based image processing with LUT texture loading (2D PNG and 3D
+      .cube formats) and TextureBillboardPipeline for display.
+    group: Basic
+    keywords: [post-processing, configurable]
+    screenshot: LUTColorGrading.png
+    platform: null
+    video:
+      duration: 8
+      interest: medium
+      gestures: []
+      adjustments: [lut-picker, intensity-slider]
+      notes: "Cycle through LUT presets, sweep intensity slider."
+
+  - name: Game of Life
+    id: GameOfLife
+    description: GPU-driven cellular automaton
+    long_description: >
+      GPU-driven cellular automaton — a ComputePass updates a texture each frame,
+      driving the entire simulation loop on the GPU.
+    group: Basic
+    keywords: [animated, configurable]
+    screenshot: GameOfLife.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: []
+      adjustments: [pause-play, fill-mode]
+      notes: "Let it run — visually mesmerising. Maybe reset mid-recording."
+
+  - name: Apple Event Logo
+    id: AppleEventLogo
+    description: Thermal-style video effect
+    long_description: >
+      Chaining multiple ComputePass stages — heat simulation, color remap,
+      video blend — in a single frame.
+    group: Complex
+    keywords: [needs-work, animated, video]
+    screenshot: AppleEventLogo.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: []
+      adjustments: []
+      notes: "Animated heat effect — let it run."
+
+  - name: Color Adjust
+    id: ColorAdjust
+    description: Compute-based color adjustments
+    long_description: >
+      Multiple compute shader functions (multiply, gamma, HSV, levels,
+      temperature/tint, vignette, etc.) applied to an image, showing how to swap
+      between different ComputeKernels at runtime.
+    group: In-progress
+    keywords: [configurable]
+    screenshot: ColorAdjust.png
+    platform: null
+    video:
+      duration: 8
+      interest: medium
+      gestures: []
+      adjustments: [function-picker, parameter-slider]
+      notes: "Cycle through adjustment functions, sweep sliders."
+
+  - name: Debug Shaders
+    id: DebugShaders
+    description: Shader debug visualizations
+    long_description: >
+      DebugRenderPipeline with switchable fragment shader modes for visualizing
+      mesh attributes — normals, tangents, UVs, depth, wireframe, etc.
+    group: Basic
+    keywords: []
+    screenshot: DebugShaders.png
+    platform: null
+    video:
+      duration: 8
+      interest: medium
+      gestures: [rotate]
+      adjustments: [debug-mode-picker]
+      notes: "Cycle through debug modes while rotating."
+
+  - name: PBR Rendering
+    id: PBRRendering
+    description: Physically based rendering
+    long_description: >
+      PBRShader with Cook-Torrance BRDF, HDR environment reflections, animated
+      lighting, and configurable material properties.
+    group: Complex
+    keywords: []
+    screenshot: PBRRendering.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: []
+      notes: "Rotate to show environment reflections. Animated light."
+
+  - name: SDF Raymarching
+    id: SDFRaymarching
+    description: 3D SDF raymarching
+    long_description: >
+      Full-screen fragment shader raymarching SDFs with depth output, allowing
+      integration with rasterized geometry via WorldView.
+    group: Complex
+    keywords: [animated, raymarching, configurable]
+    screenshot: SDFRaymarching.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: [show-depth-toggle]
+      notes: "Animated shapes — let run, rotate, toggle depth view."
+
+  - name: Point Cloud
+    id: PointCloud
+    description: Interactive torus point cloud
+    long_description: >
+      Point primitive rendering with depth testing from a CPU-generated MTLBuffer.
+    group: Basic
+    keywords: [points, interactive, configurable]
+    screenshot: PointCloud.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: [point-count-slider, point-size-slider]
+      notes: "Rotate torus, adjust point count and size."
+
+  - name: Particle Effects
+    id: ParticleEffects
+    description: GPU compute particle system
+    long_description: >
+      Compute-to-render buffer sharing: a compute pass updates particle state
+      each frame, then a render pass draws from the same MTLBuffer.
+    group: Complex
+    keywords: [compute, animated, configurable]
+    screenshot: ParticleEffects.png
+    platform: null
+    video:
+      duration: 10
+      interest: high
+      gestures: [rotate]
+      adjustments: [emitter-picker]
+      notes: "Cycle through emitter presets — Magic Portal, Fountain, Fireworks."
+
+  - name: Video Playback
+    id: VideoPlayback
+    description: Video with VCR distortion effect
+    long_description: >
+      Streaming AVFoundation video frames into Metal textures, rendered via
+      TextureBillboardPipeline with an optional VCR distortion compute pass.
+    group: Basic
+    keywords: [video, billboard, configurable]
+    screenshot: VideoPlayback.png
+    platform: null
+    video:
+      duration: 8
+      interest: medium
+      gestures: []
+      adjustments: [vcr-effects-toggle, vcr-sliders]
+      notes: "Needs a video loaded. Toggle VCR effects, sweep sliders."
+
+  - name: 360° Panorama
+    id: Panorama
+    description: Equirectangular panorama viewer
+    long_description: >
+      Equirectangular-to-sphere texture mapping with WorldView camera controls
+      and an optional gamma-correction compute post-pass.
+    group: Basic
+    keywords: [configurable]
+    screenshot: Panorama.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: []
+      notes: "Needs a panorama loaded. Rotate to look around."
+
+  - name: Wireframe Teapot
+    id: WireframeTeapot
+    description: Wireframe mesh rendering
+    long_description: >
+      WireframeRenderPipeline for line-mode mesh rendering, combined with
+      GridShader and AxisLinesRenderPipeline.
+    group: Basic
+    keywords: []
+    screenshot: WireframeTeapot.png
+    platform: null
+    video:
+      duration: 5
+      interest: low
+      gestures: [rotate]
+      adjustments: []
+      notes: "Rotate to show wireframe from different angles."
+
+  - name: Trivial Mesh
+    id: TrivialMesh
+    description: Procedural geometry primitives
+    long_description: >
+      TrivialMesh procedural geometry generation and conversion to renderable
+      Mesh objects — platonic solids, 2D shapes, and curved surfaces.
+    group: Basic
+    keywords: [mesh, procedural, lighting, animated, configurable]
+    screenshot: TrivialMesh.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: [wireframe-toggle]
+      notes: "Rotate, toggle wireframe on/off."
+
+  - name: Scene Graph
+    id: SceneGraph
+    description: Hierarchical scene graph rendering
+    long_description: >
+      SceneGraph construction with recursive transform propagation, rendered
+      via SceneGraphRenderPass with PBR shading.
+    group: Basic
+    keywords: [scene, graph, lighting]
+    screenshot: SceneGraph.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: []
+      notes: "Rotate to inspect hierarchy."
+
+  - name: glTF Model Viewer
+    id: GLTFModelViewer
+    description: glTF/GLB model loader and viewer
+    long_description: >
+      Loading glTF/GLB files, converting them to a SceneGraph via
+      GLTFSceneGraphGenerator, and rendering with SceneGraphRenderPass.
+    group: Complex
+    keywords: []
+    screenshot: GLTFModelViewer.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: []
+      notes: "Needs a model loaded. Rotate to inspect."
+
+  - name: Voxel Renderer
+    id: VoxelRenderer
+    description: Compute-raymarched voxel volumes
+    long_description: >
+      3D texture creation and compute-pass raymarching of voxel volumes, with
+      MagicaVoxel .vox file import support.
+    group: Complex
+    keywords: [configurable]
+    screenshot: VoxelRenderer.png
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: [scale-buttons]
+      notes: "Rotate, increase resolution with x2 button."
+
+  - name: Grass Sphere
+    id: GrassSphere
+    description: Mesh-shader procedural grass
+    long_description: >
+      Metal object and mesh shader pipeline with per-point amplification —
+      each input point generates multiple segmented grass blade geometry instances.
+    group: Complex
+    keywords: [mesh-shaders, procedural, animated, configurable]
+    screenshot: GrassSphere.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: [blade-sliders]
+      notes: "Rotate, adjust blade length/count. Visually impressive."
+
+  - name: Spiral Particles
+    id: SpiralParticles
+    description: Mesh-shader spiral particles
+    long_description: >
+      Mesh shader geometry amplification with fully procedural vertex generation —
+      no vertex buffers, all geometry created in the object/mesh shader stages.
+    group: Complex
+    keywords: [mesh-shaders, particles, animated, procedural, configurable]
+    screenshot: SpiralParticles.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: [particle-count-slider, speed-slider]
+      notes: "Increase particle count, let spirals animate."
+
+  - name: GraphicsContext3D
+    id: GraphicsContext3D
+    description: Canvas-style 3D path drawing
+    long_description: >
+      GraphicsContext3DRenderPipeline: a SwiftUI Canvas-like API for 3D path
+      drawing with stroke/fill, backed by mesh-shader line rendering.
+    group: Basic
+    keywords: [3d, path, canvas, configurable]
+    screenshot: GraphicsContext3D.png
+    platform: null
+    video:
+      duration: 5
+      interest: low
+      gestures: []
+      adjustments: []
+      notes: "Minimal visual — brief."
+
+  - name: MetalCanvas
+    id: MetalCanvas
+    description: 2D path rendering via mesh shaders
+    long_description: >
+      MetalCanvas and MetalCanvasRenderPipeline: GPU-accelerated 2D vector path
+      stroking using mesh shaders, accepting standard SwiftUI Path objects.
+    group: Basic
+    keywords: [2d, path, canvas, mesh-shaders, configurable]
+    screenshot: MetalCanvas.png
+    platform: null
+    video:
+      duration: 5
+      interest: medium
+      gestures: []
+      adjustments: [scene-picker, line-width-slider]
+      notes: "Cycle through scenes, adjust line width."
+
+  - name: Tiled SDF (2D)
+    id: TiledSDF2D
+    description: Tile-culled 2D SDF rendering
+    long_description: >
+      Tile-based compute dispatch with threadgroup-level primitive culling —
+      primitives are binned per tile into threadgroup memory to reduce global
+      memory traffic.
+    group: Complex
+    keywords: [compute, sdf, tiled, animated, 2d, configurable]
+    screenshot: TiledSDF2D.png
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: []
+      adjustments: [primitive-count-slider, visualization-picker, tile-size-toggle]
+      notes: "Animated. Cycle visualization modes, adjust primitive count."
+
+  - name: Hello Imageblock
+    id: HelloImageblock
+    description: Imageblock tile averaging
+    long_description: >
+      Metal imageblock APIs: tile memory allocation, imageblock_data load/store,
+      and tile dispatch in the simplest possible example.
+    group: Basic
+    keywords: [imageblock, tile, 2d, configurable]
+    screenshot: HelloImageblock.png
+    platform: null
+    video:
+      duration: 5
+      interest: medium
+      gestures: []
+      adjustments: [tile-size-toggle]
+      notes: "Toggle between 16x16 and 32x32 tile sizes."
+
+  - name: Offscreen Rendering
+    id: OffscreenRendering
+    description: Render to CGImage
+    long_description: >
+      Headless rendering with OffscreenRenderer — no RenderView, just render
+      to a CGImage.
+    group: Basic
+    keywords: [needs-work]
+    screenshot: OffscreenRendering.png
+    platform: macOS
+    video:
+      duration: 4
+      interest: low
+      gestures: []
+      adjustments: []
+      notes: "Static result — brief."
+
+  - name: MetalFX Upscaling
+    id: MetalFXUpscaling
+    description: MetalFX spatial upscaling
+    long_description: >
+      Integrating MetalFXSpatial upsampling into a MetalSprockets pipeline.
+    group: Basic
+    keywords: [metalfx, needs-work, configurable]
+    screenshot: MetalFXUpscaling.png
+    platform: macOS  # canImport(MetalFX)
+    video:
+      duration: 6
+      interest: medium
+      gestures: []
+      adjustments: [scale-factor-slider]
+      notes: "Adjust scale factor to show upscaling quality difference."
