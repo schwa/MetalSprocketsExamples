@@ -97,7 +97,6 @@ public struct PanoramaDemoView: View {
                     } else {
                         Text("Use 'Load Panorama' to load a 360° image")
                             .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
                 .overlay(alignment: .bottomTrailing) {

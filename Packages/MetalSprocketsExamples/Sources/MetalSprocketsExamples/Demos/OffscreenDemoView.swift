@@ -19,7 +19,6 @@ public struct OffscreenDemoView: View {
             }
         }
         .aspectRatio(1, contentMode: .fit)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black)
         .demoConfiguration {
             Group {

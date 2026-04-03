@@ -65,7 +65,6 @@ public struct VideoPlaybackDemoView: View {
             }
             .aspectRatio(16.0 / 9.0, contentMode: .fit)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black.opacity(0.8))
         .demoConfiguration {
             HStack(alignment: .top, spacing: 20) {

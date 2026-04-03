@@ -52,7 +52,6 @@ public struct ComputeDemoView: View {
                     state = .failure(error)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.black)
         }
     }

@@ -122,7 +122,6 @@ public struct StencilDemoView: View {
                 texture = nil
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black)
     }
 }

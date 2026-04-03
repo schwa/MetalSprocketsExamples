@@ -78,7 +78,6 @@ public struct MetalFXDemoView: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black.opacity(0.8))
         .demoConfiguration {
             Form {

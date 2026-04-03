@@ -115,7 +115,6 @@ public struct ColorAdjustDemoView: View {
             }
         }
         .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black)
         .demoConfiguration {
             config()
