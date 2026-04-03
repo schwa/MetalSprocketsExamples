@@ -1872,11 +1872,14 @@ closed: 2026-04-03T04:53:28.096476+00:00
 ---
 
 ## 343: Hit Test Demo: make rendering full screen instead of fixed 512x512
-status: new
+status: closed
 priority: medium
 kind: enhancement
 created: 2026-04-03T02:09:46.833736+00:00
+updated: 2026-04-03T04:57:03.143162+00:00
+closed: 2026-04-03T04:57:03.143162+00:00
 
+- 2026-04-03T04:57:03.194988+00:00: Closed — keeping fixed size for now.
 
 ---
 
