@@ -211,11 +211,12 @@ public struct HitTestDemoView: View {
                     } else {
                         Text("No Hit")
                             .font(.system(.caption, design: .monospaced))
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(.green.opacity(0.6))
                     }
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
+                .background(Color.black.opacity(0.6))
                 .background(.ultraThinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .padding(12)
