@@ -72,7 +72,7 @@ extension TriangleDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Triangle",
             description: "Colored triangle with GPU timing",
-            longDescription: "Renders a single triangle from inline Metal shader source. Displays GPU and kernel timing metrics. Demonstrates the simplest possible MetalSprockets render pipeline with RenderView, VertexShader, FragmentShader, and Draw.",
+            longDescription: "The simplest MetalSprockets render pipeline: inline Metal source compiled at runtime into VertexShader/FragmentShader, wired up with RenderView and Draw.",
             group: "Basic",
             keywords: ["animated", "configurable"]
         )
@@ -84,7 +84,7 @@ extension GameOfLifeDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Game of Life",
             description: "GPU-driven cellular automaton",
-            longDescription: "Runs Conway's Game of Life entirely on the GPU using compute shaders. Supports multiple initial patterns (glider, random, clear) and play/pause control. Shows how to use a compute pass to update a texture each frame.",
+            longDescription: "Using a compute pass to update a texture each frame, driving a simulation loop entirely on the GPU.",
             group: "Basic",
             keywords: ["animated", "configurable"]
         )
@@ -96,7 +96,7 @@ extension StencilDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Stencil Buffer",
             description: "Stencil-masked triangle",
-            longDescription: "Blits a checkerboard pattern into the stencil attachment, then draws a star clipped by the stencil test. Demonstrates stencil texture creation, blit passes, and stencil state configuration.",
+            longDescription: "Stencil texture creation, blit pass to populate the stencil attachment, and stencil state configuration to clip rendered geometry.",
             group: "Basic",
             keywords: []
         )
@@ -108,7 +108,7 @@ extension ComputeDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Compute",
             description: "Buffer-to-buffer copy via compute",
-            longDescription: "Copies 1 MB of data between GPU buffers using an inline compute kernel, then validates the result on the CPU. Demonstrates standalone ComputePass and ComputeDispatch without any rendering.",
+            longDescription: "Standalone ComputePass and ComputeDispatch without any rendering — just buffer-to-buffer data movement on the GPU.",
             group: "Basic",
             keywords: ["needs-work"]
         )
@@ -120,7 +120,7 @@ extension DepthDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Depth Buffer",
             description: "Depth buffer visualization",
-            longDescription: "Renders a teapot scene to offscreen color and depth textures, then visualizes the depth buffer with a configurable power curve. Demonstrates render-to-texture, stitchable visible functions for post-processing, and side-by-side texture display.",
+            longDescription: "Render-to-texture with separate color and depth outputs. Uses stitchable visible functions (customizable private functions) for post-processing the depth buffer.",
             group: "Complex",
             keywords: ["configurable"]
         )
@@ -133,7 +133,7 @@ extension MetalFXDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "MetalFX Upscaling",
             description: "MetalFX spatial upscaling",
-            longDescription: "Loads a source image and upscales it using MetalFX spatial upsampling at a configurable scale factor. Shows the original and upscaled images side by side for quality comparison.",
+            longDescription: "Integrating MetalFX spatial upsampling into a MetalSprockets pipeline.",
             group: "Basic",
             keywords: ["metalfx", "needs-work", "configurable"]
         )
@@ -146,7 +146,7 @@ extension BouncingTeapotsDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Bouncing Teapots",
             description: "Physics-driven instanced teapots",
-            longDescription: "Simulates 60 teapots bouncing on a checkerboard floor with simple physics. Renders to an offscreen texture, optionally upscales with MetalFX, then presents. Demonstrates instanced rendering, offscreen render targets, and MetalFX integration.",
+            longDescription: "Instanced rendering to an offscreen texture with optional MetalFX upscaling before presentation.",
             group: "Complex",
             keywords: ["metalfx", "animated", "multipass"]
         )
@@ -158,7 +158,7 @@ extension BlinnPhongDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Blinn-Phong Lighting",
             description: "Blinn-Phong lit teapots with skybox",
-            longDescription: "Renders multiple teapots and a floor plane with Blinn-Phong shading, animated point lights, a skybox backdrop, and axis/grid overlays. Demonstrates the BlinnPhongShader element, light visualization, and WorldView camera controls.",
+            longDescription: "BlinnPhongShader element with multiple models, animated lighting, skybox, and WorldView camera controls.",
             group: "Basic",
             keywords: ["lighting", "multipass", "animated"]
         )
@@ -170,7 +170,7 @@ extension HitTestDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Hit Test Demo",
             description: "GPU-based object picking",
-            longDescription: "Renders a teapot with Blinn-Phong shading and a parallel hit-test pass that writes geometry ID, instance ID, triangle ID, depth, and barycentric coordinates to offscreen textures. Supports visualization modes for each channel and click-to-query readback.",
+            longDescription: "Multi-pass rendering with a parallel hit-test pass writing geometry ID, instance ID, triangle ID, depth, and barycentric coordinates to offscreen textures. Includes CPU readback of hit results.",
             group: "Complex",
             keywords: ["hit-test", "picking", "multipass", "configurable"]
         )
@@ -182,7 +182,7 @@ extension SkyboxDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Skybox",
             description: "Cube-map skybox rendering",
-            longDescription: "Renders a cube texture as a 360° skybox background with interactive camera rotation. Optionally overlays face labels (+X, -X, etc.) on the cube map. Demonstrates SkyboxRenderPipeline and SwiftUI-to-texture generation for the cube map cross image.",
+            longDescription: "SkyboxRenderPipeline with a cube texture built from a cross-layout image. Also shows generating textures from SwiftUI views.",
             group: "Basic",
             keywords: ["configurable"]
         )
@@ -194,7 +194,7 @@ extension AppleEventLogoDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Apple Event Logo",
             description: "Thermal-style video effect",
-            longDescription: "Applies a heat-diffusion simulation and color remap to video frames, masked by the Apple logo. Chains multiple compute passes (heat update, color remap, video blend) to produce a thermal-camera aesthetic in real time.",
+            longDescription: "Chaining multiple compute passes (heat simulation, color remap, video blend) in a single frame.",
             group: "Complex",
             keywords: ["needs-work", "animated", "video"]
         )
@@ -206,7 +206,7 @@ extension LUTDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "LUT Color Grading",
             description: "Image color grading via LUTs",
-            longDescription: "Applies look-up table color grading to a source photo using a compute shader. Supports both 2D PNG LUTs and 3D .cube files with adjustable blend strength. Demonstrates LUT texture loading, compute-based image processing, and billboard display.",
+            longDescription: "Compute-based image processing with LUT texture loading (2D PNG and 3D .cube formats) and TextureBillboardPipeline for display.",
             group: "Basic",
             keywords: ["post-processing", "configurable"]
         )
@@ -219,7 +219,7 @@ extension OffscreenDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Offscreen Rendering",
             description: "Render to CGImage",
-            longDescription: "Renders a red triangle offscreen using OffscreenRenderer and converts the result to a CGImage displayed as a static NSImage. Demonstrates headless rendering without a RenderView.",
+            longDescription: "Headless rendering with OffscreenRenderer — no RenderView, just render to a CGImage.",
             group: "Basic",
             keywords: ["needs-work"]
         )
@@ -232,7 +232,7 @@ extension MixedDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Mixed Techniques",
             description: "Combined render and compute passes",
-            longDescription: "Renders a rotating teapot with directional lighting, combining render passes for geometry with an edge-detection compute post-process. Demonstrates mixing render and compute passes in a single frame and reading depth/color attachments.",
+            longDescription: "Mixing render and compute passes in a single frame — geometry rendering followed by an edge-detection compute post-process that reads depth/color attachments.",
             group: "Complex",
             keywords: ["multipass", "animated"]
         )
@@ -244,7 +244,7 @@ extension ColorAdjustDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Color Adjust",
             description: "Compute-based color adjustments",
-            longDescription: "Applies a selection of color adjustment functions (multiply, gamma, HSV, levels, temperature/tint, vignette, etc.) to a source photo via compute shaders. Each mode exposes its own parameter controls for interactive tuning.",
+            longDescription: "Multiple compute shader functions (multiply, gamma, HSV, levels, temperature/tint, vignette, etc.) applied to an image, showing how to swap between different compute kernels at runtime.",
             group: "In-progress",
             keywords: ["configurable"]
         )
@@ -256,7 +256,7 @@ extension DebugShadersDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Debug Shaders",
             description: "Shader debug visualizations",
-            longDescription: "Renders a teapot with a switchable debug fragment shader. Visualization modes include normals, tangents, texture coordinates, depth, wireframe overlay, face normals, UV distortion, checkerboard, and more. Useful for inspecting mesh attributes.",
+            longDescription: "DebugRenderPipeline with switchable fragment shader modes for visualizing mesh attributes (normals, tangents, UVs, depth, wireframe, etc.).",
             group: "Basic",
             keywords: []
         )
@@ -268,7 +268,7 @@ extension PBRDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "PBR Rendering",
             description: "Physically based rendering",
-            longDescription: "Renders a teapot with a cook-torrance PBR shader, HDR environment reflections, and animated point lights. Includes material presets (gold, copper, plastic, etc.) and custom roughness/metallic sliders. Demonstrates PBRShader, environment mapping, and light visualization.",
+            longDescription: "PBRShader with Cook-Torrance BRDF, HDR environment reflections, animated lighting, and configurable material properties.",
             group: "Complex",
             keywords: []
         )
@@ -280,7 +280,7 @@ extension SDFDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "SDF Raymarching",
             description: "3D SDF raymarching",
-            longDescription: "Raymarches animated signed distance field shapes on a full-screen quad with smooth blending and dynamic lighting. Supports depth output for integration with rasterized geometry. Demonstrates full-screen fragment shaders with WorldView camera controls.",
+            longDescription: "Full-screen fragment shader raymarching SDFs with depth output, allowing integration with rasterized geometry via WorldView.",
             group: "Complex",
             keywords: ["animated", "raymarching", "configurable"]
         )
@@ -292,7 +292,7 @@ extension PointCloudDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Point Cloud",
             description: "Interactive torus point cloud",
-            longDescription: "Generates up to 200K colored points distributed on a torus and renders them as sized points with depth testing. Configurable point count, point size, and torus radii with live regeneration.",
+            longDescription: "Point primitive rendering with depth testing from a CPU-generated MTLBuffer.",
             group: "Basic",
             keywords: ["points", "interactive", "configurable"]
         )
@@ -304,7 +304,7 @@ extension ParticleEffectsDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Particle Effects",
             description: "GPU compute particle system",
-            longDescription: "Updates and renders thousands of particles using a compute shader for simulation and a render pass for display. Emitter types include fountain, explosion, rain, fireworks, tornado, and magic portal. Demonstrates compute-to-render buffer sharing and per-frame GPU simulation.",
+            longDescription: "Compute-to-render buffer sharing: a compute pass updates particle state each frame, then a render pass draws from the same buffer.",
             group: "Complex",
             keywords: ["compute", "animated", "configurable"]
         )
@@ -316,7 +316,7 @@ extension VideoPlaybackDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Video Playback",
             description: "Video with VCR distortion effect",
-            longDescription: "Streams video frames to Metal textures via AVFoundation and renders them through a billboard pipeline. Optionally applies a VCR distortion compute pass with configurable scanlines, noise, and tracking artifacts.",
+            longDescription: "Streaming AVFoundation video frames into Metal textures, rendered via TextureBillboardPipeline with an optional compute distortion pass.",
             group: "Basic",
             keywords: ["video", "billboard", "configurable"]
         )
@@ -328,7 +328,7 @@ extension PanoramaDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "360° Panorama",
             description: "Equirectangular panorama viewer",
-            longDescription: "Maps an equirectangular HDR image onto a sphere (or box) for interactive 360° viewing with WorldView camera controls. Supports drag-and-drop image loading, optional gamma correction via a compute post-pass, and a minimap overlay.",
+            longDescription: "Equirectangular-to-sphere texture mapping with WorldView camera controls and an optional gamma-correction compute post-pass.",
             group: "Basic",
             keywords: ["configurable"]
         )
@@ -340,7 +340,7 @@ extension WireframeDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Wireframe Teapot",
             description: "Wireframe mesh rendering",
-            longDescription: "Renders the Utah teapot as a green wireframe with a ground grid and axis lines. Demonstrates WireframeRenderPipeline, GridShader, and AxisLinesRenderPipeline.",
+            longDescription: "WireframeRenderPipeline for line-mode mesh rendering, combined with GridShader and AxisLinesRenderPipeline.",
             group: "Basic",
             keywords: []
         )
@@ -352,7 +352,7 @@ extension TrivialMeshDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Trivial Mesh",
             description: "Procedural geometry primitives",
-            longDescription: "Displays a gallery of procedurally generated shapes — platonic solids (tetrahedron, cube, octahedron, dodecahedron, icosahedron), 2D shapes (circle, quad, triangle), and curved surfaces (sphere, torus, capsule, cone, hemisphere, ico-sphere, cube-sphere) — lit with Blinn-Phong shading. Demonstrates TrivialMesh generation and conversion to renderable Mesh objects.",
+            longDescription: "TrivialMesh procedural geometry generation and conversion to renderable Mesh objects, covering platonic solids, 2D shapes, and curved surfaces.",
             group: "Basic",
             keywords: ["mesh", "procedural", "lighting", "animated", "configurable"]
         )
@@ -364,7 +364,7 @@ extension SceneGraphDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Scene Graph",
             description: "Hierarchical scene graph rendering",
-            longDescription: "Traverses a tree of nodes with nested transforms to render a grid of meshes with PBR shading and environment lighting. Includes an interactive scene graph editor panel. Demonstrates SceneGraph construction, recursive transform propagation, and SceneGraphRenderPass.",
+            longDescription: "SceneGraph construction with recursive transform propagation, rendered via SceneGraphRenderPass with PBR shading.",
             group: "Basic",
             keywords: ["scene", "graph", "lighting"]
         )
@@ -376,7 +376,7 @@ extension GLTFDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "glTF Model Viewer",
             description: "glTF/GLB model loader and viewer",
-            longDescription: "Loads glTF and GLB files (including a bundled VirtualCity model), converts them to a SceneGraph, and renders with PBR shading. Supports drag-and-drop import and downloading the Khronos glTF sample asset library.",
+            longDescription: "Loading glTF/GLB files, converting them to a SceneGraph via GLTFSceneGraphGenerator, and rendering with SceneGraphRenderPass.",
             group: "Complex",
             keywords: []
         )
@@ -388,7 +388,7 @@ extension VoxelDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Voxel Renderer",
             description: "Compute-raymarched voxel volumes",
-            longDescription: "Raymarches a 3D voxel texture in a compute pass and renders the result as a billboard. Generates a default procedural volume or loads MagicaVoxel .vox files via drag-and-drop. Demonstrates 3D texture creation, compute raymarching, and file import.",
+            longDescription: "3D texture creation and compute-pass raymarching of voxel volumes, with MagicaVoxel .vox file import support.",
             group: "Complex",
             keywords: ["configurable"]
         )
@@ -400,7 +400,7 @@ extension GrassDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Grass Sphere",
             description: "Mesh-shader procedural grass",
-            longDescription: "Generates grass blades on the surface of a sphere using Metal object and mesh shaders. Points are uniformly distributed; each spawns multiple segmented blades with configurable density, length, and width. Demonstrates mesh shader pipelines with per-point amplification.",
+            longDescription: "Metal object and mesh shader pipeline with per-point amplification — each input point generates multiple segmented geometry instances.",
             group: "Complex",
             keywords: ["mesh-shaders", "procedural", "animated", "configurable"]
         )
@@ -412,7 +412,7 @@ extension SpiralParticlesDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Spiral Particles",
             description: "Mesh-shader spiral particles",
-            longDescription: "Each particle emits a spiral of colored triangles generated entirely in object and mesh shaders — no vertex buffers needed. Configurable particle count, orbit radius, spiral size, and triangles per spiral. Demonstrates mesh shader geometry amplification and procedural vertex generation.",
+            longDescription: "Mesh shader geometry amplification with fully procedural vertex generation — no vertex buffers, all geometry created in the object/mesh shader stages.",
             group: "Complex",
             keywords: ["mesh-shaders", "particles", "animated", "procedural", "configurable"]
         )
@@ -424,7 +424,7 @@ extension GraphicsContext3DDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "GraphicsContext3D",
             description: "Canvas-style 3D path drawing",
-            longDescription: "Provides a SwiftUI Canvas-like API for 3D: build Path3D objects and stroke/fill them in 3D space. Samples include axis lines, line caps/joins, miter limits, Bézier curves, and random line stress tests. Demonstrates GraphicsContext3DRenderPipeline with mesh-shader line rendering.",
+            longDescription: "GraphicsContext3DRenderPipeline: a SwiftUI Canvas-like API for 3D path drawing with stroke/fill, backed by mesh-shader line rendering.",
             group: "Basic",
             keywords: ["3d", "path", "canvas", "configurable"]
         )
@@ -436,7 +436,7 @@ extension MetalCanvasDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "MetalCanvas",
             description: "2D path rendering via mesh shaders",
-            longDescription: "Strokes SwiftUI Path objects on the GPU using a mesh-shader pipeline. Includes rectangle, circle, triangle, and random-line demos with configurable line width. Demonstrates MetalCanvas and MetalCanvasRenderPipeline for GPU-accelerated 2D vector drawing.",
+            longDescription: "MetalCanvas and MetalCanvasRenderPipeline: GPU-accelerated 2D vector path stroking using mesh shaders, accepting standard SwiftUI Path objects.",
             group: "Basic",
             keywords: ["2d", "path", "canvas", "mesh-shaders", "configurable"]
         )
@@ -448,7 +448,7 @@ extension TiledSDFDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Tiled SDF (2D)",
             description: "Tile-culled 2D SDF rendering",
-            longDescription: "Culls 2D SDF primitives per tile using threadgroup memory to minimize global memory reads. Supports configurable primitive count, tile size, and visualization modes (normal, tile heat map, tile boundaries). Demonstrates tile-based compute dispatch with threadgroup-level culling.",
+            longDescription: "Tile-based compute dispatch with threadgroup-level primitive culling — primitives are binned per tile into threadgroup memory to reduce global memory traffic.",
             group: "Complex",
             keywords: ["compute", "sdf", "tiled", "animated", "2d", "configurable"]
         )
@@ -460,7 +460,7 @@ extension TileAverageDemoView: @retroactive DemoView {
         DemoMetadata(
             name: "Hello Imageblock",
             description: "Imageblock tile averaging",
-            longDescription: "The simplest imageblock demo: renders an animated scene, then averages each tile's pixels to produce a pixelated mosaic effect. Configurable tile size (16×16 or 32×32). Demonstrates Metal imageblock APIs — tile memory allocation, imageblock load/store, and tile dispatch.",
+            longDescription: "Metal imageblock APIs: tile memory allocation, imageblock load/store, and tile dispatch in the simplest possible example.",
             group: "Basic",
             keywords: ["imageblock", "tile", "2d", "configurable"]
         )
