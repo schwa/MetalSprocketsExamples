@@ -17,12 +17,9 @@ public struct ComputeDemoView: View {
                 do {
                     let source = """
                 #import <metal_stdlib>
-                #import <metal_logging>
-                
+                #import <metal_logging>                
                 using namespace metal;
-                
                 uint gid [[thread_position_in_grid]];
-                
                 kernel void kernelMain(
                     constant char *src [[buffer(0)]],
                     device char *dst [[buffer(1)]]

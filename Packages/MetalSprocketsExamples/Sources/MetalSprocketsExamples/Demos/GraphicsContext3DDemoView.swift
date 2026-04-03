@@ -43,10 +43,8 @@ public struct GraphicsContext3DDemoView: View {
     @State
     private var lineWidthMultiplier: Double = 1.0
 
-
     @State
     private var randomLineCount: Int = 1_000
-
 
     @State
     private var randomLines: [(start: SIMD3<Float>, end: SIMD3<Float>, color: Color)] = []

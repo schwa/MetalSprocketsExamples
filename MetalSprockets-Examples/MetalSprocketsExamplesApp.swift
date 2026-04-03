@@ -29,4 +29,3 @@ struct MetalSprocketsExamplesApp: App {
         #endif
     }
 }
-

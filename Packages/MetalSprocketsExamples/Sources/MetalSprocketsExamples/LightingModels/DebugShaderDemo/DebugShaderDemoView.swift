@@ -53,8 +53,7 @@ public struct DebugShadersDemoView: View {
         }
         .demoConfiguration {
             DebugModePicker(debugMode: $debugMode)
-
-    }
+        }
     }
 }
 

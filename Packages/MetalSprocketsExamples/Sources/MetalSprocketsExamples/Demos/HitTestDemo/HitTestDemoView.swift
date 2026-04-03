@@ -68,7 +68,7 @@ public struct HitTestDemoView: View {
     public var body: some View {
         ZStack {
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                TimelineView(.animation) { timeline in
+                TimelineView(.animation) { _ in
                     // swiftlint:disable:next accessibility_trait_for_button
                     RenderView { _, drawableSize in
                         let projectionMatrix = projection.projectionMatrix(for: drawableSize)
