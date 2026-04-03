@@ -28,7 +28,7 @@ public struct SuperImportWell <Content>: View where Content: View {
                 ContentUnavailableView("No File", systemImage: "exclamationmark.triangle")
             }
         }
-        .onChange(of: helper.url, initial: true) {
+        .onChange(of: helper.url) {
             url = helper.url
         }
     }
