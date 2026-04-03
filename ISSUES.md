@@ -1814,11 +1814,14 @@ created: 2026-04-03T02:09:46.833736+00:00
 ---
 
 ## 344: SceneGraph: lighting is regenerated every frame
-status: new
+status: closed
 priority: medium
 kind: bug
 created: 2026-04-03T03:11:53.436656+00:00
+updated: 2026-04-03T04:28:58.576305+00:00
+closed: 2026-04-03T04:28:58.576304+00:00
 
+- 2026-04-03T04:28:58.630114+00:00: Moved lighting computation out of SceneGraphRenderPass.init into a static method, called once at view init.
 
 ---
 

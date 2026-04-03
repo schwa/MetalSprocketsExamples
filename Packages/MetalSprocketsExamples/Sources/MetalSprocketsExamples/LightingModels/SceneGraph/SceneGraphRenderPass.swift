@@ -5,8 +5,6 @@ import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import simd
 
-// TODO: #344 Lighting is static once generated.
-
 struct SceneGraphRenderPass: Element {
     var sceneGraph: SceneGraph
     var cameraMatrix: simd_float4x4
@@ -15,32 +13,36 @@ struct SceneGraphRenderPass: Element {
     var environmentTexture: MTLTexture
     private let nodesWithWorldTransforms: [(node: SceneGraph.Node, worldTransform: float4x4)]
 
-    init(sceneGraph: SceneGraph, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, environmentTexture: MTLTexture) {
+    init(sceneGraph: SceneGraph, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, lighting: Lighting, environmentTexture: MTLTexture) {
         self.sceneGraph = sceneGraph
         self.cameraMatrix = cameraMatrix
         self.projectionMatrix = projectionMatrix
+        self.lighting = lighting
+        self.environmentTexture = environmentTexture
 
         var worldTransforms: [(SceneGraph.Node, float4x4)] = []
         sceneGraph.visit(worldTransform: .identity) { node, worldTransform in
             worldTransforms.append((node, worldTransform))
         }
         self.nodesWithWorldTransforms = worldTransforms
+    }
 
-        // TODO: #344 We are generating this every frame!
+    static func lighting(for sceneGraph: SceneGraph) -> Lighting {
+        var worldTransforms: [(SceneGraph.Node, float4x4)] = []
+        sceneGraph.visit(worldTransform: .identity) { node, worldTransform in
+            worldTransforms.append((node, worldTransform))
+        }
         let lights = worldTransforms.compactMap { node, worldTransform -> (SIMD3<Float>, Light)? in
             guard let light = node.light else {
                 return nil
             }
             return (worldTransform.translation, light)
         }
-        if lights.isEmpty {
-            self.lighting = (try? Lighting.demo()).orFatalError("Failed to load demo lighting")
+        guard !lights.isEmpty else {
+            return (try? Lighting.demo()).orFatalError("Failed to load demo lighting")
         }
-        else {
-            self.lighting = (try? Lighting(ambientLightColor: [1, 1, 1], lights: lights))
-                .orFatalError("Failed to create scene graph lighting")
-        }
-        self.environmentTexture = environmentTexture
+        return (try? Lighting(ambientLightColor: [1, 1, 1], lights: lights))
+            .orFatalError("Failed to create scene graph lighting")
     }
 
     var body: some Element {

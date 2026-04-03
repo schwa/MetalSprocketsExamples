@@ -19,6 +19,7 @@ public struct SceneGraphDemoView: View {
     private var cameraMatrix = simd_float4x4(translation: [0.5, 2, 6])
 
     let environmentTexture: MTLTexture
+    let lighting: Lighting
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
@@ -28,6 +29,7 @@ public struct SceneGraphDemoView: View {
 
     internal init(sceneGraph: SceneGraph) {
         self.sceneGraph = sceneGraph
+        self.lighting = SceneGraphRenderPass.lighting(for: sceneGraph)
 
         let device = _MTLCreateSystemDefaultDevice()
         let textureLoader = MTKTextureLoader(device: device)
@@ -44,7 +46,7 @@ public struct SceneGraphDemoView: View {
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             RenderView { _, drawableSize in
-                SceneGraphRenderPass(sceneGraph: sceneGraph, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize), environmentTexture: environmentTexture)
+                SceneGraphRenderPass(sceneGraph: sceneGraph, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize), lighting: lighting, environmentTexture: environmentTexture)
             }
             .metalDepthStencilPixelFormat(.depth32Float)
             .panel(id: "SceneGraphEditorView", label: "Scene Graph") {
