@@ -1979,14 +1979,17 @@ The AVPlayer in VideoTexturePipeline continues playing audio/video after the use
 ---
 
 ## 363: Stencil demo: checkerboard stencil clipping not working
-status: new
+status: closed
 priority: high
 kind: bug
 created: 2026-04-03T03:45:28.696144+00:00
+updated: 2026-04-03T04:07:55.687534+00:00
+closed: 2026-04-03T04:07:55.687534+00:00
 
 The StencilDemoView renders the triangle without any checkerboard stencil clipping — the triangle appears as a full unclipped triangle. The clear color was also removed in commit xqx and has been restored, but that didn't fix the stencil issue. The stencil pipeline (BlitPass copying checkerboard texture into stencil attachment, then RenderPass with .load and compareFunction .equal) may be broken due to an upstream MetalSprockets change affecting how BlitPass accesses the render pass descriptor's stencil attachment.
 
 - 2026-04-03T03:56:15.552284+00:00: Root cause likely in MetalSprockets commit d7f64a82 ('Fix RenderView per-frame allocation churn and resource leak on view removal'). The viewModel was changed from non-optional @State to optional, created in .onAppear. This means .environment(viewModel) passes nil on early evaluations. The BlitPass's EnvironmentReader for \.renderPassDescriptor likely depends on this — when nil, the stencil blit silently doesn't execute, so the stencil buffer stays all zeros and .equal passes everywhere (no clipping). The fix needs to be in MetalSprockets, not here.
+- 2026-04-03T04:07:55.741491+00:00: Root cause found and fixed in MetalSprockets #306. Commit d7f64a82 deferred viewModel creation to .onAppear, breaking BlitPass environment access. Fix creates viewModel eagerly in init.
 
 ---
 
