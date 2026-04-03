@@ -1968,3 +1968,13 @@ created: 2026-04-03T03:15:59.333403+00:00
 
 ---
 
+## 362: Video keeps playing after navigating away from VideoPlaybackDemoView
+status: new
+priority: high
+kind: bug
+created: 2026-04-03T03:30:56.350979+00:00
+
+The AVPlayer in VideoTexturePipeline continues playing audio/video after the user navigates away from the VideoPlaybackDemoView. The view only has an onAppear to start playback but no onDisappear to stop it, and the VideoTexturePipeline's frame update task keeps running. Need to pause/stop playback when the view disappears.
+
+---
+
