@@ -27,7 +27,6 @@ extension Element {
     func blinnPhongMaterial(_ material: BlinnPhongMaterial) throws -> some Element {
         self
             .parameter("material", value: try material.toArgumentBuffer())
-            // TODO: #353 We have to expand this
             .useResource(material.ambient.texture2D, usage: .read, stages: .fragment)
             .useResource(material.diffuse.texture2D, usage: .read, stages: .fragment)
             .useResource(material.specular.texture2D, usage: .read, stages: .fragment)

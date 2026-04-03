@@ -1901,11 +1901,14 @@ closed: 2026-04-03T04:44:03.250427+00:00
 ---
 
 ## 353: BlinnPhongShader+Support: expand vertex descriptor handling
-status: new
+status: closed
 priority: medium
 kind: enhancement
 created: 2026-04-03T03:11:54.133747+00:00
+updated: 2026-04-03T04:45:49.178607+00:00
+closed: 2026-04-03T04:45:49.178607+00:00
 
+- 2026-04-03T04:45:49.230766+00:00: Not needed currently — all material textures are already declared.
 
 ---
 
