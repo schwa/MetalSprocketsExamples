@@ -1795,3 +1795,12 @@ created: 2026-04-03T02:01:48.339942+00:00
 
 ---
 
+## 343: Hit Test Demo: make rendering full screen instead of fixed 512x512
+status: new
+priority: medium
+kind: enhancement
+created: 2026-04-03T02:09:46.833736+00:00
+
+
+---
+
