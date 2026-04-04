@@ -2307,3 +2307,12 @@ created: 2026-04-04T02:34:33Z
 
 ---
 
+## 373: Track and display ray/collision counts in RT demos
+status: new
+priority: low
+kind: none
+created: 2026-04-04T02:40:14Z
+
+
+---
+
