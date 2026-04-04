@@ -1,5 +1,5 @@
 {
-  "originHash" : "705942d530afb04c1c9167af0753105611083c5834ff748d047424e560141bb0",
+  "originHash" : "2ddedfbc522f625214effa0ef710b8f5a501d4633dd9127b97556538c475697c",
   "pins" : [
     {
       "identity" : "demokit",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/schwa/DemoKit",
       "state" : {
         "branch" : "main",
-        "revision" : "aa25fee86b8ec70de87c0f5b80a8f2ca4eebd3f9"
+        "revision" : "25af72bdb27a5e9d2e4bb40d20158c357a949965"
       }
     },
     {
@@ -43,7 +43,7 @@
       "location" : "https://github.com/schwa/Interaction3D",
       "state" : {
         "branch" : "main",
-        "revision" : "f1e7666f8e789b58e08ebcf3884ea098802444f7"
+        "revision" : "753de0a2417644314b58486bfd041fa6816a7af6"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "ad595c03c2fd0fb4ad786269762bf9bf1523c3ff"
+        "revision" : "1fa90524cd5dfaf00ea00a847254a68aa0960dfa"
       }
     },
     {
@@ -151,7 +151,7 @@
       "location" : "https://github.com/schwa/SwiftGLTF",
       "state" : {
         "branch" : "main",
-        "revision" : "e17b478ca157733543a7cf9da370d34dbabc9236"
+        "revision" : "9b7b712265c09f36bd0644233e7cc9de5fcdcd07"
       }
     },
     {
