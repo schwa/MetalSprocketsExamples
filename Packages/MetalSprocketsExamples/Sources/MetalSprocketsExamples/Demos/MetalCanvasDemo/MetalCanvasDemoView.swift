@@ -34,24 +34,23 @@ public struct MetalCanvasDemoView: View {
                     }
                 }
             }
-
         }
         .demoConfiguration {
             Form {
-            Picker("Demo", selection: $selectedDemo) {
-                ForEach(DemoType.allCases) { demo in
-                    Text(demo.rawValue).tag(demo)
+                Picker("Demo", selection: $selectedDemo) {
+                    ForEach(DemoType.allCases) { demo in
+                        Text(demo.rawValue).tag(demo)
+                    }
                 }
-            }
 
-            LabeledContent("Line Width") {
-                HStack {
-                    Slider(value: $lineWidth, in: 1...10)
-                        .accessibilityLabel("Line Width")
-                    Text(lineWidth, format: .number.precision(.fractionLength(1)))
-                        .frame(minWidth: 30)
+                LabeledContent("Line Width") {
+                    HStack {
+                        Slider(value: $lineWidth, in: 1...10)
+                            .accessibilityLabel("Line Width")
+                        Text(lineWidth, format: .number.precision(.fractionLength(1)))
+                            .frame(minWidth: 30)
+                    }
                 }
-            }
             }
             .fixedSize()
         }

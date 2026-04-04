@@ -198,8 +198,8 @@ public struct HitTestDemoView: View {
                 Group {
                     if let result = lastHitResult, result.geometryID >= 0 {
                         let locationStr = "(\(Int(result.location.x)), \(Int(result.location.y)))"
-                        let depthStr = String(format: "%.3f", result.depth)
-                        let baryStr = String(format: "(%.2f, %.2f, %.2f)", result.triangleCoords.x, result.triangleCoords.y, result.triangleCoords.z)
+                        let depthStr = result.depth.formatted(.number.precision(.fractionLength(3)))
+                        let baryStr = "(\(result.triangleCoords.x.formatted(.number.precision(.fractionLength(2)))), \(result.triangleCoords.y.formatted(.number.precision(.fractionLength(2)))), \(result.triangleCoords.z.formatted(.number.precision(.fractionLength(2)))))"
                         VStack(alignment: .leading, spacing: 6) {
                             hitTestRow("Location", value: locationStr)
                             hitTestRow("Geometry ID", value: "\(result.geometryID)")
@@ -226,16 +226,16 @@ public struct HitTestDemoView: View {
         .background(.black.opacity(0.8))
         .demoConfiguration {
             Form {
-            Picker("Visualization", selection: $visualizationMode) {
-                ForEach(HitTestVisualizationMode.allCases, id: \.self) { mode in
-                    Text(mode.rawValue).tag(mode)
+                Picker("Visualization", selection: $visualizationMode) {
+                    ForEach(HitTestVisualizationMode.allCases, id: \.self) { mode in
+                        Text(mode.rawValue).tag(mode)
+                    }
                 }
-            }
-            .pickerStyle(MenuPickerStyle())
+                .pickerStyle(MenuPickerStyle())
 
-            Button("Export Hit Grid") {
-                performFullGridHitTest()
-            }
+                Button("Export Hit Grid") {
+                    performFullGridHitTest()
+                }
             }
             .fixedSize()
         }

@@ -50,7 +50,6 @@ let package = Package(
                 .product(name: "Panels", package: "Panels"),
                 .product(name: "SwiftGLTF", package: "SwiftGLTF")
             ],
-            exclude: ["Demos/TiledSDF/README.md"],
             resources: [
                 .copy("Resources/4.2.03.heic"),
                 .copy("Resources/AppleEventVideo.mp4"),

@@ -12,7 +12,7 @@ import ModelIO
 import simd
 import UniformTypeIdentifiers
 
-struct TeapotDemo: Element {
+struct TeapotElement: Element {
     @MSState
     var mesh: MTKMesh
     var color: SIMD3<Float>

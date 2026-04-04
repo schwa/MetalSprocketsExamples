@@ -53,82 +53,82 @@ public struct SpiralParticlesDemoView: View {
         }
         .demoConfiguration {
             Form {
-            let totalTriangles = particleCount * trianglesPerSpiral
-            let totalVertices = totalTriangles * 3
+                let totalTriangles = particleCount * trianglesPerSpiral
+                let totalVertices = totalTriangles * 3
 
-            HStack {
-                Text("Particles: \(particleCount)")
-                Text("•")
-                Text("Triangles: \(totalTriangles)")
-                Text("•")
-                Text("Vertices: \(totalVertices)")
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-
-            LabeledContent("Particles") {
                 HStack {
-                    Slider(
-                        value: Binding(
-                            get: { Double(particleCount) },
-                            set: { particleCount = Int($0) }
-                        ),
-                        in: 1...Double(maxParticles)
-                    )
-                    .accessibilityLabel("Particles")
-                    Text("\(particleCount)")
-                        .monospacedDigit()
-                        .frame(minWidth: 30)
+                    Text("Particles: \(particleCount)")
+                    Text("•")
+                    Text("Triangles: \(totalTriangles)")
+                    Text("•")
+                    Text("Vertices: \(totalVertices)")
                 }
-            }
+                .font(.caption)
+                .foregroundStyle(.secondary)
 
-            LabeledContent("Triangles") {
-                HStack {
-                    Slider(
-                        value: Binding(
-                            get: { Double(trianglesPerSpiral) },
-                            set: { trianglesPerSpiral = Int($0) }
-                        ),
-                        in: 3...Double(maxTriangles)
-                    )
-                    .accessibilityLabel("Triangles")
-                    Text("\(trianglesPerSpiral)")
-                        .monospacedDigit()
-                        .frame(minWidth: 30)
+                LabeledContent("Particles") {
+                    HStack {
+                        Slider(
+                            value: Binding(
+                                get: { Double(particleCount) },
+                                set: { particleCount = Int($0) }
+                            ),
+                            in: 1...Double(maxParticles)
+                        )
+                        .accessibilityLabel("Particles")
+                        Text("\(particleCount)")
+                            .monospacedDigit()
+                            .frame(minWidth: 30)
+                    }
                 }
-            }
 
-            LabeledContent("Speed") {
-                HStack {
-                    Slider(value: $rotationSpeed, in: 0.0...3.0)
-                        .accessibilityLabel("Speed")
-                    Text(rotationSpeed, format: .number.precision(.fractionLength(2)))
-                        .frame(minWidth: 40)
+                LabeledContent("Triangles") {
+                    HStack {
+                        Slider(
+                            value: Binding(
+                                get: { Double(trianglesPerSpiral) },
+                                set: { trianglesPerSpiral = Int($0) }
+                            ),
+                            in: 3...Double(maxTriangles)
+                        )
+                        .accessibilityLabel("Triangles")
+                        Text("\(trianglesPerSpiral)")
+                            .monospacedDigit()
+                            .frame(minWidth: 30)
+                    }
                 }
-            }
 
-            LabeledContent("Orbit") {
-                HStack {
-                    Slider(value: $orbitRadius, in: 0.0...5.0)
-                        .accessibilityLabel("Orbit")
-                    Text(orbitRadius, format: .number.precision(.fractionLength(2)))
-                        .frame(minWidth: 40)
+                LabeledContent("Speed") {
+                    HStack {
+                        Slider(value: $rotationSpeed, in: 0.0...3.0)
+                            .accessibilityLabel("Speed")
+                        Text(rotationSpeed, format: .number.precision(.fractionLength(2)))
+                            .frame(minWidth: 40)
+                    }
                 }
-            }
 
-            LabeledContent("Size") {
-                HStack {
-                    Slider(value: $spiralSize, in: 0.1...2.0)
-                        .accessibilityLabel("Size")
-                    Text(spiralSize, format: .number.precision(.fractionLength(2)))
-                        .frame(minWidth: 40)
+                LabeledContent("Orbit") {
+                    HStack {
+                        Slider(value: $orbitRadius, in: 0.0...5.0)
+                            .accessibilityLabel("Orbit")
+                        Text(orbitRadius, format: .number.precision(.fractionLength(2)))
+                            .frame(minWidth: 40)
+                    }
                 }
-            }
 
-            Button("Reset") {
-                cameraMatrix = .init(translation: [0, 0, 8])
-                time = 0.0
-            }
+                LabeledContent("Size") {
+                    HStack {
+                        Slider(value: $spiralSize, in: 0.1...2.0)
+                            .accessibilityLabel("Size")
+                        Text(spiralSize, format: .number.precision(.fractionLength(2)))
+                            .frame(minWidth: 40)
+                    }
+                }
+
+                Button("Reset") {
+                    cameraMatrix = .init(translation: [0, 0, 8])
+                    time = 0.0
+                }
             }
             .fixedSize()
         }

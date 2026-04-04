@@ -55,60 +55,60 @@ public struct TiledSDFDemoView: View {
     @ViewBuilder
     private var controlPanel: some View {
         Form {
-        if showStats {
-            let tileCountX = Int(drawableSize.width) / tileSize
-            let tileCountY = Int(drawableSize.height) / tileSize
-            let totalTiles = tileCountX * tileCountY
+            if showStats {
+                let tileCountX = Int(drawableSize.width) / tileSize
+                let tileCountY = Int(drawableSize.height) / tileSize
+                let totalTiles = tileCountX * tileCountY
 
-            HStack {
-                Text("Primitives: \(primitiveCount)")
-                Text("•")
-                Text("Tiles: \(totalTiles)")
-                Text("•")
-                Text("Tile size: \(tileSize)×\(tileSize)")
+                HStack {
+                    Text("Primitives: \(primitiveCount)")
+                    Text("•")
+                    Text("Tiles: \(totalTiles)")
+                    Text("•")
+                    Text("Tile size: \(tileSize)×\(tileSize)")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-        }
 
-        LabeledContent("Primitives") {
-            HStack {
-                Slider(
-                    value: Binding(
-                        get: { Double(primitiveCount) },
-                        set: { primitiveCount = Int($0) }
-                    ),
-                    in: 10...Double(maxPrimitives)
-                )
-                .accessibilityLabel("Primitives")
-                Text("\(primitiveCount)")
-                    .monospacedDigit()
-                    .frame(minWidth: 40)
+            LabeledContent("Primitives") {
+                HStack {
+                    Slider(
+                        value: Binding(
+                            get: { Double(primitiveCount) },
+                            set: { primitiveCount = Int($0) }
+                        ),
+                        in: 10...Double(maxPrimitives)
+                    )
+                    .accessibilityLabel("Primitives")
+                    Text("\(primitiveCount)")
+                        .monospacedDigit()
+                        .frame(minWidth: 40)
+                }
             }
-        }
 
-        LabeledContent("Tile Size") {
-            Picker("", selection: $tileSize) {
-                Text("16×16").tag(16)
-                Text("32×32").tag(32)
+            LabeledContent("Tile Size") {
+                Picker("", selection: $tileSize) {
+                    Text("16×16").tag(16)
+                    Text("32×32").tag(32)
+                }
+                .pickerStyle(.segmented)
+                .accessibilityLabel("Tile Size")
             }
-            .pickerStyle(.segmented)
-            .accessibilityLabel("Tile Size")
-        }
 
-        LabeledContent("Visualization") {
-            Picker("", selection: $visualMode) {
-                Text("Normal").tag(VisualizationMode.normal)
-                Text("Distance").tag(VisualizationMode.distance)
-                Text("Contours").tag(VisualizationMode.contours)
-                Text("Tiles").tag(VisualizationMode.tiles)
+            LabeledContent("Visualization") {
+                Picker("", selection: $visualMode) {
+                    Text("Normal").tag(VisualizationMode.normal)
+                    Text("Distance").tag(VisualizationMode.distance)
+                    Text("Contours").tag(VisualizationMode.contours)
+                    Text("Tiles").tag(VisualizationMode.tiles)
+                }
+                .pickerStyle(.segmented)
+                .accessibilityLabel("Visualization")
             }
-            .pickerStyle(.segmented)
-            .accessibilityLabel("Visualization")
-        }
 
-        Toggle("Animate", isOn: $animatePrimitives)
-        Toggle("Show Stats", isOn: $showStats)
+            Toggle("Animate", isOn: $animatePrimitives)
+            Toggle("Show Stats", isOn: $showStats)
         }
         .fixedSize()
     }

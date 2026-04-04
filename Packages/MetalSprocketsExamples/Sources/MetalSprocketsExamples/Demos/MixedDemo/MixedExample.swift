@@ -29,7 +29,7 @@ struct MixedExample: Element {
             let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.resourceCreationFailure("Missing depth attachment texture"))
 
             try RenderPass {
-                try TeapotDemo(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                try TeapotElement(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
             }
             .renderPassDescriptorModifier { renderPassDescriptor in
                 renderPassDescriptor.depthAttachment.storeAction = .store

@@ -2,9 +2,9 @@
 status: closed
 priority: none
 kind: none
-created: 2025-10-22T00:00:00+00:00
-updated: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
 Create a demo that demonstrates hit testing capabilities.
 
@@ -16,9 +16,9 @@ Origin: GitHub issue #273
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:25:23.810705+00:00
-closed: 2026-04-03T04:25:23.810705+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:25:23Z
+closed: 2026-04-03T04:25:23Z
 
 e.g. TextureBillboard vs BillboardShader etc
 
@@ -26,7 +26,7 @@ Need to standardize naming conventions across the examples project.
 
 Origin: GitHub issue #250
 
-- 2026-04-03T04:25:23.862908+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:25:23Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -34,9 +34,9 @@ Origin: GitHub issue #250
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:25:23.916016+00:00
-closed: 2026-04-03T04:25:23.916015+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:25:23Z
+closed: 2026-04-03T04:25:23Z
 
 Go through all demo code and look for code reuse opportunities.
 
@@ -46,7 +46,7 @@ Also look for chances to make these part of Batteries Included.
 
 Origin: GitHub issue #246
 
-- 2026-04-03T04:25:23.968435+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:25:23Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -55,8 +55,8 @@ status: open
 priority: low
 kind: feature
 labels: effort:l
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T17:30:56.957378+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T17:30:56Z
 
 It's MacPaint but Metal!
 
@@ -70,15 +70,15 @@ Origin: GitHub issue #235
 status: closed
 priority: none
 kind: feature
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:35:11.260022+00:00
-closed: 2026-04-03T04:35:11.260022+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:35:11Z
+closed: 2026-04-03T04:35:11Z
 
 Enable additional demos to work with the offscreen video renderer.
 
 Origin: GitHub issue #215
 
-- 2026-04-03T04:35:11.313176+00:00: Closing — OffscreenVideoRenderer lives in MetalSprockets now.
+- `2026-04-03T04:35:11Z`: Closing — OffscreenVideoRenderer lives in MetalSprockets now.
 
 ---
 
@@ -86,9 +86,9 @@ Origin: GitHub issue #215
 status: closed
 priority: none
 kind: none
-created: 2025-10-22T00:00:00+00:00
-updated: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
 Separate the demos into their own repository.
 
@@ -100,15 +100,15 @@ Origin: GitHub issue #213
 status: closed
 priority: none
 kind: feature
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:57:01.017764+00:00
-closed: 2026-04-02T21:57:01.017763+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-02T21:57:01Z
+closed: 2026-04-02T21:57:01Z
 
 Create the simplest possible demo that can run independently.
 
 Origin: GitHub issue #212
 
-- 2026-04-02T22:18:00.726446+00:00: Too vague to be actionable.
+- `2026-04-02T22:18:00Z`: Too vague to be actionable.
 
 ---
 
@@ -116,9 +116,9 @@ Origin: GitHub issue #212
 status: closed
 priority: none
 kind: none
-created: 2025-10-22T00:00:00+00:00
-updated: 2025-10-24T00:00:00+00:00
-closed: 2025-10-24T00:00:00+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2025-10-24T00:00:00Z
+closed: 2025-10-24T00:00:00Z
 
 ## Current Behavior
 The AxisLines element currently uses a fixed scale parameter to set the length of axis lines in world space. This means the lines have a fixed length regardless of camera position or zoom level.
@@ -147,15 +147,15 @@ Origin: GitHub issue #262
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:25:23.494204+00:00
-closed: 2026-04-03T04:25:23.494204+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:25:23Z
+closed: 2026-04-03T04:25:23Z
 
 Convert the .metal-sprocketsExampleShaders() method into a property for cleaner API.
 
 Origin: GitHub issue #261
 
-- 2026-04-03T04:25:23.546310+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:25:23Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -163,15 +163,15 @@ Origin: GitHub issue #261
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:33:15.500197+00:00
-closed: 2026-04-03T04:33:15.500196+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:33:15Z
+closed: 2026-04-03T04:33:15Z
 
 Clean up and standardize vertex descriptors across the examples project.
 
 Origin: GitHub issue #259
 
-- 2026-04-03T04:33:15.552447+00:00: Too vague.
+- `2026-04-03T04:33:15Z`: Too vague.
 
 ---
 
@@ -179,9 +179,9 @@ Origin: GitHub issue #259
 status: closed
 priority: none
 kind: none
-created: 2025-10-22T00:00:00+00:00
-updated: 2025-10-24T00:00:00+00:00
-closed: 2025-10-24T00:00:00+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2025-10-24T00:00:00Z
+closed: 2025-10-24T00:00:00Z
 
 {"id":"uv-eg-20","title":"Make sure all compute examples are using good sizes","description":"Review all compute shader examples to ensure they're using appropriate thread group sizes and dispatch sizes for optimal performance.\n\nOrigin: GitHub issue #252","status":"open","priority":2,"issue_type":"task","created_at":"2025-10-20T19:42:22.465146-07:00","updated_at":"2025-10-21T13:08:41.019653-07:00"}
 
@@ -191,13 +191,13 @@ closed: 2025-10-24T00:00:00+00:00
 status: closed
 priority: none
 kind: feature
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:34:18.941514+00:00
-closed: 2026-04-03T04:34:18.941514+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:34:18Z
+closed: 2026-04-03T04:34:18Z
 
 Currently each demo creates textures on-demand in init/onChange handlers with no reuse strategy. Issues: potential resource leaks in long-running demos, no centralized lifecycle management, repeated allocation/deallocation overhead. Should implement texture pooling for common sizes/formats to improve performance and resource management.
 
-- 2026-04-03T04:34:18.992843+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:18Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -205,13 +205,13 @@ Currently each demo creates textures on-demand in init/onChange handlers with no
 status: closed
 priority: high
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T00:57:21.975346+00:00
-closed: 2026-04-03T00:57:21.975346+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T00:57:21Z
+closed: 2026-04-03T00:57:21Z
 
 Many demos duplicate similar UI patterns: slider controls for parameters, color pickers, dropdown menus, reset/download buttons. Should create reusable SwiftUI components in Support/ or new UI/ directory: ParameterSlider, DemoColorPicker, DemoOptionPicker, etc. This will reduce code duplication and ensure consistent UI across demos.
 
-- 2026-04-03T00:57:22.020570+00:00: Done — all demos ported to DemoKit demoConfiguration, custom menu replaced with DemosCommandMenu
+- `2026-04-03T00:57:22Z`: Done — all demos ported to DemoKit demoConfiguration, custom menu replaced with DemosCommandMenu
 
 ---
 
@@ -219,13 +219,13 @@ Many demos duplicate similar UI patterns: slider controls for parameters, color 
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:34:19.045708+00:00
-closed: 2026-04-03T04:34:19.045708+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:34:19Z
+closed: 2026-04-03T04:34:19Z
 
 Complex demos lack sufficient inline documentation: PBR shader calculations, scene graph traversal logic, compute shader algorithms (Game of Life, particle systems), GLTF parsing. Should add: doc comments explaining what each demo demonstrates, inline comments for complex algorithms, references to graphics programming concepts, links to relevant papers/resources. This makes the examples more educational.
 
-- 2026-04-03T04:34:19.095453+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:19Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -233,13 +233,13 @@ Complex demos lack sufficient inline documentation: PBR shader calculations, sce
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:34:19.145968+00:00
-closed: 2026-04-03T04:34:19.145967+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:34:19Z
+closed: 2026-04-03T04:34:19Z
 
 Currently have inconsistent shader source management: some demos embed Metal shader code as strings (TriangleDemoView), others use external shader bundles via MetalCompilerPlugin, no shader validation at compile time for string-embedded shaders. Should establish standard approach, document when to use each method, prefer external shaders for complex code, add compile-time validation where possible, standardize namespace usage.
 
-- 2026-04-03T04:34:19.196283+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:19Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -247,13 +247,13 @@ Currently have inconsistent shader source management: some demos embed Metal sha
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:34:19.245991+00:00
-closed: 2026-04-03T04:34:19.245991+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:34:19Z
+closed: 2026-04-03T04:34:19Z
 
 Should enable Metal API validation and shader validation in development builds to catch: incorrect resource usage, memory leaks, invalid render state, shader compilation warnings, performance issues. Add conditional compilation to enable validation layers in debug builds while keeping release builds optimized.
 
-- 2026-04-03T04:34:19.296392+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:19Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -261,9 +261,9 @@ Should enable Metal API validation and shader validation in development builds t
 status: closed
 priority: none
 kind: none
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-02T21:45:22.636033+00:00
-closed: 2026-04-02T21:45:22.636033+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-02T21:45:22Z
+closed: 2026-04-02T21:45:22Z
 
 Found in Sources/MetalSprocketsExamples/Support/Texture2DSpecifier.swift:20, :28, :36
 
@@ -271,7 +271,7 @@ Need to add proper assertions to verify that values are correct in Texture2DSpec
 
 Origin: GitHub issue #287
 
-- 2026-04-02T22:18:00.728729+00:00: Duplicate of #279 which is already closed/done.
+- `2026-04-02T22:18:00Z`: Duplicate of #279 which is already closed/done.
 
 ---
 
@@ -279,13 +279,13 @@ Origin: GitHub issue #287
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-22T00:00:00+00:00
-updated: 2026-04-03T04:34:19.346449+00:00
-closed: 2026-04-03T04:34:19.346449+00:00
+created: 2025-10-22T00:00:00Z
+updated: 2026-04-03T04:34:19Z
+closed: 2026-04-03T04:34:19Z
 
 Migrate demos that still use MTKMesh to the custom Mesh type where possible.
 
-- 2026-04-03T04:34:19.396078+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:19Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -293,10 +293,10 @@ Migrate demos that still use MTKMesh to the custom Mesh type where possible.
 status: closed
 priority: none
 kind: task
-created: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
-- 2026-04-02T22:18:00.729331+00:00: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
+- `2026-04-02T22:18:00Z`: Implemented Codable conformance for Mesh and all nested types. MTLBuffer contents are encoded/decoded as Data. Metal enums (MTLPrimitiveType, MTLVertexFormat, MTLVertexStepFunction) use raw UInt values. Codable implementations are in extensions. MTLVertexFormat and MTLVertexStepFunction extensions moved to Support.swift.
 
 ---
 
@@ -304,10 +304,10 @@ closed: 2025-10-23T00:00:00+00:00
 status: closed
 priority: none
 kind: task
-created: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
-- 2026-04-02T22:18:00.729829+00:00: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
+- `2026-04-02T22:18:00Z`: Implemented in NetworkListenerDemoView. The demo now converts AR mesh geometries to Mesh objects and renders them using EdgeLinesRenderPass.
 
 ---
 
@@ -315,10 +315,10 @@ closed: 2025-10-23T00:00:00+00:00
 status: closed
 priority: none
 kind: task
-created: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
-- 2026-04-02T22:18:00.730289+00:00: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
+- `2026-04-02T22:18:00Z`: Converted EdgeRenderingDemo (now EdgeLinesDemoView) to use built-in Mesh type instead of MTKMesh. Primitive shapes (plane, cube, sphere) now use TrivialMesh factory methods. Teapot still loads via ModelIO but converts to Mesh. Also moved MeshWithEdges into EdgeLinesRenderPass and renamed EdgeRenderingElement to EdgeLinesRenderPass.
 
 ---
 
@@ -326,10 +326,10 @@ closed: 2025-10-23T00:00:00+00:00
 status: closed
 priority: none
 kind: task
-created: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
-- 2026-04-02T22:18:00.730726+00:00: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
+- `2026-04-02T22:18:00Z`: Integrated EdgeLinesRenderPass into Network demo. AR mesh geometries from anchors are now converted to Mesh with edge extraction and rendered using EdgeLinesRenderPass instead of GraphicsContext3D triangle-by-triangle rendering. Meshes rendered in purple with 2.0 line width.
 
 ---
 
@@ -337,8 +337,8 @@ closed: 2025-10-23T00:00:00+00:00
 status: closed
 priority: none
 kind: task
-created: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
 
 ---
@@ -347,8 +347,8 @@ closed: 2025-10-23T00:00:00+00:00
 status: closed
 priority: none
 kind: bug
-created: 2025-10-23T00:00:00+00:00
-closed: 2025-10-23T00:00:00+00:00
+created: 2025-10-23T00:00:00Z
+closed: 2025-10-23T00:00:00Z
 
 EdgeLinesRenderPass validates 32-byte vertex stride (position+normal+texCoord) but ARKit meshes only have 12-byte position data. Need to either relax validation or pad ARKit vertices.
 
@@ -358,9 +358,9 @@ EdgeLinesRenderPass validates 32-byte vertex stride (position+normal+texCoord) b
 status: closed
 priority: none
 kind: task
-created: 2025-10-23T00:00:00+00:00
-updated: 2025-10-24T00:00:00+00:00
-closed: 2025-10-24T00:00:00+00:00
+created: 2025-10-23T00:00:00Z
+updated: 2025-10-24T00:00:00Z
+closed: 2025-10-24T00:00:00Z
 
 
 ---
@@ -369,11 +369,11 @@ closed: 2025-10-24T00:00:00+00:00
 status: closed
 priority: none
 kind: feature
-created: 2025-10-24T00:00:00+00:00
-updated: 2026-04-02T22:02:52.481046+00:00
-closed: 2026-04-02T22:02:52.481046+00:00
+created: 2025-10-24T00:00:00Z
+updated: 2026-04-02T22:02:52Z
+closed: 2026-04-02T22:02:52Z
 
-- 2026-04-02T22:18:00.732397+00:00: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
+- `2026-04-02T22:18:00Z`: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
 
 ---
 
@@ -381,11 +381,11 @@ closed: 2026-04-02T22:02:52.481046+00:00
 status: closed
 priority: none
 kind: feature
-created: 2025-10-24T00:00:00+00:00
-updated: 2026-04-02T22:02:52.658595+00:00
-closed: 2026-04-02T22:02:52.658595+00:00
+created: 2025-10-24T00:00:00Z
+updated: 2026-04-02T22:02:52Z
+closed: 2026-04-02T22:02:52Z
 
-- 2026-04-02T22:18:00.732825+00:00: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
+- `2026-04-02T22:18:00Z`: Moot — see #317 and #318 for deprecation discussion of GraphicsContext3D and MetalCanvas.
 
 ---
 
@@ -393,11 +393,11 @@ closed: 2026-04-02T22:02:52.658595+00:00
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-24T00:00:00+00:00
-updated: 2026-04-02T22:02:52.831976+00:00
-closed: 2026-04-02T22:02:52.831976+00:00
+created: 2025-10-24T00:00:00Z
+updated: 2026-04-02T22:02:52Z
+closed: 2026-04-02T22:02:52Z
 
-- 2026-04-02T22:18:00.733255+00:00: No longer relevant.
+- `2026-04-02T22:18:00Z`: No longer relevant.
 
 ---
 
@@ -405,11 +405,11 @@ closed: 2026-04-02T22:02:52.831976+00:00
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-24T00:00:00+00:00
-updated: 2026-04-03T04:25:23.598445+00:00
-closed: 2026-04-03T04:25:23.598445+00:00
+created: 2025-10-24T00:00:00Z
+updated: 2026-04-03T04:25:23Z
+closed: 2026-04-03T04:25:23Z
 
-- 2026-04-03T04:25:23.650948+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:25:23Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -417,11 +417,11 @@ closed: 2026-04-03T04:25:23.598445+00:00
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-24T00:00:00+00:00
-updated: 2026-04-03T04:25:23.704911+00:00
-closed: 2026-04-03T04:25:23.704911+00:00
+created: 2025-10-24T00:00:00Z
+updated: 2026-04-03T04:25:23Z
+closed: 2026-04-03T04:25:23Z
 
-- 2026-04-03T04:25:23.757769+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:25:23Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -430,9 +430,9 @@ status: closed
 priority: none
 kind: feature
 labels: effort:l
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T04:34:19.446023+00:00
-closed: 2026-04-03T04:34:19.446023+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T04:34:19Z
+closed: 2026-04-03T04:34:19Z
 
 We need some way to make controlling the camera and/or a model generic.
 
@@ -460,7 +460,7 @@ Some implementations will need min/max values for various properties and stuff l
 
 *Imported from #57*
 
-- 2026-04-03T04:34:19.495566+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:19Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -469,15 +469,15 @@ status: closed
 priority: none
 kind: none
 labels: effort:m
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:46:10.343356+00:00
-closed: 2026-04-02T21:46:10.343356+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-02T21:46:10Z
+closed: 2026-04-02T21:46:10Z
 
 We have DemoView (via DemoKit) and Examples in UltraviolenceExamples/ExampleElements.
 
 *Imported from #64*
 
-- 2026-04-02T22:18:00.734926+00:00: Done — all demos are registered in allDemos.
+- `2026-04-02T22:18:00Z`: Done — all demos are registered in allDemos.
 
 ---
 
@@ -486,8 +486,8 @@ status: open
 priority: low
 kind: feature
 labels: effort:l
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T17:30:57.021765+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T17:30:57Z
 
 Add visionOS-specific demos, e.g. immersive mode rendering.
 
@@ -498,22 +498,25 @@ status: open
 priority: low
 kind: feature
 labels: effort:l
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T17:30:57.079497+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T17:30:57Z
 
 *Imported from #67*
 
 ---
 
 ## 78: [NEW DEMO] Ray Tracing
-status: open
+status: closed
 priority: low
 kind: feature
 labels: effort:xl
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T17:30:57.136534+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-04T01:36:14Z
+closed: 2026-04-04T01:36:14Z
 
 *Imported from #70*
+
+- `2026-04-04T01:36:14Z`: Implemented Cornell box ray tracing demo with Next Event Estimation, interactive camera via WorldView turntable, per-quad normals, Reinhard tone mapping, and progressive accumulation.
 
 ---
 
@@ -522,8 +525,8 @@ status: open
 priority: low
 kind: feature
 labels: effort:l
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T17:30:57.193819+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T17:30:57Z
 
 *Imported from #72*
 
@@ -534,15 +537,15 @@ status: closed
 priority: none
 kind: bug
 labels: effort:xs, source:todo
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T04:26:14.304544+00:00
-closed: 2026-04-03T04:26:14.304544+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T04:26:14Z
+closed: 2026-04-03T04:26:14Z
 
 Found in Sources/UltraviolenceSupport/MetalSupport.swift at line 790
 
 *Imported from #106*
 
-- 2026-04-03T04:26:14.355861+00:00: Stale — referenced file no longer exists.
+- `2026-04-03T04:26:14Z`: Stale — referenced file no longer exists.
 
 ---
 
@@ -551,15 +554,15 @@ status: closed
 priority: none
 kind: enhancement
 labels: effort:s, source:todo, testing
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T22:02:53.325068+00:00
-closed: 2026-04-02T22:02:53.325068+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-02T22:02:53Z
+closed: 2026-04-02T22:02:53Z
 
 Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Support/TypedMTLBuffer.swift at line 3
 
 *Imported from #112*
 
-- 2026-04-02T22:18:00.737246+00:00: TypedMTLBuffer no longer exists.
+- `2026-04-02T22:18:00Z`: TypedMTLBuffer no longer exists.
 
 ---
 
@@ -568,15 +571,15 @@ status: closed
 priority: none
 kind: enhancement
 labels: effort:s, source:todo
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T22:02:53.500377+00:00
-closed: 2026-04-02T22:02:53.500377+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-02T22:02:53Z
+closed: 2026-04-02T22:02:53Z
 
 Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Interaction/TurntableCameraController.swift at line 14
 
 *Imported from #116*
 
-- 2026-04-02T22:18:00.737623+00:00: No longer relevant.
+- `2026-04-02T22:18:00Z`: No longer relevant.
 
 ---
 
@@ -585,9 +588,9 @@ status: closed
 priority: none
 kind: none
 labels: effort:s, source:todo
-created: 2025-10-26T00:00:00+00:00
-updated: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/ReuseableElements/LambertianShader.metal at line 32
 
@@ -599,17 +602,18 @@ Found in Demo/Packages/UltraviolenceExamples/Sources/UltraviolenceExamples/Reuse
 
 Performance improvement: Reduces per-vertex computation, especially beneficial for high-poly meshes.
 
-- 2026-04-02T22:18:00.737948+00:00: Pre-calculated matrices on CPU side to avoid per-vertex computation:
+- `2026-04-02T22:18:00Z`: Pre-calculated matrices on CPU side to avoid per-vertex computation:
 
 ---
 
 ## 157: [NEW DEMO] GPU Text Rendering Pipeline
-status: open
+status: closed
 priority: low
 kind: feature
 labels: effort:xl
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T17:30:57.251271+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-04T00:50:47Z
+closed: 2026-04-04T00:50:47Z
 
 ## Summary
 Implement GPU-accelerated text rendering using signed distance fields or glyph atlases.
@@ -646,9 +650,9 @@ Create a text rendering system that renders text entirely on the GPU for high-pe
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T22:02:53.015576+00:00
-closed: 2026-04-02T22:02:53.015576+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-02T22:02:53Z
+closed: 2026-04-02T22:02:53Z
 
 ## Summary
 Port VisionOS-specific immersive and spatial computing features for Apple Vision Pro.
@@ -684,7 +688,7 @@ Implement spatial computing demos leveraging VisionOS capabilities like immersiv
 
 *Imported from #161*
 
-- 2026-04-02T22:18:00.738370+00:00: Duplicate of #74.
+- `2026-04-02T22:18:00Z`: Duplicate of #74.
 
 ---
 
@@ -693,8 +697,8 @@ status: open
 priority: low
 kind: feature
 labels: effort:m
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T17:30:57.308584+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T17:30:57Z
 
 Implement https://www.4rknova.com/blog/2025/08/30/foil-sticker
 
@@ -706,15 +710,15 @@ Implement https://www.4rknova.com/blog/2025/08/30/foil-sticker
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T04:35:11.363525+00:00
-closed: 2026-04-03T04:35:11.363524+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T04:35:11Z
+closed: 2026-04-03T04:35:11Z
 
 It's really just as simple as the offscreen renderer but doing extra work every frame.
 
 *Imported from #218*
 
-- 2026-04-03T04:35:11.413628+00:00: Closing — OffscreenVideoRenderer lives in MetalSprockets now.
+- `2026-04-03T04:35:11Z`: Closing — OffscreenVideoRenderer lives in MetalSprockets now.
 
 ---
 
@@ -722,8 +726,8 @@ It's really just as simple as the offscreen renderer but doing extra work every 
 status: closed
 priority: none
 kind: feature
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 It's MacPaint but Metal!
 
@@ -736,8 +740,8 @@ It's MacPaint but Metal!
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 *Imported from #245*
 
@@ -747,8 +751,8 @@ closed: 2025-10-26T00:00:00+00:00
 status: closed
 priority: none
 kind: feature
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 *Imported from #253*
 
@@ -758,8 +762,8 @@ closed: 2025-10-26T00:00:00+00:00
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 *Imported from #254*
 
@@ -769,13 +773,13 @@ closed: 2025-10-26T00:00:00+00:00
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-02T21:57:01.203164+00:00
-closed: 2026-04-02T21:57:01.203164+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-02T21:57:01Z
+closed: 2026-04-02T21:57:01Z
 
 *Imported from #255*
 
-- 2026-04-02T22:18:00.739906+00:00: CachingImportWell no longer exists (renamed to SuperImportWell). Reopen with specifics if needed.
+- `2026-04-02T22:18:00Z`: CachingImportWell no longer exists (renamed to SuperImportWell). Reopen with specifics if needed.
 
 ---
 
@@ -783,8 +787,8 @@ closed: 2026-04-02T21:57:01.203164+00:00
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 *Imported from #256*
 
@@ -794,8 +798,8 @@ closed: 2025-10-26T00:00:00+00:00
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 *Imported from #257*
 
@@ -805,8 +809,8 @@ closed: 2025-10-26T00:00:00+00:00
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 *Imported from #258*
 
@@ -816,8 +820,8 @@ closed: 2025-10-26T00:00:00+00:00
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustDemoView.swift:39
 
@@ -831,8 +835,8 @@ The ColorAdjustDemoView should use Ultraviolence's standard shader loading mecha
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustDemoView.swift:40
 
@@ -846,8 +850,8 @@ The demo currently requires all functions to be named the same. Should use prope
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustComputePipeline.swift:25
 
@@ -861,8 +865,8 @@ Consider using .argumentBuffer() as a better solution for handling parameters.
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Demos/ColorAdjustDemo/ColorAdjustComputePipeline.swift:37
 
@@ -876,8 +880,8 @@ This code needs to be moved to a more appropriate location in the codebase.
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Demos/DepthDemo/DepthDemoView.swift:58
 
@@ -891,8 +895,8 @@ The DepthDemoView should use Ultraviolence's standard shader loading mechanism i
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Demos/DepthDemo/DepthDemoView.swift:59
 
@@ -906,8 +910,8 @@ The demo currently requires all functions to be named the same. Should use prope
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Demos/DepthDemo/DepthDemoView.swift:60
 
@@ -921,8 +925,8 @@ The current implementation is a terrible example of stitchable functions and nee
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Support/Texture2DSpecifier.swift:5
 
@@ -936,8 +940,8 @@ The Texture2DSpecifier class should be renamed to TextureSpecifier or something 
 status: closed
 priority: none
 kind: none
-created: 2025-10-26T00:00:00+00:00
-closed: 2025-10-26T00:00:00+00:00
+created: 2025-10-26T00:00:00Z
+closed: 2025-10-26T00:00:00Z
 
 Found in Sources/UltraviolenceExamples/Support/Texture2DSpecifier.swift:20, :28, :36
 
@@ -952,9 +956,9 @@ status: closed
 priority: none
 kind: feature
 labels: effort:m, priority:high
-created: 2025-10-26T00:00:00+00:00
-updated: 2026-04-03T04:34:19.545368+00:00
-closed: 2026-04-03T04:34:19.545367+00:00
+created: 2025-10-26T00:00:00Z
+updated: 2026-04-03T04:34:19Z
+closed: 2026-04-03T04:34:19Z
 
 We really need to support visible functions. This would unlock/enable a lot of cool "CoreImage-lite" effects where you provide a mini function to (say) convert a color or manipulate a vertex and then the main kernel/shader uses it to manipulate a texture or a mesh.
 
@@ -969,7 +973,7 @@ It would be usable from all of these:
 
 *Imported from #273*
 
-- 2026-04-03T04:34:19.594955+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:19Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -978,8 +982,8 @@ status: closed
 priority: none
 kind: none
 labels: refactor, cleanup
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Replace all uses of the deprecated Transforms struct with separate matrices (projectionMatrix, cameraMatrix, viewMatrix, modelMatrix, modelViewMatrix, modelViewProjectionMatrix). Pass the richest matrix needed to shaders. viewMatrix = cameraMatrix.inverse, modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
 
@@ -991,12 +995,12 @@ priority: none
 kind: none
 labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Replace Transforms buffer parameter with separate matrices (projectionMatrix, cameraMatrix, modelMatrix). Calculate viewMatrix, modelViewMatrix, and modelViewProjectionMatrix in shader. This is the FIRST example to fix.
 
-- 2026-04-02T22:18:00.743731+00:00: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
+- `2026-04-02T22:18:00Z`: Replaced Transforms buffer with separate projectionMatrix, viewMatrix, and modelMatrix buffers in vertex shader. Fragment shader now only receives cameraMatrix. viewMatrix is passed from Swift (cameraMatrix.inverse) instead of being calculated in shader. Matrices calculated: modelViewMatrix = viewMatrix * modelMatrix, modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix.
 
 ---
 
@@ -1006,12 +1010,12 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update BlinnPhongDemoView to pass separate matrices instead of Transforms struct. Uses .transforms() modifier at line 62.
 
-- 2026-04-02T22:18:00.743944+00:00: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
+- `2026-04-02T22:18:00Z`: Replaced .transforms() modifier with separate .parameter() calls: projectionMatrix (vertex), viewMatrix (vertex), modelMatrix (vertex), and cameraMatrix (fragment). Build succeeds.
 
 ---
 
@@ -1021,12 +1025,12 @@ priority: none
 kind: none
 labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Replace Transforms buffer parameter with separate matrices in Panorama shader (line 21).
 
-- 2026-04-02T22:18:00.744157+00:00: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- `2026-04-02T22:18:00Z`: Updated Panorama.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -1036,8 +1040,8 @@ priority: none
 kind: none
 labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Replace Transforms buffer parameter with separate matrices in HitTest shader (line 34).
 
@@ -1049,8 +1053,8 @@ priority: none
 kind: none
 labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Replace Transforms buffer parameter with separate matrices in Depth shader (line 16).
 
@@ -1062,12 +1066,12 @@ priority: none
 kind: none
 labels: refactor, shader
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Replace Transforms buffer parameter with separate matrices in Skybox shader (line 16).
 
-- 2026-04-02T22:18:00.744780+00:00: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
+- `2026-04-02T22:18:00Z`: Updated SkyboxShader.metal to use separate matrices (projectionMatrix, viewMatrix, modelMatrix) at buffers 1, 2, 3. Removed Transforms dependency.
 
 ---
 
@@ -1077,8 +1081,8 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update BouncingTeapotsDemoView to pass separate matrices instead of Transforms struct (lines 73, 127, 147).
 
@@ -1090,8 +1094,8 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update TeapotDemo to use separate matrices instead of storing Transforms (lines 19, 22, 24, 31).
 
@@ -1103,12 +1107,12 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update SceneGraphRenderPass to pass separate matrices instead of Transforms (line 75).
 
-- 2026-04-02T22:18:00.745409+00:00: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
+- `2026-04-02T22:18:00Z`: Updated SceneGraphRenderPass to use .blinnPhongMatrices() instead of .transforms(). Added viewMatrix calculation at line 59. BlinnPhong shader now fully migrated in SceneGraph.
 
 ---
 
@@ -1118,12 +1122,12 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update HitTestDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.745624+00:00: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
+- `2026-04-02T22:18:00Z`: Fixed BlinnPhong shader usage in HitTestDemoView. Replaced .transforms() with .blinnPhongMatrices() at line 84. Note: HitTestShader (line 99) still uses .transforms() - will be updated when HitTest shader is migrated (issue #286).
 
 ---
 
@@ -1133,12 +1137,12 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update TrivialMeshDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.745835+00:00: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
+- `2026-04-02T22:18:00Z`: Updated TrivialMeshDemoView to use .blinnPhongMatrices() instead of .transforms() at line 312. viewMatrix was already available at line 293.
 
 ---
 
@@ -1148,12 +1152,12 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update PanoramaElements to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.746047+00:00: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- `2026-04-02T22:18:00Z`: Updated PanoramaElements.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1163,12 +1167,12 @@ priority: none
 kind: none
 labels: refactor, swift
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Update SkyboxDemoView to use new matrix parameters instead of .transforms() modifier.
 
-- 2026-04-02T22:18:00.746357+00:00: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
+- `2026-04-02T22:18:00Z`: Updated SkyboxDemoView.swift to pass separate matrices using .parameter() calls. Calculates viewMatrix = cameraMatrix.inverse, passes modelMatrix as .identity. Build succeeds.
 
 ---
 
@@ -1178,8 +1182,8 @@ priority: none
 kind: none
 labels: refactor, cleanup
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Remove the deprecated .transforms() extension from Transforms.swift (lines 26-34) after all usages are replaced.
 
@@ -1191,8 +1195,8 @@ priority: none
 kind: none
 labels: refactor, cleanup
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Remove the Transforms struct definition from Support.h (lines 69-80) after all usages are replaced.
 
@@ -1204,8 +1208,8 @@ priority: none
 kind: none
 labels: refactor, cleanup
 depends: MetalSprocketsExamples#282
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Remove Transforms.swift file entirely after all usages are replaced and the struct is removed from Support.h.
 
@@ -1215,8 +1219,8 @@ Remove Transforms.swift file entirely after all usages are replaced and the stru
 status: closed
 priority: none
 kind: task
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 
 ---
@@ -1226,11 +1230,11 @@ status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2025-10-29T00:00:00+00:00
-updated: 2026-04-03T02:15:37.266785+00:00
-closed: 2026-04-03T02:15:37.266784+00:00
+created: 2025-10-29T00:00:00Z
+updated: 2026-04-03T02:15:37Z
+closed: 2026-04-03T02:15:37Z
 
-- 2026-04-02T22:18:00.748004+00:00: Duplicate of #316.
+- `2026-04-02T22:18:00Z`: Duplicate of #316.
 
 ---
 
@@ -1238,13 +1242,13 @@ closed: 2026-04-03T02:15:37.266784+00:00
 status: closed
 priority: none
 kind: enhancement
-created: 2025-10-29T00:00:00+00:00
-updated: 2026-04-03T04:34:19.644603+00:00
-closed: 2026-04-03T04:34:19.644603+00:00
+created: 2025-10-29T00:00:00Z
+updated: 2026-04-03T04:34:19Z
+closed: 2026-04-03T04:34:19Z
 
 Use 4x3 matrixes instead of 4x4 where possible. This incurs some ceremony on both the CPU and GPU
 
-- 2026-04-03T04:34:19.694723+00:00: Closing as stale/no longer relevant.
+- `2026-04-03T04:34:19Z`: Closing as stale/no longer relevant.
 
 ---
 
@@ -1252,11 +1256,11 @@ Use 4x3 matrixes instead of 4x4 where possible. This incurs some ceremony on bot
 status: closed
 priority: none
 kind: none
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
-- 2026-04-02T22:18:00.748669+00:00: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
-- 2026-04-02T22:18:00.748675+00:00: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
+- `2026-04-02T22:18:00Z`: Fixed all shader files in MetalSprocketsAddOnsShaders to use #import instead of #include for consistency with MetalSprocketsExampleShaders. This ensures headers are only included once, preventing potential multiple definition errors.
+- `2026-04-02T22:18:00Z`: Standardized all 37 shader files to use #include instead of #import. Both header files (MetalSprocketsAddOnsShaders.h and MetalSprocketsExampleShaders.h) have #pragma once to prevent multiple inclusion issues. Using #include with #pragma once is the consistent approach across the codebase.
 
 ---
 
@@ -1264,8 +1268,8 @@ closed: 2025-10-29T00:00:00+00:00
 status: closed
 priority: none
 kind: none
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Move the MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets from MetalSprocketsExamples to the MetalSprocketsAddOns companion project.
 
@@ -1306,7 +1310,7 @@ Note: MikkTSpace is identical in both projects and can be ignored.
 - Examples project builds successfully
 - No duplication of AddOns code between projects
 
-- 2026-04-02T22:18:00.749017+00:00: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
+- `2026-04-02T22:18:00Z`: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
 
 ---
 
@@ -1314,8 +1318,8 @@ Note: MikkTSpace is identical in both projects and can be ignored.
 status: closed
 priority: none
 kind: none
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 Both MetalSprocketsExamples and MetalSprocketsAddOns have hard-coded absolute paths in their metal-compiler-plugin.json files.
 
@@ -1341,7 +1345,7 @@ Hard-coded absolute paths make the project non-portable and cause issues when:
 3. Update MetalCompilerPlugin to auto-detect paths based on target structure
 4. Use environment variables or build-time substitution
 
-- 2026-04-02T22:18:00.749356+00:00: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
+- `2026-04-02T22:18:00Z`: Fixed by removing hard-coded -I flags from metal-compiler-plugin.json files. Now relying on dependency-path-suffix which is portable.
 
 ---
 
@@ -1349,8 +1353,8 @@ Hard-coded absolute paths make the project non-portable and cause issues when:
 status: closed
 priority: none
 kind: none
-created: 2025-10-29T00:00:00+00:00
-closed: 2025-10-29T00:00:00+00:00
+created: 2025-10-29T00:00:00Z
+closed: 2025-10-29T00:00:00Z
 
 The Examples Package.swift has a hard-coded absolute path to the MetalCompilerPlugin package dependency.
 
@@ -1381,7 +1385,7 @@ Once the required MetalCompilerPlugin fixes are released:
 2. Remove or comment out line 24 with the local path
 3. Update to the new version that supports cross-package shader dependencies
 
-- 2026-04-02T22:18:00.749694+00:00: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
+- `2026-04-02T22:18:00Z`: Fixed by upgrading to MetalCompilerPlugin 0.1.4 which includes the necessary cross-package shader dependency support. Removed hard-coded local paths in both Examples and AddOns Package.swift files.
 
 ---
 
@@ -1389,13 +1393,13 @@ Once the required MetalCompilerPlugin fixes are released:
 status: closed
 priority: none
 kind: feature
-created: 2026-04-02T17:21:43.828932+00:00
-updated: 2026-04-02T17:29:04.638879+00:00
-closed: 2026-04-02T17:29:04.638879+00:00
+created: 2026-04-02T17:21:43Z
+updated: 2026-04-02T17:29:04Z
+closed: 2026-04-02T17:29:04Z
 
 Add a 'Demos' menu to the app's menu bar listing all demos by name. This enables reliable automation via 'steveo menu --app ... Demos Triangle' since menus are the most robust accessibility targets. The sidebar list rows are AXUnknown and clicks don't trigger selection.
 
-- 2026-04-02T22:18:00.750029+00:00: Added Demos menu to menu bar listing all demos
+- `2026-04-02T22:18:00Z`: Added Demos menu to menu bar listing all demos
 
 ---
 
@@ -1403,13 +1407,13 @@ Add a 'Demos' menu to the app's menu bar listing all demos by name. This enables
 status: closed
 priority: none
 kind: feature
-created: 2026-04-02T17:21:49.207464+00:00
-updated: 2026-04-02T17:29:04.809008+00:00
-closed: 2026-04-02T17:29:04.809008+00:00
+created: 2026-04-02T17:21:49Z
+updated: 2026-04-02T17:29:04Z
+closed: 2026-04-02T17:29:04Z
 
 Register a URL scheme (e.g. metalsprockets-examples://demo/triangle) so demos can be opened directly from the command line via 'open metalsprockets-examples://demo/triangle'. This enables screenshot automation without any accessibility dependency. The app should handle the URL, navigate to the matching and render it.
 
-- 2026-04-02T22:18:00.750367+00:00: Added metalsprockets-examples:// URL scheme for direct demo navigation
+- `2026-04-02T22:18:00Z`: Added metalsprockets-examples:// URL scheme for direct demo navigation
 
 ---
 
@@ -1417,13 +1421,13 @@ Register a URL scheme (e.g. metalsprockets-examples://demo/triangle) so demos ca
 status: closed
 priority: none
 kind: task
-created: 2026-04-02T17:21:54.678188+00:00
-updated: 2026-04-02T21:45:23.020140+00:00
-closed: 2026-04-02T21:45:23.020140+00:00
+created: 2026-04-02T17:21:54Z
+updated: 2026-04-02T21:45:23Z
+closed: 2026-04-02T21:45:23Z
 
 Write a script that cycles through all demos, navigates to each one (via URL scheme or menu), waits for render, and saves a screenshot to Documentation/<DemoName>.png. Depends on #307 (URL scheme) or #306 (Demos menu). Should skip Empty demo and handle demos that need extra settle time (animated demos).
 
-- 2026-04-02T22:18:00.750704+00:00: Done — screenshot collection script exists and works.
+- `2026-04-02T22:18:00Z`: Done — screenshot collection script exists and works.
 
 ---
 
@@ -1431,13 +1435,13 @@ Write a script that cycles through all demos, navigates to each one (via URL sch
 status: closed
 priority: none
 kind: none
-created: 2026-04-02T21:40:48.453894+00:00
-updated: 2026-04-02T21:46:10.524663+00:00
-closed: 2026-04-02T21:46:10.524663+00:00
+created: 2026-04-02T21:40:48Z
+updated: 2026-04-02T21:46:10Z
+closed: 2026-04-02T21:46:10Z
 
 Many demos have oversized or inconsistent configuration panels (Point Cloud, Video Playback, Particle Effects, Grass Sphere, Spiral Particles, Tiled SDF, etc.). The control panels often dominate the viewport or obscure the rendering. Standardize on a consistent, compact configuration UI pattern — e.g., a collapsible inspector panel or popover — that all demos share.
 
-- 2026-04-02T22:18:00.751040+00:00: Duplicate of #24.
+- `2026-04-02T22:18:00Z`: Duplicate of #24.
 
 ---
 
@@ -1445,13 +1449,13 @@ Many demos have oversized or inconsistent configuration panels (Point Cloud, Vid
 status: closed
 priority: high
 kind: enhancement
-created: 2026-04-02T21:40:56.405502+00:00
-updated: 2026-04-03T04:20:49.079595+00:00
-closed: 2026-04-03T04:20:49.079594+00:00
+created: 2026-04-02T21:40:56Z
+updated: 2026-04-03T04:20:49Z
+closed: 2026-04-03T04:20:49Z
 
 Many demos have poor default camera angles that don't showcase the rendering well. The teapot sits too high, scenes have too much empty space, or the camera is too far away. Affected demos: Blinn-Phong, Skybox, Debug Shaders, Point Cloud, Wireframe Teapot, Trivial Mesh, Scene Graph, Hit Test, Depth Buffer, Mixed Techniques, Bouncing Teapots, SDF Raymarching, PBR Rendering. Consider standardizing a default camera setup that frames the subject well.
 
-- 2026-04-03T04:20:49.132277+00:00: Default camera angles have been improved across demos.
+- `2026-04-03T04:20:49Z`: Default camera angles have been improved across demos.
 
 ---
 
@@ -1460,13 +1464,13 @@ status: closed
 priority: none
 kind: bug
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:10.047928+00:00
-updated: 2026-04-02T22:13:34.775587+00:00
-closed: 2026-04-02T22:13:34.775587+00:00
+created: 2026-04-02T21:41:10Z
+updated: 2026-04-02T22:13:34Z
+closed: 2026-04-02T22:13:34Z
 
 The -Z axis label is rendered on the skybox face and should be hidden by default (make it a toggle). Also the skybox texture is a bit dull — consider a more vibrant cubemap.
 
-- 2026-04-02T22:18:00.751694+00:00: Face labels now hidden by default with a toolbar toggle.
+- `2026-04-02T22:18:00Z`: Face labels now hidden by default with a toolbar toggle.
 
 ---
 
@@ -1475,8 +1479,8 @@ status: open
 priority: low
 kind: enhancement
 labels: effort:m
-created: 2026-04-02T21:41:10.197698+00:00
-updated: 2026-04-03T17:30:51.096561+00:00
+created: 2026-04-02T21:41:10Z
+updated: 2026-04-03T17:30:51Z
 
 Currently displays 'Optional(Swift.Result<(), Swift.Error>.success())' on a blank white background. Needs a real UI that visually demonstrates the compute operation. Brainstorm ideas for making a compute-only demo visually interesting.
 
@@ -1486,13 +1490,13 @@ Currently displays 'Optional(Swift.Result<(), Swift.Error>.success())' on a blan
 status: closed
 priority: none
 kind: enhancement
-created: 2026-04-02T21:41:10.342366+00:00
-updated: 2026-04-03T04:47:49.685412+00:00
-closed: 2026-04-03T04:47:49.685412+00:00
+created: 2026-04-02T21:41:10Z
+updated: 2026-04-03T04:47:49Z
+closed: 2026-04-03T04:47:49Z
 
 The triangle shape and green checkerboard are functional but dull. Use a more interesting stencil mask shape and a more visually appealing pattern.
 
-- 2026-04-03T04:47:49.736680+00:00: Replaced triangle with a 5-pointed star shape.
+- `2026-04-03T04:47:49Z`: Replaced triangle with a 5-pointed star shape.
 
 ---
 
@@ -1501,13 +1505,13 @@ status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:10.486483+00:00
-updated: 2026-04-02T22:51:55.309103+00:00
-closed: 2026-04-02T22:51:55.309103+00:00
+created: 2026-04-02T21:41:10Z
+updated: 2026-04-02T22:51:55Z
+closed: 2026-04-02T22:51:55Z
 
 Default should use a more visually dramatic LUT preset and set the blend slider to ~50% so the effect is clearly visible in screenshots.
 
-- 2026-04-02T22:51:55.351726+00:00: Default LUT changed to Sepia Tone at 75% blend. Image now fills window.
+- `2026-04-02T22:51:55Z`: Default LUT changed to Sepia Tone at 75% blend. Image now fills window.
 
 ---
 
@@ -1516,13 +1520,13 @@ status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2026-04-02T21:41:22.070028+00:00
-updated: 2026-04-03T04:21:48.882492+00:00
-closed: 2026-04-03T04:21:48.882492+00:00
+created: 2026-04-02T21:41:22Z
+updated: 2026-04-03T04:21:48Z
+closed: 2026-04-03T04:21:48Z
 
 The demo shows an empty player with 'No default video found' error. Bundle a short default video so the demo works out of the box. Also reduce the VCR settings panel size (see #309).
 
-- 2026-04-03T04:21:48.934471+00:00: Fixed.
+- `2026-04-03T04:21:48Z`: Fixed.
 
 ---
 
@@ -1530,13 +1534,13 @@ The demo shows an empty player with 'No default video found' error. Bundle a sho
 status: closed
 priority: none
 kind: none
-created: 2026-04-02T21:41:22.221320+00:00
-updated: 2026-04-02T21:45:29.651786+00:00
-closed: 2026-04-02T21:45:29.651786+00:00
+created: 2026-04-02T21:41:22Z
+updated: 2026-04-02T21:45:29Z
+closed: 2026-04-02T21:45:29Z
 
 Shows 'No File' placeholder. Bundle a default equirectangular panorama so the demo works without user interaction.
 
-- 2026-04-02T22:18:00.752777+00:00: Duplicate of #300.
+- `2026-04-02T22:18:00Z`: Duplicate of #300.
 
 ---
 
@@ -1545,8 +1549,8 @@ status: open
 priority: low
 kind: enhancement
 labels: effort:m
-created: 2026-04-02T21:41:22.369174+00:00
-updated: 2026-04-03T17:30:51.156674+00:00
+created: 2026-04-02T21:41:22Z
+updated: 2026-04-03T17:30:51Z
 
 Currently shows three flat colored bars which don't showcase 3D path capabilities. Either improve the demo scene to show compelling 3D Path content, or consider deprecating this demo.
 
@@ -1557,8 +1561,8 @@ status: open
 priority: low
 kind: enhancement
 labels: effort:m
-created: 2026-04-02T21:41:22.516616+00:00
-updated: 2026-04-03T17:30:51.216685+00:00
+created: 2026-04-02T21:41:22Z
+updated: 2026-04-03T17:30:51Z
 
 The random lines demo works but the feature needs a bigger plan. Consider deprecating or developing a proper roadmap for the Canvas API.
 
@@ -1569,9 +1573,9 @@ status: closed
 priority: medium
 kind: bug
 labels: needs-info, effort:s
-created: 2026-04-02T21:41:34.688774+00:00
-updated: 2026-04-03T02:16:30.275657+00:00
-closed: 2026-04-03T02:16:30.275657+00:00
+created: 2026-04-02T21:41:34Z
+updated: 2026-04-03T02:16:30Z
+closed: 2026-04-03T02:16:30Z
 
 The puppy image appears rotated in the imageblock demo. This is a timing issue — the image starts rotating. Needs investigation into why rotation is happening on launch.
 
@@ -1582,13 +1586,13 @@ status: closed
 priority: none
 kind: bug
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:34.839345+00:00
-updated: 2026-04-02T22:54:32.093210+00:00
-closed: 2026-04-02T22:54:32.093209+00:00
+created: 2026-04-02T21:41:34Z
+updated: 2026-04-02T22:54:32Z
+closed: 2026-04-02T22:54:32Z
 
 Raw CGImage description (memory address, color space, pixel format) is displayed over the rendered image. Hide this behind a debug toggle. Also has white sidebars that shouldn't be there.
 
-- 2026-04-02T22:54:32.134802+00:00: Replaced raw CGImage debug dump with clean size label. Added black background.
+- `2026-04-02T22:54:32Z`: Replaced raw CGImage debug dump with clean size label. Added black background.
 
 ---
 
@@ -1597,8 +1601,8 @@ status: open
 priority: low
 kind: enhancement
 labels: effort:s
-created: 2026-04-02T21:41:34.983689+00:00
-updated: 2026-04-03T17:30:51.276924+00:00
+created: 2026-04-02T21:41:34Z
+updated: 2026-04-03T17:30:51Z
 
 The side-by-side layout only shows half the upscaled mandrill. Need a more dramatic comparison that better illustrates the upscaling quality — e.g., a slider wipe or a more zoomed-in detail comparison.
 
@@ -1609,13 +1613,13 @@ status: closed
 priority: medium
 kind: bug
 labels: effort:m
-created: 2026-04-02T21:41:35.130329+00:00
-updated: 2026-04-03T04:20:32.320443+00:00
-closed: 2026-04-03T04:20:32.320442+00:00
+created: 2026-04-02T21:41:35Z
+updated: 2026-04-03T04:20:32Z
+closed: 2026-04-03T04:20:32Z
 
 Only a barely-visible silhouette outline renders — the lighting, color, and animation appear missing or broken. Also needs a few frames of animation to settle before screenshots look good.
 
-- 2026-04-03T04:20:32.373140+00:00: Fixed by adjusting the light position.
+- `2026-04-03T04:20:32Z`: Fixed by adjusting the light position.
 
 ---
 
@@ -1624,13 +1628,13 @@ status: closed
 priority: none
 kind: bug
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:46.009758+00:00
-updated: 2026-04-02T22:47:40.123069+00:00
-closed: 2026-04-02T22:47:40.123069+00:00
+created: 2026-04-02T21:41:46Z
+updated: 2026-04-02T22:47:40Z
+closed: 2026-04-02T22:47:40Z
 
 Mouse coordinate debug text 'Mouse: (0.00, 0.00)' is visible below the rendered logo. Remove it or hide behind a toggle. Also has white sidebars.
 
-- 2026-04-02T22:47:40.167195+00:00: Removed debug mouse text, added black background filling the window.
+- `2026-04-02T22:47:40Z`: Removed debug mouse text, added black background filling the window.
 
 ---
 
@@ -1639,13 +1643,13 @@ status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:46.166881+00:00
-updated: 2026-04-02T22:59:10.760525+00:00
-closed: 2026-04-02T22:59:10.760525+00:00
+created: 2026-04-02T21:41:46Z
+updated: 2026-04-02T22:59:10Z
+closed: 2026-04-02T22:59:10Z
 
 The flat gray background makes the SDF shapes look muted. Use a darker or more contrasting background color to make the shapes pop.
 
-- 2026-04-02T22:59:10.802350+00:00: Changed missed ray color to black, added black clear color, moved toggle to toolbar.
+- `2026-04-02T22:59:10Z`: Changed missed ray color to black, added black clear color, moved toggle to toolbar.
 
 ---
 
@@ -1653,13 +1657,13 @@ The flat gray background makes the SDF shapes look muted. Use a darker or more c
 status: closed
 priority: medium
 kind: bug
-created: 2026-04-02T21:41:46.317090+00:00
-updated: 2026-04-02T23:35:31.707315+00:00
-closed: 2026-04-02T23:35:31.707315+00:00
+created: 2026-04-02T21:41:46Z
+updated: 2026-04-02T23:35:31Z
+closed: 2026-04-02T23:35:31Z
 
 The nil text bug is fixed. Still needs: 1) Bundle a default glTF model (BarramundiFish.glb crashed SwiftGLTF — need to find a compatible model). 2) Fix the file browser dialog — filenames, sizes, and categories are all truncated because columns are too narrow.
 
-- 2026-04-02T23:35:31.749026+00:00: Fixed nil text, bundled VirtualCity.glb as default model, fixed file picker two-column layout (NavigationStack), added Reveal in Finder button.
+- `2026-04-02T23:35:31Z`: Fixed nil text, bundled VirtualCity.glb as default model, fixed file picker two-column layout (NavigationStack), added Reveal in Finder button.
 
 ---
 
@@ -1668,13 +1672,13 @@ status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:46.468035+00:00
-updated: 2026-04-02T22:48:33.159337+00:00
-closed: 2026-04-02T22:48:33.159337+00:00
+created: 2026-04-02T21:41:46Z
+updated: 2026-04-02T22:48:33Z
+closed: 2026-04-02T22:48:33Z
 
 Default of 8 particles looks sparse. Increase the default to show a more impressive spiral effect.
 
-- 2026-04-02T22:48:33.200924+00:00: Default particle count increased from 8 to 32.
+- `2026-04-02T22:48:33Z`: Default particle count increased from 8 to 32.
 
 ---
 
@@ -1683,13 +1687,13 @@ status: closed
 priority: none
 kind: enhancement
 labels: needs-info, effort:m
-created: 2026-04-02T21:41:57.338229+00:00
-updated: 2026-04-03T04:36:53.957576+00:00
-closed: 2026-04-03T04:36:53.957576+00:00
+created: 2026-04-02T21:41:57Z
+updated: 2026-04-03T04:36:53Z
+closed: 2026-04-03T04:36:53Z
 
 The default 4×4×4 voxel grid looks like a color test pattern. Start at a higher resolution with a more recognizable 3D shape to demonstrate voxel rendering.
 
-- 2026-04-03T04:36:54.011690+00:00: Done.
+- `2026-04-03T04:36:54Z`: Done.
 
 ---
 
@@ -1698,13 +1702,13 @@ status: closed
 priority: none
 kind: bug
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:57.496227+00:00
-updated: 2026-04-02T23:02:21.353810+00:00
-closed: 2026-04-02T23:02:21.353810+00:00
+created: 2026-04-02T21:41:57Z
+updated: 2026-04-02T23:02:21Z
+closed: 2026-04-02T23:02:21Z
 
 The PBR teapot rendering itself looks good (golden metallic with environment reflections), but there's a broken orientation widget displaying '(broken)' in orange text. Remove the widget entirely. The demo should also be moved out of the '* Broken' group.
 
-- 2026-04-02T23:02:21.394987+00:00: Removed broken orientation widget, moved PBR from '* Broken' to 'Complex' group.
+- `2026-04-02T23:02:21Z`: Removed broken orientation widget, moved PBR from '* Broken' to 'Complex' group.
 
 ---
 
@@ -1713,13 +1717,13 @@ status: closed
 priority: none
 kind: enhancement
 labels: low-hanging-fruit, effort:xs
-created: 2026-04-02T21:41:57.648542+00:00
-updated: 2026-04-02T22:43:42.710300+00:00
-closed: 2026-04-02T22:43:42.710300+00:00
+created: 2026-04-02T21:41:57Z
+updated: 2026-04-02T22:43:42Z
+closed: 2026-04-02T22:43:42Z
 
 The default gamma 2.20 with Gamma function selected is functional but not visually dramatic. Consider defaulting to a more visually interesting adjustment function or value.
 
-- 2026-04-02T22:43:42.752845+00:00: Default changed to vignette with radius 0.4 for a more dramatic screenshot.
+- `2026-04-02T22:43:42Z`: Default changed to vignette with radius 0.4 for a more dramatic screenshot.
 
 ---
 
@@ -1727,9 +1731,9 @@ The default gamma 2.20 with Gamma function selected is functional but not visual
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:48:19.619654+00:00
-updated: 2026-04-03T01:59:07.600073+00:00
-closed: 2026-04-03T01:59:07.600073+00:00
+created: 2026-04-03T00:48:19Z
+updated: 2026-04-03T01:59:07Z
+closed: 2026-04-03T01:59:07Z
 
 
 ---
@@ -1738,11 +1742,11 @@ closed: 2026-04-03T01:59:07.600073+00:00
 status: closed
 priority: high
 kind: bug
-created: 2026-04-03T00:48:24.131565+00:00
-updated: 2026-04-03T04:17:11.135072+00:00
-closed: 2026-04-03T04:17:11.135072+00:00
+created: 2026-04-03T00:48:24Z
+updated: 2026-04-03T04:17:11Z
+closed: 2026-04-03T04:17:11Z
 
-- 2026-04-03T04:17:11.187775+00:00: Fixed in MetalSprockets #306 — viewModel deferred creation broke BlitPass environment access. Clear color also restored.
+- `2026-04-03T04:17:11Z`: Fixed in MetalSprockets #306 — viewModel deferred creation broke BlitPass environment access. Clear color also restored.
 
 ---
 
@@ -1750,11 +1754,11 @@ closed: 2026-04-03T04:17:11.135072+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:48:28.635+00:00
-updated: 2026-04-03T00:56:54.903706+00:00
-closed: 2026-04-03T00:56:54.903706+00:00
+created: 2026-04-03T00:48:28Z
+updated: 2026-04-03T00:56:54Z
+closed: 2026-04-03T00:56:54Z
 
-- 2026-04-03T00:56:54.948468+00:00: Fixed in demoConfiguration and camera angle commits
+- `2026-04-03T00:56:54Z`: Fixed in demoConfiguration and camera angle commits
 
 ---
 
@@ -1762,11 +1766,11 @@ closed: 2026-04-03T00:56:54.903706+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:48:32.088536+00:00
-updated: 2026-04-03T00:56:54.991926+00:00
-closed: 2026-04-03T00:56:54.991926+00:00
+created: 2026-04-03T00:48:32Z
+updated: 2026-04-03T00:56:54Z
+closed: 2026-04-03T00:56:54Z
 
-- 2026-04-03T00:56:55.038860+00:00: Fixed in demoConfiguration and camera angle commits
+- `2026-04-03T00:56:55Z`: Fixed in demoConfiguration and camera angle commits
 
 ---
 
@@ -1774,11 +1778,11 @@ closed: 2026-04-03T00:56:54.991926+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:48:35.439143+00:00
-updated: 2026-04-03T00:56:55.083806+00:00
-closed: 2026-04-03T00:56:55.083806+00:00
+created: 2026-04-03T00:48:35Z
+updated: 2026-04-03T00:56:55Z
+closed: 2026-04-03T00:56:55Z
 
-- 2026-04-03T00:56:55.127198+00:00: Fixed in demoConfiguration and camera angle commits
+- `2026-04-03T00:56:55Z`: Fixed in demoConfiguration and camera angle commits
 
 ---
 
@@ -1786,11 +1790,11 @@ closed: 2026-04-03T00:56:55.083806+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:48:38.675135+00:00
-updated: 2026-04-03T00:56:55.171925+00:00
-closed: 2026-04-03T00:56:55.171925+00:00
+created: 2026-04-03T00:48:38Z
+updated: 2026-04-03T00:56:55Z
+closed: 2026-04-03T00:56:55Z
 
-- 2026-04-03T00:56:55.215951+00:00: Fixed in demoConfiguration and camera angle commits
+- `2026-04-03T00:56:55Z`: Fixed in demoConfiguration and camera angle commits
 
 ---
 
@@ -1798,12 +1802,12 @@ closed: 2026-04-03T00:56:55.171925+00:00
 status: closed
 priority: high
 kind: bug
-created: 2026-04-03T00:48:51.657195+00:00
-updated: 2026-04-03T04:17:11.244109+00:00
-closed: 2026-04-03T04:17:11.244109+00:00
+created: 2026-04-03T00:48:51Z
+updated: 2026-04-03T04:17:11Z
+closed: 2026-04-03T04:17:11Z
 
-- 2026-04-03T04:11:47.926785+00:00: Likely same root cause as #363 — MetalSprockets d7f64a82 deferred viewModel creation to .onAppear, so first-frame environment access could fail silently. Fixed in MetalSprockets #306.
-- 2026-04-03T04:17:11.296386+00:00: Fixed in MetalSprockets #306 — viewModel deferred creation caused first-frame failures.
+- `2026-04-03T04:11:47Z`: Likely same root cause as #363 — MetalSprockets d7f64a82 deferred viewModel creation to .onAppear, so first-frame environment access could fail silently. Fixed in MetalSprockets #306.
+- `2026-04-03T04:17:11Z`: Fixed in MetalSprockets #306 — viewModel deferred creation caused first-frame failures.
 
 ---
 
@@ -1811,11 +1815,11 @@ closed: 2026-04-03T04:17:11.244109+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:48:55.981467+00:00
-updated: 2026-04-03T00:56:55.260459+00:00
-closed: 2026-04-03T00:56:55.260459+00:00
+created: 2026-04-03T00:48:55Z
+updated: 2026-04-03T00:56:55Z
+closed: 2026-04-03T00:56:55Z
 
-- 2026-04-03T00:56:55.303509+00:00: Fixed in demoConfiguration and camera angle commits
+- `2026-04-03T00:56:55Z`: Fixed in demoConfiguration and camera angle commits
 
 ---
 
@@ -1823,11 +1827,11 @@ closed: 2026-04-03T00:56:55.260459+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:48:59.549358+00:00
-updated: 2026-04-03T00:56:55.348321+00:00
-closed: 2026-04-03T00:56:55.348321+00:00
+created: 2026-04-03T00:48:59Z
+updated: 2026-04-03T00:56:55Z
+closed: 2026-04-03T00:56:55Z
 
-- 2026-04-03T00:56:55.391698+00:00: Fixed in demoConfiguration and camera angle commits
+- `2026-04-03T00:56:55Z`: Fixed in demoConfiguration and camera angle commits
 
 ---
 
@@ -1835,13 +1839,13 @@ closed: 2026-04-03T00:56:55.348321+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T00:49:04.342375+00:00
-updated: 2026-04-03T00:56:55.436620+00:00
-closed: 2026-04-03T00:56:55.436620+00:00
+created: 2026-04-03T00:49:04Z
+updated: 2026-04-03T00:56:55Z
+closed: 2026-04-03T00:56:55Z
 
 Move the controls from the top of the VStack into demoConfiguration. Slightly more complex case than other demos.
 
-- 2026-04-03T00:56:55.479816+00:00: Fixed in demoConfiguration and camera angle commits
+- `2026-04-03T00:56:55Z`: Fixed in demoConfiguration and camera angle commits
 
 ---
 
@@ -1849,9 +1853,9 @@ Move the controls from the top of the VStack into demoConfiguration. Slightly mo
 status: closed
 priority: medium
 kind: bug
-created: 2026-04-03T00:49:08.385642+00:00
-updated: 2026-04-03T01:59:07.673304+00:00
-closed: 2026-04-03T01:59:07.673304+00:00
+created: 2026-04-03T00:49:08Z
+updated: 2026-04-03T01:59:07Z
+closed: 2026-04-03T01:59:07Z
 
 
 ---
@@ -1861,8 +1865,8 @@ status: open
 priority: medium
 kind: task
 labels: effort:m
-created: 2026-04-03T00:57:08.458100+00:00
-updated: 2026-04-03T17:30:51.342833+00:00
+created: 2026-04-03T00:57:08Z
+updated: 2026-04-03T17:30:51Z
 
 Many demos had their UI controls moved to demoConfiguration and camera angles changed. The per-demo documentation and screenshots need updating to reflect the new layouts.
 
@@ -1872,11 +1876,11 @@ Many demos had their UI controls moved to demoConfiguration and camera angles ch
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T02:01:48.339942+00:00
-updated: 2026-04-03T04:53:28.096476+00:00
-closed: 2026-04-03T04:53:28.096476+00:00
+created: 2026-04-03T02:01:48Z
+updated: 2026-04-03T04:53:28Z
+closed: 2026-04-03T04:53:28Z
 
-- 2026-04-03T04:53:28.154055+00:00: Added HUD overlay on the render view showing geometry/instance/triangle ID and depth on hover.
+- `2026-04-03T04:53:28Z`: Added HUD overlay on the render view showing geometry/instance/triangle ID and depth on hover.
 
 ---
 
@@ -1884,11 +1888,11 @@ closed: 2026-04-03T04:53:28.096476+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T02:09:46.833736+00:00
-updated: 2026-04-03T04:57:03.143162+00:00
-closed: 2026-04-03T04:57:03.143162+00:00
+created: 2026-04-03T02:09:46Z
+updated: 2026-04-03T04:57:03Z
+closed: 2026-04-03T04:57:03Z
 
-- 2026-04-03T04:57:03.194988+00:00: Closed — keeping fixed size for now.
+- `2026-04-03T04:57:03Z`: Closed — keeping fixed size for now.
 
 ---
 
@@ -1896,11 +1900,11 @@ closed: 2026-04-03T04:57:03.143162+00:00
 status: closed
 priority: medium
 kind: bug
-created: 2026-04-03T03:11:53.436656+00:00
-updated: 2026-04-03T04:28:58.576305+00:00
-closed: 2026-04-03T04:28:58.576304+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T04:28:58Z
+closed: 2026-04-03T04:28:58Z
 
-- 2026-04-03T04:28:58.630114+00:00: Moved lighting computation out of SceneGraphRenderPass.init into a static method, called once at view init.
+- `2026-04-03T04:28:58Z`: Moved lighting computation out of SceneGraphRenderPass.init into a static method, called once at view init.
 
 ---
 
@@ -1909,8 +1913,8 @@ status: open
 priority: medium
 kind: bug
 labels: effort:m
-created: 2026-04-03T03:11:53.511169+00:00
-updated: 2026-04-03T17:30:51.403432+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T17:30:51Z
 
 
 ---
@@ -1920,8 +1924,8 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2026-04-03T03:11:53.587174+00:00
-updated: 2026-04-03T17:30:51.747585+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T17:30:51Z
 
 
 ---
@@ -1931,8 +1935,8 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:m
-created: 2026-04-03T03:11:53.661992+00:00
-updated: 2026-04-03T17:30:51.814306+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T17:30:51Z
 
 
 ---
@@ -1942,8 +1946,8 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2026-04-03T03:11:53.738032+00:00
-updated: 2026-04-03T17:30:51.877850+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T17:30:51Z
 
 
 ---
@@ -1952,11 +1956,11 @@ updated: 2026-04-03T17:30:51.877850+00:00
 status: closed
 priority: medium
 kind: task
-created: 2026-04-03T03:11:53.815865+00:00
-updated: 2026-04-03T04:57:59.509544+00:00
-closed: 2026-04-03T04:57:59.509544+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T04:57:59Z
+closed: 2026-04-03T04:57:59Z
 
-- 2026-04-03T04:57:59.561714+00:00: Added doc comments for mapTextureCoordinateFunction and colorAdjustFunction parameters.
+- `2026-04-03T04:57:59Z`: Added doc comments for mapTextureCoordinateFunction and colorAdjustFunction parameters.
 
 ---
 
@@ -1964,11 +1968,11 @@ closed: 2026-04-03T04:57:59.509544+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T03:11:53.895139+00:00
-updated: 2026-04-03T04:42:49.407553+00:00
-closed: 2026-04-03T04:42:49.407553+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T04:42:49Z
+closed: 2026-04-03T04:42:49Z
 
-- 2026-04-03T04:42:49.463774+00:00: Low impact — not worth pursuing.
+- `2026-04-03T04:42:49Z`: Low impact — not worth pursuing.
 
 ---
 
@@ -1976,11 +1980,11 @@ closed: 2026-04-03T04:42:49.407553+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T03:11:53.974019+00:00
-updated: 2026-04-03T05:01:53.397495+00:00
-closed: 2026-04-03T05:01:53.397495+00:00
+created: 2026-04-03T03:11:53Z
+updated: 2026-04-03T05:01:53Z
+closed: 2026-04-03T05:01:53Z
 
-- 2026-04-03T05:01:53.456593+00:00: Shader handling is already clean — closing.
+- `2026-04-03T05:01:53Z`: Shader handling is already clean — closing.
 
 ---
 
@@ -1988,11 +1992,11 @@ closed: 2026-04-03T05:01:53.397495+00:00
 status: closed
 priority: medium
 kind: task
-created: 2026-04-03T03:11:54.053774+00:00
-updated: 2026-04-03T04:44:03.250427+00:00
-closed: 2026-04-03T04:44:03.250427+00:00
+created: 2026-04-03T03:11:54Z
+updated: 2026-04-03T04:44:03Z
+closed: 2026-04-03T04:44:03Z
 
-- 2026-04-03T04:44:03.305394+00:00: Removed redundant explicit color/depth attachment setters — only needed for offscreen path.
+- `2026-04-03T04:44:03Z`: Removed redundant explicit color/depth attachment setters — only needed for offscreen path.
 
 ---
 
@@ -2000,11 +2004,11 @@ closed: 2026-04-03T04:44:03.250427+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T03:11:54.133747+00:00
-updated: 2026-04-03T04:45:49.178607+00:00
-closed: 2026-04-03T04:45:49.178607+00:00
+created: 2026-04-03T03:11:54Z
+updated: 2026-04-03T04:45:49Z
+closed: 2026-04-03T04:45:49Z
 
-- 2026-04-03T04:45:49.230766+00:00: Not needed currently — all material textures are already declared.
+- `2026-04-03T04:45:49Z`: Not needed currently — all material textures are already declared.
 
 ---
 
@@ -2012,11 +2016,11 @@ closed: 2026-04-03T04:45:49.178607+00:00
 status: closed
 priority: medium
 kind: enhancement
-created: 2026-04-03T03:11:54.214833+00:00
-updated: 2026-04-03T04:50:19.517886+00:00
-closed: 2026-04-03T04:50:19.517886+00:00
+created: 2026-04-03T03:11:54Z
+updated: 2026-04-03T04:50:19Z
+closed: 2026-04-03T04:50:19Z
 
-- 2026-04-03T04:50:19.573918+00:00: Duplicate of #355.
+- `2026-04-03T04:50:19Z`: Duplicate of #355.
 
 ---
 
@@ -2025,10 +2029,10 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2026-04-03T03:12:53.973301+00:00
-updated: 2026-04-03T17:31:02.810581+00:00
+created: 2026-04-03T03:12:53Z
+updated: 2026-04-03T17:31:02Z
 
-- 2026-04-03T17:31:02.889071+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
@@ -2037,10 +2041,10 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:m
-created: 2026-04-03T03:15:29.067348+00:00
-updated: 2026-04-03T17:31:02.915446+00:00
+created: 2026-04-03T03:15:29Z
+updated: 2026-04-03T17:31:02Z
 
-- 2026-04-03T17:31:02.992195+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
@@ -2049,10 +2053,10 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2026-04-03T03:15:29.150928+00:00
-updated: 2026-04-03T17:31:03.017796+00:00
+created: 2026-04-03T03:15:29Z
+updated: 2026-04-03T17:31:03Z
 
-- 2026-04-03T17:31:03.094773+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
@@ -2061,10 +2065,10 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2026-04-03T03:15:29.232097+00:00
-updated: 2026-04-03T17:31:03.120360+00:00
+created: 2026-04-03T03:15:29Z
+updated: 2026-04-03T17:31:03Z
 
-- 2026-04-03T17:31:03.196469+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
@@ -2073,10 +2077,10 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:m
-created: 2026-04-03T03:15:29.313195+00:00
-updated: 2026-04-03T17:31:03.222200+00:00
+created: 2026-04-03T03:15:29Z
+updated: 2026-04-03T17:31:03Z
 
-- 2026-04-03T17:31:03.298667+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
@@ -2085,10 +2089,10 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:s
-created: 2026-04-03T03:15:29.395346+00:00
-updated: 2026-04-03T17:31:03.324205+00:00
+created: 2026-04-03T03:15:29Z
+updated: 2026-04-03T17:31:03Z
 
-- 2026-04-03T17:31:03.400389+00:00: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
 
 ---
 
@@ -2097,8 +2101,8 @@ status: open
 priority: medium
 kind: task
 labels: effort:l
-created: 2026-04-03T03:15:59.333403+00:00
-updated: 2026-04-03T17:30:52.309517+00:00
+created: 2026-04-03T03:15:59Z
+updated: 2026-04-03T17:30:52Z
 
 
 ---
@@ -2107,13 +2111,13 @@ updated: 2026-04-03T17:30:52.309517+00:00
 status: closed
 priority: high
 kind: bug
-created: 2026-04-03T03:30:56.350979+00:00
-updated: 2026-04-03T04:18:40.868393+00:00
-closed: 2026-04-03T04:18:40.868393+00:00
+created: 2026-04-03T03:30:56Z
+updated: 2026-04-03T04:18:40Z
+closed: 2026-04-03T04:18:40Z
 
 The AVPlayer in VideoTexturePipeline continues playing audio/video after the user navigates away from the VideoPlaybackDemoView. The view only has an onAppear to start playback but no onDisappear to stop it, and the VideoTexturePipeline's frame update task keeps running. Need to pause/stop playback when the view disappears.
 
-- 2026-04-03T04:18:40.922096+00:00: Added .onDisappear to pause video player when navigating away.
+- `2026-04-03T04:18:40Z`: Added .onDisappear to pause video player when navigating away.
 
 ---
 
@@ -2121,14 +2125,14 @@ The AVPlayer in VideoTexturePipeline continues playing audio/video after the use
 status: closed
 priority: high
 kind: bug
-created: 2026-04-03T03:45:28.696144+00:00
-updated: 2026-04-03T04:07:55.687534+00:00
-closed: 2026-04-03T04:07:55.687534+00:00
+created: 2026-04-03T03:45:28Z
+updated: 2026-04-03T04:07:55Z
+closed: 2026-04-03T04:07:55Z
 
 The StencilDemoView renders the triangle without any checkerboard stencil clipping — the triangle appears as a full unclipped triangle. The clear color was also removed in commit xqx and has been restored, but that didn't fix the stencil issue. The stencil pipeline (BlitPass copying checkerboard texture into stencil attachment, then RenderPass with .load and compareFunction .equal) may be broken due to an upstream MetalSprockets change affecting how BlitPass accesses the render pass descriptor's stencil attachment.
 
-- 2026-04-03T03:56:15.552284+00:00: Root cause likely in MetalSprockets commit d7f64a82 ('Fix RenderView per-frame allocation churn and resource leak on view removal'). The viewModel was changed from non-optional @State to optional, created in .onAppear. This means .environment(viewModel) passes nil on early evaluations. The BlitPass's EnvironmentReader for \.renderPassDescriptor likely depends on this — when nil, the stencil blit silently doesn't execute, so the stencil buffer stays all zeros and .equal passes everywhere (no clipping). The fix needs to be in MetalSprockets, not here.
-- 2026-04-03T04:07:55.741491+00:00: Root cause found and fixed in MetalSprockets #306. Commit d7f64a82 deferred viewModel creation to .onAppear, breaking BlitPass environment access. Fix creates viewModel eagerly in init.
+- `2026-04-03T03:56:15Z`: Root cause likely in MetalSprockets commit d7f64a82 ('Fix RenderView per-frame allocation churn and resource leak on view removal'). The viewModel was changed from non-optional @State to optional, created in .onAppear. This means .environment(viewModel) passes nil on early evaluations. The BlitPass's EnvironmentReader for \.renderPassDescriptor likely depends on this — when nil, the stencil blit silently doesn't execute, so the stencil buffer stays all zeros and .equal passes everywhere (no clipping). The fix needs to be in MetalSprockets, not here.
+- `2026-04-03T04:07:55Z`: Root cause found and fixed in MetalSprockets #306. Commit d7f64a82 deferred viewModel creation to .onAppear, breaking BlitPass environment access. Fix creates viewModel eagerly in init.
 
 ---
 
@@ -2137,8 +2141,8 @@ status: open
 priority: medium
 kind: bug
 labels: effort:s
-created: 2026-04-03T05:19:21.896483+00:00
-updated: 2026-04-03T17:30:52.369748+00:00
+created: 2026-04-03T05:19:21Z
+updated: 2026-04-03T17:30:52Z
 
 
 ---
@@ -2148,8 +2152,8 @@ status: open
 priority: medium
 kind: bug
 labels: effort:m
-created: 2026-04-03T05:27:48.070435+00:00
-updated: 2026-04-03T17:30:52.426852+00:00
+created: 2026-04-03T05:27:48Z
+updated: 2026-04-03T17:30:52Z
 
 
 ---
@@ -2159,8 +2163,8 @@ status: open
 priority: medium
 kind: enhancement
 labels: effort:xs
-created: 2026-04-03T05:59:54.158699+00:00
-updated: 2026-04-03T17:30:52.487463+00:00
+created: 2026-04-03T05:59:54Z
+updated: 2026-04-03T17:30:52Z
 
 
 ---
@@ -2170,12 +2174,12 @@ status: open
 priority: medium
 kind: task
 labels: accessibility, effort:l
-created: 2026-04-03T06:27:01.170849+00:00
-updated: 2026-04-03T17:31:02.586908+00:00
+created: 2026-04-03T06:27:01Z
+updated: 2026-04-03T17:31:02Z
 
 Sliders, pickers, and popups across demos are missing accessibility labels. SwiftUI doesn't automatically associate adjacent StaticText with controls. Need to add `.accessibilityLabel()` to all interactive controls (sliders, toggles, pickers, buttons) across all demos. This also blocks automated UI testing with steveo since controls can't be found by name.
 
-- 2026-04-03T17:31:02.670984+00:00: Related: #368 (Interaction3D accessibility is a subset of this)
+- `2026-04-03T17:31:02Z`: Related: #368 (Interaction3D accessibility is a subset of this)
 
 ---
 
@@ -2184,12 +2188,122 @@ status: open
 priority: medium
 kind: task
 labels: accessibility, upstream, effort:m
-created: 2026-04-03T06:27:31.177660+00:00
-updated: 2026-04-03T17:31:02.701434+00:00
+created: 2026-04-03T06:27:31Z
+updated: 2026-04-03T17:31:02Z
 
 The Turntable camera control popup and related WorldView interaction controls from the Interaction3D package have no accessibility labels. Need to add `.accessibilityLabel()` to the camera mode picker and any other interactive elements. This blocks automated UI testing via steveo. Upstream fix needed in Interaction3D project.
 
-- 2026-04-03T17:31:02.779763+00:00: Related: #367 (parent accessibility pass covering all controls)
+- `2026-04-03T17:31:02Z`: Related: #367 (parent accessibility pass covering all controls)
+
+---
+
+## 369: Organize all demos into consistent directory structure
+status: new
+priority: low
+kind: none
+created: 2026-04-04T00:38:02Z
+updated: 2026-04-04T00:39:24Z
+
+Reorganize demo files so every demo follows a consistent directory structure with consistent naming.
+
+## Target Structure
+
+For a demo named `Foobar`:
+
+```
+MetalSprocketsExamples/Demos/
+  Foobar/
+    FoobarDemoView.swift
+    FoobarDemoRenderPass.swift (or Pipeline, etc.)
+MetalSprocketsExampleShaders/Metal/
+  FoobarShaders.metal
+```
+
+Every demo gets its own subdirectory, even if it only has a single view file.
+
+Standalone support code should either:
+- Move into `MetalSprocketsExamplesSupport/`
+- Or live in a `FoobarSupport/` directory alongside the demo if it's demo-specific
+
+## Naming Conventions
+
+- View files: `FoobarDemoView.swift`
+- Render passes: `FoobarDemoRenderPass.swift`
+- Render pipelines: `FoobarDemoRenderPipeline.swift`
+- Compute pipelines: `FoobarDemoComputePipeline.swift`
+- Shader files: `FoobarShaders.metal`
+- Support types: `FoobarSupport/` or `FoobarSomething.swift` with demo prefix
+
+Ensure all files are named consistently — no orphan names that don't match the demo they belong to.
+
+## Demos needing subdirectories (currently loose files):
+- `ComputeDemoView.swift` → `ComputeDemo/`
+- `GraphicsContext3DDemoView.swift` → `GraphicsContext3DDemo/`
+- `MetalCanvasDemoView.swift` → `MetalCanvasDemo/`
+- `MetalFXDemoView.swift` → `MetalFXDemo/`
+- `OffscreenDemoView.swift` → `OffscreenDemo/`
+- `SDFDemoView.swift` → `SDFDemo/`
+- `SkyboxDemoView.swift` → `SkyboxDemo/`
+- `StencilDemoView.swift` → `StencilDemo/`
+- `TriangleDemoView.swift` → `TriangleDemo/`
+- `TrivialMeshDemoView.swift` → `TrivialMeshDemo/`
+- `WireframeDemoView.swift` → `WireframeDemo/`
+
+## Existing demos to audit for naming consistency:
+- `AppleEventLogoDemo/` — e.g. `ColorRemapComputePipeline.swift`, `GradientTextureGenerator.swift`, `HeatParameters.swift`, `ThermalVideoBlendPipeline.swift` need demo prefix or support dir
+- `BouncingTeapots/` — `TeapotSimulation.swift` is standalone support
+- `GameOfLife/` — `GameOfLife.swift` is standalone support
+- `HitTestDemo/` — `HitTestShader.swift` naming
+- `LUT/` — `CubeReader.swift`, `LUT-Support.swift` are standalone support
+- `MixedDemo/` — `EdgeDetectionKernel.swift`, `TeapotDemo.swift`, `MixedExample.swift`
+- `Panorama/` — `PanoramaElements.swift`, `PanoramaMiniMapView.swift`
+- `VideoPlaybackDemo/` — `VCRDistortionPipeline.swift`, `VideoTexturePipeline.swift`
+- `VoxelDemo/` — `MagicaVoxel.swift` is standalone support
+
+## Also review:
+- `LightingModels/` subdemos (BlinnPhongDemo, DebugShaderDemo, GLTFDemo, PBR, SceneGraph)
+- `MetalCanvas/` support files
+- `ReusableElements/` (shared kernels — may stay as-is)
+
+No functional changes — just file moves and renames.
+
+---
+
+## 370: Ray tracing demo: migrate to MetalSprockets element system
+status: new
+priority: low
+kind: task
+created: 2026-04-04T01:37:41Z
+
+The ray tracing demo currently bypasses most of MetalSprockets and manages its own device, command queue, compute pipeline, and textures manually. It should be refactored to use the MetalSprockets element system (ComputePass, ComputePipeline, ComputeDispatch, RenderPass, etc.) like the GameOfLife demo does.
+
+Areas to investigate:
+- Use ComputePass/ComputePipeline/ComputeDispatch instead of manual compute encoder setup
+- Use the RenderView's device and command queue instead of creating separate ones
+- Bind acceleration structures and buffers via the element parameter system
+- Manage accumulation/output textures via @MSState instead of a separate RayTracingResources class
+- Determine if ComputeDispatch supports setAccelerationStructure or if extensions are needed
+- Consider whether MetalSprockets needs new API to support ray tracing workloads (e.g. acceleration structure binding, useResource for primitive AS visibility)
+
+This needs more investigation into what MetalSprockets supports today vs what would need to be added.
+
+---
+
+## 371: Demo: Simple renderer with ray-traced shadows
+status: new
+priority: low
+kind: none
+created: 2026-04-04T02:34:33Z
+
+
+---
+
+## 372: Demo: Simple renderer with ray-traced ambient occlusion
+status: new
+priority: low
+kind: none
+created: 2026-04-04T02:34:33Z
+
 
 ---
 

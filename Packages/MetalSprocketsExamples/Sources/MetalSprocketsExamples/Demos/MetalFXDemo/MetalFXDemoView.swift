@@ -33,67 +33,67 @@ public struct MetalFXDemoView: View {
         ZStack {
             Color.clear
             Group {
-            if let upscaledTexture {
-                ScrollView([.horizontal, .vertical]) {
-                    RenderView { _, _ in
-                        MetalFXSpatial(inputTexture: sourceTexture, outputTexture: upscaledTexture)
-                        try RenderPass {
-                            try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
+                if let upscaledTexture {
+                    ScrollView([.horizontal, .vertical]) {
+                        RenderView { _, _ in
+                            MetalFXSpatial(inputTexture: sourceTexture, outputTexture: upscaledTexture)
+                            try RenderPass {
+                                try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
+                            }
+                        }
+                        .frame(width: Double(upscaledTexture.width), height: Double(upscaledTexture.height))
+                        .overlay(alignment: .topLeading) {
+                            badge(name: "metalfx")
+                        }
+                        .overlay(alignment: .bottom) {
+                            label(texture: upscaledTexture)
                         }
                     }
-                    .frame(width: Double(upscaledTexture.width), height: Double(upscaledTexture.height))
-                    .overlay(alignment: .topLeading) {
-                        badge(name: "metalfx")
+                    .overlay(alignment: .bottomTrailing) {
+                        RenderView { _, _ in
+                            try RenderPass {
+                                try TextureBillboardPipeline(specifier: .texture2D(sourceTexture))
+                            }
+                        }
+                        .frame(width: Double(sourceTexture.width), height: Double(sourceTexture.height))
+                        .border(.white, width: 2)
+                        .overlay(alignment: .topLeading) {
+                            badge(name: "metal")
+                        }
+                        .overlay(alignment: .bottom) {
+                            label(texture: sourceTexture)
+                        }
+                        .padding(12)
                     }
-                    .overlay(alignment: .bottom) {
-                        label(texture: upscaledTexture)
-                    }
-                }
-                .overlay(alignment: .bottomTrailing) {
+                } else {
                     RenderView { _, _ in
                         try RenderPass {
                             try TextureBillboardPipeline(specifier: .texture2D(sourceTexture))
                         }
                     }
                     .frame(width: Double(sourceTexture.width), height: Double(sourceTexture.height))
-                    .border(.white, width: 2)
                     .overlay(alignment: .topLeading) {
                         badge(name: "metal")
                     }
                     .overlay(alignment: .bottom) {
                         label(texture: sourceTexture)
                     }
-                    .padding(12)
-                }
-            } else {
-                RenderView { _, _ in
-                    try RenderPass {
-                        try TextureBillboardPipeline(specifier: .texture2D(sourceTexture))
-                    }
-                }
-                .frame(width: Double(sourceTexture.width), height: Double(sourceTexture.height))
-                .overlay(alignment: .topLeading) {
-                    badge(name: "metal")
-                }
-                .overlay(alignment: .bottom) {
-                    label(texture: sourceTexture)
                 }
             }
-        }
         }
         .background(.black.opacity(0.8))
         .demoConfiguration {
             Form {
-            LabeledContent("Scale Factor") {
-                HStack {
-                    Slider(value: $scaleFactor, in: 1...16)
-                        .accessibilityLabel("Scale Factor")
-                        .frame(width: 320)
+                LabeledContent("Scale Factor") {
+                    HStack {
+                        Slider(value: $scaleFactor, in: 1...16)
+                            .accessibilityLabel("Scale Factor")
+                            .frame(width: 320)
 
-                    Text("\(scaleFactor, format: .number)")
-                        .frame(width: 100)
+                        Text("\(scaleFactor, format: .number)")
+                            .frame(width: 100)
+                    }
                 }
-            }
             }
             .fixedSize()
         }

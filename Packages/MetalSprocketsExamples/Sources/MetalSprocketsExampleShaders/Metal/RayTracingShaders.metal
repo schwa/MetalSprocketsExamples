@@ -5,7 +5,6 @@ using namespace raytracing;
 
 namespace RayTracingShaders {
 
-// Simple hash for random number generation
 inline float hash(uint seed) {
     seed = (seed ^ 61u) ^ (seed >> 16u);
     seed *= 9u;
@@ -16,21 +15,18 @@ inline float hash(uint seed) {
 }
 
 inline float3 randomInHemisphere(float3 normal, thread uint &seed) {
-    float u1 = hash(seed++);
-    float u2 = hash(seed++);
-
+    float u1 = hash(seed);
+    seed++;
+    float u2 = hash(seed);
+    seed++;
     float r = sqrt(u1);
     float theta = 2.0 * M_PI_F * u2;
-
     float x = r * cos(theta);
     float y = r * sin(theta);
     float z = sqrt(max(0.0, 1.0 - u1));
-
-    // Build tangent space
     float3 up = abs(normal.y) < 0.999 ? float3(0, 1, 0) : float3(1, 0, 0);
     float3 tangent = normalize(cross(up, normal));
     float3 bitangent = cross(normal, tangent);
-
     return normalize(tangent * x + bitangent * y + normal * z);
 }
 
@@ -40,33 +36,33 @@ void raytrace_kernel(
     constant RayTracingUniforms &uniforms [[buffer(0)]],
     instance_acceleration_structure accelerationStructure [[buffer(1)]],
     device const TriangleMaterial *materials [[buffer(2)]],
-    device const packed_float3 *vertices [[buffer(3)]],
+    device const float3 *vertices [[buffer(3)]],
     device const uint *indices [[buffer(4)]],
     device const uint *materialIndices [[buffer(5)]],
+    device const float3 *normals [[buffer(6)]],
     texture2d<float, access::read_write> accumTexture [[texture(0)]],
     texture2d<float, access::write> outputTexture [[texture(1)]]
 ) {
-    if (tid.x >= uint(uniforms.resolution.x) || tid.y >= uint(uniforms.resolution.y)) {
-        return;
-    }
+    if (tid.x >= uint(uniforms.resolution.x) || tid.y >= uint(uniforms.resolution.y)) return;
 
-    uint seed = tid.x + tid.y * uint(uniforms.resolution.x) + uniforms.frameIndex * uint(uniforms.resolution.x) * uint(uniforms.resolution.y);
+    uint seed = tid.x + tid.y * uint(uniforms.resolution.x)
+              + uniforms.frameIndex * uint(uniforms.resolution.x) * uint(uniforms.resolution.y);
 
-    // Jitter for anti-aliasing
-    float jitterX = hash(seed++);
-    float jitterY = hash(seed++);
-
-    float2 uv = (float2(tid) + float2(jitterX, jitterY)) / uniforms.resolution;
+    // Sub-pixel jitter for anti-aliasing
+    float jx = hash(seed);
+    seed++;
+    float jy = hash(seed);
+    seed++;
+    float2 jitter = float2(jx, jy);
+    float2 uv = (float2(tid) + jitter) / uniforms.resolution;
     uv = uv * 2.0 - 1.0;
-    uv.y = -uv.y; // Flip Y
+    uv.y = -uv.y;
+    uv.x *= uniforms.resolution.x / uniforms.resolution.y;
 
-    // Aspect ratio correction
-    float aspect = uniforms.resolution.x / uniforms.resolution.y;
-    uv.x *= aspect;
-
-    // Field of view (approx 39.3 degrees to match Cornell box camera)
     float fov = 0.4;
-    float3 rayDir = normalize(uniforms.cameraForward + uv.x * fov * uniforms.cameraRight + uv.y * fov * uniforms.cameraUp);
+    float3 rayDir = normalize(uniforms.cameraForward
+                            + uv.x * fov * uniforms.cameraRight
+                            + uv.y * fov * uniforms.cameraUp);
 
     float3 color = float3(0.0);
     float3 throughput = float3(1.0);
@@ -76,7 +72,10 @@ void raytrace_kernel(
     inter.assume_geometry_type(geometry_type::triangle);
     inter.force_opacity(forced_opacity::opaque);
 
-    for (uint bounce = 0; bounce < uniforms.maxBounces; bounce++) {
+    // Light quad area for PDF
+    float lightArea = length(cross(uniforms.lightEdge1, uniforms.lightEdge2));
+
+    for (uint bounce = 0; bounce <= uniforms.maxBounces; bounce++) {
         ray r;
         r.origin = rayOrigin;
         r.direction = rayDir;
@@ -84,81 +83,94 @@ void raytrace_kernel(
         r.max_distance = 1e38;
 
         auto intersection = inter.intersect(r, accelerationStructure);
+        if (intersection.type == intersection_type::none) break;
 
-        if (intersection.type == intersection_type::none) {
-            break;
-        }
-
-        // Get triangle index from the intersection
-        uint primitiveIndex = intersection.primitive_id;
-        uint geometryIndex = intersection.geometry_id;
-        // Use geometry_id to look up material
-        uint matIndex = materialIndices[geometryIndex];
+        uint instanceIndex = intersection.instance_id;
+        uint matIndex = materialIndices[instanceIndex];
         TriangleMaterial mat = materials[matIndex];
 
-        // Compute hit point
-        float t = intersection.distance;
-        float3 hitPoint = rayOrigin + rayDir * t;
+        float3 hitPoint = rayOrigin + rayDir * intersection.distance;
 
-        // Compute face normal from triangle vertices
-        uint baseIndex = primitiveIndex * 3;
-        // Each geometry has its own index space, we need to offset
-        // We'll pass a geometry offset buffer, but for simplicity with instance acceleration structure,
-        // we pack all triangles sequentially per geometry in the primitive acceleration structures.
-        // With instancing, primitive_id is local to the geometry.
-        // We need to figure out which geometry's vertices to use.
-        // Since we use one primitive acceleration structure per geometry (one triangle per face = quad split into 2 tris),
-        // the vertex data is per-geometry.
+        // Compute face normal
+        // Use precomputed per-quad normal (both triangles share the same normal)
+        float3 normal = normalize(float3(normals[instanceIndex]));
+        if (dot(normal, rayDir) > 0.0) normal = -normal;
 
-        float3 v0 = float3(vertices[indices[baseIndex + 0]]);
-        float3 v1 = float3(vertices[indices[baseIndex + 1]]);
-        float3 v2 = float3(vertices[indices[baseIndex + 2]]);
-
-        float3 edge1 = v1 - v0;
-        float3 edge2 = v2 - v0;
-        float3 normal = normalize(cross(edge1, edge2));
-
-        // Ensure normal faces the ray
-        if (dot(normal, rayDir) > 0) {
-            normal = -normal;
-        }
-
-        // Add emission
-        color += throughput * mat.emission;
-
-        // If we hit the light, stop bouncing
-        if (length(mat.emission) > 0.0) {
+        // Hit the light directly
+        if (any(mat.emission > 0.0)) {
+            // Only count direct hits on bounce 0 to avoid double-counting with NEE
+            if (bounce == 0) color += throughput * mat.emission;
             break;
         }
 
-        // Diffuse BRDF: color / PI
+        // --- Next Event Estimation: explicit light sampling ---
+        {
+            // Sample a random point on the light quad
+            float s = hash(seed++);
+            float t2 = hash(seed++);
+            float3 lightPoint = uniforms.lightCorner
+                              + s * uniforms.lightEdge1
+                              + t2 * uniforms.lightEdge2;
+
+            float3 toLight = lightPoint - hitPoint;
+            float dist = length(toLight);
+            float3 lightDir = toLight / dist;
+
+            float cosTheta = max(0.0, dot(normal, lightDir));
+
+            if (cosTheta > 0.0) {
+                // Shadow ray
+                ray shadowRay;
+                shadowRay.origin = hitPoint + normal * 0.001;
+                shadowRay.direction = lightDir;
+                shadowRay.min_distance = 0.001;
+                shadowRay.max_distance = dist - 0.002;
+
+                auto shadowHit = inter.intersect(shadowRay, accelerationStructure);
+
+                if (shadowHit.type == intersection_type::none) {
+                    // Light normal points down (0,-1,0)
+                    float3 lightNormal = float3(0, -1, 0);
+                    float cosLight = max(0.0, dot(-lightDir, lightNormal));
+
+                    // Solid angle PDF: p = dist^2 / (lightArea * cosLight)
+                    float pdf = (dist * dist) / max(lightArea * cosLight, 1e-6);
+
+                    // Lambertian BRDF = albedo / PI, cosine term = cosTheta
+                    // Contribution = throughput * albedo/PI * cosTheta * emission / pdf
+                    float3 contrib = throughput * mat.color * (1.0 / M_PI_F)
+                                   * cosTheta * uniforms.lightEmission / pdf;
+                    color += contrib;
+                }
+            }
+        }
+
+        // --- Indirect bounce ---
         throughput *= mat.color;
 
-        // Russian roulette after a few bounces
-        if (bounce > 2) {
-            float p = max(throughput.x, max(throughput.y, throughput.z));
-            if (hash(seed++) > p) {
-                break;
-            }
+        // Russian roulette
+        if (bounce >= 3) {
+            float p = max(throughput.r, max(throughput.g, throughput.b));
+            if (hash(seed++) > p) break;
             throughput /= p;
         }
 
-        // Sample new direction (cosine-weighted hemisphere)
         rayDir = randomInHemisphere(normal, seed);
         rayOrigin = hitPoint + normal * 0.001;
     }
 
-    // Accumulate
-    float4 prevColor = accumTexture.read(tid);
-    float sampleCount = prevColor.w;
-    float4 newAccum = float4(prevColor.xyz * sampleCount + color, sampleCount + 1.0);
+    // Accumulate running average
+    float4 prev = uniforms.frameIndex == 0 ? float4(0) : accumTexture.read(tid);
+    // prev.xyz = running sum, prev.w = sample count
+    float4 newAccum = float4(prev.xyz + color, prev.w + 1.0);
     accumTexture.write(newAccum, tid);
 
-    // Output averaged color with simple tone mapping
+    // Reinhard tone map + gamma
     float3 averaged = newAccum.xyz / newAccum.w;
-    // Gamma correction
+    averaged = averaged / (averaged + 1.0);
     averaged = pow(saturate(averaged), 1.0 / 2.2);
     outputTexture.write(float4(averaged, 1.0), tid);
 }
 
 } // namespace RayTracingShaders
+

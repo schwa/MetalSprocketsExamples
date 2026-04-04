@@ -1,4 +1,6 @@
 import DemoKit
+import GeometryLite3D
+import Interaction3D
 import Metal
 import MetalSprockets
 import MetalSprocketsAddOns
@@ -53,6 +55,9 @@ private enum CornellBox {
     private static func quadIndices(_ a: UInt32, _ b: UInt32, _ c: UInt32, _ d: UInt32) -> [UInt32] {
         [a, b, c, a, c, d]
     }
+
+    // Offset to centre the box at the origin (box Y range is 0..~2)
+    static let yOffset: Float = -1.0
 
     /// Build all geometry groups. Each group = one primitive acceleration structure.
     static func buildGeometries() -> [GeometryData] {
@@ -167,6 +172,7 @@ private final class RayTracingResources {
     var vertexBuffer: MTLBuffer?
     var indexBuffer: MTLBuffer?
     var materialIndexBuffer: MTLBuffer?
+    var normalBuffer: MTLBuffer?
     var instanceBuffer: MTLBuffer?
 
     // Textures
@@ -199,6 +205,7 @@ private final class RayTracingResources {
         var allVertices: [SIMD3<Float>] = []
         var allIndices: [UInt32] = []
         var allMaterialIndices: [UInt32] = []
+        var allNormals: [SIMD3<Float>] = []
 
         // Per-geometry vertex/index offsets for building prim accel structures
         struct GeometryRange {
@@ -211,10 +218,18 @@ private final class RayTracingResources {
         for geo in geometries {
             let vOffset = allVertices.count
             let iOffset = allIndices.count
-            allVertices.append(contentsOf: geo.vertices)
+            allVertices.append(contentsOf: geo.vertices.map { SIMD3<Float>($0.x, $0.y + CornellBox.yOffset, $0.z) })
             // Indices are local to each geometry's vertex array, offset them to global
             allIndices.append(contentsOf: geo.indices.map { $0 + UInt32(vOffset) })
             allMaterialIndices.append(UInt32(geo.materialIndex))
+            // Compute quad normal from first 3 vertices (both triangles share the same normal)
+            let v0 = geo.vertices[0]
+            let v1 = geo.vertices[1]
+            let v2 = geo.vertices[2]
+            let edge1 = v1 - v0
+            let edge2 = v2 - v0
+            let normal = simd_normalize(simd_cross(edge1, edge2))
+            allNormals.append(normal)
             ranges.append(GeometryRange(vertexOffset: vOffset, indexOffset: iOffset, indexCount: geo.indices.count))
         }
 
@@ -234,6 +249,10 @@ private final class RayTracingResources {
         materialIndexBuffer = device.makeBuffer(bytes: allMaterialIndices, length: MemoryLayout<UInt32>.stride * allMaterialIndices.count, options: .storageModeShared)
         materialIndexBuffer?.label = "RT Material Index Buffer"
 
+        // Create per-geometry normal buffer
+        normalBuffer = device.makeBuffer(bytes: allNormals, length: MemoryLayout<SIMD3<Float>>.stride * allNormals.count, options: .storageModeShared)
+        normalBuffer?.label = "RT Normal Buffer"
+
         // Build one primitive acceleration structure per geometry
         primitiveAccelerationStructures = []
 
@@ -246,7 +265,7 @@ private final class RayTracingResources {
         for (index, range) in ranges.enumerated() {
             let geometryDescriptor = MTLAccelerationStructureTriangleGeometryDescriptor()
             geometryDescriptor.vertexBuffer = vertexBuffer
-            geometryDescriptor.vertexBufferOffset = range.vertexOffset * MemoryLayout<SIMD3<Float>>.stride
+            geometryDescriptor.vertexBufferOffset = 0
             geometryDescriptor.vertexStride = MemoryLayout<SIMD3<Float>>.stride
             geometryDescriptor.indexBuffer = indexBuffer
             geometryDescriptor.indexBufferOffset = range.indexOffset * MemoryLayout<UInt32>.stride
@@ -367,6 +386,16 @@ private final class RayTracingResources {
         frameIndex = 0
     }
 
+    func clearTextures() {
+        // Recreate both textures from scratch (zeroed)
+        let size = currentSize
+        currentSize = .init()
+        accumTexture = nil
+        outputTexture = nil
+        ensureTextures(size: size)
+        frameIndex = 0
+    }
+
     func render(uniforms: RayTracingUniforms) throws {
         guard
             let instanceAccelerationStructure,
@@ -374,6 +403,7 @@ private final class RayTracingResources {
             let vertexBuffer,
             let indexBuffer,
             let materialIndexBuffer,
+            let normalBuffer,
             let accumTexture,
             let outputTexture,
             let commandBuffer = commandQueue.makeCommandBuffer()
@@ -395,6 +425,7 @@ private final class RayTracingResources {
         encoder.setBuffer(vertexBuffer, offset: 0, index: 3)
         encoder.setBuffer(indexBuffer, offset: 0, index: 4)
         encoder.setBuffer(materialIndexBuffer, offset: 0, index: 5)
+        encoder.setBuffer(normalBuffer, offset: 0, index: 6)
         encoder.setTexture(accumTexture, index: 0)
         encoder.setTexture(outputTexture, index: 1)
 
@@ -424,25 +455,31 @@ public struct RayTracingDemoView: View {
     @State private var maxBounces: UInt32 = 5
     @State private var frameIndex: UInt32 = 0
     @State private var isRendering = false
+    @State private var isPaused = false
     @State private var displayTexture: MTLTexture?
     @State private var renderSize = CGSize(width: 512, height: 512)
     @State private var needsReset = false
+    @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 3.2])
+    @State private var projection: any ProjectionProtocol = PerspectiveProjection()
+    @State private var lastCameraMatrix: simd_float4x4 = .init(translation: [0, 0, 3.2])
 
     public init() {
         // This line intentionally left blank.
     }
 
     public var body: some View {
-        ZStack {
-            Color.black
-            RenderView { _, _ in
-                if let displayTexture {
-                    try RenderPass {
-                        try TextureBillboardPipeline(specifier: .texture2D(displayTexture))
+        WorldView(projection: $projection, cameraMatrix: $cameraMatrix, tools: [.turntable]) {
+            ZStack {
+                Color.black
+                RenderView { _, _ in
+                    if let displayTexture {
+                        try RenderPass {
+                            try TextureBillboardPipeline(specifier: .texture2D(displayTexture))
+                        }
                     }
                 }
+                .aspectRatio(1.0, contentMode: .fit)
             }
-            .aspectRatio(1.0, contentMode: .fit)
         }
         .task {
             do {
@@ -457,12 +494,18 @@ public struct RayTracingDemoView: View {
         .onChange(of: maxBounces) { _, _ in
             needsReset = true
         }
+        .onChange(of: cameraMatrix) { _, _ in
+            needsReset = true
+        }
         .demoConfiguration {
             Form {
                 LabeledContent("Samples") {
                     Text("\(frameIndex)")
                 }
                 Stepper("Max Bounces: \(maxBounces)", value: $maxBounces, in: 1...10)
+                Button(isPaused ? "Resume" : "Pause") {
+                    isPaused.toggle()
+                }
                 Button("Reset") {
                     needsReset = true
                 }
@@ -483,36 +526,44 @@ public struct RayTracingDemoView: View {
         let height = Int(renderSize.height)
         resources.ensureTextures(size: MTLSize(width: width, height: height, depth: 1))
 
-        // Camera setup: looking into the box from the front
-        // Cornell box is roughly centered at (0, 1, 0), extends from -1 to 1 in X/Z, 0 to 2 in Y
-        let cameraPosition = SIMD3<Float>(0, 1.0, 3.2)
-        let cameraTarget = SIMD3<Float>(0, 1.0, 0)
-        let cameraForward = normalize(cameraTarget - cameraPosition)
-        let worldUp = SIMD3<Float>(0, 1, 0)
-        let cameraRight = normalize(cross(cameraForward, worldUp))
-        let cameraUp = cross(cameraRight, cameraForward)
-
         while isRendering {
             if needsReset {
-                resources.resetAccumulation()
                 resources.frameIndex = 0
+                frameIndex = 0
                 needsReset = false
             }
 
-            let uniforms = RayTracingUniforms(
-                cameraPosition: cameraPosition,
-                cameraForward: cameraForward,
-                cameraRight: cameraRight,
-                cameraUp: cameraUp,
-                resolution: SIMD2<Float>(Float(width), Float(height)),
-                frameIndex: resources.frameIndex,
-                samplesPerPixel: samplesPerPixel,
-                maxBounces: maxBounces
-            )
+            if !isPaused {
+                // Derive camera vectors from cameraMatrix
+                let camMatrix = cameraMatrix
+                let cameraPosition = SIMD3<Float>(camMatrix.columns.3.x, camMatrix.columns.3.y, camMatrix.columns.3.z)
+                let cameraForward = -normalize(SIMD3<Float>(camMatrix.columns.2.x, camMatrix.columns.2.y, camMatrix.columns.2.z))
+                let cameraRight = normalize(SIMD3<Float>(camMatrix.columns.0.x, camMatrix.columns.0.y, camMatrix.columns.0.z))
+                let cameraUp = normalize(SIMD3<Float>(camMatrix.columns.1.x, camMatrix.columns.1.y, camMatrix.columns.1.z))
 
-            try? resources.render(uniforms: uniforms)
-            displayTexture = resources.outputTexture
-            frameIndex = resources.frameIndex
+                // Light quad corners (from CornellBox geometry)
+                let lightCorner = SIMD3<Float>(-0.24, 1.98 + CornellBox.yOffset, 0.16)
+                let lightEdge1  = SIMD3<Float>(0.23 - (-0.24), 0, 0)  // along X
+                let lightEdge2  = SIMD3<Float>(0, 0, -0.22 - 0.16)    // along Z
+                let uniforms = RayTracingUniforms(
+                    cameraPosition: cameraPosition,
+                    cameraForward: cameraForward,
+                    cameraRight: cameraRight,
+                    cameraUp: cameraUp,
+                    resolution: SIMD2<Float>(Float(width), Float(height)),
+                    frameIndex: resources.frameIndex,
+                    samplesPerPixel: samplesPerPixel,
+                    maxBounces: maxBounces,
+                    lightCorner: lightCorner,
+                    lightEdge1: lightEdge1,
+                    lightEdge2: lightEdge2,
+                    lightEmission: SIMD3<Float>(17, 12, 4)
+                )
+
+                try? resources.render(uniforms: uniforms)
+                displayTexture = resources.outputTexture
+                frameIndex = resources.frameIndex
+            }
 
             // Yield to let UI update
             try? await Task.sleep(for: .milliseconds(1))

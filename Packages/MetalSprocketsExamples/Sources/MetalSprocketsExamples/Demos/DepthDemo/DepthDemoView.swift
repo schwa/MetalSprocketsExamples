@@ -118,14 +118,14 @@ public struct DepthDemoView: View {
         }
         .demoConfiguration {
             Form {
-            Toggle("Show Depth Map", isOn: $showDepthMap)
-            HStack {
-                Text("Contrast:")
-                Slider(value: $exponent, in: 0.1...10)
-                    .accessibilityLabel("Contrast")
-                Text("\(exponent, format: .number.precision(.fractionLength(2)))")
-                    .frame(width: 50)
-            }
+                Toggle("Show Depth Map", isOn: $showDepthMap)
+                HStack {
+                    Text("Contrast:")
+                    Slider(value: $exponent, in: 0.1...10)
+                        .accessibilityLabel("Contrast")
+                    Text("\(exponent, format: .number.precision(.fractionLength(2)))")
+                        .frame(width: 50)
+                }
             }
             .fixedSize()
         }

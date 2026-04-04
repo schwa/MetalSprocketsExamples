@@ -98,38 +98,38 @@ public struct GraphicsContext3DDemoView: View {
     @ViewBuilder
     private var configurationContent: some View {
         Form {
-        Picker("Sample", selection: $selectedSample) {
-            ForEach(Sample.allCases) { sample in
-                Text(sample.rawValue).tag(sample)
+            Picker("Sample", selection: $selectedSample) {
+                ForEach(Sample.allCases) { sample in
+                    Text(sample.rawValue).tag(sample)
+                }
             }
-        }
 
-        Toggle("Animate", isOn: $isPlaying)
+            Toggle("Animate", isOn: $isPlaying)
 
-        Toggle("Debug Wireframe", isOn: $debugWireframe)
+            Toggle("Debug Wireframe", isOn: $debugWireframe)
 
-        LabeledContent("Line Width") {
-            HStack {
-                Slider(value: $lineWidthMultiplier, in: 0.1...20.0)
-                    .accessibilityLabel("Line Width")
-                Text(lineWidthMultiplier, format: .number.precision(.fractionLength(2)))
-                    .frame(minWidth: 40)
+            LabeledContent("Line Width") {
+                HStack {
+                    Slider(value: $lineWidthMultiplier, in: 0.1...20.0)
+                        .accessibilityLabel("Line Width")
+                    Text(lineWidthMultiplier, format: .number.precision(.fractionLength(2)))
+                        .frame(minWidth: 40)
+                }
             }
-        }
 
-        LabeledContent("Random Lines") {
-            HStack {
-                Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000)
-                    .accessibilityLabel("Random Lines")
-                Text("\(randomLineCount)")
-                    .frame(minWidth: 40)
+            LabeledContent("Random Lines") {
+                HStack {
+                    Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000)
+                        .accessibilityLabel("Random Lines")
+                    Text("\(randomLineCount)")
+                        .frame(minWidth: 40)
+                }
             }
-        }
 
-        Button("Reset Camera") {
-            cameraMatrix = .init(translation: [0, 0, 8])
-            rotation = 0.0
-        }
+            Button("Reset Camera") {
+                cameraMatrix = .init(translation: [0, 0, 8])
+                rotation = 0.0
+            }
         }
         .fixedSize()
     }

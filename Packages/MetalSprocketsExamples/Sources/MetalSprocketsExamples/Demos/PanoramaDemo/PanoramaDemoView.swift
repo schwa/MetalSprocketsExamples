@@ -115,17 +115,17 @@ public struct PanoramaDemoView: View {
         }
         .demoConfiguration {
             Form {
-            Picker("Mesh", selection: $meshType) {
-                ForEach(MeshType.allCases, id: \.self) { type in
-                    Text(type.rawValue).tag(type)
+                Picker("Mesh", selection: $meshType) {
+                    ForEach(MeshType.allCases, id: \.self) { type in
+                        Text(type.rawValue).tag(type)
+                    }
                 }
-            }
 
-            Toggle("Show MS", isOn: $showMS)
+                Toggle("Show MS", isOn: $showMS)
 
-            Toggle("Gamma Correction", isOn: $applyGammaCorrection)
+                Toggle("Gamma Correction", isOn: $applyGammaCorrection)
 
-            SuperImportWidget(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image])
+                SuperImportWidget(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image])
             }
             .fixedSize()
         }
@@ -151,7 +151,9 @@ public struct PanoramaDemoView: View {
                 let device = _MTLCreateSystemDefaultDevice()
                 let textureLoader = MTKTextureLoader(device: device)
                 let texture = try await textureLoader.newTexture(URL: url, options: [.textureUsage: MTLTextureUsage.shaderRead.rawValue, .textureStorageMode: MTLStorageMode.private.rawValue])
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled else {
+                    return
+                }
                 await MainActor.run {
                     panoramaTexture = texture
                 }

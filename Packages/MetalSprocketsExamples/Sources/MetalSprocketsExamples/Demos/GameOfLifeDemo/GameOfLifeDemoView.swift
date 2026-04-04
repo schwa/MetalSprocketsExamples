@@ -18,19 +18,19 @@ public struct GameOfLifeDemoView: View {
 
         .demoConfiguration {
             Form {
-            Toggle("Animate", isOn: $isRunning)
+                Toggle("Animate", isOn: $isRunning)
 
-            Menu("Fill Pattern") {
-                Button("Glider") {
-                    pattern = .glider
+                Menu("Fill Pattern") {
+                    Button("Glider") {
+                        pattern = .glider
+                    }
+                    Button("Random") {
+                        pattern = .random
+                    }
+                    Button("Clear") {
+                        pattern = .clear
+                    }
                 }
-                Button("Random") {
-                    pattern = .random
-                }
-                Button("Clear") {
-                    pattern = .clear
-                }
-            }
             }
             .fixedSize()
         }

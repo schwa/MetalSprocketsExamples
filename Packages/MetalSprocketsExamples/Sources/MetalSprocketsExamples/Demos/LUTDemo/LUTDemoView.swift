@@ -83,18 +83,18 @@ public struct LUTDemoView: View {
         .background(.black)
         .demoConfiguration {
             Form {
-            Picker("LUT", selection: $lutURL) {
-                let resourceURL = Bundle.module.resourceURL.orFatalError("Failed to get module resource URL")
-                ForEach(builtInLUTNames, id: \.self) { name in
-                    let url = resourceURL.appendingPathComponent("Samples/\(name)").assertFileExists()
-                    let displayName = URL(fileURLWithPath: name).deletingPathExtension().lastPathComponent
-                    Text(displayName).tag(url)
+                Picker("LUT", selection: $lutURL) {
+                    let resourceURL = Bundle.module.resourceURL.orFatalError("Failed to get module resource URL")
+                    ForEach(builtInLUTNames, id: \.self) { name in
+                        let url = resourceURL.appendingPathComponent("Samples/\(name)").assertFileExists()
+                        let displayName = URL(fileURLWithPath: name).deletingPathExtension().lastPathComponent
+                        Text(displayName).tag(url)
+                    }
                 }
-            }
-            LabeledContent("Blend") {
-                Slider(value: $blend, in: 0...1)
-                    .accessibilityLabel("Blend")
-            }
+                LabeledContent("Blend") {
+                    Slider(value: $blend, in: 0...1)
+                        .accessibilityLabel("Blend")
+                }
             }
             .fixedSize()
         }

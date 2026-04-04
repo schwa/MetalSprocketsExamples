@@ -130,17 +130,7 @@ struct ITermRenderer<Demo: DemoRenderPass> {
         // BGRA -> need to specify the right byte order
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
 
-        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB),
-            let context = CGContext(
-                data: UnsafeMutableRawPointer(mutating: pixels),
-                width: width,
-                height: height,
-                bitsPerComponent: bitsPerComponent,
-                bytesPerRow: bytesPerRow,
-                space: colorSpace,
-                bitmapInfo: bitmapInfo.rawValue
-            ),
-            let cgImage = context.makeImage() else {
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB), let context = CGContext( data: UnsafeMutableRawPointer(mutating: pixels), width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue), let cgImage = context.makeImage() else {
             return nil
         }
 
