@@ -23,7 +23,7 @@ struct CLI: ParsableCommand {
 
     static var availableDemos: String {
         // Avoid keypath syntax on existential types to work around Swift compiler crash
-        allDemoRenderPasses.map(\.name).joined(separator: ", ")
+        allDemoRenderPasses.map { $0.name }.joined(separator: ", ") // swiftlint:disable:this prefer_key_path
     }
 
     static var defaultDemo: String {
