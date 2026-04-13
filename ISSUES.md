@@ -2321,17 +2321,20 @@ created: 2026-04-04T02:40:14Z
 ---
 
 ## 374: Promote high-quality shaders/pipelines from examples to MetalSprocketsAddOns
-status: new
+status: closed
 priority: medium
 kind: task
 created: 2026-04-13T06:00:53Z
-updated: 2026-04-13T06:03:17Z
+updated: 2026-04-13T15:59:23Z
+closed: 2026-04-13T15:59:23Z
 
 Promote the following from MetalSprocketsExamples into MetalSprocketsAddOns:
 
 - BlinnPhongShader (+ Lighting support it depends on)
 - DebugRenderPipeline — switchable debug visualization modes (normals, tangents, UVs, depth, wireframe, etc.)
 - VideoTexturePipeline — AVFoundation video frame to Metal texture streaming
+
+- `2026-04-13T15:59:23Z`: Promoted BlinnPhongShader, DebugRenderPipeline, VideoTexturePipeline, and Lighting to MetalSprocketsAddOns. Removed local copies from Examples.
 
 ---
 
