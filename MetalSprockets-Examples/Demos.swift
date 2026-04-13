@@ -18,7 +18,7 @@ import SwiftUI
         GameOfLifeDemoView.self,
         AppleEventLogoDemoView.self,
         ColorAdjustDemoView.self,
-        DebugShadersDemoView.self,
+        DebugShaderDemoView.self,
         PBRDemoView.self,
         SDFDemoView.self,
         PointCloudDemoView.self,
@@ -74,8 +74,7 @@ extension TriangleDemoView: @retroactive DemoView {
             name: "Triangle",
             description: "Colored triangle with GPU timing",
             longDescription: "The simplest MetalSprockets render pipeline: inline Metal source compiled at runtime into `VertexShader`/`FragmentShader`, wired up with `RenderView` and `Draw`.",
-            group: "Basic",
-            keywords: ["animated", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -86,8 +85,7 @@ extension GameOfLifeDemoView: @retroactive DemoView {
             name: "Game of Life",
             description: "GPU-driven cellular automaton",
             longDescription: "GPU-driven **cellular automaton** — a `ComputePass` updates a texture each frame, driving the entire simulation loop on the GPU.",
-            group: "Basic",
-            keywords: ["animated", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -95,11 +93,10 @@ extension GameOfLifeDemoView: @retroactive DemoView {
 extension StencilDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Stencil Buffer",
+            name: "Stencil",
             description: "Stencil-masked triangle",
             longDescription: "Stencil texture creation, **blit pass** to populate the stencil attachment, and `StencilState` configuration to clip rendered geometry.",
-            group: "Basic",
-            keywords: []
+            group: "Basic"
         )
     }
 }
@@ -110,8 +107,7 @@ extension ComputeDemoView: @retroactive DemoView {
             name: "Compute",
             description: "Buffer-to-buffer copy via compute",
             longDescription: "Standalone `ComputePass` and `ComputeDispatch` without any rendering — just **buffer-to-buffer** data movement on the GPU.",
-            group: "Basic",
-            keywords: ["needs-work"]
+            group: "Basic"
         )
     }
 }
@@ -119,11 +115,10 @@ extension ComputeDemoView: @retroactive DemoView {
 extension DepthDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Depth Buffer",
+            name: "Depth",
             description: "Depth buffer visualization",
             longDescription: "Render-to-texture with separate **color** and **depth** outputs. Uses **stitchable visible functions** for post-processing the depth buffer.",
-            group: "Complex",
-            keywords: ["configurable"]
+            group: "Complex"
         )
     }
 }
@@ -132,11 +127,10 @@ extension DepthDemoView: @retroactive DemoView {
 extension MetalFXDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "MetalFX Upscaling",
+            name: "MetalFX",
             description: "MetalFX spatial upscaling",
             longDescription: "Integrating `MetalFXSpatial` upsampling into a MetalSprockets pipeline.",
-            group: "Basic",
-            keywords: ["metalfx", "needs-work", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -148,8 +142,7 @@ extension BouncingTeapotsDemoView: @retroactive DemoView {
             name: "Bouncing Teapots",
             description: "Physics-driven instanced teapots",
             longDescription: "**Instanced rendering** to an offscreen texture with optional `MetalFX` upscaling before presentation.",
-            group: "Complex",
-            keywords: ["metalfx", "animated", "multipass"]
+            group: "Complex"
         )
     }
 }
@@ -157,11 +150,10 @@ extension BouncingTeapotsDemoView: @retroactive DemoView {
 extension BlinnPhongDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Blinn-Phong Lighting",
+            name: "Blinn-Phong",
             description: "Blinn-Phong lit teapots with skybox",
             longDescription: "`BlinnPhongShader` element with multiple models, **animated lighting**, skybox, and `WorldView` camera controls.",
-            group: "Basic",
-            keywords: ["lighting", "multipass", "animated"]
+            group: "Basic"
         )
     }
 }
@@ -169,11 +161,10 @@ extension BlinnPhongDemoView: @retroactive DemoView {
 extension HitTestDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Hit Test Demo",
+            name: "Hit Test",
             description: "GPU-based object picking",
             longDescription: "**Multi-pass** rendering with a parallel hit-test pass writing **geometry ID**, **instance ID**, **triangle ID**, **depth**, and **barycentric coordinates** to offscreen textures. Includes CPU readback of hit results.",
-            group: "Complex",
-            keywords: ["hit-test", "picking", "multipass", "configurable"]
+            group: "Complex"
         )
     }
 }
@@ -184,8 +175,7 @@ extension SkyboxDemoView: @retroactive DemoView {
             name: "Skybox",
             description: "Cube-map skybox rendering",
             longDescription: "`SkyboxRenderPipeline` with a **cube texture** built from a cross-layout image. Also shows generating textures from SwiftUI views.",
-            group: "Basic",
-            keywords: ["configurable"]
+            group: "Basic"
         )
     }
 }
@@ -196,8 +186,7 @@ extension AppleEventLogoDemoView: @retroactive DemoView {
             name: "Apple Event Logo",
             description: "Thermal-style video effect",
             longDescription: "Chaining multiple `ComputePass` stages — **heat simulation**, **color remap**, **video blend** — in a single frame.",
-            group: "Complex",
-            keywords: ["needs-work", "animated", "video"]
+            group: "Complex"
         )
     }
 }
@@ -205,11 +194,10 @@ extension AppleEventLogoDemoView: @retroactive DemoView {
 extension LUTDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "LUT Color Grading",
+            name: "LUT",
             description: "Image color grading via LUTs",
             longDescription: "Compute-based image processing with **LUT** texture loading (2D PNG and 3D `.cube` formats) and `TextureBillboardPipeline` for display.",
-            group: "Basic",
-            keywords: ["post-processing", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -218,11 +206,10 @@ extension LUTDemoView: @retroactive DemoView {
 extension OffscreenDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Offscreen Rendering",
+            name: "Offscreen",
             description: "Render to CGImage",
             longDescription: "Headless rendering with `OffscreenRenderer` — no `RenderView`, just render to a `CGImage`.",
-            group: "Basic",
-            keywords: ["needs-work"]
+            group: "Basic"
         )
     }
 }
@@ -231,11 +218,10 @@ extension OffscreenDemoView: @retroactive DemoView {
 extension MixedDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Mixed Techniques",
+            name: "Mixed",
             description: "Combined render and compute passes",
             longDescription: "Mixing **render** and **compute** passes in a single frame — geometry rendering followed by an edge-detection compute post-process that reads depth/color attachments.",
-            group: "Complex",
-            keywords: ["multipass", "animated"]
+            group: "Complex"
         )
     }
 }
@@ -246,20 +232,18 @@ extension ColorAdjustDemoView: @retroactive DemoView {
             name: "Color Adjust",
             description: "Compute-based color adjustments",
             longDescription: "Multiple compute shader functions (**multiply**, **gamma**, **HSV**, **levels**, **temperature/tint**, **vignette**, etc.) applied to an image, showing how to swap between different `ComputeKernel`s at runtime.",
-            group: "In-progress",
-            keywords: ["configurable"]
+            group: "In-progress"
         )
     }
 }
 
-extension DebugShadersDemoView: @retroactive DemoView {
+extension DebugShaderDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Debug Shaders",
+            name: "Debug Shader",
             description: "Shader debug visualizations",
             longDescription: "`DebugRenderPipeline` with switchable fragment shader modes for visualizing mesh attributes — **normals**, **tangents**, **UVs**, **depth**, **wireframe**, etc.",
-            group: "Basic",
-            keywords: []
+            group: "Basic"
         )
     }
 }
@@ -267,11 +251,10 @@ extension DebugShadersDemoView: @retroactive DemoView {
 extension PBRDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "PBR Rendering",
+            name: "PBR",
             description: "Physically based rendering",
             longDescription: "`PBRShader` with **Cook-Torrance BRDF**, HDR environment reflections, animated lighting, and configurable material properties.",
-            group: "Complex",
-            keywords: []
+            group: "Complex"
         )
     }
 }
@@ -279,11 +262,10 @@ extension PBRDemoView: @retroactive DemoView {
 extension SDFDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "SDF Raymarching",
+            name: "SDF",
             description: "3D SDF raymarching",
             longDescription: "Full-screen fragment shader **raymarching SDFs** with depth output, allowing integration with rasterized geometry via `WorldView`.",
-            group: "Complex",
-            keywords: ["animated", "raymarching", "configurable"]
+            group: "Complex"
         )
     }
 }
@@ -294,8 +276,7 @@ extension PointCloudDemoView: @retroactive DemoView {
             name: "Point Cloud",
             description: "Interactive torus point cloud",
             longDescription: "**Point primitive** rendering with depth testing from a CPU-generated `MTLBuffer`.",
-            group: "Basic",
-            keywords: ["points", "interactive", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -306,8 +287,7 @@ extension ParticleEffectsDemoView: @retroactive DemoView {
             name: "Particle Effects",
             description: "GPU compute particle system",
             longDescription: "**Compute-to-render buffer sharing**: a compute pass updates particle state each frame, then a render pass draws from the same `MTLBuffer`.",
-            group: "Complex",
-            keywords: ["compute", "animated", "configurable"]
+            group: "Complex"
         )
     }
 }
@@ -318,8 +298,7 @@ extension VideoPlaybackDemoView: @retroactive DemoView {
             name: "Video Playback",
             description: "Video with VCR distortion effect",
             longDescription: "Streaming `AVFoundation` video frames into Metal textures, rendered via `TextureBillboardPipeline` with an optional **VCR distortion** compute pass.",
-            group: "Basic",
-            keywords: ["video", "billboard", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -327,11 +306,10 @@ extension VideoPlaybackDemoView: @retroactive DemoView {
 extension PanoramaDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "360° Panorama",
+            name: "Panorama",
             description: "Equirectangular panorama viewer",
             longDescription: "**Equirectangular-to-sphere** texture mapping with `WorldView` camera controls and an optional gamma-correction compute post-pass.",
-            group: "Basic",
-            keywords: ["configurable"]
+            group: "Basic"
         )
     }
 }
@@ -339,11 +317,10 @@ extension PanoramaDemoView: @retroactive DemoView {
 extension WireframeDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Wireframe Teapot",
+            name: "Wireframe",
             description: "Wireframe mesh rendering",
             longDescription: "`WireframeRenderPipeline` for **line-mode** mesh rendering, combined with `GridShader` and `AxisLinesRenderPipeline`.",
-            group: "Basic",
-            keywords: []
+            group: "Basic"
         )
     }
 }
@@ -354,8 +331,7 @@ extension TrivialMeshDemoView: @retroactive DemoView {
             name: "Trivial Mesh",
             description: "Procedural geometry primitives",
             longDescription: "`TrivialMesh` **procedural geometry** generation and conversion to renderable `Mesh` objects — platonic solids, 2D shapes, and curved surfaces.",
-            group: "Basic",
-            keywords: ["mesh", "procedural", "lighting", "animated", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -363,11 +339,10 @@ extension TrivialMeshDemoView: @retroactive DemoView {
 extension SceneGraphDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Scene Graph",
+            name: "SceneGraph",
             description: "Hierarchical scene graph rendering",
             longDescription: "`SceneGraph` construction with **recursive transform propagation**, rendered via `SceneGraphRenderPass` with PBR shading.",
-            group: "Basic",
-            keywords: ["scene", "graph", "lighting"]
+            group: "Basic"
         )
     }
 }
@@ -375,11 +350,10 @@ extension SceneGraphDemoView: @retroactive DemoView {
 extension GLTFDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "glTF Model Viewer",
+            name: "GLTF",
             description: "glTF/GLB model loader and viewer",
             longDescription: "Loading **glTF/GLB** files, converting them to a `SceneGraph` via `GLTFSceneGraphGenerator`, and rendering with `SceneGraphRenderPass`.",
-            group: "Complex",
-            keywords: []
+            group: "Complex"
         )
     }
 }
@@ -387,11 +361,10 @@ extension GLTFDemoView: @retroactive DemoView {
 extension VoxelDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Voxel Renderer",
+            name: "Voxel",
             description: "Compute-raymarched voxel volumes",
             longDescription: "**3D texture** creation and compute-pass **raymarching** of voxel volumes, with MagicaVoxel `.vox` file import support.",
-            group: "Complex",
-            keywords: ["configurable"]
+            group: "Complex"
         )
     }
 }
@@ -399,11 +372,10 @@ extension VoxelDemoView: @retroactive DemoView {
 extension GrassDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Grass Sphere",
+            name: "Grass",
             description: "Mesh-shader procedural grass",
             longDescription: "Metal **object and mesh shader** pipeline with per-point amplification — each input point generates multiple segmented grass blade geometry instances.",
-            group: "Complex",
-            keywords: ["mesh-shaders", "procedural", "animated", "configurable"]
+            group: "Complex"
         )
     }
 }
@@ -414,8 +386,7 @@ extension SpiralParticlesDemoView: @retroactive DemoView {
             name: "Spiral Particles",
             description: "Mesh-shader spiral particles",
             longDescription: "**Mesh shader geometry amplification** with fully procedural vertex generation — no vertex buffers, all geometry created in the `object`/`mesh` shader stages.",
-            group: "Complex",
-            keywords: ["mesh-shaders", "particles", "animated", "procedural", "configurable"]
+            group: "Complex"
         )
     }
 }
@@ -426,8 +397,7 @@ extension GraphicsContext3DDemoView: @retroactive DemoView {
             name: "GraphicsContext3D",
             description: "Canvas-style 3D path drawing",
             longDescription: "`GraphicsContext3DRenderPipeline`: a SwiftUI `Canvas`-like API for **3D path drawing** with stroke/fill, backed by mesh-shader line rendering.",
-            group: "Basic",
-            keywords: ["3d", "path", "canvas", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -438,8 +408,7 @@ extension MetalCanvasDemoView: @retroactive DemoView {
             name: "MetalCanvas",
             description: "2D path rendering via mesh shaders",
             longDescription: "`MetalCanvas` and `MetalCanvasRenderPipeline`: GPU-accelerated **2D vector path stroking** using mesh shaders, accepting standard SwiftUI `Path` objects.",
-            group: "Basic",
-            keywords: ["2d", "path", "canvas", "mesh-shaders", "configurable"]
+            group: "Basic"
         )
     }
 }
@@ -447,11 +416,10 @@ extension MetalCanvasDemoView: @retroactive DemoView {
 extension TiledSDFDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Tiled SDF (2D)",
+            name: "Tiled SDF",
             description: "Tile-culled 2D SDF rendering",
             longDescription: "**Tile-based compute dispatch** with threadgroup-level primitive culling — primitives are binned per tile into **threadgroup memory** to reduce global memory traffic.",
-            group: "Complex",
-            keywords: ["compute", "sdf", "tiled", "animated", "2d", "configurable"]
+            group: "Complex"
         )
     }
 }
@@ -462,8 +430,7 @@ extension RayTracingDemoView: @retroactive DemoView {
             name: "Ray Tracing",
             description: "Cornell box path tracer",
             longDescription: "Metal **ray tracing** APIs with hardware-accelerated `AccelerationStructure` intersection. Progressive path tracing of the classic Cornell box scene with diffuse global illumination.",
-            group: "Complex",
-            keywords: ["ray-tracing", "path-tracing", "acceleration-structure", "compute"]
+            group: "Complex"
         )
     }
 }
@@ -471,11 +438,10 @@ extension RayTracingDemoView: @retroactive DemoView {
 extension TileAverageDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
-            name: "Hello Imageblock",
+            name: "Tile Average",
             description: "Imageblock tile averaging",
             longDescription: "Metal **imageblock** APIs: tile memory allocation, `imageblock_data` load/store, and tile dispatch in the simplest possible example.",
-            group: "Basic",
-            keywords: ["imageblock", "tile", "2d", "configurable"]
+            group: "Basic"
         )
     }
 }

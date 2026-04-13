@@ -9,7 +9,7 @@ import MetalSprocketsExampleShaders
 import MetalSprocketsUI
 import simd
 
-public struct DebugShadersDemoView: View {
+public struct DebugShaderDemoView: View {
     @State
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
