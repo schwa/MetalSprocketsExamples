@@ -3,6 +3,7 @@ import GeometryLite3D
 import Interaction3D
 import MetalKit
 import MetalSprockets
+import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import SwiftUI
@@ -93,67 +94,5 @@ public struct SkyboxDemoView: View {
         let device = _MTLCreateSystemDefaultDevice()
         let texture2D = try device.makeTexture(content: testView)
         return try device.makeTextureCubeFromCrossTexture(texture: texture2D)
-    }
-}
-
-struct SkyboxRenderPipeline: Element {
-    let projectionMatrix: simd_float4x4
-    let cameraMatrix: simd_float4x4
-    let texture: MTLTexture
-
-    @MSState
-    var vertexShader: VertexShader
-
-    @MSState
-    var fragmentShader: FragmentShader
-
-    init(projectionMatrix: simd_float4x4, cameraMatrix: simd_float4x4, texture: MTLTexture) throws {
-        self.projectionMatrix = projectionMatrix
-        self.cameraMatrix = cameraMatrix
-        self.texture = texture
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("SkyboxShader")
-        vertexShader = try shaderLibrary.vertex_main
-        fragmentShader = try shaderLibrary.fragment_main
-    }
-
-    var body: some Element {
-        get throws {
-            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                let positions: [Packed3<Float>] = [
-                    // Front face (z = -1)
-                    [ 1, -1, -1], [-1, -1, -1], [-1, 1, -1],  // Triangle 1 (inward)
-                    [ 1, -1, -1], [-1, 1, -1], [ 1, 1, -1],  // Triangle 2 (inward)
-
-                    // Back face (z = 1)
-                    [ 1, -1, 1], [-1, 1, 1], [-1, -1, 1],  // Triangle 3 (inward)
-                    [ 1, -1, 1], [ 1, 1, 1], [-1, 1, 1],  // Triangle 4 (inward)
-
-                    // Bottom face (y = -1)
-                    [ 1, -1, -1], [ 1, -1, 1], [-1, -1, 1],  // Triangle 5 (inward)
-                    [ 1, -1, -1], [-1, -1, 1], [-1, -1, -1],  // Triangle 6 (inward)
-
-                    // Top face (y = 1)
-                    [ 1, 1, -1], [-1, 1, -1], [-1, 1, 1],  // Triangle 7 (inward)
-                    [ 1, 1, -1], [-1, 1, 1], [ 1, 1, 1],  // Triangle 8 (inward)
-
-                    // Left face (x = -1)
-                    [-1, -1, -1], [-1, -1, 1], [-1, 1, 1],  // Triangle 9 (inward)
-                    [-1, -1, -1], [-1, 1, 1], [-1, 1, -1],  // Triangle 10 (inward)
-
-                    // Right face (x = 1)
-                    [ 1, -1, -1], [ 1, 1, -1], [ 1, 1, 1],  // Triangle 11 (inward)
-                    [ 1, -1, -1], [ 1, 1, 1], [ 1, -1, 1]  // Triangle 12 (inward)
-                ]
-                .map { $0 * 50 }
-                Draw { encoder in
-                    encoder.setVertexUnsafeBytes(of: positions, index: 0)
-                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: positions.count)
-                }
-                .parameter("modelViewProjectionMatrix", functionType: .vertex, value: projectionMatrix * cameraMatrix.inverse)
-                .parameter("texture", texture: texture)
-            }
-            .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
-        }
     }
 }
