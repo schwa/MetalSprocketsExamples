@@ -2,10 +2,7 @@
 
 #import "MetalSprocketsAddOnsShaders.h"
 
-#import "BlinnPhongShaders.h"
-#import "DebugShaders.h"
 #import "GrassShaders.h"
-#import "Lighting.h"
 #import "MetalCanvasShaders.h"
 #import "PBRShaders.h"
 #import "Panorama.h"

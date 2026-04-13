@@ -2,7 +2,7 @@ import Metal
 import MetalKit
 import MetalSprockets
 import MetalSprocketsAddOns
-import MetalSprocketsExampleShaders
+import MetalSprocketsAddOnsShaders
 import MetalSprocketsExamplesSupport
 import MetalSprocketsSupport
 import SwiftUI
@@ -22,19 +22,11 @@ enum LightingAnimator {
 
 extension Lighting {
     static func demo() throws -> Lighting {
-        let device = _MTLCreateSystemDefaultDevice()
-        let lights = [
-            Light(type: .point, color: [1, 1, 1], intensity: 50)
-        ]
-        let positions = [
-            SIMD3<Float>(1, 5, 0)
-        ]
-        assert(lights.count == positions.count)
-        return Lighting(
+        try Lighting(
             ambientLightColor: [0, 0, 0],
-            count: lights.count,
-            lights: try device.makeBuffer(view: .init(count: lights.count), values: lights, options: []),
-            lightPositions: try device.makeBuffer(view: .init(count: positions.count), values: positions, options: [])
+            lights: [
+                ([1, 5, 0], Light(type: .point, color: [1, 1, 1], intensity: 50))
+            ]
         )
     }
 }

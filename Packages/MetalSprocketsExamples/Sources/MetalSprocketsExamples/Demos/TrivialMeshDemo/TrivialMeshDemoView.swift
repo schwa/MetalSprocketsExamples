@@ -262,19 +262,12 @@ public struct TrivialMeshDemoView: View {
                 )
             ]
 
-            let lights = [
-                Light(type: .spot, color: [1, 1, 1], intensity: 30)
-            ]
-            let positions = [
-                SIMD3<Float>(2, 2, 3)
-            ]
-            let lighting = Lighting(
+            self.lighting = try Lighting(
                 ambientLightColor: [0.3, 0.3, 0.3],
-                count: lights.count,
-                lights: try device.makeBuffer(view: .init(count: lights.count), values: lights, options: []),
-                lightPositions: try device.makeBuffer(view: .init(count: positions.count), values: positions, options: [])
+                lights: [
+                    ([2, 2, 3], Light(type: .spot, color: [1, 1, 1], intensity: 30))
+                ]
             )
-            self.lighting = lighting
 
             let skyboxCrossTexture = (try? device.makeTexture(name: "Skybox", bundle: .main))
                 .orFatalError("Failed to load skybox cross texture")
