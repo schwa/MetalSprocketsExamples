@@ -167,8 +167,8 @@ public struct ShadowMapDemoView: View {
                         let t = timeline.date.timeIntervalSinceReferenceDate
                         lightAnimator0.update(at: t)
                         lightAnimator1.update(at: t)
-                        lightPositions[0] = lightAnimator0.transformer.apply(to: .zero)
-                        lightPositions[1] = lightAnimator1.transformer.apply(to: .zero)
+                        lightPositions[0] = lightAnimator0.transformer.transform(.zero)
+                        lightPositions[1] = lightAnimator1.transformer.transform(.zero)
                         lighting?.setLightPosition(lightPositions[0], at: 0)
                         lighting?.setLightPosition(lightPositions[1], at: 1)
                     }

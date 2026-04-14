@@ -127,12 +127,12 @@ public struct BlinnPhongDemoView: DemoView {
 
         // Light 0: white orbit
         lightAnimator0.update(at: t)
-        lightPosition0 = lightAnimator0.transformer.apply(to: .zero)
+        lightPosition0 = lightAnimator0.transformer.transform(.zero)
         lighting?.setLightPosition(lightPosition0, at: 0)
 
         // Light 1: colored orbit with hue cycling
         lightAnimator1.update(at: t)
-        lightPosition1 = lightAnimator1.transformer.apply(to: .zero)
+        lightPosition1 = lightAnimator1.transformer.transform(.zero)
         lighting?.setLightPosition(lightPosition1, at: 1)
         let hue = Float(t.truncatingRemainder(dividingBy: 6) / 6)
         let color = hueToRGB(hue)

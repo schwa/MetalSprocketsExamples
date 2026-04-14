@@ -43,7 +43,7 @@
       "location" : "https://github.com/schwa/Interaction3D",
       "state" : {
         "branch" : "main",
-        "revision" : "753de0a2417644314b58486bfd041fa6816a7af6"
+        "revision" : "16f1b2ea6c88c6a64debb24efc7134715952bdaa"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "1fa90524cd5dfaf00ea00a847254a68aa0960dfa"
+        "revision" : "b9126051da4fd3326b423d8d173cb52df2f794f7"
       }
     },
     {
@@ -70,7 +70,7 @@
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
         "branch" : "main",
-        "revision" : "295ea377f0da9250abfeb48bcbd799fbb0621711"
+        "revision" : "f49b4d6ff1d73fa57bc30413d7138f1c559b7056"
       }
     },
     {
@@ -80,6 +80,15 @@
       "state" : {
         "revision" : "81fb9369c945ec383acddcc5063f75f3e65c1d17",
         "version" : "0.1.2"
+      }
+    },
+    {
+      "identity" : "spacemouse",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/SpaceMouse",
+      "state" : {
+        "branch" : "main",
+        "revision" : "52a4dac46dbf2704e00010523274ada3a4d5c4e2"
       }
     },
     {
@@ -160,7 +169,7 @@
       "location" : "https://github.com/schwa/SwiftGLTF",
       "state" : {
         "branch" : "main",
-        "revision" : "9b7b712265c09f36bd0644233e7cc9de5fcdcd07"
+        "revision" : "418349a014299d672caf69845b61a9097adf80d0"
       }
     },
     {
