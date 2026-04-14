@@ -510,7 +510,7 @@ public struct RayTracingDemoView: View {
                     needsReset = true
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
     }
 

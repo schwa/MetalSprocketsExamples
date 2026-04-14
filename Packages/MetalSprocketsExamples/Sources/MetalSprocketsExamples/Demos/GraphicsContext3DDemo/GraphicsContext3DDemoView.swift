@@ -1,3 +1,4 @@
+import DemoKit
 import Interaction3D
 import MetalSprockets
 import MetalSprocketsAddOns
@@ -12,7 +13,6 @@ public struct GraphicsContext3DDemoView: View {
     @State private var cameraRotation = simd_quatf(angle: -.pi / 6, axis: [1, 0, 0])
     @State private var cameraDistance: Float = 8
     @State private var cameraTarget: SIMD3<Float> = .zero
-    @State private var showInspector = true
     @State private var lineWidth: Float = 3.0
     @State private var showWireframe = false
     @State private var capStyleIndex = 0
@@ -202,15 +202,7 @@ public struct GraphicsContext3DDemoView: View {
         .frameTimingOverlay()
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .onAppear { initializeSlugText() }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button { showInspector.toggle() } label: {
-                    Label("Inspector", systemImage: "sidebar.trailing")
-                }
-            }
-        }
-        #if !os(visionOS)
-        .inspector(isPresented: $showInspector) {
+        .demoConfiguration {
             Form {
                 Section("Stroke") {
                     LabeledContent("Line Width") {
@@ -231,9 +223,8 @@ public struct GraphicsContext3DDemoView: View {
                     Toggle("Wireframe", isOn: $showWireframe)
                 }
             }
-            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
+            .formStyle(.grouped)
         }
-        #endif
     }
 
     static func strokeCube(ctx: inout GraphicsContext3D, center: SIMD3<Float>, size: Float, color: Color, style: MetalSprocketsAddOns.StrokeStyle) {

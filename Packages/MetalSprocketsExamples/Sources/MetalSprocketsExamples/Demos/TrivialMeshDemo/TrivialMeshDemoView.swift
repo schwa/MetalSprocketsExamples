@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import Metal
@@ -17,7 +18,6 @@ public struct TrivialMeshDemoView: View {
     @State private var lighting: Lighting?
     @State private var skyboxTexture: MTLTexture?
     @State private var showWireframe = false
-    @State private var showInspector = true
 
     @State private var cameraRotation = simd_quatf(angle: -.pi / 8, axis: [1, 0, 0])
     @State private var cameraDistance: Float = 12
@@ -84,21 +84,12 @@ public struct TrivialMeshDemoView: View {
         .metalDepthStencilPixelFormat(.depth32Float)
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .frameTimingOverlay()
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button { showInspector.toggle() } label: {
-                    Label("Inspector", systemImage: "sidebar.trailing")
-                }
-            }
-        }
-        #if !os(visionOS)
-        .inspector(isPresented: $showInspector) {
+        .demoConfiguration {
             Form {
                 Toggle("Wireframe", isOn: $showWireframe)
             }
-            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
+            .formStyle(.grouped)
         }
-        #endif
         .task {
             do {
                 let device = _MTLCreateSystemDefaultDevice()

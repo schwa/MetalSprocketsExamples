@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -17,7 +18,6 @@ public struct DebugShaderDemoView: View {
     @State private var cameraTarget: SIMD3<Float> = [0, 1, 0]
 
     @State private var debugMode: DebugShadersMode = .normal
-    @State private var showInspector = true
 
     let teapot = MTKMesh.teapot(options: [.generateTangentBasis, .generateTextureCoordinatesIfMissing, .useSimpleTextureCoordinates])
 
@@ -66,21 +66,12 @@ public struct DebugShaderDemoView: View {
         .metalDepthStencilPixelFormat(.depth32Float)
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .frameTimingOverlay()
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button { showInspector.toggle() } label: {
-                    Label("Inspector", systemImage: "sidebar.trailing")
-                }
-            }
-        }
-        #if !os(visionOS)
-        .inspector(isPresented: $showInspector) {
+        .demoConfiguration {
             Form {
                 DebugModePicker(debugMode: $debugMode)
             }
-            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
+            .formStyle(.grouped)
         }
-        #endif
     }
 }
 

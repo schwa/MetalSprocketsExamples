@@ -75,7 +75,7 @@ public struct PointCloudDemoView: View {
                     generatePointCloud()
                 }
             }
-            .frame(width: 300)
+            .formStyle(.grouped)
         }
     }
 

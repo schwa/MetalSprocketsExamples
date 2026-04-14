@@ -130,7 +130,7 @@ public struct SpiralParticlesDemoView: View {
                     time = 0.0
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
     }
 

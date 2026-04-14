@@ -127,7 +127,7 @@ public struct PanoramaDemoView: View {
 
                 SuperImportWidget(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image])
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
         .onChange(of: panoramaURL, initial: true) {
             if let panoramaURL {

@@ -96,7 +96,7 @@ public struct LUTDemoView: View {
                         .accessibilityLabel("Blend")
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
         .onChange(of: lutURL) {
             do {

@@ -78,7 +78,7 @@ public struct TriangleDemoView: View {
                         LabeledContent("GPU Time", value: gpuTime.formatted())
                         LabeledContent("Kernel Time", value: kernelTime.formatted())
                     }
-                    .fixedSize()
+                    .formStyle(.grouped)
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
                 .onChange(of: timeline.date) { _, new in

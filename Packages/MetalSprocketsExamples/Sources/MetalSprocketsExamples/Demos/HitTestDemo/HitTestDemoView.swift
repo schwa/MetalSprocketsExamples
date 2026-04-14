@@ -237,7 +237,7 @@ public struct HitTestDemoView: View {
                     performFullGridHitTest()
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
     }
 

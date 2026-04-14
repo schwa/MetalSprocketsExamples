@@ -97,7 +97,7 @@ public struct VoxelDemoView: View {
 
                 SuperImportWidget(url: $magicaVoxelURL, identifier: "magica-voxel", allowedContentTypes: [.magicaVoxel])
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
     }
 

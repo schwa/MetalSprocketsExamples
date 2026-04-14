@@ -127,7 +127,7 @@ public struct DepthDemoView: View {
                         .frame(width: 50)
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
     }
 

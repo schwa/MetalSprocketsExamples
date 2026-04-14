@@ -70,7 +70,7 @@ public struct GLTFDemoView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
         .onChange(of: url, initial: true) {
             do {

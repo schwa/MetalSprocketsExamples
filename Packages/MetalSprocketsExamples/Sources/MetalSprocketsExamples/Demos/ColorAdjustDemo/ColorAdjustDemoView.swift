@@ -565,5 +565,6 @@ public struct ColorAdjustDemoView: View {
             .frame(minWidth: 350)
             .fixedSize(horizontal: true, vertical: false)
         }
+        .formStyle(.grouped)
     }
 }

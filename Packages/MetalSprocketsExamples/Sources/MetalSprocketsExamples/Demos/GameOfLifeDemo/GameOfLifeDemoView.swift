@@ -32,7 +32,7 @@ public struct GameOfLifeDemoView: View {
                     }
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
     }
 }

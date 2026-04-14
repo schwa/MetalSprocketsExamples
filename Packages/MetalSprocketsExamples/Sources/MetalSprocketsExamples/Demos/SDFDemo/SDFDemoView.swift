@@ -52,7 +52,10 @@ public struct SDFDemoView: View {
             }
         }
         .demoConfiguration {
-            Toggle("Show Depth", isOn: $showDepth)
+            Form {
+                Toggle("Show Depth", isOn: $showDepth)
+            }
+            .formStyle(.grouped)
         }
     }
 }

@@ -96,41 +96,35 @@ public struct ParticleEffectsDemoView: View {
             }
         }
         .demoConfiguration {
-            HStack(alignment: .top, spacing: 16) {
-                Form {
-                    Picker("Emitter", selection: $emitterType) {
-                        ForEach(EmitterType.allCases, id: \.self) { type in
-                            Text(type.rawValue).tag(type)
-                        }
-                    }
-                    .pickerStyle(.menu)
-
-                    LabeledContent("Particles") {
-                        Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000)
-                            .accessibilityLabel("Particles")
-                    }
-                    LabeledContent("Size") {
-                        Slider(value: $particleSize, in: 5...50)
-                            .accessibilityLabel("Size")
+            Form {
+                Picker("Emitter", selection: $emitterType) {
+                    ForEach(EmitterType.allCases, id: \.self) { type in
+                        Text(type.rawValue).tag(type)
                     }
                 }
-                .frame(width: 250)
+                .pickerStyle(.menu)
 
-                Form {
-                    LabeledContent("Gravity") {
-                        Slider(value: $gravity.y, in: -10...10)
-                            .accessibilityLabel("Gravity")
-                    }
-                    LabeledContent("Emission") {
-                        Slider(value: $emissionRate, in: 100...2_000)
-                            .accessibilityLabel("Emission")
-                    }
-                    Button("Reset") {
-                        initializeParticles()
-                    }
+                LabeledContent("Particles") {
+                    Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000)
+                        .accessibilityLabel("Particles")
                 }
-                .frame(width: 250)
+                LabeledContent("Size") {
+                    Slider(value: $particleSize, in: 5...50)
+                        .accessibilityLabel("Size")
+                }
+                LabeledContent("Gravity") {
+                    Slider(value: $gravity.y, in: -10...10)
+                        .accessibilityLabel("Gravity")
+                }
+                LabeledContent("Emission") {
+                    Slider(value: $emissionRate, in: 100...2_000)
+                        .accessibilityLabel("Emission")
+                }
+                Button("Reset") {
+                    initializeParticles()
+                }
             }
+            .formStyle(.grouped)
         }
         #if os(macOS)
         #endif

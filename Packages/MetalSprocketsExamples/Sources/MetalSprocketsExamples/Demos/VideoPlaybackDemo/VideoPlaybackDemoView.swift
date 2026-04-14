@@ -68,126 +68,118 @@ public struct VideoPlaybackDemoView: View {
         }
         .background(.black.opacity(0.8))
         .demoConfiguration {
-            HStack(alignment: .top, spacing: 20) {
-                Form {
-                    Button(action: togglePlayPause) {
-                        Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.fill" : "play.fill")
-                    }
-                    .disabled(videoURL == nil)
-
-                    Button("Load Video") {
-                        selectVideo()
-                    }
-
-                    Toggle("VCR Effects", isOn: $enableVCR)
-
-                    if let errorMessage {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                            .font(.caption)
-                    }
+            Form {
+                Button(action: togglePlayPause) {
+                    Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.fill" : "play.fill")
                 }
-                .fixedSize()
+                .disabled(videoURL == nil)
+
+                Button("Load Video") {
+                    selectVideo()
+                }
+
+                Toggle("VCR Effects", isOn: $enableVCR)
+
+                if let errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                }
 
                 if enableVCR {
-                    HStack(alignment: .top, spacing: 16) {
-                        Form {
-                            Button("Randomize") {
-                                vcrParameters.curvature = .random(in: 0...10)
-                                vcrParameters.skip = .random(in: 0...1)
-                                vcrParameters.imageFlicker = .random(in: 0...2)
-                                vcrParameters.vignetteFlickerSpeed = .random(in: 0...2)
-                                vcrParameters.vignetteStrength = .random(in: 0...2)
-                                vcrParameters.smallScanlinesSpeed = .random(in: 0...2)
-                                vcrParameters.smallScanlinesProximity = .random(in: 0...2)
-                                vcrParameters.smallScanlinesOpacity = .random(in: 0...2)
-                                vcrParameters.scanlinesOpacity = .random(in: 0...2)
-                                vcrParameters.scanlinesSpeed = .random(in: 0...2)
-                                vcrParameters.scanlineThickness = .random(in: 0...1)
-                                vcrParameters.scanlinesSpacing = .random(in: 0...2)
-                                vcrParameters.noiseAmount = .random(in: 0...2)
-                                vcrParameters.chromaticAberration = .random(in: 0...2)
-                            }
-                            Button("Set All to Zero") {
-                                vcrParameters.curvature = 0
-                                vcrParameters.skip = 0
-                                vcrParameters.imageFlicker = 0
-                                vcrParameters.vignetteFlickerSpeed = 0
-                                vcrParameters.vignetteStrength = 0
-                                vcrParameters.smallScanlinesSpeed = 0
-                                vcrParameters.smallScanlinesProximity = 0
-                                vcrParameters.smallScanlinesOpacity = 0
-                                vcrParameters.scanlinesOpacity = 0
-                                vcrParameters.scanlinesSpeed = 0
-                                vcrParameters.scanlineThickness = 0
-                                vcrParameters.scanlinesSpacing = 0
-                                vcrParameters.noiseAmount = 0
-                                vcrParameters.chromaticAberration = 0
-                            }
-                            LabeledContent("Curvature") {
-                                Slider(value: $vcrParameters.curvature, in: 0...10)
-                                    .accessibilityLabel("Curvature")
-                            }
-                            LabeledContent("Tracking") {
-                                Slider(value: $vcrParameters.skip, in: 0...1)
-                                    .accessibilityLabel("Tracking")
-                            }
-                            LabeledContent("Flicker") {
-                                Slider(value: $vcrParameters.imageFlicker, in: 0...2)
-                                    .accessibilityLabel("Flicker")
-                            }
-                            LabeledContent("Scanlines") {
-                                Slider(value: $vcrParameters.scanlinesOpacity, in: 0...2)
-                                    .accessibilityLabel("Scanlines")
-                            }
-                            LabeledContent("Vignette") {
-                                Slider(value: $vcrParameters.vignetteStrength, in: 0...2)
-                                    .accessibilityLabel("Vignette")
-                            }
-                            LabeledContent("Noise") {
-                                Slider(value: $vcrParameters.noiseAmount, in: 0...2)
-                                    .accessibilityLabel("Noise")
-                            }
+                    Section("VCR Effects") {
+                        Button("Randomize") {
+                            vcrParameters.curvature = .random(in: 0...10)
+                            vcrParameters.skip = .random(in: 0...1)
+                            vcrParameters.imageFlicker = .random(in: 0...2)
+                            vcrParameters.vignetteFlickerSpeed = .random(in: 0...2)
+                            vcrParameters.vignetteStrength = .random(in: 0...2)
+                            vcrParameters.smallScanlinesSpeed = .random(in: 0...2)
+                            vcrParameters.smallScanlinesProximity = .random(in: 0...2)
+                            vcrParameters.smallScanlinesOpacity = .random(in: 0...2)
+                            vcrParameters.scanlinesOpacity = .random(in: 0...2)
+                            vcrParameters.scanlinesSpeed = .random(in: 0...2)
+                            vcrParameters.scanlineThickness = .random(in: 0...1)
+                            vcrParameters.scanlinesSpacing = .random(in: 0...2)
+                            vcrParameters.noiseAmount = .random(in: 0...2)
+                            vcrParameters.chromaticAberration = .random(in: 0...2)
                         }
-                        .frame(width: 300)
-                        Form {
-                            LabeledContent("Color Shift") {
-                                Slider(value: $vcrParameters.chromaticAberration, in: 0...2)
-                                    .accessibilityLabel("Color Shift")
-                            }
-                            LabeledContent("Vignette Pulse") {
-                                Slider(value: $vcrParameters.vignetteFlickerSpeed, in: 0...2)
-                                    .accessibilityLabel("Vignette Pulse")
-                            }
-                            LabeledContent("Scanline Speed") {
-                                Slider(value: $vcrParameters.scanlinesSpeed, in: 0...2)
-                                    .accessibilityLabel("Scanline Speed")
-                            }
-                            LabeledContent("Scanline Thickness") {
-                                Slider(value: $vcrParameters.scanlineThickness, in: 0...1)
-                                    .accessibilityLabel("Scanline Thickness")
-                            }
-                            LabeledContent("Scanline Spacing") {
-                                Slider(value: $vcrParameters.scanlinesSpacing, in: 0...2)
-                                    .accessibilityLabel("Scanline Spacing")
-                            }
-                            LabeledContent("Fast Scanlines") {
-                                Slider(value: $vcrParameters.smallScanlinesOpacity, in: 0...2)
-                                    .accessibilityLabel("Fast Scanlines")
-                            }
-                            LabeledContent("Fast Scanline Speed") {
-                                Slider(value: $vcrParameters.smallScanlinesSpeed, in: 0...2)
-                                    .accessibilityLabel("Fast Scanline Speed")
-                            }
-                            LabeledContent("Fast Scanline Density") {
-                                Slider(value: $vcrParameters.smallScanlinesProximity, in: 0...2)
-                                    .accessibilityLabel("Fast Scanline Density")
-                            }
+                        Button("Set All to Zero") {
+                            vcrParameters.curvature = 0
+                            vcrParameters.skip = 0
+                            vcrParameters.imageFlicker = 0
+                            vcrParameters.vignetteFlickerSpeed = 0
+                            vcrParameters.vignetteStrength = 0
+                            vcrParameters.smallScanlinesSpeed = 0
+                            vcrParameters.smallScanlinesProximity = 0
+                            vcrParameters.smallScanlinesOpacity = 0
+                            vcrParameters.scanlinesOpacity = 0
+                            vcrParameters.scanlinesSpeed = 0
+                            vcrParameters.scanlineThickness = 0
+                            vcrParameters.scanlinesSpacing = 0
+                            vcrParameters.noiseAmount = 0
+                            vcrParameters.chromaticAberration = 0
                         }
-                        .frame(width: 300)
+                        LabeledContent("Curvature") {
+                            Slider(value: $vcrParameters.curvature, in: 0...10)
+                                .accessibilityLabel("Curvature")
+                        }
+                        LabeledContent("Tracking") {
+                            Slider(value: $vcrParameters.skip, in: 0...1)
+                                .accessibilityLabel("Tracking")
+                        }
+                        LabeledContent("Flicker") {
+                            Slider(value: $vcrParameters.imageFlicker, in: 0...2)
+                                .accessibilityLabel("Flicker")
+                        }
+                        LabeledContent("Scanlines") {
+                            Slider(value: $vcrParameters.scanlinesOpacity, in: 0...2)
+                                .accessibilityLabel("Scanlines")
+                        }
+                        LabeledContent("Vignette") {
+                            Slider(value: $vcrParameters.vignetteStrength, in: 0...2)
+                                .accessibilityLabel("Vignette")
+                        }
+                        LabeledContent("Noise") {
+                            Slider(value: $vcrParameters.noiseAmount, in: 0...2)
+                                .accessibilityLabel("Noise")
+                        }
+                        LabeledContent("Color Shift") {
+                            Slider(value: $vcrParameters.chromaticAberration, in: 0...2)
+                                .accessibilityLabel("Color Shift")
+                        }
+                        LabeledContent("Vignette Pulse") {
+                            Slider(value: $vcrParameters.vignetteFlickerSpeed, in: 0...2)
+                                .accessibilityLabel("Vignette Pulse")
+                        }
+                        LabeledContent("Scanline Speed") {
+                            Slider(value: $vcrParameters.scanlinesSpeed, in: 0...2)
+                                .accessibilityLabel("Scanline Speed")
+                        }
+                        LabeledContent("Scanline Thickness") {
+                            Slider(value: $vcrParameters.scanlineThickness, in: 0...1)
+                                .accessibilityLabel("Scanline Thickness")
+                        }
+                        LabeledContent("Scanline Spacing") {
+                            Slider(value: $vcrParameters.scanlinesSpacing, in: 0...2)
+                                .accessibilityLabel("Scanline Spacing")
+                        }
+                        LabeledContent("Fast Scanlines") {
+                            Slider(value: $vcrParameters.smallScanlinesOpacity, in: 0...2)
+                                .accessibilityLabel("Fast Scanlines")
+                        }
+                        LabeledContent("Fast Scanline Speed") {
+                            Slider(value: $vcrParameters.smallScanlinesSpeed, in: 0...2)
+                                .accessibilityLabel("Fast Scanline Speed")
+                        }
+                        LabeledContent("Fast Scanline Density") {
+                            Slider(value: $vcrParameters.smallScanlinesProximity, in: 0...2)
+                                .accessibilityLabel("Fast Scanline Density")
+                        }
                     }
                 }
             }
+            .formStyle(.grouped)
         }
         .onAppear {
             loadDefaultVideo()

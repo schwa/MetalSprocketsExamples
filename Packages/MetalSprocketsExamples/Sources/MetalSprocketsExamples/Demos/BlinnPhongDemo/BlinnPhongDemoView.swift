@@ -38,7 +38,6 @@ public struct BlinnPhongDemoView: DemoView {
     @State private var lightPosition0: SIMD3<Float> = [0, 3, 5]
     @State private var lightPosition1: SIMD3<Float> = [0, 1.5, -5]
     @State private var renderOptions: BlinnPhongDemoRenderPass.Options = .all
-    @State private var showInspector = true
     @State private var showWireframe = false
     @State private var useDebugShading = false
     @State private var debugMode: DebugShadersMode = .normal
@@ -148,15 +147,7 @@ public struct BlinnPhongDemoView: DemoView {
         }
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .frameTimingOverlay()
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button { showInspector.toggle() } label: {
-                    Label("Inspector", systemImage: "sidebar.trailing")
-                }
-            }
-        }
-        #if !os(visionOS)
-        .inspector(isPresented: $showInspector) {
+        .demoConfiguration {
             Form {
                 Section("Pipelines") {
                     Toggle("Skybox", isOn: $renderOptions.bound(.skybox))
@@ -180,9 +171,8 @@ public struct BlinnPhongDemoView: DemoView {
                     .disabled(!useDebugShading)
                 }
             }
-            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
+            .formStyle(.grouped)
         }
-        #endif
         .task {
             do {
                 lighting = try Lighting(

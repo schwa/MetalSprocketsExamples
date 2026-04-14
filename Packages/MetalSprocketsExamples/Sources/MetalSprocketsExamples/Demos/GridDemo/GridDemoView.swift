@@ -1,3 +1,4 @@
+import DemoKit
 import Interaction3D
 import MetalSprockets
 import MetalSprocketsAddOns
@@ -10,7 +11,6 @@ public struct GridDemoView: View {
     @State private var cameraRotation = simd_quatf(angle: -.pi / 6, axis: [1, 0, 0])
     @State private var cameraDistance: Float = 10
     @State private var cameraTarget: SIMD3<Float> = .zero
-    @State private var showInspector = true
 
     // Grid parameters
     @State private var minorLineWidth: Float = 0.01
@@ -65,17 +65,7 @@ public struct GridDemoView: View {
         .metalDepthStencilPixelFormat(.depth32Float)
         .frameTimingOverlay()
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showInspector.toggle()
-                } label: {
-                    Label("Inspector", systemImage: "sidebar.trailing")
-                }
-            }
-        }
-        #if !os(visionOS)
-        .inspector(isPresented: $showInspector) {
+        .demoConfiguration {
             Form {
                 Section("Minor Grid") {
                     LabeledContent("Line Width") {
@@ -115,8 +105,7 @@ public struct GridDemoView: View {
                     }
                 }
             }
-            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
+            .formStyle(.grouped)
         }
-        #endif
     }
 }

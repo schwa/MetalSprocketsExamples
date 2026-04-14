@@ -52,7 +52,7 @@ public struct MetalCanvasDemoView: View {
                     }
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
     }
 

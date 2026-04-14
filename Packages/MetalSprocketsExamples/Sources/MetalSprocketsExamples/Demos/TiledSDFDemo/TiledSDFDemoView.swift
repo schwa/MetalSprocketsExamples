@@ -110,7 +110,7 @@ public struct TiledSDFDemoView: View {
             Toggle("Animate", isOn: $animatePrimitives)
             Toggle("Show Stats", isOn: $showStats)
         }
-        .fixedSize()
+        .formStyle(.grouped)
     }
 
     @ViewBuilder

@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import Metal
@@ -32,7 +33,6 @@ public struct ShadowMapDemoView: View {
     @State private var shadowMap: ShadowMap?
     @State private var lightPositions: [SIMD3<Float>] = [[0, 5, 5], [0, 5, -5]]
     @State private var renderOptions: ShadowMapDemoRenderPass.Options = .all
-    @State private var showInspector = true
     @State private var depthBias: Float = 2.0
     @State private var slopeScale: Float = 6.0
     @State private var shadowMapResolution: Int = 2_048
@@ -188,15 +188,7 @@ public struct ShadowMapDemoView: View {
         }
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .frameTimingOverlay()
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button { showInspector.toggle() } label: {
-                    Label("Inspector", systemImage: "sidebar.trailing")
-                }
-            }
-        }
-        #if !os(visionOS)
-        .inspector(isPresented: $showInspector) {
+        .demoConfiguration {
             Form {
                 Section("Pipelines") {
                     Toggle("Grid", isOn: $renderOptions.bound(.grid))
@@ -209,36 +201,20 @@ public struct ShadowMapDemoView: View {
                     ColorPicker("Color", selection: $groundColor)
                 }
                 Section("Lighting") {
-                    HStack {
-                        Text("Ambient")
+                    LabeledContent("Ambient") {
                         Slider(value: $ambientLight, in: 0...1)
                     }
-                    Text(ambientLight.formatted(.number.precision(.fractionLength(2))))
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.secondary)
-                    HStack {
-                        Text("Intensity")
+                    LabeledContent("Intensity") {
                         Slider(value: $lightIntensity, in: 1...1_000)
                     }
-                    Text(lightIntensity.formatted(.number.precision(.fractionLength(0))))
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.secondary)
                 }
                 Section("Shadow Map") {
-                    HStack {
-                        Text("Depth Bias")
+                    LabeledContent("Depth Bias") {
                         Slider(value: $depthBias, in: 0...10)
                     }
-                    Text(depthBias.formatted(.number.precision(.fractionLength(1))))
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.secondary)
-                    HStack {
-                        Text("Slope Scale")
+                    LabeledContent("Slope Scale") {
                         Slider(value: $slopeScale, in: 0...10)
                     }
-                    Text(slopeScale.formatted(.number.precision(.fractionLength(1))))
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.secondary)
                     Picker("Resolution", selection: $shadowMapResolution) {
                         Text("128").tag(128)
                         Text("256").tag(256)
@@ -265,9 +241,8 @@ public struct ShadowMapDemoView: View {
                     }
                 }
             }
-            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
+            .formStyle(.grouped)
         }
-        #endif
         .task {
             do {
                 lighting = try Lighting(

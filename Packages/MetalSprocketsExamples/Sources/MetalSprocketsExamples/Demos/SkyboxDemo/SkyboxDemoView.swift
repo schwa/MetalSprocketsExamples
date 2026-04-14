@@ -36,7 +36,10 @@ public struct SkyboxDemoView: View {
             }
         }
         .demoConfiguration {
-            Toggle("Face Labels", isOn: $showFaceLabels)
+            Form {
+                Toggle("Face Labels", isOn: $showFaceLabels)
+            }
+            .formStyle(.grouped)
         }
         .task(id: showFaceLabels) {
             do {

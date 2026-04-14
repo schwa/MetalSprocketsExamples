@@ -64,7 +64,7 @@ public struct TileAverageDemoView: View {
                 .accessibilityLabel("Tile Size")
             }
         }
-        .fixedSize()
+        .formStyle(.grouped)
     }
 
     @ViewBuilder

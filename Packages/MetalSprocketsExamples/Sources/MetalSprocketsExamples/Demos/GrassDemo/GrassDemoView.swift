@@ -82,64 +82,43 @@ public struct GrassDemoView: View {
             let verticesPerBlade = (segmentsPerBlade + 1) * 2
             let totalVertices = totalBlades * verticesPerBlade
 
-            HStack(alignment: .top, spacing: 16) {
-                Form {
-                    HStack {
-                        Text("Blades: \(totalBlades.formatted())")
-                        Text("•")
-                        Text("Vertices: \(totalVertices.formatted())")
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
+            Form {
+                Section {
+                    Text("Blades: \(totalBlades.formatted()) • Vertices: \(totalVertices.formatted())")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Section("Blade") {
                     LabeledContent("Length") {
-                        HStack {
-                            Slider(value: $grassLength, in: 0.05...10.0)
-                                .accessibilityLabel("Length")
-                            Text(grassLength, format: .number.precision(.fractionLength(2)))
-                                .frame(minWidth: 40)
-                        }
+                        Slider(value: $grassLength, in: 0.05...10.0)
+                            .accessibilityLabel("Length")
                     }
                     LabeledContent("Width") {
-                        HStack {
-                            Slider(value: $bladeWidthMultiplier, in: 0.1...3.0)
-                                .accessibilityLabel("Width")
-                            Text(bladeWidthMultiplier, format: .number.precision(.fractionLength(2)))
-                                .frame(minWidth: 40)
-                        }
+                        Slider(value: $bladeWidthMultiplier, in: 0.1...3.0)
+                            .accessibilityLabel("Width")
                     }
-                }
-                .frame(width: 280)
-
-                Form {
                     LabeledContent("Blades/Pt") {
-                        HStack {
-                            Slider(value: $bladesPerPoint, in: 1...16)
-                                .accessibilityLabel("Blades per Point")
-                            Text(bladesPerPoint, format: .number.precision(.fractionLength(0)))
-                                .frame(minWidth: 40)
-                        }
+                        Slider(value: $bladesPerPoint, in: 1...16)
+                            .accessibilityLabel("Blades per Point")
                     }
                     LabeledContent("Points") {
-                        HStack {
-                            Slider(value: $grassDensity, in: 100...Double(maxGrassPoints))
-                                .accessibilityLabel("Points")
-                            Text(grassDensity, format: .number.precision(.fractionLength(0)))
-                                .frame(minWidth: 40)
-                        }
+                        Slider(value: $grassDensity, in: 100...Double(maxGrassPoints))
+                            .accessibilityLabel("Points")
                     }
-                    HStack {
-                        Toggle("Droop", isOn: $droopEnabled)
-                        Toggle("Animate", isOn: $isPlaying)
-                        Toggle("Sphere", isOn: $showSphere)
-                    }
+                }
+                Section("Options") {
+                    Toggle("Droop", isOn: $droopEnabled)
+                    Toggle("Animate", isOn: $isPlaying)
+                    Toggle("Sphere", isOn: $showSphere)
+                }
+                Section {
                     Button("Reset Camera") {
                         cameraMatrix = .init(translation: [0, 0, 4])
                         rotation = 0.0
                     }
                 }
-                .frame(width: 280)
             }
+            .formStyle(.grouped)
         }
     }
 

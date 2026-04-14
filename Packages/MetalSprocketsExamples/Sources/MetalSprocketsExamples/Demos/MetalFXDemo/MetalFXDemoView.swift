@@ -95,7 +95,7 @@ public struct MetalFXDemoView: View {
                     }
                 }
             }
-            .fixedSize()
+            .formStyle(.grouped)
         }
         .onChange(of: scaleFactor, initial: true) {
             let device = _MTLCreateSystemDefaultDevice()

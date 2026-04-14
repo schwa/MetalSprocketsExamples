@@ -22,7 +22,7 @@ public struct OffscreenDemoView: View {
         .aspectRatio(1, contentMode: .fit)
         .background(.black)
         .demoConfiguration {
-            Group {
+            Form {
                 if case let .success(image) = result {
                     Text("\(image.width) × \(image.height)")
                 }
@@ -30,6 +30,7 @@ public struct OffscreenDemoView: View {
                     Text(verbatim: "Failure: \(String(describing: error))")
                 }
             }
+            .formStyle(.grouped)
         }
         .task {
             do {

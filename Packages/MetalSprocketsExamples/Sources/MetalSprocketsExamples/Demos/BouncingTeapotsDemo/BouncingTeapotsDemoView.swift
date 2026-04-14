@@ -1,3 +1,4 @@
+import DemoKit
 import GeometryLite3D
 import Interaction3D
 import MetalKit
@@ -53,8 +54,7 @@ public struct BouncingTeapotsDemoView: View {
                     }
                     lastUpdate = now
                 }
-                #if !os(visionOS)
-                .inspector(isPresented: .constant(false)) {
+                .demoConfiguration {
                     Form {
                         ColorPicker("Checkerboard Color", selection: $checkerboardColor)
                         LabeledContent("MetalFX") {
@@ -65,8 +65,8 @@ public struct BouncingTeapotsDemoView: View {
                                 .accessibilityLabel("Scale Factor")
                         }
                     }
+                    .formStyle(.grouped)
                 }
-            #endif
         }
     }
 
