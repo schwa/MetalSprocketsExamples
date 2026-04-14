@@ -39,6 +39,7 @@ import SwiftUI
         TileAverageDemoView.self,
         RayTracingDemoView.self,
         GridDemoView.self,
+        SkinningDemoView.self,
         RenderDemoView.self,
         ShadowMapDemoView.self,
         RayTracedShadowDemoView.self,
@@ -608,6 +609,17 @@ extension TileAverageDemoView: @retroactive DemoView {
             name: "Tile Average",
             description: "Imageblock tile averaging",
             longDescription: "Metal **imageblock** APIs: tile memory allocation, `imageblock_data` load/store, and tile dispatch in the simplest possible example.",
+            group: "Basic"
+        )
+    }
+}
+
+extension SkinningDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Skinning",
+            description: "Skeletal mesh deformation with bones",
+            longDescription: "**Skeletal animation** with a 2-bone rig deforming a capsule mesh. Vertex shader applies per-vertex bone weights to blend between bone transforms, animating between straight and L-shaped poses.",
             group: "Basic"
         )
     }

@@ -2920,3 +2920,21 @@ closed: 2026-04-19T16:22:21Z
 MetalSprocketsShaderGraph (in Current/MetalSprocketsShaderGraph) provides a Swift DSL that generates Metal code via MTLFunctionStitchingGraph. Migrate its ShaderGraph sources and demo into MetalSprocketsExamples (likely as a dedicated demo) and retire the standalone project.
 
 ---
+## 377: Add a skinning-specific debug view to the skinning demo
+status: new
+priority: medium
+kind: feature
+created: 2026-04-14T03:19:43Z
+
+
+---
+
+## 378: Skinning demo should NOT embed Metal source code
+status: new
+priority: medium
+kind: bug
+created: 2026-04-14T03:19:50Z
+
+
+---
+
