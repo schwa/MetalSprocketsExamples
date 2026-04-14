@@ -1,6 +1,7 @@
 import Metal
 import MetalSprockets
 import MetalSprocketsAddOns
+import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd
 import SwiftUI
@@ -42,8 +43,7 @@ public struct SlugSpinningSphereDemoView: View {
     private func initializeChannels() {
         guard channels.isEmpty
         else { return }
-        guard let device = MTLCreateSystemDefaultDevice()
-        else { fatalError("No Metal device") }
+        let device = _MTLCreateSystemDefaultDevice()
         let builder = SlugTextMeshBuilder(device: device)
 
         let helloWorlds = [
@@ -125,7 +125,7 @@ private struct SpinningSphereRenderView: View {
     let startTime: Date
     let sphereRadius: Float
 
-    public var body: some View {
+    var body: some View {
         TimelineView(.animation) { timeline in
             SpinningSphereContent(scene: scene)
                 .onChange(of: timeline.date) {
@@ -181,7 +181,7 @@ private struct SpinningSphereRenderView: View {
 private struct SpinningSphereContent: View {
     let scene: SlugScene
 
-    public var body: some View {
+    var body: some View {
         RenderView { _, size in
             let aspectRatio = size.height > 0 ? Float(size.width / size.height) : 1.0
             let vpMatrix = float4x4.perspectiveReverseZInfinite(fovY: .pi / 2, aspect: aspectRatio, near: 0.01)

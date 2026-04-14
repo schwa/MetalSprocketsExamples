@@ -1,8 +1,8 @@
 #if os(visionOS)
 import CompositorServices
 import Metal
-import MetalSprocketsExampleShaders
 import MetalSprockets
+import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd

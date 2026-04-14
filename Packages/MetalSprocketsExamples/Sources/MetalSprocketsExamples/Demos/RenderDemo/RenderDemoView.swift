@@ -74,7 +74,7 @@ public struct RenderDemoView: View {
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                ShareLink(item: Screenshot(), preview: SharePreview("Screenshot", image: Image(systemName: "photo")))
+                ShareLink(item: Screenshot(), preview: SharePreview("Screenshot", image: Image(systemName: "photo"))) // swiftlint:disable:this accessibility_label_for_image
             }
         }
         .overlay(alignment: .bottomLeading) {
@@ -86,4 +86,3 @@ public struct RenderDemoView: View {
         }
     }
 }
-

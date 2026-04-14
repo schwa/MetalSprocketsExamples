@@ -124,23 +124,23 @@ public struct BlinnPhongDemoView: DemoView {
     public var body: some View {
         TimelineView(.animation) { timeline in
             renderView
-            .metalDepthStencilPixelFormat(.depth32Float)
-            .onChange(of: timeline.date) {
-                let t = timeline.date.timeIntervalSinceReferenceDate
+                .metalDepthStencilPixelFormat(.depth32Float)
+                .onChange(of: timeline.date) {
+                    let t = timeline.date.timeIntervalSinceReferenceDate
 
-                // Light 0: white orbit
-                lightAnimator0.update(at: t)
-                lightPosition0 = lightAnimator0.transformer.transform(.zero)
-                lighting?.setLightPosition(lightPosition0, at: 0)
+                    // Light 0: white orbit
+                    lightAnimator0.update(at: t)
+                    lightPosition0 = lightAnimator0.transformer.transform(.zero)
+                    lighting?.setLightPosition(lightPosition0, at: 0)
 
-                // Light 1: colored orbit with hue cycling
-                lightAnimator1.update(at: t)
-                lightPosition1 = lightAnimator1.transformer.transform(.zero)
-                lighting?.setLightPosition(lightPosition1, at: 1)
-                let hue = Float(t.truncatingRemainder(dividingBy: 6) / 6)
-                let color = hueToRGB(hue)
-                lighting?.setLight(Light(type: .point, color: color, intensity: 15), at: 1)
-            }
+                    // Light 1: colored orbit with hue cycling
+                    lightAnimator1.update(at: t)
+                    lightPosition1 = lightAnimator1.transformer.transform(.zero)
+                    lighting?.setLightPosition(lightPosition1, at: 1)
+                    let hue = Float(t.truncatingRemainder(dividingBy: 6) / 6)
+                    let color = hueToRGB(hue)
+                    lighting?.setLight(Light(type: .point, color: color, intensity: 15), at: 1)
+                }
         }
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .frameTimingOverlay()

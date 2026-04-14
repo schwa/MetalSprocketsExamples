@@ -1,7 +1,7 @@
 import Metal
-import MetalSprocketsExampleShaders
 import MetalSprockets
 import MetalSprocketsAddOns
+import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import SwiftUI

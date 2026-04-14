@@ -1,6 +1,7 @@
 import Metal
 import MetalSprockets
 import MetalSprocketsAddOns
+import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd
 import SwiftUI
@@ -52,8 +53,7 @@ public struct SlugMatrixRainDemoView: View {
     private func initialize() {
         guard scene == nil
         else { return }
-        guard let device = MTLCreateSystemDefaultDevice()
-        else { fatalError("No Metal device") }
+        let device = _MTLCreateSystemDefaultDevice()
         let builder = SlugTextMeshBuilder(device: device)
 
         let matrixChars: [Character] = Array("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789@#$%&*+=<>")
@@ -119,7 +119,7 @@ private struct MatrixRainRenderView: View {
 
     @State private var size: CGSize = .zero
 
-    public var body: some View {
+    var body: some View {
         TimelineView(.animation) { timeline in
             MatrixRainContent(scene: scene, zoom: zoom)
                 .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
@@ -150,7 +150,7 @@ private struct MatrixRainContent: View {
     let scene: SlugScene
     let zoom: Float
 
-    public var body: some View {
+    var body: some View {
         RenderView { _, size in
             let hw = Float(size.width) * 0.5
             let hh = Float(size.height) * 0.5

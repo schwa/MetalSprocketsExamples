@@ -85,7 +85,7 @@ public struct DebugShaderDemoView: View {
 private struct DebugModePicker: View {
     @Binding var debugMode: DebugShadersMode
 
-    public var body: some View {
+    var body: some View {
         Picker("Debug Mode", selection: $debugMode) {
             ForEach(DebugShadersMode.allCases, id: \.self) { mode in
                 Text(mode.description).tag(mode)
@@ -94,4 +94,3 @@ private struct DebugModePicker: View {
         .pickerStyle(.menu)
     }
 }
-

@@ -281,10 +281,10 @@ public struct GraphicsContext3DDemoView: View {
     }
 
     private func initializeSlugText() {
-        guard slugScene == nil
-        else { return }
-        guard let device = MTLCreateSystemDefaultDevice()
-        else { return }
+        guard slugScene == nil else {
+            return
+        }
+        let device = _MTLCreateSystemDefaultDevice()
         let builder = SlugTextMeshBuilder(device: device)
         let font = CTFontCreateWithName("HelveticaNeue-Bold" as CFString, 24, nil)
 

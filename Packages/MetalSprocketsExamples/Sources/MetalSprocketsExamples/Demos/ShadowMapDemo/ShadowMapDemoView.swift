@@ -207,14 +207,14 @@ public struct ShadowMapDemoView: View {
                         Text("Ambient")
                         Slider(value: $ambientLight, in: 0...1)
                     }
-                    Text(String(format: "%.2f", ambientLight))
+                    Text(ambientLight.formatted(.number.precision(.fractionLength(2))))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     HStack {
                         Text("Intensity")
                         Slider(value: $lightIntensity, in: 1...1_000)
                     }
-                    Text(String(format: "%.0f", lightIntensity))
+                    Text(lightIntensity.formatted(.number.precision(.fractionLength(0))))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
@@ -223,14 +223,14 @@ public struct ShadowMapDemoView: View {
                         Text("Depth Bias")
                         Slider(value: $depthBias, in: 0...10)
                     }
-                    Text(String(format: "%.1f", depthBias))
+                    Text(depthBias.formatted(.number.precision(.fractionLength(1))))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     HStack {
                         Text("Slope Scale")
                         Slider(value: $slopeScale, in: 0...10)
                     }
-                    Text(String(format: "%.1f", slopeScale))
+                    Text(slopeScale.formatted(.number.precision(.fractionLength(1))))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     Picker("Resolution", selection: $shadowMapResolution) {
@@ -441,4 +441,3 @@ struct ShadowMapDemoRenderPass: Element {
         }
     }
 }
-

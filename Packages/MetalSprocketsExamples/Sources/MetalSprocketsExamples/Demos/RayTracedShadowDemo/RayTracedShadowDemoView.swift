@@ -194,14 +194,14 @@ public struct RayTracedShadowDemoView: View {
                         Text("Ambient")
                         Slider(value: $ambientLight, in: 0...1)
                     }
-                    Text(String(format: "%.2f", ambientLight))
+                    Text(ambientLight.formatted(.number.precision(.fractionLength(2))))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     HStack {
                         Text("Intensity")
                         Slider(value: $lightIntensity, in: 1...1_000)
                     }
-                    Text(String(format: "%.0f", lightIntensity))
+                    Text(lightIntensity.formatted(.number.precision(.fractionLength(0))))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
@@ -210,7 +210,7 @@ public struct RayTracedShadowDemoView: View {
                         Text("Intensity")
                         Slider(value: $shadowIntensity, in: 0...1)
                     }
-                    Text(String(format: "%.2f", shadowIntensity))
+                    Text(shadowIntensity.formatted(.number.precision(.fractionLength(2))))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     Toggle("Debug", isOn: $shadowDebug)
@@ -384,9 +384,11 @@ struct RayTracedShadowDemoRenderPass: Element {
             }
 
             // Pass 2: Ray-traced shadow compute pass
+            // swiftlint:disable indentation_width
             if shadowsEnabled,
-                let sceneDepthTexture = renderPassDescriptor?.depthAttachment.texture,
-                let outputTexture = currentDrawable?.texture {
+               let sceneDepthTexture = renderPassDescriptor?.depthAttachment.texture,
+               let outputTexture = currentDrawable?.texture {
+                // swiftlint:enable indentation_width
                 let viewMatrix = cameraMatrix.inverse
                 let viewProjection = projectionMatrix * viewMatrix
                 let inverseVP = viewProjection.inverse
@@ -404,4 +406,3 @@ struct RayTracedShadowDemoRenderPass: Element {
         }
     }
 }
-

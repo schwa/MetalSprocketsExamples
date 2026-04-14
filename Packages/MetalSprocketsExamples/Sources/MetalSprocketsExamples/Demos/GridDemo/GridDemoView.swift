@@ -118,5 +118,3 @@ public struct GridDemoView: View {
         }
     }
 }
-
-

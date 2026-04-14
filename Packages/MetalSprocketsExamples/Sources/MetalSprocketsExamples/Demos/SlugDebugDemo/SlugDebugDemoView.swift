@@ -1,5 +1,6 @@
 import MetalSprockets
 import MetalSprocketsAddOns
+import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd
 import SwiftUI
@@ -34,8 +35,7 @@ public struct SlugDebugDemoView: View {
     private func initializeText() {
         guard scene == nil
         else { return }
-        guard let device = MTLCreateSystemDefaultDevice()
-        else { fatalError("No Metal device") }
+        let device = _MTLCreateSystemDefaultDevice()
         let builder = SlugTextMeshBuilder(device: device)
 
         let font = CTFontCreateWithName("HelveticaNeue" as CFString, 48, nil)
@@ -67,7 +67,7 @@ private struct SlugDebugRenderView: View {
     let scene: SlugScene
     @Binding var camera: SlugCamera
 
-    public var body: some View {
+    var body: some View {
         RenderView { _, size in
             let aspectRatio = size.height > 0 ? Float(size.width / size.height) : 1.0
             let vpMatrix = camera.projectionMatrix(aspectRatio: aspectRatio) * camera.viewMatrix()

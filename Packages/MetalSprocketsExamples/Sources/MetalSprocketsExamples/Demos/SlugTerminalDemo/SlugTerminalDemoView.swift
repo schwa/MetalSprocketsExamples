@@ -3,12 +3,12 @@ import CoreText
 import Metal
 import MetalSprockets
 import MetalSprocketsAddOns
+import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd
 import SwiftUI
 
 public struct SlugTerminalDemoView: View {
-
     @State private var scene: SlugScene?
     @State private var camera = SlugCamera()
     @State private var needsRebuild = false
@@ -141,17 +141,16 @@ public struct SlugTerminalDemoView: View {
             return "\(bytes) B"
         }
         if bytes < 1_024 * 1_024 {
-            return String(format: "%.1f KB", Double(bytes) / 1_024)
+            return "\((Double(bytes) / 1_024).formatted(.number.precision(.fractionLength(1)))) KB"
         }
-        return String(format: "%.1f MB", Double(bytes) / (1_024 * 1_024))
+        return "\((Double(bytes) / (1_024 * 1_024)).formatted(.number.precision(.fractionLength(1)))) MB"
     }
 
     private func getTerminalConfig() -> TerminalConfig {
         if let config = terminalConfig {
             return config
         }
-        guard let device = MTLCreateSystemDefaultDevice()
-        else { fatalError("No Metal device") }
+        let device = _MTLCreateSystemDefaultDevice()
         let config = TerminalConfig(device: device, fontName: "Menlo", fontSize: 14)
         terminalConfig = config
         return config
@@ -360,7 +359,7 @@ private struct TerminalRenderView: View {
     let scene: SlugScene
     @Binding var camera: SlugCamera
 
-    public var body: some View {
+    var body: some View {
         RenderView { _, size in
             let aspectRatio = size.height > 0 ? Float(size.width / size.height) : 1.0
             let vpMatrix = camera.projectionMatrix(aspectRatio: aspectRatio) * camera.viewMatrix()

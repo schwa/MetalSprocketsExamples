@@ -214,4 +214,3 @@ private struct Model: Identifiable {
     var modelMatrix: float4x4
     var material: BlinnPhongMaterial
 }
-
