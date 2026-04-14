@@ -91,7 +91,7 @@ public struct GraphicsContext3DDemoView: View {
                 // Hexagon on the ground
                 let hexagon = Path3D { p in
                     for i in 0..<6 {
-                        let angle = Float(i) / 6.0 * 2 * .pi
+                        let angle: Float = Float(i) / 6.0 * 2 * Float.pi
                         let pt = SIMD3<Float>(cos(angle) * 1.5 + 6, 0.1, sin(angle) * 1.5 - 3)
                         if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
                     }
@@ -154,7 +154,7 @@ public struct GraphicsContext3DDemoView: View {
                     let cz: Float = 3
                     for i in 0...segments {
                         let t = Float(i) / Float(segments)
-                        let angle = t * turns * 2 * .pi
+                        let angle: Float = t * turns * 2 * Float.pi
                         let x = cx + cos(angle) * radius
                         let y = t * height
                         let z = cz + sin(angle) * radius
@@ -338,8 +338,8 @@ public struct GraphicsContext3DDemoView: View {
         Path3D { p in
             let totalPoints = points * 2
             for i in 0..<totalPoints {
-                let angle = Float(i) / Float(totalPoints) * 2 * .pi - .pi / 2
-                let radius = i.isMultiple(of: 2) ? outerRadius : innerRadius
+                let angle: Float = Float(i) / Float(totalPoints) * 2 * Float.pi - Float.pi / 2
+                let radius: Float = i.isMultiple(of: 2) ? outerRadius : innerRadius
                 let point = SIMD3<Float>(cos(angle) * radius, y, sin(angle) * radius)
                 if i == 0 {
                     p.move(to: point)
