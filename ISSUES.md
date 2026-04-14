@@ -2202,11 +2202,12 @@ The Turntable camera control popup and related WorldView interaction controls fr
 ---
 
 ## 369: Organize all demos into consistent directory structure
-status: new
+status: open
 priority: low
-kind: none
+kind: task
+labels: effort:l
 created: 2026-04-04T00:38:02Z
-updated: 2026-04-04T00:39:24Z
+updated: 2026-04-14T16:12:51Z
 
 Reorganize demo files so every demo follows a consistent directory structure with consistent naming.
 
@@ -2274,10 +2275,12 @@ No functional changes — just file moves and renames.
 ---
 
 ## 370: Ray tracing demo: migrate to MetalSprockets element system
-status: new
+status: open
 priority: low
 kind: task
+labels: effort:l
 created: 2026-04-04T01:37:41Z
+updated: 2026-04-14T16:12:51Z
 
 The ray tracing demo currently bypasses most of MetalSprockets and manages its own device, command queue, compute pipeline, and textures manually. It should be refactored to use the MetalSprockets element system (ComputePass, ComputePipeline, ComputeDispatch, RenderPass, etc.) like the GameOfLife demo does.
 
@@ -2294,19 +2297,24 @@ This needs more investigation into what MetalSprockets supports today vs what wo
 ---
 
 ## 371: Demo: Simple renderer with ray-traced shadows
-status: new
+status: closed
 priority: low
-kind: none
+kind: feature
+labels: effort:l
 created: 2026-04-04T02:34:33Z
+updated: 2026-04-14T16:15:47Z
+closed: 2026-04-14T16:15:47Z
 
 
 ---
 
 ## 372: Demo: Simple renderer with ray-traced ambient occlusion
-status: new
+status: open
 priority: low
-kind: none
+kind: feature
+labels: effort:l
 created: 2026-04-04T02:34:33Z
+updated: 2026-04-14T16:12:52Z
 
 
 ---
@@ -2314,8 +2322,10 @@ created: 2026-04-04T02:34:33Z
 ## 373: Track and display ray/collision counts in RT demos
 status: new
 priority: low
-kind: none
+kind: feature
+labels: effort:m, needs-info
 created: 2026-04-04T02:40:14Z
+updated: 2026-04-14T16:12:52Z
 
 
 ---
@@ -2339,26 +2349,80 @@ Promote the following from MetalSprocketsExamples into MetalSprocketsAddOns:
 ---
 
 ## 375: Demo views render with wrong size/aspect ratio on initial load
-status: new
+status: open
 priority: medium
 kind: bug
+labels: effort:m
 created: 2026-04-14T02:52:09Z
+updated: 2026-04-14T16:12:52Z
 
 RenderView-based demos (Spinning Cube, GraphicsContext3D) render with incorrect aspect ratio or empty content on first load. Requires window resize or navigating away and back to fix. Likely caused by RenderView receiving a stale/zero drawable size before the NavigationSplitView detail column finishes layout. May be a DemoKit or MetalSprockets RenderView issue.
 
 Duplicated from MetalSprocketsAddOns#3.
 
+- `2026-04-14T16:12:57Z`: Related to #376 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
+
 ---
 
 ## 376: GraphicsContext3D does not render until window is resized
-status: new
+status: open
 priority: high
 kind: bug
+labels: effort:m
 created: 2026-04-14T02:52:21Z
+updated: 2026-04-14T16:12:52Z
 
 GraphicsContext3D content is completely invisible on initial load. Requires a window resize to trigger rendering. Affects both the standalone GraphicsContext3D demo and the BlinnPhong demo light marker. Possibly related to #375 (wrong size/aspect on initial load) but this is a complete rendering failure, not just wrong aspect.
 
 Duplicated from MetalSprocketsAddOns#7.
+
+- `2026-04-14T16:12:57Z`: Related to #375 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
+
+---
+
+## 377: Add a skinning-specific debug view to the skinning demo
+status: open
+priority: medium
+kind: feature
+labels: effort:m
+created: 2026-04-14T03:19:43Z
+updated: 2026-04-14T16:12:52Z
+
+
+---
+
+## 378: Skinning demo should NOT embed Metal source code
+status: closed
+priority: medium
+kind: bug
+created: 2026-04-14T03:19:50Z
+updated: 2026-04-14T16:12:39Z
+closed: 2026-04-14T16:12:39Z
+
+- `2026-04-14T16:12:39Z`: Fixed in previous commit — skinning shaders moved to SkinningShaders.metal, loaded via ShaderLibrary.
+
+---
+
+## 379: Audit all code for MetalSprockets best practices
+status: open
+priority: medium
+kind: task
+labels: effort:l
+created: 2026-04-14T16:11:05Z
+updated: 2026-04-14T16:12:52Z
+
+Review all demo code to ensure it follows MetalSprockets best practices: load shaders from ShaderLibrary (not inline source strings), avoid side effects in Element body, use onChange/onWorkloadEnter for lifecycle, use proper resource declaration patterns, etc.
+
+- `2026-04-14T16:13:02Z`: #378 (skinning inline shader strings) was the first item addressed under this audit — now closed.
+
+---
+
+## 380: Consider merging entire project into MetalSprocketsAddOns
+status: new
+priority: low
+kind: task
+created: 2026-04-14T16:14:27Z
+
 
 ---
 
