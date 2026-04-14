@@ -5,6 +5,7 @@ import SwiftUI
 @MainActor let allDemos: [any DemoView.Type] = {
     var demos: [any DemoView.Type] = [
         EmptyDemoView.self,
+        // TODO
         BlinnPhongDemoView.self,
         HitTestDemoView.self,
         SkyboxDemoView.self,
@@ -36,12 +37,34 @@ import SwiftUI
         MetalCanvasDemoView.self,
         TiledSDFDemoView.self,
         TileAverageDemoView.self,
-        RayTracingDemoView.self
+        RayTracingDemoView.self,
+        GridDemoView.self,
+        RenderDemoView.self,
+        ShadowMapDemoView.self,
+        RayTracedShadowDemoView.self,
+        SlugDebugDemoView.self,
+        SlugMatrixRainDemoView.self,
+        SlugSpinningSphereDemoView.self,
+        SlugTextPanelDemoView.self
     ]
 
     #if os(macOS)
     demos += [
-        OffscreenDemoView.self
+        OffscreenDemoView.self,
+        SlugTerminalDemoView.self
+    ]
+    #endif
+
+    #if os(iOS)
+    demos += [
+        MobileDemoView.self
+    ]
+    #endif
+
+    #if os(visionOS)
+    demos += [
+        VisionOSDemoView.self,
+        ImmersiveMatrixRainView.self
     ]
     #endif
 
@@ -147,17 +170,6 @@ extension BouncingTeapotsDemoView: @retroactive DemoView {
     }
 }
 
-extension BlinnPhongDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Blinn-Phong",
-            description: "Blinn-Phong lit teapots with skybox",
-            longDescription: "`BlinnPhongShader` element with multiple models, **animated lighting**, skybox, and `WorldView` camera controls.",
-            group: "Basic"
-        )
-    }
-}
-
 extension HitTestDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
@@ -243,7 +255,8 @@ extension DebugShaderDemoView: @retroactive DemoView {
             name: "Debug Shader",
             description: "Shader debug visualizations",
             longDescription: "`DebugRenderPipeline` with switchable fragment shader modes for visualizing mesh attributes — **normals**, **tangents**, **UVs**, **depth**, **wireframe**, etc.",
-            group: "Basic"
+            group: "Rendering",
+            keywords: ["MetalSprocketsAddOns"]
         )
     }
 }
@@ -331,7 +344,8 @@ extension TrivialMeshDemoView: @retroactive DemoView {
             name: "Trivial Mesh",
             description: "Procedural geometry primitives",
             longDescription: "`TrivialMesh` **procedural geometry** generation and conversion to renderable `Mesh` objects — platonic solids, 2D shapes, and curved surfaces.",
-            group: "Basic"
+            group: "Rendering",
+            keywords: ["MetalSprocketsAddOns"]
         )
     }
 }
@@ -395,9 +409,10 @@ extension GraphicsContext3DDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
             name: "GraphicsContext3D",
-            description: "Canvas-style 3D path drawing",
+            description: "3D stroked and filled paths with pixel-perfect line widths",
             longDescription: "`GraphicsContext3DRenderPipeline`: a SwiftUI `Canvas`-like API for **3D path drawing** with stroke/fill, backed by mesh-shader line rendering.",
-            group: "Basic"
+            group: "Rendering",
+            keywords: ["MetalSprocketsAddOns"]
         )
     }
 }
@@ -434,6 +449,156 @@ extension RayTracingDemoView: @retroactive DemoView {
         )
     }
 }
+
+extension GridDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Infinite Grid",
+            systemImage: "grid",
+            description: "An infinite ground plane grid with interactive camera",
+            group: "Rendering",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension RenderDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Spinning Cube",
+            systemImage: "cube",
+            description: "A rotating RGB cube with MSAA controls",
+            group: "Rendering",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension ShadowMapDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Shadow Map",
+            systemImage: "shadow",
+            description: "Multi-light shadow mapping with PCF and depth bias controls",
+            group: "Rendering",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension RayTracedShadowDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Ray Traced Shadows",
+            systemImage: "rays",
+            description: "Hardware-accelerated ray-traced shadows with acceleration structures",
+            group: "Rendering",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension SlugDebugDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Slug Debug",
+            systemImage: "textformat",
+            description: "Basic Slug text rendering test",
+            group: "Slug",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension SlugMatrixRainDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Matrix Rain",
+            systemImage: "chevron.left.forwardslash.chevron.right",
+            description: "Matrix-style falling text rendered with Slug",
+            group: "Slug",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension SlugSpinningSphereDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Spinning Sphere",
+            systemImage: "globe",
+            description: "Text mapped to a spinning sphere with Slug",
+            group: "Slug",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension SlugTextPanelDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Text Panel",
+            systemImage: "text.alignleft",
+            description: "Multi-language text rendered with Slug",
+            group: "Slug",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+#if os(macOS)
+extension SlugTerminalDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Terminal",
+            systemImage: "terminal",
+            description: "Live terminal output rendered with Slug",
+            group: "Slug",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+#endif
+
+#if os(iOS)
+extension MobileDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Mobile",
+            systemImage: "iphone",
+            description: "AR-powered mobile rendering demo",
+            group: "Platform",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+#endif
+
+#if os(visionOS)
+extension VisionOSDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "VisionOS",
+            systemImage: "visionpro",
+            description: "Immersive visionOS stereo rendering",
+            group: "Platform",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+
+extension ImmersiveMatrixRainView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Immersive Matrix Rain",
+            systemImage: "visionpro",
+            description: "Matrix rain in immersive visionOS space",
+            group: "Slug",
+            keywords: ["MetalSprocketsAddOns"]
+        )
+    }
+}
+#endif
 
 extension TileAverageDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {

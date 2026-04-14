@@ -1,346 +1,217 @@
-import DemoKit
 import GeometryLite3D
 import Interaction3D
 import Metal
 import MetalKit
 import MetalSprockets
 import MetalSprocketsAddOns
-import MetalSprocketsExampleShaders
+import MetalSprocketsAddOnsShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
 import simd
 import SwiftUI
 
 public struct TrivialMeshDemoView: View {
-    @State
-    private var models: [Model] = []
+    public init() { }
 
-    @State
-    private var lighting: Lighting
+    @State private var models: [Model] = []
+    @State private var lighting: Lighting?
+    @State private var skyboxTexture: MTLTexture?
+    @State private var showWireframe = false
+    @State private var showInspector = true
 
-    @State
-    private var skyboxTexture: MTLTexture
+    @State private var cameraRotation = simd_quatf(angle: -.pi / 8, axis: [1, 0, 0])
+    @State private var cameraDistance: Float = 12
+    @State private var cameraTarget: SIMD3<Float> = [0, 0.5, 0]
 
-    @State
-    private var projection: any ProjectionProtocol = PerspectiveProjection()
-
-    @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0.5, 2, 6])
-
-    @State
-    private var startTime = Date()
-
-    @State
-    private var showWireframe: Bool = false
-
-    public init() {
-        do {
-            let device = _MTLCreateSystemDefaultDevice()
-
-            // Create models from our TrivialMesh shapes
-            // Platonic solids - scale to appear similar in visual size
-            let tetrahedron = TrivialMesh.tetrahedron().scaled([1.8, 1.8, 1.8])
-            let box = TrivialMesh.box() // Cube/Hexahedron
-            let octahedron = TrivialMesh.octahedron().scaled([1.3, 1.3, 1.3])
-            let dodecahedron = TrivialMesh.dodecahedron().scaled([1.2, 1.2, 1.2])
-            let icosahedron = TrivialMesh.icosahedron().scaled([1.4, 1.4, 1.4])
-
-            // 2D shapes (already flat on XY plane)
-            let circle = TrivialMesh.circle()
-            let quad = TrivialMesh.quad()
-            let triangle = TrivialMesh.triangle()
-
-            // Curved shapes
-            let sphere = TrivialMesh.sphere()
-            let torus = TrivialMesh.torus()
-            let capsule = TrivialMesh.capsule()
-            let cone = TrivialMesh.cone()
-            let hemisphere = TrivialMesh.hemisphere()
-            let cappedCone = TrivialMesh.cone(capped: true)
-            let icoSphere = TrivialMesh.icoSphere()
-            let cubeSphere = TrivialMesh.cubeSphere()
-
-            // Convert TrivialMesh to Mesh for rendering
-            let tetrahedronMesh = Mesh(tetrahedron, device: device)
-            let boxMesh = Mesh(box, device: device)
-            let octahedronMesh = Mesh(octahedron, device: device)
-            let dodecahedronMesh = Mesh(dodecahedron, device: device)
-            let icosahedronMesh = Mesh(icosahedron, device: device)
-            let circleMesh = Mesh(circle, device: device)
-            let quadMesh = Mesh(quad, device: device)
-            let triangleMesh = Mesh(triangle, device: device)
-            let sphereMesh = Mesh(sphere, device: device)
-            let torusMesh = Mesh(torus, device: device)
-            let capsuleMesh = Mesh(capsule, device: device)
-            let coneMesh = Mesh(cone, device: device)
-            let hemisphereMesh = Mesh(hemisphere, device: device)
-            let cappedConeMesh = Mesh(cappedCone, device: device)
-            let icoSphereMesh = Mesh(icoSphere, device: device)
-            let cubeSphereMesh = Mesh(cubeSphere, device: device)
-
-            self.models = [
-                // Different sphere types in far back row
-                .init(
-                    id: "uvSphere",
-                    mesh: sphereMesh,
-                    modelMatrix: .init(translation: [-2, 0, -4]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.4, 0.3, 0.3]),
-                        diffuse: .color([0.7, 0.5, 0.5]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                .init(
-                    id: "icoSphere",
-                    mesh: icoSphereMesh,
-                    modelMatrix: .init(translation: [0, 0, -4]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.3, 0.4, 0.3]),
-                        diffuse: .color([0.5, 0.7, 0.5]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                .init(
-                    id: "cubeSphere",
-                    mesh: cubeSphereMesh,
-                    modelMatrix: .init(translation: [2, 0, -4]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.3, 0.3, 0.4]),
-                        diffuse: .color([0.5, 0.5, 0.7]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                // Platonic solids in back row
-                .init(
-                    id: "tetrahedron",
-                    mesh: tetrahedronMesh,
-                    modelMatrix: .init(translation: [-4, 0, -2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.5, 0.2, 0.2]),
-                        diffuse: .color([0.8, 0.2, 0.2]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 64
-                    )
-                ),
-                .init(
-                    id: "cube",
-                    mesh: boxMesh,
-                    modelMatrix: .init(translation: [-2, 0, -2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.2, 0.2, 0.5]),
-                        diffuse: .color([0.2, 0.2, 0.8]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 32
-                    )
-                ),
-                .init(
-                    id: "octahedron",
-                    mesh: octahedronMesh,
-                    modelMatrix: .init(translation: [0, 0, -2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.2, 0.5, 0.2]),
-                        diffuse: .color([0.2, 0.8, 0.2]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 128
-                    )
-                ),
-                .init(
-                    id: "dodecahedron",
-                    mesh: dodecahedronMesh,
-                    modelMatrix: .init(translation: [2, 0, -2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.5, 0.3, 0.5]),
-                        diffuse: .color([0.8, 0.4, 0.8]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 96
-                    )
-                ),
-                .init(
-                    id: "icosahedron",
-                    mesh: icosahedronMesh,
-                    modelMatrix: .init(translation: [4, 0, -2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.3, 0.4, 0.5]),
-                        diffuse: .color([0.4, 0.6, 0.8]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 80
-                    )
-                ),
-                // Curved shapes in middle row
-                .init(
-                    id: "torus",
-                    mesh: torusMesh,
-                    modelMatrix: .init(translation: [-1, 0, 0]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.3, 0.3, 0.4]),
-                        diffuse: .color([0.5, 0.5, 0.7]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                .init(
-                    id: "capsule",
-                    mesh: capsuleMesh,
-                    modelMatrix: .init(translation: [1, 0, 0]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.4, 0.4, 0.3]),
-                        diffuse: .color([0.7, 0.7, 0.5]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                // Additional curved shapes
-                .init(
-                    id: "cone",
-                    mesh: coneMesh,
-                    modelMatrix: .init(translation: [-4, 0, 0]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.3, 0.4, 0.3]),
-                        diffuse: .color([0.5, 0.7, 0.5]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                .init(
-                    id: "hemisphere",
-                    mesh: hemisphereMesh,
-                    modelMatrix: .init(translation: [4, 0, 0]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.4, 0.3, 0.4]),
-                        diffuse: .color([0.7, 0.5, 0.7]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                .init(
-                    id: "cappedCone",
-                    mesh: cappedConeMesh,
-                    modelMatrix: .init(translation: [-6, 0, 0]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.3, 0.3, 0.3]),
-                        diffuse: .color([0.6, 0.6, 0.6]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 100
-                    )
-                ),
-                // 2D shapes in front row (keep them facing forward on XY plane)
-                .init(
-                    id: "circle",
-                    mesh: circleMesh,
-                    modelMatrix: .init(translation: [-3, 0, 2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.5, 0.5, 0.2]),
-                        diffuse: .color([0.8, 0.8, 0.2]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 64
-                    )
-                ),
-                .init(
-                    id: "quad",
-                    mesh: quadMesh,
-                    modelMatrix: .init(translation: [0, 0, 2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.5, 0.2, 0.5]),
-                        diffuse: .color([0.8, 0.2, 0.8]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 64
-                    )
-                ),
-                .init(
-                    id: "triangle",
-                    mesh: triangleMesh,
-                    modelMatrix: .init(translation: [3, 0, 2]),
-                    material: BlinnPhongMaterial(
-                        ambient: .color([0.2, 0.5, 0.5]),
-                        diffuse: .color([0.2, 0.8, 0.8]),
-                        specular: .color([1, 1, 1]),
-                        shininess: 64
-                    )
-                )
-            ]
-
-            self.lighting = try Lighting(
-                ambientLightColor: [0.3, 0.3, 0.3],
-                lights: [
-                    ([2, 2, 3], Light(type: .spot, color: [1, 1, 1], intensity: 30))
-                ]
-            )
-
-            let skyboxCrossTexture = (try? device.makeTexture(name: "Skybox", bundle: .main))
-                .orFatalError("Failed to load skybox cross texture")
-            self.skyboxTexture = (try? device.makeTextureCubeFromCrossTexture(texture: skyboxCrossTexture))
-                .orFatalError("Failed to build skybox cube texture")
-        }
-        catch {
-            fatalError("\(error)")
-        }
+    private var cameraMatrix: simd_float4x4 {
+        let rotation = float4x4(cameraRotation)
+        let translation = float4x4.translation(cameraTarget.x, cameraTarget.y, cameraTarget.z)
+        let distance = float4x4.translation(0, 0, cameraDistance)
+        return translation * rotation * distance
     }
 
     public var body: some View {
-        WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-            TimelineView(.animation) { timeline in
-                RenderView { _, drawableSize in
-                    let projectionMatrix = projection.projectionMatrix(for: drawableSize)
-                    let viewMatrix = cameraMatrix.inverse
-                    let viewProjectionMatrix = projectionMatrix * viewMatrix
+        RenderView { _, drawableSize in
+            let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
+            let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
+            let viewMatrix = cameraMatrix.inverse
 
-                    try RenderPass {
-                        try SkyboxRenderPipeline(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, texture: skyboxTexture)
-
-                        GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
-
-                        if let firstModel = models.first {
-                            try BlinnPhongShader {
-                                try ForEach(models) { model in
-                                    try Draw { encoder in
-                                        if showWireframe {
-                                            encoder.setTriangleFillMode(.lines)
-                                        }
-                                        encoder.setVertexBuffers(of: model.mesh)
-                                        encoder.draw(mesh: model.mesh)
-                                    }
-                                    .blinnPhongMaterial(model.material)
-                                    .blinnPhongMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix)
-                                }
-                                .lighting(lighting)
-                            }
-                            .vertexDescriptor(MTLVertexDescriptor(firstModel.mesh.vertexDescriptor))
-                            .depthCompare(function: .less, enabled: true)
-                        }
-
-                        try AxisLinesRenderPipeline(
-                            mvpMatrix: viewProjectionMatrix,
-                            viewMatrix: viewMatrix,
-                            projectionMatrix: projectionMatrix,
-                            viewportSize: SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
-                        )
-                    }
+            try RenderPass(label: "TrivialMesh Demo") {
+                if let skyboxTexture {
+                    try SkyboxRenderPipeline(
+                        projectionMatrix: projectionMatrix,
+                        cameraMatrix: cameraMatrix,
+                        rotation: simd_quatf(angle: .pi, axis: [0, 1, 0]),
+                        texture: skyboxTexture
+                    )
                 }
-                .metalDepthStencilPixelFormat(.depth32Float)
-                .onChange(of: timeline.date) { _, _ in
-                    let elapsed = Date().timeIntervalSince(startTime)
 
-                    // Orbit the light in front of the shapes
-                    let angle = Float(elapsed * 0.5) // Rotate once every ~12.5 seconds
-                    lighting.lightPositions[SIMD3<Float>.self, 0] = simd_quatf(angle: angle, axis: [0, 1, 0]).act([2, 2, 3])
+                GridShader(
+                    projectionMatrix: projectionMatrix,
+                    cameraMatrix: cameraMatrix,
+                    highlightedLines: [
+                        .init(axis: .x, position: 0, width: 0.03, color: [1, 0.2, 0.2, 1]),
+                        .init(axis: .y, position: 0, width: 0.03, color: [0.2, 0.4, 1, 1])
+                    ],
+                    backfaceColor: [1, 0, 1, 1]
+                )
+
+                if let lighting, let firstModel = models.first {
+                    try BlinnPhongShader {
+                        try ForEach(models) { model in
+                            try Draw { encoder in
+                                if showWireframe {
+                                    encoder.setTriangleFillMode(.lines)
+                                }
+                                encoder.setVertexBuffers(of: model.mesh)
+                                encoder.draw(mesh: model.mesh)
+                            }
+                            .blinnPhongMaterial(model.material)
+                            .blinnPhongMatrices(
+                                projectionMatrix: projectionMatrix,
+                                viewMatrix: viewMatrix,
+                                modelMatrix: model.modelMatrix,
+                                cameraMatrix: cameraMatrix
+                            )
+                        }
+                        .lighting(lighting)
+                    }
+                    .vertexDescriptor(MTLVertexDescriptor(firstModel.mesh.vertexDescriptor))
+                    .depthCompare(function: .less, enabled: true)
                 }
             }
         }
-        .onAppear {
-            startTime = Date()
+        .metalDepthStencilPixelFormat(.depth32Float)
+        .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
+        .frameTimingOverlay()
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button { showInspector.toggle() } label: {
+                    Label("Inspector", systemImage: "sidebar.trailing")
+                }
+            }
         }
-        .demoConfiguration {
-            Toggle("Wireframe", isOn: $showWireframe)
+        .inspector(isPresented: $showInspector) {
+            Form {
+                Toggle("Wireframe", isOn: $showWireframe)
+            }
+            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
         }
-    }
+        .task {
+            do {
+                let device = _MTLCreateSystemDefaultDevice()
 
-    struct Model: Identifiable {
-        var id: String
-        var mesh: MetalSprocketsAddOns.Mesh
-        var modelMatrix: float4x4
-        var material: BlinnPhongMaterial
+                let tetrahedron = TrivialMesh.tetrahedron().scaled([1.8, 1.8, 1.8])
+                let box = TrivialMesh.box()
+                let octahedron = TrivialMesh.octahedron().scaled([1.3, 1.3, 1.3])
+                let dodecahedron = TrivialMesh.dodecahedron().scaled([1.2, 1.2, 1.2])
+                let icosahedron = TrivialMesh.icosahedron().scaled([1.4, 1.4, 1.4])
+                let sphere = TrivialMesh.sphere()
+                let torus = TrivialMesh.torus()
+                let capsule = TrivialMesh.capsule()
+                let cone = TrivialMesh.cone()
+                let hemisphere = TrivialMesh.hemisphere()
+                let icoSphere = TrivialMesh.icoSphere()
+                let cubeSphere = TrivialMesh.cubeSphere()
+
+                models = [
+                    // Spheres — back row
+                    .init(
+                        id: "uvSphere",
+                        mesh: Mesh(sphere, device: device),
+                        modelMatrix: .init(translation: [-2, 1, -4]),
+                        material: .init(ambient: .color([0.4, 0.3, 0.3]), diffuse: .color([0.7, 0.5, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
+                    ),
+                    .init(
+                        id: "icoSphere",
+                        mesh: Mesh(icoSphere, device: device),
+                        modelMatrix: .init(translation: [0, 1, -4]),
+                        material: .init(ambient: .color([0.3, 0.4, 0.3]), diffuse: .color([0.5, 0.7, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
+                    ),
+                    .init(
+                        id: "cubeSphere",
+                        mesh: Mesh(cubeSphere, device: device),
+                        modelMatrix: .init(translation: [2, 1, -4]),
+                        material: .init(ambient: .color([0.3, 0.3, 0.4]), diffuse: .color([0.5, 0.5, 0.7]), specular: .color([1, 1, 1]), shininess: 100)
+                    ),
+                    // Platonic solids — middle-back row
+                    .init(
+                        id: "tetrahedron",
+                        mesh: Mesh(tetrahedron, device: device),
+                        modelMatrix: .init(translation: [-4, 1, -2]),
+                        material: .init(ambient: .color([0.5, 0.2, 0.2]), diffuse: .color([0.8, 0.2, 0.2]), specular: .color([1, 1, 1]), shininess: 64)
+                    ),
+                    .init(
+                        id: "cube",
+                        mesh: Mesh(box, device: device),
+                        modelMatrix: .init(translation: [-2, 1, -2]),
+                        material: .init(ambient: .color([0.2, 0.2, 0.5]), diffuse: .color([0.2, 0.2, 0.8]), specular: .color([1, 1, 1]), shininess: 32)
+                    ),
+                    .init(
+                        id: "octahedron",
+                        mesh: Mesh(octahedron, device: device),
+                        modelMatrix: .init(translation: [0, 1, -2]),
+                        material: .init(ambient: .color([0.2, 0.5, 0.2]), diffuse: .color([0.2, 0.8, 0.2]), specular: .color([1, 1, 1]), shininess: 128)
+                    ),
+                    .init(
+                        id: "dodecahedron",
+                        mesh: Mesh(dodecahedron, device: device),
+                        modelMatrix: .init(translation: [2, 1, -2]),
+                        material: .init(ambient: .color([0.5, 0.3, 0.5]), diffuse: .color([0.8, 0.4, 0.8]), specular: .color([1, 1, 1]), shininess: 96)
+                    ),
+                    .init(
+                        id: "icosahedron",
+                        mesh: Mesh(icosahedron, device: device),
+                        modelMatrix: .init(translation: [4, 1, -2]),
+                        material: .init(ambient: .color([0.3, 0.4, 0.5]), diffuse: .color([0.4, 0.6, 0.8]), specular: .color([1, 1, 1]), shininess: 80)
+                    ),
+                    // Curved shapes — middle row
+                    .init(
+                        id: "torus",
+                        mesh: Mesh(torus, device: device),
+                        modelMatrix: .init(translation: [-1, 1, 0]),
+                        material: .init(ambient: .color([0.3, 0.3, 0.4]), diffuse: .color([0.5, 0.5, 0.7]), specular: .color([1, 1, 1]), shininess: 100)
+                    ),
+                    .init(
+                        id: "capsule",
+                        mesh: Mesh(capsule, device: device),
+                        modelMatrix: .init(translation: [1, 1, 0]),
+                        material: .init(ambient: .color([0.4, 0.4, 0.3]), diffuse: .color([0.7, 0.7, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
+                    ),
+                    .init(
+                        id: "cone",
+                        mesh: Mesh(cone, device: device),
+                        modelMatrix: .init(translation: [-4, 1, 0]),
+                        material: .init(ambient: .color([0.3, 0.4, 0.3]), diffuse: .color([0.5, 0.7, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
+                    ),
+                    .init(
+                        id: "hemisphere",
+                        mesh: Mesh(hemisphere, device: device),
+                        modelMatrix: .init(translation: [4, 1, 0]),
+                        material: .init(ambient: .color([0.4, 0.3, 0.4]), diffuse: .color([0.7, 0.5, 0.7]), specular: .color([1, 1, 1]), shininess: 100)
+                    )
+                ]
+
+                lighting = try Lighting(
+                    ambientLightColor: [0.3, 0.3, 0.3],
+                    lights: [
+                        ([2, 2, 3], Light(type: .spot, color: [1, 1, 1], intensity: 30))
+                    ]
+                )
+
+                let crossTexture = try device.makeTexture(name: "Skybox", bundle: .main)
+                skyboxTexture = try device.makeTextureCubeFromCrossTexture(texture: crossTexture)
+            } catch {
+                fatalError("Failed to initialize TrivialMesh demo: \(error)")
+            }
+        }
     }
 }
+
+private struct Model: Identifiable {
+    var id: String
+    var mesh: MetalSprocketsAddOns.Mesh
+    var modelMatrix: float4x4
+    var material: BlinnPhongMaterial
+}
+

@@ -1,7 +1,4 @@
-import DemoKit
-import GeometryLite3D
 import Interaction3D
-import MetalKit
 import MetalSprockets
 import MetalSprocketsAddOns
 import MetalSprocketsSupport
@@ -10,390 +7,343 @@ import simd
 import SwiftUI
 
 public struct GraphicsContext3DDemoView: View {
-    enum Sample: String, CaseIterable, Identifiable {
-        case axisLines = "Axis Lines"
-        case lineCaps = "Line Caps"
-        case lineJoins = "Line Joins"
-        case miter = "Miter"
-        case curves = "Curves"
-        case geometry = "Geometry"
-        case randomLines = "Random Lines"
+    public init() { }
 
-        var id: String { rawValue }
+    @State private var cameraRotation = simd_quatf(angle: -.pi / 6, axis: [1, 0, 0])
+    @State private var cameraDistance: Float = 8
+    @State private var cameraTarget: SIMD3<Float> = .zero
+    @State private var showInspector = true
+    @State private var lineWidth: Float = 3.0
+    @State private var showWireframe = false
+    @State private var capStyleIndex = 0
+    @State private var joinStyleIndex = 0
+    @State private var slugScene: SlugScene?
+
+    private var cameraMatrix: simd_float4x4 {
+        let rotation = float4x4(cameraRotation)
+        let translation = float4x4.translation(cameraTarget.x, cameraTarget.y, cameraTarget.z)
+        let distance = float4x4.translation(0, 0, cameraDistance)
+        return translation * rotation * distance
     }
 
-    @State
-    private var selectedSample: Sample = .curves
+    private var lineCap: CGLineCap {
+        [.butt, .round, .square][capStyleIndex]
+    }
 
-    @State
-    private var rotation: Float = 0.0
-
-    @State
-    private var projection: any ProjectionProtocol = PerspectiveProjection()
-
-    @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 8])
-
-    @State
-    private var isPlaying: Bool = false
-
-    @State
-    private var debugWireframe: Bool = true
-
-    @State
-    private var lineWidthMultiplier: Double = 1.0
-
-    @State
-    private var randomLineCount: Int = 1_000
-
-    @State
-    private var randomLines: [(start: SIMD3<Float>, end: SIMD3<Float>, color: Color)] = []
-
-    public init() {
-        // Empty initializer
+    private var lineJoin: CGLineJoin {
+        [.miter, .round, .bevel][joinStyleIndex]
     }
 
     public var body: some View {
-        WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-            TimelineView(.animation) { timeline in
-                RenderView { _, drawableSize in
-                    let projectionMatrix = projection.projectionMatrix(for: drawableSize)
-                    let viewMatrix = cameraMatrix.inverse
-                    let rotationMatrix = float4x4(yRotation: .radians(rotation))
-                    let viewProjection = projectionMatrix * viewMatrix * rotationMatrix
+        RenderView { _, drawableSize in
+            let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
+            let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
+            let viewProjection = projectionMatrix * cameraMatrix.inverse
+            let viewport = SIMD2<Float>(Float(drawableSize.width), Float(drawableSize.height))
 
-                    try RenderPass {
-                        GraphicsContext3DRenderPipeline(context: currentContext, viewProjection: viewProjection, viewport: [Float(drawableSize.width), Float(drawableSize.height)], debugWireframe: debugWireframe)
+            let style = StrokeStyle(lineWidth: CGFloat(lineWidth), lineCap: lineCap, lineJoin: lineJoin)
+
+            let context = GraphicsContext3D { ctx in
+                // A star shape on the XZ ground plane
+                let starPath = Self.starPath(points: 5, outerRadius: 2.0, innerRadius: 0.8, y: 0.1)
+                ctx.fill(starPath, with: .yellow.opacity(0.3))
+                ctx.stroke(starPath, with: .yellow, style: style)
+
+                // A triangle floating above
+                let triPath = Path3D { p in
+                    p.move(to: [-1.5, 2, -1])
+                    p.addLine(to: [1.5, 2, -1])
+                    p.addLine(to: [0, 2, 1.5])
+                    p.closeSubpath()
+                }
+                ctx.fill(triPath, with: .cyan.opacity(0.3))
+                ctx.stroke(triPath, with: .cyan, style: style)
+
+                // An open zigzag path
+                let zigzag = Path3D { p in
+                    p.move(to: [-3, 1, 0])
+                    p.addLine(to: [-2, 3, 0.5])
+                    p.addLine(to: [-1, 1, -0.5])
+                    p.addLine(to: [0, 3, 0])
+                    p.addLine(to: [1, 1, 0.5])
+                    p.addLine(to: [2, 3, -0.5])
+                    p.addLine(to: [3, 1, 0])
+                }
+                ctx.stroke(zigzag, with: .red, style: style)
+
+                // A square floating behind
+                let square = Path3D { p in
+                    p.move(to: [-1, 0.5, -2])
+                    p.addLine(to: [1, 0.5, -2])
+                    p.addLine(to: [1, 2.5, -2])
+                    p.addLine(to: [-1, 2.5, -2])
+                    p.closeSubpath()
+                }
+                ctx.fill(square, with: Color(red: 0.0, green: 0.8, blue: 0.6))
+                ctx.stroke(square, with: Color(red: 0.0, green: 0.8, blue: 0.6), style: style)
+
+                // Wireframe cube
+                Self.strokeCube(ctx: &ctx, center: [4, 1, 0], size: 2, color: .orange, style: style)
+
+                // Wireframe pyramid
+                Self.strokePyramid(ctx: &ctx, center: [-4, 0.1, 0], base: 2, height: 2.5, color: .purple, style: style)
+
+                // Hexagon on the ground
+                let hexagon = Path3D { p in
+                    for i in 0..<6 {
+                        let angle = Float(i) / 6.0 * 2 * .pi
+                        let pt = SIMD3<Float>(cos(angle) * 1.5 + 6, 0.1, sin(angle) * 1.5 - 3)
+                        if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
+                    }
+                    p.closeSubpath()
+                }
+                ctx.fill(hexagon, with: Color(red: 0.6, green: 0.3, blue: 0.8))
+
+                // Arrow shape on the XY plane
+                let arrow = Path3D { p in
+                    p.move(to: [-6, 1, -3])
+                    p.addLine(to: [-4.5, 1, -3])
+                    p.addLine(to: [-4.5, 0.5, -3])
+                    p.addLine(to: [-3.5, 1.5, -3])
+                    p.addLine(to: [-4.5, 2.5, -3])
+                    p.addLine(to: [-4.5, 2, -3])
+                    p.addLine(to: [-6, 2, -3])
+                    p.closeSubpath()
+                }
+                ctx.fill(arrow, with: Color(red: 0.2, green: 0.6, blue: 1.0))
+
+                // L-shape on the XY plane
+                let lShape = Path3D { p in
+                    p.move(to: [5, 0.5, -3])
+                    p.addLine(to: [7, 0.5, -3])
+                    p.addLine(to: [7, 1.5, -3])
+                    p.addLine(to: [6, 1.5, -3])
+                    p.addLine(to: [6, 3, -3])
+                    p.addLine(to: [5, 3, -3])
+                    p.closeSubpath()
+                }
+                ctx.fill(lShape, with: Color(red: 1.0, green: 0.5, blue: 0.0))
+
+                // Cross / plus shape on the XY plane
+                let cross = Path3D { p in
+                    let cx: Float = 0, cy: Float = 1.5, cz: Float = -4
+                    let arm: Float = 0.8, half: Float = 0.3
+                    p.move(to: [cx - half, cy + arm, cz])
+                    p.addLine(to: [cx + half, cy + arm, cz])
+                    p.addLine(to: [cx + half, cy + half, cz])
+                    p.addLine(to: [cx + arm, cy + half, cz])
+                    p.addLine(to: [cx + arm, cy - half, cz])
+                    p.addLine(to: [cx + half, cy - half, cz])
+                    p.addLine(to: [cx + half, cy - arm, cz])
+                    p.addLine(to: [cx - half, cy - arm, cz])
+                    p.addLine(to: [cx - half, cy - half, cz])
+                    p.addLine(to: [cx - arm, cy - half, cz])
+                    p.addLine(to: [cx - arm, cy + half, cz])
+                    p.addLine(to: [cx - half, cy + half, cz])
+                    p.closeSubpath()
+                }
+                ctx.fill(cross, with: Color(red: 0.9, green: 0.2, blue: 0.2))
+
+                // Spiral corkscrew
+                let spiral = Path3D { p in
+                    let turns: Float = 3
+                    let segments = 120
+                    let radius: Float = 1.2
+                    let height: Float = 3.0
+                    let cx: Float = 0
+                    let cz: Float = 3
+                    for i in 0...segments {
+                        let t = Float(i) / Float(segments)
+                        let angle = t * turns * 2 * .pi
+                        let x = cx + cos(angle) * radius
+                        let y = t * height
+                        let z = cz + sin(angle) * radius
+                        if i == 0 { p.move(to: [x, y, z]) }
+                        else { p.addLine(to: [x, y, z]) }
                     }
                 }
-                .metalDepthStencilPixelFormat(.depth32Float)
-                .onChange(of: timeline.date) {
-                    if isPlaying {
-                        rotation += 0.01
+                ctx.stroke(spiral, with: Color(red: 1, green: 0.4, blue: 0.7), style: style)
+            }
+
+            try RenderPass(label: "GraphicsContext3D Demo") {
+                GridShader(
+                    projectionMatrix: projectionMatrix,
+                    cameraMatrix: cameraMatrix,
+                    highlightedLines: [
+                        .init(axis: .x, position: 0, width: 0.03, color: [1, 0.2, 0.2, 0.5]),
+                        .init(axis: .y, position: 0, width: 0.03, color: [0.2, 0.4, 1, 0.5])
+                    ],
+                    backfaceColor: [1, 0, 1, 1]
+                )
+
+                GraphicsContext3DRenderPipeline(
+                    context: context,
+                    viewProjection: viewProjection,
+                    viewport: viewport,
+                    debugWireframe: showWireframe
+                )
+
+                if let slugScene {
+                    try SlugTextRenderPipeline(
+                        scene: slugScene,
+                        frameConstants: SlugFrameConstants(
+                            viewProjectionMatrix: viewProjection,
+                            viewportSize: drawableSize
+                        )
+                    )
+                }
+            }
+        }
+        .metalDepthStencilPixelFormat(.depth32Float)
+        .frameTimingOverlay()
+        .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
+        .onAppear { initializeSlugText() }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button { showInspector.toggle() } label: {
+                    Label("Inspector", systemImage: "sidebar.trailing")
+                }
+            }
+        }
+        .inspector(isPresented: $showInspector) {
+            Form {
+                Section("Stroke") {
+                    LabeledContent("Line Width") {
+                        Slider(value: $lineWidth, in: 0.5...20)
+                    }
+                    Picker("Cap", selection: $capStyleIndex) {
+                        Text("Butt").tag(0)
+                        Text("Round").tag(1)
+                        Text("Square").tag(2)
+                    }
+                    Picker("Join", selection: $joinStyleIndex) {
+                        Text("Miter").tag(0)
+                        Text("Round").tag(1)
+                        Text("Bevel").tag(2)
                     }
                 }
-            }
-        }
-        .demoConfiguration {
-            configurationContent
-        }
-        .onAppear {
-            generateRandomLines()
-        }
-        .onChange(of: randomLineCount) {
-            generateRandomLines()
-        }
-    }
-
-    private func generateRandomLines() {
-        let cubeSize: Float = 4.0
-        randomLines = (0..<randomLineCount).map { _ in
-            let start = SIMD3<Float>(Float.random(in: -cubeSize...cubeSize), Float.random(in: -cubeSize...cubeSize), Float.random(in: -cubeSize...cubeSize))
-            let end = SIMD3<Float>(Float.random(in: -cubeSize...cubeSize), Float.random(in: -cubeSize...cubeSize), Float.random(in: -cubeSize...cubeSize))
-            let color = Color(red: Double.random(in: 0...1), green: Double.random(in: 0...1), blue: Double.random(in: 0...1))
-            return (start, end, color)
-        }
-    }
-
-    @ViewBuilder
-    private var configurationContent: some View {
-        Form {
-            Picker("Sample", selection: $selectedSample) {
-                ForEach(Sample.allCases) { sample in
-                    Text(sample.rawValue).tag(sample)
+                Section("Debug") {
+                    Toggle("Wireframe", isOn: $showWireframe)
                 }
             }
+            .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
+        }
+    }
 
-            Toggle("Animate", isOn: $isPlaying)
+    static func strokeCube(ctx: inout GraphicsContext3D, center: SIMD3<Float>, size: Float, color: Color, style: MetalSprocketsAddOns.StrokeStyle) {
+        let h = size * 0.5
+        let c = center
+        // 8 vertices
+        let v: [SIMD3<Float>] = [
+            c + [-h, -h, -h], c + [h, -h, -h], c + [h, h, -h], c + [-h, h, -h],  // back face
+            c + [-h, -h, h], c + [h, -h, h], c + [h, h, h], c + [-h, h, h]       // front face
+        ]
+        // 6 faces as closed paths
+        let faces: [[Int]] = [
+            [0, 1, 2, 3], [4, 5, 6, 7],  // back, front
+            [0, 1, 5, 4], [2, 3, 7, 6],  // bottom, top
+            [0, 3, 7, 4], [1, 2, 6, 5]   // left, right
+        ]
+        for face in faces {
+            let path = Path3D { p in
+                p.move(to: v[face[0]])
+                for i in 1..<face.count { p.addLine(to: v[face[i]]) }
+                p.closeSubpath()
+            }
+            ctx.stroke(path, with: color, style: style)
+        }
+    }
 
-            Toggle("Debug Wireframe", isOn: $debugWireframe)
+    static func strokePyramid(ctx: inout GraphicsContext3D, center: SIMD3<Float>, base: Float, height: Float, color: Color, style: MetalSprocketsAddOns.StrokeStyle) {
+        let h = base * 0.5
+        let apex = center + [0, height, 0]
+        let v: [SIMD3<Float>] = [
+            center + [-h, 0, -h], center + [h, 0, -h],
+            center + [h, 0, h], center + [-h, 0, h]
+        ]
+        // Base
+        let basePath = Path3D { p in
+            p.move(to: v[0])
+            for i in 1..<4 { p.addLine(to: v[i]) }
+            p.closeSubpath()
+        }
+        ctx.stroke(basePath, with: color, style: style)
+        // 4 triangular faces
+        for i in 0..<4 {
+            let path = Path3D { p in
+                p.move(to: v[i])
+                p.addLine(to: v[(i + 1) % 4])
+                p.addLine(to: apex)
+                p.closeSubpath()
+            }
+            ctx.stroke(path, with: color, style: style)
+        }
+    }
 
-            LabeledContent("Line Width") {
-                HStack {
-                    Slider(value: $lineWidthMultiplier, in: 0.1...20.0)
-                        .accessibilityLabel("Line Width")
-                    Text(lineWidthMultiplier, format: .number.precision(.fractionLength(2)))
-                        .frame(minWidth: 40)
+    private func initializeSlugText() {
+        guard slugScene == nil
+        else { return }
+        guard let device = MTLCreateSystemDefaultDevice()
+        else { return }
+        let builder = SlugTextMeshBuilder(device: device)
+        let font = CTFontCreateWithName("HelveticaNeue-Bold" as CFString, 24, nil)
+
+        struct Label {
+            var text: String
+            var position: SIMD3<Float>
+            var color: Color
+        }
+
+        let labels: [Label] = [
+            .init(text: "Star", position: [0, 0.5, 0], color: .yellow),
+            .init(text: "Triangle", position: [-1.5, 3.2, -1], color: .cyan),
+            .init(text: "Zigzag", position: [-3, 3.5, 0], color: .red),
+            .init(text: "Square", position: [-1, 3, -2], color: Color(red: 0, green: 0.8, blue: 0.6)),
+            .init(text: "Cube", position: [4, 2.5, 0], color: .orange),
+            .init(text: "Pyramid", position: [-4, 3, 0], color: .purple),
+            .init(text: "Spiral", position: [0, 3.5, 3], color: Color(red: 1, green: 0.4, blue: 0.7)),
+            .init(text: "Hexagon", position: [6, 0.5, -3], color: .purple),
+            .init(text: "Arrow", position: [-5, 3, -3], color: Color(red: 0.2, green: 0.6, blue: 1.0)),
+            .init(text: "L-Shape", position: [5.5, 3.5, -3], color: .orange),
+            .init(text: "Cross", position: [0, 3, -4], color: .red)
+        ]
+
+        for label in labels {
+            var str = AttributedString(label.text)
+            str.foregroundColor = label.color
+            builder.buildMesh(attributedString: str, font: font, maximumSize: CGSize(width: 500, height: 100))
+        }
+
+        guard let scene = try? builder.finalize()
+        else { return }
+
+        let scale: Float = 0.01
+        for (i, label) in labels.enumerated() {
+            let mesh = scene.meshes[i]
+            let centering = float4x4.translation(-Float(mesh.bounds.midX), -Float(mesh.bounds.midY), 0)
+            scene.modelMatrices[i] = float4x4.translation(label.position.x, label.position.y, label.position.z)
+                * float4x4.scale(scale, scale, scale)
+                * centering
+        }
+
+        slugScene = scene
+    }
+
+    /// Creates a star path on the XZ plane at the given Y height.
+    static func starPath(points: Int, outerRadius: Float, innerRadius: Float, y: Float) -> Path3D {
+        Path3D { p in
+            let totalPoints = points * 2
+            for i in 0..<totalPoints {
+                let angle = Float(i) / Float(totalPoints) * 2 * .pi - .pi / 2
+                let radius = i.isMultiple(of: 2) ? outerRadius : innerRadius
+                let point = SIMD3<Float>(cos(angle) * radius, y, sin(angle) * radius)
+                if i == 0 {
+                    p.move(to: point)
+                } else {
+                    p.addLine(to: point)
                 }
             }
-
-            LabeledContent("Random Lines") {
-                HStack {
-                    Slider(value: Binding(get: { Double(randomLineCount) }, set: { randomLineCount = Int($0) }), in: 10...20_000)
-                        .accessibilityLabel("Random Lines")
-                    Text("\(randomLineCount)")
-                        .frame(minWidth: 40)
-                }
-            }
-
-            Button("Reset Camera") {
-                cameraMatrix = .init(translation: [0, 0, 8])
-                rotation = 0.0
-            }
-        }
-        .fixedSize()
-    }
-
-    private var currentContext: GraphicsContext3D {
-        selectedSample.buildContext(lineWidthMultiplier: lineWidthMultiplier, randomLines: randomLines)
-    }
-}
-
-extension GraphicsContext3DDemoView.Sample {
-    func buildContext(lineWidthMultiplier: Double, randomLines: [(start: SIMD3<Float>, end: SIMD3<Float>, color: Color)]) -> GraphicsContext3D {
-        switch self {
-        case .axisLines:
-            return buildAxisLinesContext(lineWidthMultiplier: lineWidthMultiplier)
-        case .lineCaps:
-            return buildLineCapsContext(lineWidthMultiplier: lineWidthMultiplier)
-        case .lineJoins:
-            return buildLineJoinsContext(lineWidthMultiplier: lineWidthMultiplier)
-        case .miter:
-            return buildMiterContext(lineWidthMultiplier: lineWidthMultiplier)
-        case .curves:
-            return buildCurvesContext(lineWidthMultiplier: lineWidthMultiplier)
-        case .geometry:
-            return buildGeometryContext(lineWidthMultiplier: lineWidthMultiplier)
-        case .randomLines:
-            return buildRandomLinesContext(lineWidthMultiplier: lineWidthMultiplier, lines: randomLines)
-        }
-    }
-
-    private func buildAxisLinesContext(lineWidthMultiplier: Double) -> GraphicsContext3D {
-        GraphicsContext3D { context in
-            let scale: Float = 15.0
-            let lineWidth: Float = 2.0 * Float(lineWidthMultiplier)
-
-            let xAxis = Path3D { path in
-                path.move(to: [-scale, 0, 0])
-                path.addLine(to: [scale, 0, 0])
-            }
-            context.stroke(xAxis, with: .red, lineWidth: lineWidth)
-
-            let yAxis = Path3D { path in
-                path.move(to: [0, -scale, 0])
-                path.addLine(to: [0, scale, 0])
-            }
-            context.stroke(yAxis, with: .green, lineWidth: lineWidth)
-
-            let zAxis = Path3D { path in
-                path.move(to: [0, 0, -scale])
-                path.addLine(to: [0, 0, scale])
-            }
-            context.stroke(zAxis, with: .blue, lineWidth: lineWidth)
-        }
-    }
-
-    private func buildLineCapsContext(lineWidthMultiplier: Double) -> GraphicsContext3D {
-        GraphicsContext3D { context in
-            let z: Float = 0
-            let ySpacing: Float = 1
-            let lineLength: Float = 6
-
-            let buttLine = Path3D { path in
-                path.move(to: [-lineLength / 2, ySpacing * 1, z])
-                path.addLine(to: [lineLength / 2, ySpacing * 1, z])
-            }
-            context.stroke(buttLine, with: .white, style: StrokeStyle(lineWidth: 40.0 * lineWidthMultiplier, lineCap: .butt))
-
-            let roundLine = Path3D { path in
-                path.move(to: [-lineLength / 2, 0, z])
-                path.addLine(to: [lineLength / 2, 0, z])
-            }
-            context.stroke(roundLine, with: .orange, style: StrokeStyle(lineWidth: 40.0 * lineWidthMultiplier, lineCap: .round))
-
-            let squareLine = Path3D { path in
-                path.move(to: [-lineLength / 2, -ySpacing * 1, z])
-                path.addLine(to: [lineLength / 2, -ySpacing * 1, z])
-            }
-            context.stroke(squareLine, with: .cyan, style: StrokeStyle(lineWidth: 40.0 * lineWidthMultiplier, lineCap: .square))
-        }
-    }
-
-    private func buildLineJoinsContext(lineWidthMultiplier: Double) -> GraphicsContext3D {
-        GraphicsContext3D { context in
-            let spacing: Float = 3.5
-
-            let miterSquare = Path3D { path in
-                path.move(to: [-1 + spacing * -1, -1, -1])
-                path.addLine(to: [ 1 + spacing * -1, -1, -1])
-                path.addLine(to: [ 1 + spacing * -1, 1, -1])
-                path.addLine(to: [-1 + spacing * -1, 1, -1])
-                path.closeSubpath()
-            }
-            context.stroke(miterSquare, with: .red, style: StrokeStyle(lineWidth: 40.0 * lineWidthMultiplier, lineCap: .butt, lineJoin: .miter))
-
-            let roundSquare = Path3D { path in
-                path.move(to: [-1 + spacing * 0, -1, -1])
-                path.addLine(to: [ 1 + spacing * 0, -1, -1])
-                path.addLine(to: [ 1 + spacing * 0, 1, -1])
-                path.addLine(to: [-1 + spacing * 0, 1, -1])
-                path.closeSubpath()
-            }
-            context.stroke(roundSquare, with: .green, style: StrokeStyle(lineWidth: 40.0 * lineWidthMultiplier, lineCap: .butt, lineJoin: .round))
-
-            let bevelSquare = Path3D { path in
-                path.move(to: [-1 + spacing * 1, -1, -1])
-                path.addLine(to: [ 1 + spacing * 1, -1, -1])
-                path.addLine(to: [ 1 + spacing * 1, 1, -1])
-                path.addLine(to: [-1 + spacing * 1, 1, -1])
-                path.closeSubpath()
-            }
-            context.stroke(bevelSquare, with: .blue, style: StrokeStyle(lineWidth: 40.0 * lineWidthMultiplier, lineCap: .butt, lineJoin: .bevel))
-        }
-    }
-
-    private func buildMiterContext(lineWidthMultiplier: Double) -> GraphicsContext3D {
-        GraphicsContext3D { context in
-            let lShape = Path3D { path in
-                path.move(to: [-1, -1, -1])
-                path.addLine(to: [ 1, -1, -1])
-                path.addLine(to: [ 1, 1, -1])
-            }
-            context.stroke(lShape, with: .red, style: StrokeStyle(lineWidth: 40.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .miter))
-        }
-    }
-
-    private func buildCurvesContext(lineWidthMultiplier: Double) -> GraphicsContext3D {
-        GraphicsContext3D { context in
-            let quadCurve = Path3D { path in
-                path.move(to: [-3, -1, 0])
-                path.addQuadCurve(to: [0, -1, 0], control: [-1.5, 2, 0])
-            }
-            context.stroke(quadCurve, with: .orange, style: StrokeStyle(lineWidth: 30.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let cubicCurve = Path3D { path in
-                path.move(to: [0, -1, 0])
-                path.addCurve(to: [3, -1, 0], control1: [1, 2, 0], control2: [2, -2, 0])
-            }
-            context.stroke(cubicCurve, with: .cyan, style: StrokeStyle(lineWidth: 30.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let spiralPath = Path3D { path in
-                path.move(to: [-2, 1, -1])
-                path.addCurve(to: [-1, 2, -1], control1: [-2, 2, -1], control2: [-1, 2, -1])
-                path.addCurve(to: [0, 1, -1], control1: [-1, 1, -1], control2: [0, 1, -1])
-                path.addCurve(to: [1, 2, -1], control1: [1, 2, -1], control2: [1, 2, -1])
-                path.addCurve(to: [2, 1, -1], control1: [2, 1, -1], control2: [2, 1, -1])
-            }
-            context.stroke(spiralPath, with: .yellow, style: StrokeStyle(lineWidth: 20.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let kappa: Float = 0.5522847498
-
-            let circle1 = Path3D { path in
-                let cx: Float = -2.5
-                let cy: Float = -2
-                let cz: Float = 1
-                let r: Float = 0.8
-
-                path.move(to: [cx + r, cy, cz])
-                path.addCurve(to: [cx, cy + r, cz], control1: [cx + r, cy + r * kappa, cz], control2: [cx + r * kappa, cy + r, cz])
-                path.addCurve(to: [cx - r, cy, cz], control1: [cx - r * kappa, cy + r, cz], control2: [cx - r, cy + r * kappa, cz])
-                path.addCurve(to: [cx, cy - r, cz], control1: [cx - r, cy - r * kappa, cz], control2: [cx - r * kappa, cy - r, cz])
-                path.addCurve(to: [cx + r, cy, cz], control1: [cx + r * kappa, cy - r, cz], control2: [cx + r, cy - r * kappa, cz])
-            }
-            context.stroke(circle1, with: .pink, style: StrokeStyle(lineWidth: 15.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let circle2 = Path3D { path in
-                let cx: Float = 0
-                let cy: Float = -2.5
-                let cz: Float = 1
-                let r: Float = 0.5
-
-                path.move(to: [cx + r, cy, cz])
-                path.addCurve(to: [cx, cy + r, cz], control1: [cx + r, cy + r * kappa, cz], control2: [cx + r * kappa, cy + r, cz])
-                path.addCurve(to: [cx - r, cy, cz], control1: [cx - r * kappa, cy + r, cz], control2: [cx - r, cy + r * kappa, cz])
-                path.addCurve(to: [cx, cy - r, cz], control1: [cx - r, cy - r * kappa, cz], control2: [cx - r * kappa, cy - r, cz])
-                path.addCurve(to: [cx + r, cy, cz], control1: [cx + r * kappa, cy - r, cz], control2: [cx + r, cy - r * kappa, cz])
-            }
-            context.stroke(circle2, with: .green, style: StrokeStyle(lineWidth: 12.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let circle3 = Path3D { path in
-                let cx: Float = 2.5
-                let cy: Float = -2
-                let cz: Float = 1
-                let r: Float = 0.6
-
-                path.move(to: [cx + r, cy, cz])
-                path.addCurve(to: [cx, cy + r, cz], control1: [cx + r, cy + r * kappa, cz], control2: [cx + r * kappa, cy + r, cz])
-                path.addCurve(to: [cx - r, cy, cz], control1: [cx - r * kappa, cy + r, cz], control2: [cx - r, cy + r * kappa, cz])
-                path.addCurve(to: [cx, cy - r, cz], control1: [cx - r, cy - r * kappa, cz], control2: [cx - r * kappa, cy - r, cz])
-                path.addCurve(to: [cx + r, cy, cz], control1: [cx + r * kappa, cy - r, cz], control2: [cx + r, cy - r * kappa, cz])
-            }
-            context.stroke(circle3, with: .red, style: StrokeStyle(lineWidth: 10.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-        }
-    }
-
-    private func buildGeometryContext(lineWidthMultiplier: Double) -> GraphicsContext3D {
-        GraphicsContext3D { context in
-            let groundSquare = Path3D { path in
-                path.move(to: [-4, -2, -4])
-                path.addLine(to: [ 4, -2, -4])
-                path.addLine(to: [ 4, -2, 4])
-                path.addLine(to: [-4, -2, 4])
-                path.closeSubpath()
-            }
-            context.stroke(groundSquare, with: .gray, style: StrokeStyle(lineWidth: 24.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let cubeOutline = Path3D { path in
-                // Bottom square
-                path.move(to: [-2, -2, -2])
-                path.addLine(to: [ 2, -2, -2])
-                path.addLine(to: [ 2, -2, 2])
-                path.addLine(to: [-2, -2, 2])
-                path.closeSubpath()
-
-                // Top square
-                path.move(to: [-2, 2, -2])
-                path.addLine(to: [ 2, 2, -2])
-                path.addLine(to: [ 2, 2, 2])
-                path.addLine(to: [-2, 2, 2])
-                path.closeSubpath()
-
-                // Vertical edges
-                path.move(to: [-2, -2, -2])
-                path.addLine(to: [-2, 2, -2])
-
-                path.move(to: [ 2, -2, -2])
-                path.addLine(to: [ 2, 2, -2])
-
-                path.move(to: [ 2, -2, 2])
-                path.addLine(to: [ 2, 2, 2])
-
-                path.move(to: [-2, -2, 2])
-                path.addLine(to: [-2, 2, 2])
-            }
-            context.stroke(cubeOutline, with: .white, style: StrokeStyle(lineWidth: 16.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let triangle = Path3D { path in
-                path.move(to: [0, 1, 0])
-                path.addLine(to: [-1, -1, 0])
-                path.addLine(to: [1, -1, 0])
-                path.closeSubpath()
-            }
-            context.fill(triangle, with: .red)
-            context.stroke(triangle, with: .white, style: StrokeStyle(lineWidth: 6.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-
-            let square = Path3D { path in
-                path.move(to: [-0.6, -0.6, 1])
-                path.addLine(to: [ 0.6, -0.6, 1])
-                path.addLine(to: [ 0.6, 0.6, 1])
-                path.addLine(to: [-0.6, 0.6, 1])
-                path.closeSubpath()
-            }
-            context.fill(square, with: .green)
-            context.stroke(square, with: .white, style: StrokeStyle(lineWidth: 6.0 * lineWidthMultiplier, lineCap: .round, lineJoin: .round))
-        }
-    }
-
-    private func buildRandomLinesContext(lineWidthMultiplier: Double, lines: [(start: SIMD3<Float>, end: SIMD3<Float>, color: Color)]) -> GraphicsContext3D {
-        GraphicsContext3D { context in
-            for lineData in lines {
-                let line = Path3D { path in
-                    path.move(to: lineData.start)
-                    path.addLine(to: lineData.end)
-                }
-                context.stroke(line, with: lineData.color, style: StrokeStyle(lineWidth: 2.0 * lineWidthMultiplier, lineCap: .butt))
-            }
+            p.closeSubpath()
         }
     }
 }
