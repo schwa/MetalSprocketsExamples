@@ -112,62 +112,67 @@ public struct ShadowMapDemoView: View {
         )
     }
 
+    @ViewBuilder
+    private var renderContent: some View {
+        RenderView { _, drawableSize in
+            if let lighting, let shadowMap {
+                // Update shadow map from current light positions
+                let updatedShadowMap: ShadowMap = {
+                    var sm = shadowMap
+                    sm.depthBias = depthBias
+                    sm.slopeScale = slopeScale
+                    for i in 0..<lightPositions.count {
+                        sm.updateDirectionalLight(
+                            at: i,
+                            position: lightPositions[i],
+                            target: [0, 0, 0],
+                            orthoSize: 15,
+                            near: 0.1,
+                            far: 30
+                        )
+                    }
+                    return sm
+                }()
+
+                let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
+                let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
+
+                ShadowMapDemoRenderPass(
+                    projectionMatrix: projectionMatrix,
+                    cameraMatrix: cameraMatrix,
+                    drawableSize: drawableSize,
+                    lighting: lighting,
+                    lightPositions: lightPositions,
+                    shadowMap: updatedShadowMap,
+                    teapots: teapots,
+                    groundMesh: groundMesh,
+                    groundModelMatrix: groundModelMatrix,
+                    groundMaterial: groundMaterial,
+                    options: renderOptions,
+                    shadowDebug: shadowDebug
+                )
+            }
+        }
+        .id("\(useInverseZ)-\(shadowDebug)") // Workaround: force RenderView recreation to clear cached state (MetalSprockets#314)
+        .metalDepthStencilPixelFormat(.depth32Float)
+        .metalDepthStencilAttachmentTextureUsage([.renderTarget, .shaderRead])
+        .metalClearColor(MTLClearColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1))
+    }
+
     public var body: some View {
         TimelineView(.animation) { timeline in
-            RenderView { _, drawableSize in
-                if let lighting, let shadowMap {
-                    // Update shadow map from current light positions
-                    let updatedShadowMap: ShadowMap = {
-                        var sm = shadowMap
-                        sm.depthBias = depthBias
-                        sm.slopeScale = slopeScale
-                        for i in 0..<lightPositions.count {
-                            sm.updateDirectionalLight(
-                                at: i,
-                                position: lightPositions[i],
-                                target: [0, 0, 0],
-                                orthoSize: 15,
-                                near: 0.1,
-                                far: 30
-                            )
-                        }
-                        return sm
-                    }()
-
-                    let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
-                    let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
-
-                    ShadowMapDemoRenderPass(
-                        projectionMatrix: projectionMatrix,
-                        cameraMatrix: cameraMatrix,
-                        drawableSize: drawableSize,
-                        lighting: lighting,
-                        lightPositions: lightPositions,
-                        shadowMap: updatedShadowMap,
-                        teapots: teapots,
-                        groundMesh: groundMesh,
-                        groundModelMatrix: groundModelMatrix,
-                        groundMaterial: groundMaterial,
-                        options: renderOptions,
-                        shadowDebug: shadowDebug
-                    )
+            renderContent
+                .onChange(of: timeline.date) {
+                    if !paused {
+                        let t = timeline.date.timeIntervalSinceReferenceDate
+                        lightAnimator0.update(at: t)
+                        lightAnimator1.update(at: t)
+                        lightPositions[0] = lightAnimator0.transformer.apply(to: .zero)
+                        lightPositions[1] = lightAnimator1.transformer.apply(to: .zero)
+                        lighting?.setLightPosition(lightPositions[0], at: 0)
+                        lighting?.setLightPosition(lightPositions[1], at: 1)
+                    }
                 }
-            }
-            .id("\(useInverseZ)-\(shadowDebug)") // Workaround: force RenderView recreation to clear cached state (MetalSprockets#314)
-            .metalDepthStencilPixelFormat(.depth32Float)
-            .metalDepthStencilAttachmentTextureUsage([.renderTarget, .shaderRead])
-            .metalClearColor(MTLClearColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1))
-            .onChange(of: timeline.date) {
-                if !paused {
-                    let t = timeline.date.timeIntervalSinceReferenceDate
-                    lightAnimator0.update(at: t)
-                    lightAnimator1.update(at: t)
-                    lightPositions[0] = lightAnimator0.transformer.transform(.zero)
-                    lightPositions[1] = lightAnimator1.transformer.transform(.zero)
-                    lighting?.setLightPosition(lightPositions[0], at: 0)
-                    lighting?.setLightPosition(lightPositions[1], at: 1)
-                }
-            }
         }
         .onChange(of: ambientLight) {
             lighting?.ambientLightColor = [ambientLight, ambientLight, ambientLight]

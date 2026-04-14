@@ -118,28 +118,32 @@ public struct BlinnPhongDemoView: DemoView {
                     options: renderOptions
                 )
             }
+            .metalDepthStencilPixelFormat(.depth32Float)
         }
+    }
+
+    private func updateLightAnimations(at date: Date) {
+        let t = date.timeIntervalSinceReferenceDate
+
+        // Light 0: white orbit
+        lightAnimator0.update(at: t)
+        lightPosition0 = lightAnimator0.transformer.apply(to: .zero)
+        lighting?.setLightPosition(lightPosition0, at: 0)
+
+        // Light 1: colored orbit with hue cycling
+        lightAnimator1.update(at: t)
+        lightPosition1 = lightAnimator1.transformer.apply(to: .zero)
+        lighting?.setLightPosition(lightPosition1, at: 1)
+        let hue = Float(t.truncatingRemainder(dividingBy: 6) / 6)
+        let color = hueToRGB(hue)
+        lighting?.setLight(Light(type: .point, color: color, intensity: 15), at: 1)
     }
 
     public var body: some View {
         TimelineView(.animation) { timeline in
             renderView
-                .metalDepthStencilPixelFormat(.depth32Float)
                 .onChange(of: timeline.date) {
-                    let t = timeline.date.timeIntervalSinceReferenceDate
-
-                    // Light 0: white orbit
-                    lightAnimator0.update(at: t)
-                    lightPosition0 = lightAnimator0.transformer.transform(.zero)
-                    lighting?.setLightPosition(lightPosition0, at: 0)
-
-                    // Light 1: colored orbit with hue cycling
-                    lightAnimator1.update(at: t)
-                    lightPosition1 = lightAnimator1.transformer.transform(.zero)
-                    lighting?.setLightPosition(lightPosition1, at: 1)
-                    let hue = Float(t.truncatingRemainder(dividingBy: 6) / 6)
-                    let color = hueToRGB(hue)
-                    lighting?.setLight(Light(type: .point, color: color, intensity: 15), at: 1)
+                    updateLightAnimations(at: timeline.date)
                 }
         }
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)

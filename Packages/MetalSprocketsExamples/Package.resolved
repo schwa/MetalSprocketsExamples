@@ -1,5 +1,5 @@
 {
-  "originHash" : "61fb846fe9b835f1932cc161e1cb073a6bb2175c2a43cdf671625f8a7e9ee495",
+  "originHash" : "d36351d5949e6cae9c3f7395b1e60c43cc958089b13bff7ce596c4cc42b2ba2e",
   "pins" : [
     {
       "identity" : "demokit",
@@ -62,6 +62,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "1fa90524cd5dfaf00ea00a847254a68aa0960dfa"
+      }
+    },
+    {
+      "identity" : "metalsprocketsaddons",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/MetalSprocketsAddOns",
+      "state" : {
+        "branch" : "main",
+        "revision" : "295ea377f0da9250abfeb48bcbd799fbb0621711"
       }
     },
     {

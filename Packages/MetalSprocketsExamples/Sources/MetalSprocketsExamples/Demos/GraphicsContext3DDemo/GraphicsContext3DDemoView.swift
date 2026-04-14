@@ -34,7 +34,7 @@ public struct GraphicsContext3DDemoView: View {
         [.miter, .round, .bevel][joinStyleIndex]
     }
 
-    public var body: some View {
+    private var renderView: some View {
         RenderView { _, drawableSize in
             let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
             let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
@@ -195,6 +195,10 @@ public struct GraphicsContext3DDemoView: View {
             }
         }
         .metalDepthStencilPixelFormat(.depth32Float)
+    }
+
+    public var body: some View {
+        renderView
         .frameTimingOverlay()
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .onAppear { initializeSlugText() }

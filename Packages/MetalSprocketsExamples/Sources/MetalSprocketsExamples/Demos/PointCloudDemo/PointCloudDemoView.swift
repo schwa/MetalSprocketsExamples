@@ -145,7 +145,7 @@ private struct PointVertex {
     let color: SIMD3<Float>
 }
 
-private struct Uniforms {
+private struct PointCloudUniforms {
     // periphery:ignore - used in Metal shader
     let viewMatrix: simd_float4x4
     // periphery:ignore - used in Metal shader
@@ -188,13 +188,13 @@ private struct PointCloudRenderPipeline: Element {
                 fragmentShader: fragmentFunction
             ) {
                 Draw { encoder in
-                    let uniforms = Uniforms(
+                    let uniforms = PointCloudUniforms(
                         viewMatrix: viewMatrix,
                         projectionMatrix: projectionMatrix,
                         pointSize: pointSize
                     )
                     encoder.setVertexBuffer(pointBuffer, offset: 0, index: 0)
-                    encoder.setVertexBytes([uniforms], length: MemoryLayout<Uniforms>.stride, index: 1)
+                    encoder.setVertexBytes([uniforms], length: MemoryLayout<PointCloudUniforms>.stride, index: 1)
                     encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: vertexCount)
                 }
             }
