@@ -155,6 +155,7 @@ public struct BlinnPhongDemoView: DemoView {
                 }
             }
         }
+        #if !os(visionOS)
         .inspector(isPresented: $showInspector) {
             Form {
                 Section("Pipelines") {
@@ -181,6 +182,7 @@ public struct BlinnPhongDemoView: DemoView {
             }
             .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
         }
+        #endif
         .task {
             do {
                 lighting = try Lighting(

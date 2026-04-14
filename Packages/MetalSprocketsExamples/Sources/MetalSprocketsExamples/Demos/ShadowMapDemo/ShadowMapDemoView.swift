@@ -195,6 +195,7 @@ public struct ShadowMapDemoView: View {
                 }
             }
         }
+        #if !os(visionOS)
         .inspector(isPresented: $showInspector) {
             Form {
                 Section("Pipelines") {
@@ -266,6 +267,7 @@ public struct ShadowMapDemoView: View {
             }
             .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
         }
+        #endif
         .task {
             do {
                 lighting = try Lighting(
@@ -320,7 +322,7 @@ struct ShadowMapDemoRenderPass: Element {
                 // swiftlint:disable:next force_unwrapping
                 try ShadowMapDepthPass(shadowMap: shadowMap, vertexDescriptor: teapots.first!.mesh.vertexDescriptor) {
                     // Teapots as shadow casters
-                    try ForEach(teapots) { model in
+                    ForEach(teapots) { model in
                         Draw { encoder in
                             encoder.setVertexBuffers(of: model.mesh)
                             encoder.draw(model.mesh)
@@ -384,7 +386,7 @@ struct ShadowMapDemoRenderPass: Element {
                     try BlinnPhongShader {
                         try Group {
                             // Teapots
-                            try ForEach(teapots) { model in
+                            ForEach(teapots) { model in
                                 try Draw { encoder in
                                     encoder.setVertexBuffers(of: model.mesh)
                                     encoder.draw(model.mesh)

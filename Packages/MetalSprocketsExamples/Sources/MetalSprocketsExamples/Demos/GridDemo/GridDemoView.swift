@@ -74,6 +74,7 @@ public struct GridDemoView: View {
                 }
             }
         }
+        #if !os(visionOS)
         .inspector(isPresented: $showInspector) {
             Form {
                 Section("Minor Grid") {
@@ -116,5 +117,6 @@ public struct GridDemoView: View {
             }
             .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
         }
+        #endif
     }
 }

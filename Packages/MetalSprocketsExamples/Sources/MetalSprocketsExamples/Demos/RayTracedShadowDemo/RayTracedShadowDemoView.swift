@@ -177,6 +177,7 @@ public struct RayTracedShadowDemoView: View {
                 }
             }
         }
+        #if !os(visionOS)
         .inspector(isPresented: $showInspector) {
             Form {
                 Section("Pipelines") {
@@ -218,6 +219,7 @@ public struct RayTracedShadowDemoView: View {
             }
             .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
         }
+        #endif
         .task {
             do {
                 let lightData: [(SIMD3<Float>, Light)] = (0..<Self.lightCount).map { i in
@@ -345,7 +347,7 @@ struct RayTracedShadowDemoRenderPass: Element {
                     try BlinnPhongShader {
                         try Group {
                             // Teapots
-                            try ForEach(teapots) { model in
+                            ForEach(teapots) { model in
                                 try Draw { encoder in
                                     encoder.setVertexBuffers(of: model.mesh)
                                     encoder.draw(model.mesh)

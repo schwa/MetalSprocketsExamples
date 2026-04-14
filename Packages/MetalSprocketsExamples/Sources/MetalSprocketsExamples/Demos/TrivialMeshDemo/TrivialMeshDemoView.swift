@@ -91,12 +91,14 @@ public struct TrivialMeshDemoView: View {
                 }
             }
         }
+        #if !os(visionOS)
         .inspector(isPresented: $showInspector) {
             Form {
                 Toggle("Wireframe", isOn: $showWireframe)
             }
             .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
         }
+        #endif
         .task {
             do {
                 let device = _MTLCreateSystemDefaultDevice()

@@ -168,7 +168,7 @@ struct ImmersiveMatrixRainContent: ImmersiveSpaceContent {
             let state = try ImmersiveMatrixRainStateHolder.shared.getOrCreate(device: context.device)
             state.updateModelMatrices(elapsed: Float(context.time))
 
-            return try ImmersiveRenderPass(context: context, label: "Matrix Rain") {
+            return ImmersiveRenderPass(context: context, label: "Matrix Rain") {
                 ImmersiveMatrixRainElement(context: context, state: state)
             }
         }

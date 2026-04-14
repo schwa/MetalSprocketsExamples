@@ -209,6 +209,7 @@ public struct GraphicsContext3DDemoView: View {
                 }
             }
         }
+        #if !os(visionOS)
         .inspector(isPresented: $showInspector) {
             Form {
                 Section("Stroke") {
@@ -232,6 +233,7 @@ public struct GraphicsContext3DDemoView: View {
             }
             .inspectorColumnWidth(min: 250, ideal: 300, max: 400)
         }
+        #endif
     }
 
     static func strokeCube(ctx: inout GraphicsContext3D, center: SIMD3<Float>, size: Float, color: Color, style: MetalSprocketsAddOns.StrokeStyle) {
