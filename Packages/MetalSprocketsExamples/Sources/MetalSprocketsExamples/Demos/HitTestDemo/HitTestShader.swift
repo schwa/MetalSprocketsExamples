@@ -2,6 +2,7 @@ import Metal
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import MetalSupport
 
 struct HitTestShader<Content>: Element where Content: Element {
     var vertexShader: VertexShader

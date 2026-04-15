@@ -8,6 +8,7 @@ import MetalSprocketsAddOns
 import MetalSprocketsAddOnsShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import simd
 import SwiftUI
 

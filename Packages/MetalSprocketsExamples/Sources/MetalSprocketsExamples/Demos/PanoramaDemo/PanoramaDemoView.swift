@@ -9,6 +9,7 @@ import MetalSprocketsExampleShaders
 import MetalSprocketsExamplesSupport
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import SwiftUI
 import UniformTypeIdentifiers
 

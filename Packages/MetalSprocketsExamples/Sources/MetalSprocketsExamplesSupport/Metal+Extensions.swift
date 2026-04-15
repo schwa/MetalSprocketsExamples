@@ -38,12 +38,6 @@ public extension MTLLinkedFunctions {
     }
 }
 
-public extension MTLSize {
-    init(_ size: CGSize) {
-        self.init(width: Int(size.width), height: Int(size.height), depth: 1)
-    }
-}
-
 public extension MTLTexture {
     var size: MTLSize {
         MTLSize(width: width, height: height, depth: depth)

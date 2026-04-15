@@ -28,6 +28,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", from: "0.1.2"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
+        .package(url: "https://github.com/schwa/SwiftMesh", branch: "main"),
         .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0")
     ],
     targets: [
@@ -48,7 +49,8 @@ let package = Package(
                 .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns"),
                 .product(name: "MetalSprocketsAddOnsShaders", package: "MetalSprocketsAddOns"),
                 .product(name: "Panels", package: "Panels"),
-                .product(name: "SwiftGLTF", package: "SwiftGLTF")
+                .product(name: "SwiftGLTF", package: "SwiftGLTF"),
+                .product(name: "SwiftMesh", package: "SwiftMesh")
             ],
             resources: [
                 .copy("Resources/4.2.03.heic"),

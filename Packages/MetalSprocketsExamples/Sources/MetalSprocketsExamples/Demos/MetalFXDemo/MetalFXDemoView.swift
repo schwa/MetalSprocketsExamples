@@ -6,6 +6,7 @@ import MetalSprockets
 import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import SwiftUI
 
 public struct MetalFXDemoView: View {

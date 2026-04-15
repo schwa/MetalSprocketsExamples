@@ -5,6 +5,7 @@ import MetalSprockets
 import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import SwiftUI
 
 /// A demo that shows transform images using LUTs.

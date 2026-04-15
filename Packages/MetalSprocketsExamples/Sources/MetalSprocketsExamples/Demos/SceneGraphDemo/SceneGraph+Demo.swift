@@ -3,6 +3,7 @@ import Metal
 import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import simd
+import SwiftMesh
 
 extension SceneGraph {
     static func demo(device: MTLDevice) -> SceneGraph {
@@ -25,13 +26,13 @@ extension SceneGraph {
         let columnSpacing: Float = 1.5
         let rowSpacing: Float = 1.5
 
-        let shapeFactories: [() -> TrivialMesh] = [
-            { TrivialMesh.box() },
-            { TrivialMesh.sphere() },
-            { TrivialMesh.cone() },
-            { TrivialMesh.torus() },
-            { TrivialMesh.capsule() },
-            { TrivialMesh.octahedron() }
+        let shapeFactories: [() -> SwiftMesh.Mesh] = [
+            { SwiftMesh.Mesh.box() },
+            { SwiftMesh.Mesh.sphere() },
+            { SwiftMesh.Mesh.cone() },
+            { SwiftMesh.Mesh.torus() },
+            { SwiftMesh.Mesh.cylinder() },
+            { SwiftMesh.Mesh.octahedron }
         ]
 
         var rowNodes: [Node] = []
@@ -50,7 +51,8 @@ extension SceneGraph {
                 cellNode.label = "Cell \(row),\(column)"
 
                 let shape = shapeFactories[(row * columnCount + column) % shapeFactories.count]()
-                cellNode.mesh = Mesh(shape.generateTangents(), device: device)
+                let enrichedMesh = shape.withSmoothNormals().withSphericalUVs().withTangents()
+                cellNode.mesh = MetalMesh(mesh: enrichedMesh, device: device)
 
                 if (row + column).isMultiple(of: 2) {
                     cellNode.material = .blinnPhong(

@@ -5,6 +5,7 @@ import MetalSprocketsAddOns
 import MetalSprocketsExamplesSupport
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import simd
 import SwiftUI
 

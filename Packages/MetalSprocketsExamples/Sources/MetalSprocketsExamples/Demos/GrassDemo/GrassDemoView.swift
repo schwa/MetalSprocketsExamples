@@ -7,7 +7,9 @@ import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import simd
+import SwiftMesh
 import SwiftUI
 
 public struct GrassDemoView: View {
@@ -44,15 +46,17 @@ public struct GrassDemoView: View {
     private var droopEnabled: Bool = false
 
     @State
-    private var sphereMesh: MetalSprocketsAddOns.Mesh
+    private var sphereMesh: MetalMesh
 
     @State
     private var precomputedGrassPoints: [SIMD3<Float>] = []
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
-        let trivialMesh = TrivialMesh.sphere(latitudeSegments: 24, longitudeSegments: 48).scaled([3, 3, 3])
-        self.sphereMesh = Mesh(trivialMesh, device: device)
+        var mesh = SwiftMesh.Mesh.sphere(latitudeSegments: 24, longitudeSegments: 48)
+        mesh.positions = mesh.positions.map { $0 * 3 }
+        mesh = mesh.withSmoothNormals()
+        self.sphereMesh = MetalMesh(mesh: mesh, device: device)
     }
 
     private func ensurePrecomputedPoints() {
@@ -146,11 +150,10 @@ public struct GrassDemoView: View {
         let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
         return try FlatShader(modelViewProjection: modelViewProjectionMatrix, textureSpecifier: .color([0.15, 0.4, 0.2])) {
             Draw { encoder in
-                encoder.setVertexBuffers(of: sphereMesh)
-                encoder.draw(mesh: sphereMesh)
+                encoder.draw(sphereMesh)
             }
         }
-        .vertexDescriptor(sphereMesh.vertexDescriptor)
+        .vertexDescriptor(MTLVertexDescriptor(sphereMesh.vertexDescriptor))
         .depthCompare(function: .less, enabled: true)
     }
 

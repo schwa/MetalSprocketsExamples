@@ -5,6 +5,7 @@ import MetalSprockets
 import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import SwiftUI
 
 public struct ColorAdjustDemoView: View {

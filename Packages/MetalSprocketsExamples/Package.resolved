@@ -1,5 +1,5 @@
 {
-  "originHash" : "d36351d5949e6cae9c3f7395b1e60c43cc958089b13bff7ce596c4cc42b2ba2e",
+  "originHash" : "fecef5d63cc718264b27f070fb57dd835a5bc86e097a89b06f4ba82c9b34e5a2",
   "pins" : [
     {
       "identity" : "demokit",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/schwa/DemoKit",
       "state" : {
         "branch" : "main",
-        "revision" : "25af72bdb27a5e9d2e4bb40d20158c357a949965"
+        "revision" : "929a09acaa3243b85d9376357615e5253f303057"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "b9126051da4fd3326b423d8d173cb52df2f794f7"
+        "revision" : "60ee9c44564fd90f1e6318ede99d5584472cea24"
       }
     },
     {
@@ -70,7 +70,16 @@
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
         "branch" : "main",
-        "revision" : "f49b4d6ff1d73fa57bc30413d7138f1c559b7056"
+        "revision" : "0749b0e25fc9e6b550835939a69356a2b733facb"
+      }
+    },
+    {
+      "identity" : "metalsupport",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/MetalSupport",
+      "state" : {
+        "revision" : "bbd05e3292b7b5808e04c93be11a75e141aadf02",
+        "version" : "1.0.1"
       }
     },
     {
@@ -170,6 +179,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "418349a014299d672caf69845b61a9097adf80d0"
+      }
+    },
+    {
+      "identity" : "swiftmesh",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/SwiftMesh",
+      "state" : {
+        "branch" : "main",
+        "revision" : "566cf95ec9262a863a37d5638ed22db5537c3e4a"
       }
     },
     {

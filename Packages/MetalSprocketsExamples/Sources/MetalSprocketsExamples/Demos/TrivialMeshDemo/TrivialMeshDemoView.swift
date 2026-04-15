@@ -8,7 +8,9 @@ import MetalSprocketsAddOns
 import MetalSprocketsAddOnsShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import simd
+import SwiftMesh
 import SwiftUI
 
 public struct TrivialMeshDemoView: View {
@@ -63,8 +65,7 @@ public struct TrivialMeshDemoView: View {
                                 if showWireframe {
                                     encoder.setTriangleFillMode(.lines)
                                 }
-                                encoder.setVertexBuffers(of: model.mesh)
-                                encoder.draw(mesh: model.mesh)
+                                encoder.draw(model.mesh)
                             }
                             .blinnPhongMaterial(model.material)
                             .blinnPhongMatrices(
@@ -94,92 +95,70 @@ public struct TrivialMeshDemoView: View {
             do {
                 let device = _MTLCreateSystemDefaultDevice()
 
-                let tetrahedron = TrivialMesh.tetrahedron().scaled([1.8, 1.8, 1.8])
-                let box = TrivialMesh.box()
-                let octahedron = TrivialMesh.octahedron().scaled([1.3, 1.3, 1.3])
-                let dodecahedron = TrivialMesh.dodecahedron().scaled([1.2, 1.2, 1.2])
-                let icosahedron = TrivialMesh.icosahedron().scaled([1.4, 1.4, 1.4])
-                let sphere = TrivialMesh.sphere()
-                let torus = TrivialMesh.torus()
-                let capsule = TrivialMesh.capsule()
-                let cone = TrivialMesh.cone()
-                let hemisphere = TrivialMesh.hemisphere()
-                let icoSphere = TrivialMesh.icoSphere()
-                let cubeSphere = TrivialMesh.cubeSphere()
+                func makeMesh(_ m: SwiftMesh.Mesh) -> MetalMesh {
+                    MetalMesh(mesh: m.withSmoothNormals().withSphericalUVs(), device: device)
+                }
 
                 models = [
-                    // Spheres — back row
-                    .init(
-                        id: "uvSphere",
-                        mesh: Mesh(sphere, device: device),
-                        modelMatrix: .init(translation: [-2, 1, -4]),
-                        material: .init(ambient: .color([0.4, 0.3, 0.3]), diffuse: .color([0.7, 0.5, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
-                    ),
-                    .init(
-                        id: "icoSphere",
-                        mesh: Mesh(icoSphere, device: device),
-                        modelMatrix: .init(translation: [0, 1, -4]),
-                        material: .init(ambient: .color([0.3, 0.4, 0.3]), diffuse: .color([0.5, 0.7, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
-                    ),
-                    .init(
-                        id: "cubeSphere",
-                        mesh: Mesh(cubeSphere, device: device),
-                        modelMatrix: .init(translation: [2, 1, -4]),
-                        material: .init(ambient: .color([0.3, 0.3, 0.4]), diffuse: .color([0.5, 0.5, 0.7]), specular: .color([1, 1, 1]), shininess: 100)
-                    ),
-                    // Platonic solids — middle-back row
+                    // Platonic solids — back row
                     .init(
                         id: "tetrahedron",
-                        mesh: Mesh(tetrahedron, device: device),
+                        mesh: makeMesh(.tetrahedron),
                         modelMatrix: .init(translation: [-4, 1, -2]),
                         material: .init(ambient: .color([0.5, 0.2, 0.2]), diffuse: .color([0.8, 0.2, 0.2]), specular: .color([1, 1, 1]), shininess: 64)
                     ),
                     .init(
                         id: "cube",
-                        mesh: Mesh(box, device: device),
+                        mesh: makeMesh(.cube),
                         modelMatrix: .init(translation: [-2, 1, -2]),
                         material: .init(ambient: .color([0.2, 0.2, 0.5]), diffuse: .color([0.2, 0.2, 0.8]), specular: .color([1, 1, 1]), shininess: 32)
                     ),
                     .init(
                         id: "octahedron",
-                        mesh: Mesh(octahedron, device: device),
+                        mesh: makeMesh(.octahedron),
                         modelMatrix: .init(translation: [0, 1, -2]),
                         material: .init(ambient: .color([0.2, 0.5, 0.2]), diffuse: .color([0.2, 0.8, 0.2]), specular: .color([1, 1, 1]), shininess: 128)
                     ),
                     .init(
                         id: "dodecahedron",
-                        mesh: Mesh(dodecahedron, device: device),
+                        mesh: makeMesh(.dodecahedron),
                         modelMatrix: .init(translation: [2, 1, -2]),
                         material: .init(ambient: .color([0.5, 0.3, 0.5]), diffuse: .color([0.8, 0.4, 0.8]), specular: .color([1, 1, 1]), shininess: 96)
                     ),
                     .init(
                         id: "icosahedron",
-                        mesh: Mesh(icosahedron, device: device),
+                        mesh: makeMesh(.icosahedron),
                         modelMatrix: .init(translation: [4, 1, -2]),
                         material: .init(ambient: .color([0.3, 0.4, 0.5]), diffuse: .color([0.4, 0.6, 0.8]), specular: .color([1, 1, 1]), shininess: 80)
                     ),
-                    // Curved shapes — middle row
+                    // Parametric shapes — front row
+                    .init(
+                        id: "sphere",
+                        mesh: makeMesh(.sphere()),
+                        modelMatrix: .init(translation: [-4, 1, 0]),
+                        material: .init(ambient: .color([0.4, 0.3, 0.3]), diffuse: .color([0.7, 0.5, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
+                    ),
                     .init(
                         id: "torus",
-                        mesh: Mesh(torus, device: device),
-                        modelMatrix: .init(translation: [-1, 1, 0]),
+                        mesh: makeMesh(.torus()),
+                        modelMatrix: .init(translation: [-2, 1, 0]),
                         material: .init(ambient: .color([0.3, 0.3, 0.4]), diffuse: .color([0.5, 0.5, 0.7]), specular: .color([1, 1, 1]), shininess: 100)
                     ),
                     .init(
-                        id: "capsule",
-                        mesh: Mesh(capsule, device: device),
-                        modelMatrix: .init(translation: [1, 1, 0]),
+                        id: "cylinder",
+                        mesh: makeMesh(.cylinder()),
+                        modelMatrix: .init(translation: [0, 1, 0]),
                         material: .init(ambient: .color([0.4, 0.4, 0.3]), diffuse: .color([0.7, 0.7, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
                     ),
                     .init(
                         id: "cone",
-                        mesh: Mesh(cone, device: device),
-                        modelMatrix: .init(translation: [-4, 1, 0]),
+                        mesh: makeMesh(.cone()),
+                        modelMatrix: .init(translation: [2, 1, 0]),
                         material: .init(ambient: .color([0.3, 0.4, 0.3]), diffuse: .color([0.5, 0.7, 0.5]), specular: .color([1, 1, 1]), shininess: 100)
                     ),
                     .init(
-                        id: "hemisphere",
-                        mesh: Mesh(hemisphere, device: device),
+                        id: "box",
+                        mesh: makeMesh(.box()),
                         modelMatrix: .init(translation: [4, 1, 0]),
                         material: .init(ambient: .color([0.4, 0.3, 0.4]), diffuse: .color([0.7, 0.5, 0.7]), specular: .color([1, 1, 1]), shininess: 100)
                     )
@@ -203,7 +182,7 @@ public struct TrivialMeshDemoView: View {
 
 private struct Model: Identifiable {
     var id: String
-    var mesh: MetalSprocketsAddOns.Mesh
+    var mesh: MetalMesh
     var modelMatrix: float4x4
     var material: BlinnPhongMaterial
 }

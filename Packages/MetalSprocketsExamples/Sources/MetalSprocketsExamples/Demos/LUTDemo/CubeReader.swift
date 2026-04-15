@@ -2,6 +2,7 @@ import Foundation
 import Metal
 import MetalSprockets
 import MetalSprocketsSupport
+import MetalSupport
 import simd
 
 struct CubeReader {

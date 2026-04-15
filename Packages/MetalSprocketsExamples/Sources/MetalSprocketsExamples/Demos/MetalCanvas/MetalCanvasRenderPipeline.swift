@@ -2,6 +2,7 @@ import Metal
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import MetalSupport
 import SwiftUI
 
 struct MetalCanvasRenderPipeline: Element {

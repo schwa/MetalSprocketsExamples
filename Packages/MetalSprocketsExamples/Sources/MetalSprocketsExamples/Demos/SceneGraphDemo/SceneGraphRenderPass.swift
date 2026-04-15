@@ -3,7 +3,9 @@ import MetalSprockets
 import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import MetalSupport
 import simd
+import SwiftMesh
 
 struct SceneGraphRenderPass: Element {
     var sceneGraph: SceneGraph
@@ -72,7 +74,7 @@ struct SceneGraphRenderPass: Element {
                     let worldTransform = entry.worldTransform
                     if let mesh = node.mesh, case let .blinnPhong(material) = node.material {
                         try Draw { encoder in
-                            encoder.draw(mesh: mesh)
+                            encoder.draw(mesh)
                         }
                         .blinnPhongMaterial(material)
                         .blinnPhongMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: worldTransform, cameraMatrix: cameraMatrix)
@@ -101,7 +103,7 @@ struct SceneGraphRenderPass: Element {
                     let worldTransform = entry.worldTransform
                     if let mesh = node.mesh, case let .pbr(material) = node.material {
                         Draw { encoder in
-                            encoder.draw(mesh: mesh)
+                            encoder.draw(mesh)
                         }
                         .pbrMaterial(material)
                         .pbrUniforms(modelTransform: worldTransform, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)

@@ -1,6 +1,7 @@
 import MetalSprockets
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import SwiftUI
 
 /// A demo that shows the use of a stencil texture.

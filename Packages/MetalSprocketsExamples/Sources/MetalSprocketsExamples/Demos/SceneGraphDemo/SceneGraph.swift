@@ -2,6 +2,7 @@ import GeometryLite3D
 import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import simd
+import SwiftMesh
 
 class SceneGraph {
     class Node: Identifiable {
@@ -20,7 +21,7 @@ class SceneGraph {
         var transform: float4x4
         var camera: Camera?
         var light: Light?
-        var mesh: Mesh?
+        var mesh: MetalMesh?
         var material: Material?
 
         init(sceneGraph: SceneGraph? = nil, parent: Node? = nil, children: [Node] = [], transform: float4x4 = .identity) {

@@ -4,6 +4,7 @@ import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import SwiftUI
 
 /// A SwiftUI view that displays a depth texture as a grayscale image.

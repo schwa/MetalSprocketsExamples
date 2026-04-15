@@ -11,7 +11,9 @@ import MetalKit
 import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
+import MetalSupport
 import SwiftGLTF
+import SwiftMesh
 
 // swiftlint:disable discouraged_optional_collection
 
@@ -97,43 +99,73 @@ class GLTGSceneGraphGenerator {
             throw Error.primitiveMissing
         }
 
-        var trivialMesh = TrivialMesh()
-        if let positions = try primitive.value(semantic: .POSITION, type: SIMD3<Float>.self, in: container) {
-            trivialMesh.positions = positions
-        }
-        if let normals = try primitive.value(semantic: .NORMAL, type: SIMD3<Float>.self, in: container) {
-            trivialMesh.normals = normals
-        }
-        if let tangents = try primitive.value(semantic: .TANGENT, type: SIMD4<Float>.self, in: container) {
-            // TODO: #345 GLTF tangents are (x, y, z, w)
-            trivialMesh.tangents = tangents.map(\.xyz)
-        }
+        let positions = try primitive.value(semantic: .POSITION, type: SIMD3<Float>.self, in: container) ?? []
+        let perVertexNormals = try primitive.value(semantic: .NORMAL, type: SIMD3<Float>.self, in: container)
+        let perVertexTangents = try primitive.value(semantic: .TANGENT, type: SIMD4<Float>.self, in: container)
+        let perVertexUVs = try primitive.value(semantic: .TEXCOORD_0, type: SIMD2<Float>.self, in: container)
+        let indices = try primitive.indices(type: UInt32.self, in: container)
 
-        // TODO: #346 this is inefficient - we are getting and discarding this info already
-        if let normals = try primitive.value(semantic: .NORMAL, type: SIMD3<Float>.self, in: container), let tangents = try primitive.value(semantic: .TANGENT, type: SIMD4<Float>.self, in: container) {
-            trivialMesh.bitangents = zip(normals, tangents).map { normal, tangent in
-                cross(normal, tangent.xyz) * tangent.w
+        // Build triangle faces from indices
+        var faces: [[Int]] = []
+        if let indices {
+            assert(primitive.mode == .TRIANGLES)
+            let count = indices.count
+            faces.reserveCapacity(count / 3)
+            var i = 0
+            while i < count {
+                faces.append([Int(indices[i]), Int(indices[i + 1]), Int(indices[i + 2])])
+                i += 3
+            }
+        } else {
+            let count = positions.count
+            faces.reserveCapacity(count / 3)
+            var i = 0
+            while i < count {
+                faces.append([i, i + 1, i + 2])
+                i += 3
             }
         }
 
-        if let textureCoordinates = try primitive.value(semantic: .TEXCOORD_0, type: SIMD2<Float>.self, in: container) {
-            trivialMesh.textureCoordinates = textureCoordinates
+        var swiftMesh = SwiftMesh.Mesh(positions: positions, faces: faces)
+
+        // Map per-vertex attributes to per-corner (half-edge) arrays
+        if let perVertexNormals {
+            swiftMesh.normals = swiftMesh.topology.halfEdges.map { he in
+                perVertexNormals[he.origin.raw]
+            }
         }
-        if let indices = try primitive.indices(type: UInt32.self, in: container) {
-            assert(primitive.mode == .TRIANGLES)
-            trivialMesh.indices = indices.map(Int.init)
+        if let perVertexUVs {
+            swiftMesh.textureCoordinates = swiftMesh.topology.halfEdges.map { he in
+                perVertexUVs[he.origin.raw]
+            }
+        }
+        if let perVertexTangents {
+            // GLTF tangents are (x, y, z, w)
+            swiftMesh.tangents = swiftMesh.topology.halfEdges.map { he in
+                perVertexTangents[he.origin.raw].xyz
+            }
+            if let perVertexNormals {
+                swiftMesh.bitangents = swiftMesh.topology.halfEdges.map { he in
+                    let normal = perVertexNormals[he.origin.raw]
+                    let tangent = perVertexTangents[he.origin.raw]
+                    return cross(normal, tangent.xyz) * tangent.w
+                }
+            }
         }
 
-        if trivialMesh.textureCoordinates == nil {
-            trivialMesh = trivialMesh.generateTextureCoordinates()
+        // Generate missing attributes
+        if swiftMesh.textureCoordinates == nil {
+            swiftMesh = swiftMesh.withSphericalUVs()
         }
-
-        if trivialMesh.tangents == nil {
-            trivialMesh = trivialMesh.generateTangents()
+        if swiftMesh.normals == nil {
+            swiftMesh = swiftMesh.withSmoothNormals()
+        }
+        if swiftMesh.tangents == nil {
+            swiftMesh = swiftMesh.withTangents()
         }
 
         let device = _MTLCreateSystemDefaultDevice()
-        node.mesh = Mesh(trivialMesh, device: device)
+        node.mesh = MetalMesh(mesh: swiftMesh, device: device)
 
         if let material = try primitive.material?.resolve(in: document) {
             let uvMaterial = try makeMaterial(from: material)
