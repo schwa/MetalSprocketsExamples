@@ -32,7 +32,7 @@ extension SceneGraph {
             { SwiftMesh.Mesh.cone() },
             { SwiftMesh.Mesh.torus() },
             { SwiftMesh.Mesh.cylinder() },
-            { SwiftMesh.Mesh.octahedron }
+            { SwiftMesh.Mesh.octahedron() }
         ]
 
         var rowNodes: [Node] = []

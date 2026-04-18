@@ -103,31 +103,31 @@ public struct TrivialMeshDemoView: View {
                     // Platonic solids — back row
                     .init(
                         id: "tetrahedron",
-                        mesh: makeMesh(.tetrahedron),
+                        mesh: makeMesh(.tetrahedron()),
                         modelMatrix: .init(translation: [-4, 1, -2]),
                         material: .init(ambient: .color([0.5, 0.2, 0.2]), diffuse: .color([0.8, 0.2, 0.2]), specular: .color([1, 1, 1]), shininess: 64)
                     ),
                     .init(
                         id: "cube",
-                        mesh: makeMesh(.cube),
+                        mesh: makeMesh(.cube()),
                         modelMatrix: .init(translation: [-2, 1, -2]),
                         material: .init(ambient: .color([0.2, 0.2, 0.5]), diffuse: .color([0.2, 0.2, 0.8]), specular: .color([1, 1, 1]), shininess: 32)
                     ),
                     .init(
                         id: "octahedron",
-                        mesh: makeMesh(.octahedron),
+                        mesh: makeMesh(.octahedron()),
                         modelMatrix: .init(translation: [0, 1, -2]),
                         material: .init(ambient: .color([0.2, 0.5, 0.2]), diffuse: .color([0.2, 0.8, 0.2]), specular: .color([1, 1, 1]), shininess: 128)
                     ),
                     .init(
                         id: "dodecahedron",
-                        mesh: makeMesh(.dodecahedron),
+                        mesh: makeMesh(.dodecahedron()),
                         modelMatrix: .init(translation: [2, 1, -2]),
                         material: .init(ambient: .color([0.5, 0.3, 0.5]), diffuse: .color([0.8, 0.4, 0.8]), specular: .color([1, 1, 1]), shininess: 96)
                     ),
                     .init(
                         id: "icosahedron",
-                        mesh: makeMesh(.icosahedron),
+                        mesh: makeMesh(.icosahedron()),
                         modelMatrix: .init(translation: [4, 1, -2]),
                         material: .init(ambient: .color([0.3, 0.4, 0.5]), diffuse: .color([0.4, 0.6, 0.8]), specular: .color([1, 1, 1]), shininess: 80)
                     ),

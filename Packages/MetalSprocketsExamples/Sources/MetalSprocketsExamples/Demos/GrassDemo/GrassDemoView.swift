@@ -57,6 +57,7 @@ public struct GrassDemoView: View {
         mesh.positions = mesh.positions.map { $0 * 3 }
         mesh = mesh.withSmoothNormals()
         self.sphereMesh = MetalMesh(mesh: mesh, device: device)
+        print(self.sphereMesh)
     }
 
     private func ensurePrecomputedPoints() {
