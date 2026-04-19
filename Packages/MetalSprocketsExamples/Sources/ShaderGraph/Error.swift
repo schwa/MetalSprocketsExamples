@@ -22,15 +22,15 @@ public enum ShaderGraphError: Error, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .unknownFunction(let name):
+        case let .unknownFunction(name):
             return "Unknown function '\(name)' - did you forget to register it or call registerStdlib()?"
-        case .signatureMismatch(let expected, let actual, let functionName):
+        case let .signatureMismatch(expected, actual, functionName):
             return "Function '\(functionName)' has \(actual) arguments but expected \(expected). This usually means an input is missing from the graph."
-        case .unknownInput(let name, let available):
+        case let .unknownInput(name, available):
             return "No input named '\(name)' in graph signature. Available: \(available.joined(separator: ", "))"
-        case .inputTypeMismatch(let name, let expected, let actual):
+        case let .inputTypeMismatch(name, expected, actual):
             return "Input '\(name)' has type \(expected), but was accessed as \(actual)"
-        case .stitchingFailed(let name, let reason):
+        case let .stitchingFailed(name, reason):
             return "Failed to create function '\(name)': \(reason)"
         }
     }

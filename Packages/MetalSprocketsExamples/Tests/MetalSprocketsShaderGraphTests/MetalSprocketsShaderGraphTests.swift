@@ -1,10 +1,9 @@
-import Testing
 import Metal
 @testable import MetalSprocketsShaderGraph
+import Testing
 
 @Suite("MetalSprocketsShaderGraph Tests")
 struct MetalSprocketsShaderGraphTests {
-
     @Test("makeVisibleFunction returns a VisibleFunction")
     func testMakeVisibleFunction() throws {
         guard let device = MTLCreateSystemDefaultDevice() else {

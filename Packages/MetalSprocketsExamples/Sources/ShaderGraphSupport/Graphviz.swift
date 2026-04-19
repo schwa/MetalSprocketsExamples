@@ -26,10 +26,10 @@ extension Kind {
             let id = nextID()
 
             switch kind {
-            case .input(let name, let index):
+            case let .input(name, index):
                 lines.append("    \(id) [label=\"input[\(index)]\\n\(name)\" shape=ellipse style=filled fillcolor=lightblue]")
 
-            case .function(let name, let inputs):
+            case let .function(name, inputs):
                 // Shorten the name for display
                 let shortName = name.replacingOccurrences(of: "shadergraph::", with: "")
                 lines.append("    \(id) [label=\"\(shortName)\" shape=box style=filled fillcolor=lightyellow]")

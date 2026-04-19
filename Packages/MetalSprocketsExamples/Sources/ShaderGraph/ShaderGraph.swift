@@ -90,11 +90,11 @@ public class ShaderGraph: @unchecked Sendable {
 
     internal func collectFlattenInputs(kind: Kind, into inputs: inout [(name: String, index: Int, type: ValueType)]) {
         switch kind {
-        case .input(let name, let index):
+        case let .input(name, index):
             if let sig = inputSignature.first(where: { $0.index == index }) {
                 inputs.append((name: name, index: index, type: sig.type))
             }
-        case .function(_, let children):
+        case let .function(_, children):
             for child in children {
                 collectFlattenInputs(kind: child, into: &inputs)
             }
@@ -131,6 +131,7 @@ public class ShaderGraph: @unchecked Sendable {
 
     /// Register a stitchable function from Metal source code
     public func registerFunction(named name: String, source: String, inputs: [ValueType], output: ValueType) {
+        // swiftlint:disable:next force_try
         let library = try! device.makeLibrary(source: source, options: nil)
         registerFunction(named: name, library: library, inputs: inputs, output: output)
     }
@@ -272,7 +273,7 @@ public class ShaderGraph: @unchecked Sendable {
         switch kind {
         case .input:
             break
-        case .function(let name, let inputs):
+        case let .function(name, inputs):
             if primitives[name] == nil {
                 throw ShaderGraphError.unknownFunction(name: name)
             }
@@ -305,7 +306,7 @@ public class ShaderGraph: @unchecked Sendable {
         switch kind {
         case .input:
             break
-        case .function(let name, let inputs):
+        case let .function(name, inputs):
             // Safe to force unwrap - we validated in validateGraph
             if let primitive = primitives[name], !functions.contains(where: { $0 === primitive }) {
                 functions.append(primitive)
@@ -318,11 +319,11 @@ public class ShaderGraph: @unchecked Sendable {
 
     private func makeStitchingNode(for kind: Kind) -> (MTLFunctionStitchingNode, [MTLFunctionStitchingFunctionNode]) {
         switch kind {
-        case .input(_, let index):
+        case let .input(_, index):
             let stitchNode = MTLFunctionStitchingInputNode(argumentIndex: index)
             return (stitchNode, [])
 
-        case .function(let name, let inputs):
+        case let .function(name, inputs):
             var allFunctionNodes: [MTLFunctionStitchingFunctionNode] = []
             var inputStitchNodes: [MTLFunctionStitchingNode] = []
 
@@ -351,19 +352,19 @@ public class ShaderGraph: @unchecked Sendable {
         case .input:
             return kind
 
-        case .function(let name, let inputs):
+        case let .function(name, inputs):
             // First optimize children
             let optimizedInputs = inputs.map { optimize(kind: $0) }
 
             // Look for add(mul(a, b), c) -> fma(a, b, c)
             if name == "shadergraph::add_f_f", optimizedInputs.count == 2 {
-                if case .function(let mulName, let mulInputs) = optimizedInputs[0],
-                   mulName == "shadergraph::mul_f_f", mulInputs.count == 2 {
+                if case let .function(mulName, mulInputs) = optimizedInputs[0],
+                    mulName == "shadergraph::mul_f_f", mulInputs.count == 2 {
                     // add(mul(a, b), c) -> fma(a, b, c)
                     return .function(name: "shadergraph::fma_f", inputs: [mulInputs[0], mulInputs[1], optimizedInputs[1]])
                 }
-                if case .function(let mulName, let mulInputs) = optimizedInputs[1],
-                   mulName == "shadergraph::mul_f_f", mulInputs.count == 2 {
+                if case let .function(mulName, mulInputs) = optimizedInputs[1],
+                    mulName == "shadergraph::mul_f_f", mulInputs.count == 2 {
                     // add(c, mul(a, b)) -> fma(a, b, c)
                     return .function(name: "shadergraph::fma_f", inputs: [mulInputs[0], mulInputs[1], optimizedInputs[0]])
                 }
@@ -371,12 +372,12 @@ public class ShaderGraph: @unchecked Sendable {
 
             // Look for add(mul(a, b), c) for float4 -> fma(a, b, c)
             if name == "shadergraph::add_f4_f4", optimizedInputs.count == 2 {
-                if case .function(let mulName, let mulInputs) = optimizedInputs[0],
-                   mulName == "shadergraph::mul_f4_f4", mulInputs.count == 2 {
+                if case let .function(mulName, mulInputs) = optimizedInputs[0],
+                    mulName == "shadergraph::mul_f4_f4", mulInputs.count == 2 {
                     return .function(name: "shadergraph::fma_f4", inputs: [mulInputs[0], mulInputs[1], optimizedInputs[1]])
                 }
-                if case .function(let mulName, let mulInputs) = optimizedInputs[1],
-                   mulName == "shadergraph::mul_f4_f4", mulInputs.count == 2 {
+                if case let .function(mulName, mulInputs) = optimizedInputs[1],
+                    mulName == "shadergraph::mul_f4_f4", mulInputs.count == 2 {
                     return .function(name: "shadergraph::fma_f4", inputs: [mulInputs[0], mulInputs[1], optimizedInputs[0]])
                 }
             }
@@ -388,9 +389,9 @@ public class ShaderGraph: @unchecked Sendable {
     /// Find which input indices are actually used in the graph
     private func collectUsedInputIndices(kind: Kind, into indices: inout Set<Int>) {
         switch kind {
-        case .input(_, let index):
+        case let .input(_, index):
             indices.insert(index)
-        case .function(_, let inputs):
+        case let .function(_, inputs):
             for input in inputs {
                 collectUsedInputIndices(kind: input, into: &indices)
             }

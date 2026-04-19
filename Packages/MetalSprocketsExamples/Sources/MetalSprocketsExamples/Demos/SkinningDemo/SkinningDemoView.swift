@@ -44,9 +44,13 @@ private func generateSkinnedBox(
     // uDiv/vDiv control subdivision along the two parametric axes.
     // The `yAt` closure returns the Y coordinate for a given (u,v) so we can compute bone weights.
     func addFace(
-        p0: SIMD3<Float>, p1: SIMD3<Float>, p2: SIMD3<Float>, p3: SIMD3<Float>,
+        p0: SIMD3<Float>,
+        p1: SIMD3<Float>,
+        p2: SIMD3<Float>,
+        p3: SIMD3<Float>,
         normal: SIMD3<Float>,
-        uDiv: Int, vDiv: Int,
+        uDiv: Int,
+        vDiv: Int,
         yAt: (Float, Float) -> Float
     ) {
         let baseIndex = UInt32(vertices.count)
@@ -83,46 +87,64 @@ private func generateSkinnedBox(
 
     // Front face (+Z): subdivide along X (u) and Y (v)
     addFace(
-        p0: SIMD3(-halfW, -halfH, halfD), p1: SIMD3(halfW, -halfH, halfD),
-        p2: SIMD3(-halfW, halfH, halfD),  p3: SIMD3(halfW, halfH, halfD),
-        normal: SIMD3(0, 0, 1), uDiv: 1, vDiv: divisionsY,
-        yAt: { _, v in -halfH + v * height }
-    )
+        p0: SIMD3(-halfW, -halfH, halfD),
+        p1: SIMD3(halfW, -halfH, halfD),
+        p2: SIMD3(-halfW, halfH, halfD),
+        p3: SIMD3(halfW, halfH, halfD),
+        normal: SIMD3(0, 0, 1),
+        uDiv: 1,
+        vDiv: divisionsY
+    ) { _, v in -halfH + v * height }
     // Back face (-Z)
     addFace(
-        p0: SIMD3(halfW, -halfH, -halfD), p1: SIMD3(-halfW, -halfH, -halfD),
-        p2: SIMD3(halfW, halfH, -halfD),  p3: SIMD3(-halfW, halfH, -halfD),
-        normal: SIMD3(0, 0, -1), uDiv: 1, vDiv: divisionsY,
-        yAt: { _, v in -halfH + v * height }
-    )
+        p0: SIMD3(halfW, -halfH, -halfD),
+        p1: SIMD3(-halfW, -halfH, -halfD),
+        p2: SIMD3(halfW, halfH, -halfD),
+        p3: SIMD3(-halfW, halfH, -halfD),
+        normal: SIMD3(0, 0, -1),
+        uDiv: 1,
+        vDiv: divisionsY
+    ) { _, v in -halfH + v * height }
     // Right face (+X)
     addFace(
-        p0: SIMD3(halfW, -halfH, halfD),  p1: SIMD3(halfW, -halfH, -halfD),
-        p2: SIMD3(halfW, halfH, halfD),   p3: SIMD3(halfW, halfH, -halfD),
-        normal: SIMD3(1, 0, 0), uDiv: 1, vDiv: divisionsY,
-        yAt: { _, v in -halfH + v * height }
-    )
+        p0: SIMD3(halfW, -halfH, halfD),
+        p1: SIMD3(halfW, -halfH, -halfD),
+        p2: SIMD3(halfW, halfH, halfD),
+        p3: SIMD3(halfW, halfH, -halfD),
+        normal: SIMD3(1, 0, 0),
+        uDiv: 1,
+        vDiv: divisionsY
+    ) { _, v in -halfH + v * height }
     // Left face (-X)
     addFace(
-        p0: SIMD3(-halfW, -halfH, -halfD), p1: SIMD3(-halfW, -halfH, halfD),
-        p2: SIMD3(-halfW, halfH, -halfD),  p3: SIMD3(-halfW, halfH, halfD),
-        normal: SIMD3(-1, 0, 0), uDiv: 1, vDiv: divisionsY,
-        yAt: { _, v in -halfH + v * height }
-    )
+        p0: SIMD3(-halfW, -halfH, -halfD),
+        p1: SIMD3(-halfW, -halfH, halfD),
+        p2: SIMD3(-halfW, halfH, -halfD),
+        p3: SIMD3(-halfW, halfH, halfD),
+        normal: SIMD3(-1, 0, 0),
+        uDiv: 1,
+        vDiv: divisionsY
+    ) { _, v in -halfH + v * height }
     // Top face (+Y)
     addFace(
-        p0: SIMD3(-halfW, halfH, halfD),  p1: SIMD3(halfW, halfH, halfD),
-        p2: SIMD3(-halfW, halfH, -halfD), p3: SIMD3(halfW, halfH, -halfD),
-        normal: SIMD3(0, 1, 0), uDiv: 1, vDiv: 1,
-        yAt: { _, _ in halfH }
-    )
+        p0: SIMD3(-halfW, halfH, halfD),
+        p1: SIMD3(halfW, halfH, halfD),
+        p2: SIMD3(-halfW, halfH, -halfD),
+        p3: SIMD3(halfW, halfH, -halfD),
+        normal: SIMD3(0, 1, 0),
+        uDiv: 1,
+        vDiv: 1
+    ) { _, _ in halfH }
     // Bottom face (-Y)
     addFace(
-        p0: SIMD3(-halfW, -halfH, -halfD), p1: SIMD3(halfW, -halfH, -halfD),
-        p2: SIMD3(-halfW, -halfH, halfD),  p3: SIMD3(halfW, -halfH, halfD),
-        normal: SIMD3(0, -1, 0), uDiv: 1, vDiv: 1,
-        yAt: { _, _ in -halfH }
-    )
+        p0: SIMD3(-halfW, -halfH, -halfD),
+        p1: SIMD3(halfW, -halfH, -halfD),
+        p2: SIMD3(-halfW, -halfH, halfD),
+        p3: SIMD3(halfW, -halfH, halfD),
+        normal: SIMD3(0, -1, 0),
+        uDiv: 1,
+        vDiv: 1
+    ) { _, _ in -halfH }
 
     return (vertices, indices)
 }

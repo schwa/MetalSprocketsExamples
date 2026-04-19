@@ -1,7 +1,7 @@
-import Testing
 import Metal
 import ShaderGraph
 import ShaderGraphSupport
+import Testing
 
 @Suite
 struct GraphvizTests {

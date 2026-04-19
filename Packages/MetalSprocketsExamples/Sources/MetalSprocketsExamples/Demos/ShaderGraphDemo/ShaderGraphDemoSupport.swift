@@ -31,4 +31,3 @@ func makeVertexDescriptor() -> MTLVertexDescriptor {
 
     return descriptor
 }
-

@@ -66,7 +66,7 @@ extension ShaderGraph {
         case .input(_, let index):
             return "in\(index)"
 
-        case .function(let name, let inputs):
+        case let .function(name, inputs):
             // If this is a previously flattened function, inline its original expression
             if let originalKind = getFlattenedKind(name: name) {
                 return emitMetalExpression(kind: originalKind)
@@ -97,30 +97,62 @@ extension ShaderGraph {
         let baseName = name.replacingOccurrences(of: "shadergraph::", with: "")
 
         // Binary operators
-        if baseName.hasPrefix("add_") { return "(\(args[0]) + \(args[1]))" }
-        if baseName.hasPrefix("sub_") { return "(\(args[0]) - \(args[1]))" }
-        if baseName.hasPrefix("mul_") { return "(\(args[0]) * \(args[1]))" }
-        if baseName.hasPrefix("div_") { return "(\(args[0]) / \(args[1]))" }
+        if baseName.hasPrefix("add_") {
+            return "(\(args[0]) + \(args[1]))"
+        }
+        if baseName.hasPrefix("sub_") {
+            return "(\(args[0]) - \(args[1]))"
+        }
+        if baseName.hasPrefix("mul_") {
+            return "(\(args[0]) * \(args[1]))"
+        }
+        if baseName.hasPrefix("div_") {
+            return "(\(args[0]) / \(args[1]))"
+        }
 
         // Math functions
-        if baseName == "sin_f" { return "sin(\(args[0]))" }
-        if baseName == "cos_f" { return "cos(\(args[0]))" }
-        if baseName == "mix_f" || baseName == "mix_f4" { return "mix(\(args[0]), \(args[1]), \(args[2]))" }
-        if baseName.hasPrefix("fma_") { return "fma(\(args[0]), \(args[1]), \(args[2]))" }
+        if baseName == "sin_f" {
+            return "sin(\(args[0]))"
+        }
+        if baseName == "cos_f" {
+            return "cos(\(args[0]))"
+        }
+        if baseName == "mix_f" || baseName == "mix_f4" {
+            return "mix(\(args[0]), \(args[1]), \(args[2]))"
+        }
+        if baseName.hasPrefix("fma_") {
+            return "fma(\(args[0]), \(args[1]), \(args[2]))"
+        }
 
         // Swizzles
-        if baseName.hasPrefix("swizzle_x") { return "(\(args[0])).x" }
-        if baseName.hasPrefix("swizzle_y") { return "(\(args[0])).y" }
-        if baseName.hasPrefix("swizzle_z") { return "(\(args[0])).z" }
-        if baseName.hasPrefix("swizzle_w") { return "(\(args[0])).w" }
+        if baseName.hasPrefix("swizzle_x") {
+            return "(\(args[0])).x"
+        }
+        if baseName.hasPrefix("swizzle_y") {
+            return "(\(args[0])).y"
+        }
+        if baseName.hasPrefix("swizzle_z") {
+            return "(\(args[0])).z"
+        }
+        if baseName.hasPrefix("swizzle_w") {
+            return "(\(args[0])).w"
+        }
 
         // Construction
-        if baseName == "make_f4" { return "float4(\(args.joined(separator: ", ")))" }
-        if baseName == "make_f4_f2_f_f" { return "float4(\(args[0]), \(args[1]), \(args[2]))" }
+        if baseName == "make_f4" {
+            return "float4(\(args.joined(separator: ", ")))"
+        }
+        if baseName == "make_f4_f2_f_f" {
+            return "float4(\(args[0]), \(args[1]), \(args[2]))"
+        }
 
         // Identity/select (these shouldn't appear in flattened code normally)
-        if baseName.hasPrefix("identity_") { return args[0] }
-        if baseName.hasPrefix("select_") { return args[0] }  // Return the first arg (the actual value)
+        if baseName.hasPrefix("identity_") {
+            return args[0]
+        }
+        if baseName.hasPrefix("select_") {
+            return args[0]  // Return the first arg (the actual value)
+        }
 
         // Fallback: call as function (shouldn't happen for stdlib)
         return "\(baseName)(\(args.joined(separator: ", ")))"

@@ -1,6 +1,8 @@
 // Operators.swift
 // Arithmetic operators and swizzle properties for Node types
 
+// swiftlint:disable static_operator
+
 import simd
 
 // MARK: - ScalarValue Protocol
@@ -205,6 +207,8 @@ public func / (lhs: Float, rhs: Node<Float>) -> Node<Float> {
     let constant = rhs.graph.constant(lhs)
     return constant / rhs
 }
+
+// swiftlint:enable static_operator
 
 // MARK: - Float4 Swizzle Properties
 
