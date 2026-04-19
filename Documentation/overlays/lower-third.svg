@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lower-third caption template. Variables are substituted by compose-video.py:
+    {{NAME}}         — demo display name
+    {{DESCRIPTION}}  — short description
+    {{KEYWORDS}}     — space-separated keyword chips (or empty string)
+    {{WIDTH}}        — overlay width in pixels (matches video width)
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="{{WIDTH}}" height="160"
+     viewBox="0 0 {{WIDTH}} 160"
+     preserveAspectRatio="xMidYMax meet">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="rgba(0,0,0,0)"/>
+      <stop offset="0.25" stop-color="rgba(0,0,0,0.65)"/>
+      <stop offset="1" stop-color="rgba(0,0,0,0.9)"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="{{WIDTH}}" height="160" fill="url(#bg)"/>
+  <text x="40" y="75" fill="white"
+        font-family="SF Pro Display, -apple-system, Helvetica, sans-serif"
+        font-size="36" font-weight="700">{{NAME}}</text>
+  <text x="40" y="115" fill="rgba(255,255,255,0.85)"
+        font-family="SF Pro Text, -apple-system, Helvetica, sans-serif"
+        font-size="22" font-weight="400">{{DESCRIPTION}}</text>
+  <text x="40" y="145" fill="rgba(255,255,255,0.55)"
+        font-family="SF Mono, Menlo, monospace"
+        font-size="14" font-weight="400">{{KEYWORDS}}</text>
+</svg>

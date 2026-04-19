@@ -1,5 +1,5 @@
 {
-  "originHash" : "9feb0c17b284010dc8f8a5512cfa14e6472b733a30dd4e6bd952c54b73a726f7",
+  "originHash" : "30fc7fa7f860c13e7d905b06bb88fa3b4727318ff8b604e51c9fefcfd7dcc4db",
   "pins" : [
     {
       "identity" : "demokit",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/schwa/DemoKit",
       "state" : {
         "branch" : "main",
-        "revision" : "929a09acaa3243b85d9376357615e5253f303057"
+        "revision" : "157f503ea6296221b461f401aa92a4d81026aee5"
       }
     },
     {

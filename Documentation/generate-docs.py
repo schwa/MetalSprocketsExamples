@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """Generate screenshots and DEMOS.md from demos.yaml.
 
+Navigation uses the app's URL scheme (metalsprockets-examples://demo/<id>),
+so `id` in demos.yaml must match what DemoKit derives for each demo.
+Screenshots are captured via `steveo screenshot` against the app window so
+Metal-rendered content is preserved.
+
+Prerequisites:
+    - steveo, sips in PATH
+    - MetalSprockets-Examples app already running (e.g. launch via `xcb run`)
+
 Usage:
     uv run --with pyyaml Documentation/generate-docs.py [--screenshots] [--docs] [--all]
     uv run --with pyyaml Documentation/generate-docs.py --screenshots --settle-time 5
@@ -11,11 +20,12 @@ Options:
     --docs              Generate DEMOS.md from demos.yaml
     --all               Both screenshots and docs (default if no flags given)
     --settle-time SECS  Seconds to wait after navigating before capturing (default: 3)
-    --demo NAME         Only capture a single demo by name
+    --demo NAME         Only capture a single demo by name or id
     --window-size WxH   Window size (default: 1024x768)
 """
 
 import json
+import platform
 import subprocess
 import time
 import yaml
@@ -28,10 +38,14 @@ SCRIPT_DIR = Path(__file__).parent
 YAML_PATH = SCRIPT_DIR / "demos.yaml"
 OUTPUT_MD = SCRIPT_DIR / "DEMOS.md"
 SCREENSHOTS_DIR = SCRIPT_DIR / "screenshots"
+THUMBNAILS_DIR = SCREENSHOTS_DIR / "thumbnails"
 APP_NAME = "MetalSprockets-Examples"
+URL_SCHEME = "metalsprockets-examples"
+THUMB_WIDTH = 320
 
 
 def steveo(*args: str) -> dict | None:
+    """Run `steveo --app APP_NAME ...` and parse JSON output."""
     result = subprocess.run(
         ["steveo", "--app", APP_NAME, *args],
         capture_output=True,
@@ -43,31 +57,53 @@ def steveo(*args: str) -> dict | None:
         return None
 
 
-def capture_screenshots(demos: list[dict], settle_time: float, window_size: tuple[int, int], single_demo: str | None) -> None:
-    SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
+def app_alive() -> bool:
+    """Return True if the app has at least one window visible."""
+    result = steveo("windows")
+    return bool(result and result.get("ok") and result.get("data"))
 
-    # Check app is running
-    result = steveo("windows", "--quiet")
-    if not result or not result.get("ok"):
+
+def host_platform() -> str:
+    """Canonical platform string used in demos.yaml."""
+    system = platform.system()
+    return {"Darwin": "macOS"}.get(system, system)
+
+
+def filter_demos_for_host(demos: list[dict]) -> list[dict]:
+    """Drop the Empty placeholder and any demos whose platform doesn't match."""
+    host = host_platform()
+    out = []
+    for d in demos:
+        if d.get("name") == "Empty":
+            continue
+        p = d.get("platform")
+        if p is not None and p != host:
+            continue
+        out.append(d)
+    return out
+
+
+def capture_screenshots(
+    demos: list[dict],
+    settle_time: float,
+    window_size: tuple[int, int],
+    single_demo: str | None,
+) -> None:
+    SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
+    THUMBNAILS_DIR.mkdir(parents=True, exist_ok=True)
+
+    if not app_alive():
         print(f"Error: {APP_NAME} is not running. Launch it first.", file=sys.stderr)
         sys.exit(1)
 
-    win_url = result["data"][0]["url"]
+    win_url = steveo("windows")["data"][0]["url"]
     w, h = window_size
-
-    # Resize window
     print(f"Resizing window to {w}x{h}...")
     steveo("window", "resize", win_url, str(w), str(h))
 
-    # Hide sidebar if showing
-    result = steveo("find", "--text", "Hide Sidebar")
-    if result and result.get("ok"):
-        steveo("find", "--text", "Hide Sidebar", "--click")
-        time.sleep(0.3)
-
-    # Filter demos if single demo requested
+    demos = filter_demos_for_host(demos)
     if single_demo:
-        demos = [d for d in demos if d["name"] == single_demo]
+        demos = [d for d in demos if d["name"] == single_demo or d["id"] == single_demo]
         if not demos:
             print(f"Error: demo '{single_demo}' not found.", file=sys.stderr)
             sys.exit(1)
@@ -82,29 +118,45 @@ def capture_screenshots(demos: list[dict], settle_time: float, window_size: tupl
     for i, d in enumerate(demos):
         name = d["name"]
         file_id = d["id"]
-        num = i + 1
-        print(f"[{num:2d}/{total}] {name:30s} ", end="", flush=True)
+        print(f"[{i + 1:2d}/{total}] {name:30s} ", end="", flush=True)
 
-        result = steveo("menu", "Demos", name)
+        if not app_alive():
+            print("✗ app died — aborting")
+            failed += 1
+            break
+
+        result = steveo("open-url", f"{URL_SCHEME}://demo/{file_id}")
         if not result or not result.get("ok"):
-            print("SKIP (menu failed)")
+            print("SKIP (navigation failed)")
             failed += 1
             continue
 
         time.sleep(settle_time)
 
-        outpath = str(SCREENSHOTS_DIR / f"{file_id}.png")
-        result = steveo("screenshot", "-o", outpath)
-        if result and result.get("ok"):
-            print("✓")
-            captured += 1
-        else:
+        if not app_alive():
+            print("✗ app died after navigation — aborting")
+            failed += 1
+            break
+
+        outpath = SCREENSHOTS_DIR / f"{file_id}.png"
+        result = steveo("screenshot", "-o", str(outpath))
+        if not (result and result.get("ok")):
             print("✗ screenshot failed")
             failed += 1
+            continue
+
+        thumbpath = THUMBNAILS_DIR / f"{file_id}.png"
+        subprocess.run(
+            ["sips", "-Z", str(THUMB_WIDTH), str(outpath), "--out", str(thumbpath)],
+            capture_output=True,
+        )
+        print("✓")
+        captured += 1
 
     print()
     print(f"Done: {captured} captured, {failed} failed out of {total} demos.")
     print(f"Screenshots saved to: {SCREENSHOTS_DIR}/")
+    print(f"Thumbnails saved to: {THUMBNAILS_DIR}/")
 
 
 def generate_docs(demos: list[dict]) -> None:

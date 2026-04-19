@@ -1,7 +1,7 @@
 [defaults]
 destination = "mac"
 scheme = "MetalSprockets-Examples"
-extra_args = ["-skipPackagePluginValidation"]
+extra_args = ["-skipPackagePluginValidation", "-skipMacroValidation"]
 
 [output]
 

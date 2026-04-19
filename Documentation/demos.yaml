@@ -33,15 +33,15 @@ demos:
       adjustments: []
       notes: "Placeholder — skip in final video."
 
-  - name: Blinn-Phong Lighting
-    id: BlinnPhongLighting
+  - name: Blinn-Phong
+    id: BlinnPhong
     description: Blinn-Phong lit teapots with skybox
     long_description: >
       BlinnPhongShader element with multiple models, animated lighting,
       skybox, and WorldView camera controls.
     group: Basic
     keywords: [lighting, multipass, animated]
-    screenshot: BlinnPhongLighting.png
+    screenshot: BlinnPhong.png
     platform: null
     video:
       duration: 8
@@ -50,8 +50,8 @@ demos:
       adjustments: []
       notes: "Animated light orbits — let it run. Rotate to show highlights."
 
-  - name: Hit Test Demo
-    id: HitTestDemo
+  - name: Hit Test
+    id: HitTest
     description: GPU-based object picking
     long_description: >
       Multi-pass rendering with a parallel hit-test pass writing geometry ID,
@@ -59,7 +59,7 @@ demos:
       textures. Includes CPU readback of hit results.
     group: Complex
     keywords: [hit-test, picking, multipass, configurable]
-    screenshot: HitTestDemo.png
+    screenshot: HitTest.png
     platform: null
     video:
       duration: 8
@@ -119,15 +119,15 @@ demos:
       adjustments: []
       notes: "No visual output — very brief."
 
-  - name: Depth Buffer
-    id: DepthBuffer
+  - name: Depth
+    id: Depth
     description: Depth buffer visualization
     long_description: >
       Render-to-texture with separate color and depth outputs. Uses stitchable
       visible functions for post-processing the depth buffer.
     group: Complex
     keywords: [configurable]
-    screenshot: DepthBuffer.png
+    screenshot: Depth.png
     platform: null
     video:
       duration: 6
@@ -136,8 +136,8 @@ demos:
       adjustments: [contrast-slider, show-depth-toggle]
       notes: "Toggle depth map on/off, adjust contrast slider."
 
-  - name: Mixed Techniques
-    id: MixedTechniques
+  - name: Mixed
+    id: Mixed
     description: Combined render and compute passes
     long_description: >
       Mixing render and compute passes in a single frame — geometry rendering
@@ -145,7 +145,7 @@ demos:
       attachments.
     group: Complex
     keywords: [multipass, animated]
-    screenshot: MixedTechniques.png
+    screenshot: Mixed.png
     platform: null
     video:
       duration: 6
@@ -171,15 +171,15 @@ demos:
       adjustments: []
       notes: "Crowd-pleaser. Let physics run, rotate camera."
 
-  - name: Stencil Buffer
-    id: StencilBuffer
+  - name: Stencil
+    id: Stencil
     description: Stencil-masked triangle
     long_description: >
       Stencil texture creation, blit pass to populate the stencil attachment,
       and StencilState configuration to clip rendered geometry.
     group: Basic
     keywords: []
-    screenshot: StencilBuffer.png
+    screenshot: Stencil.png
     platform: null
     video:
       duration: 4
@@ -188,15 +188,15 @@ demos:
       adjustments: []
       notes: "Static — brief."
 
-  - name: LUT Color Grading
-    id: LUTColorGrading
+  - name: LUT
+    id: LUT
     description: Image color grading via LUTs
     long_description: >
       Compute-based image processing with LUT texture loading (2D PNG and 3D
       .cube formats) and TextureBillboardPipeline for display.
     group: Basic
     keywords: [post-processing, configurable]
-    screenshot: LUTColorGrading.png
+    screenshot: LUT.png
     platform: null
     video:
       duration: 8
@@ -257,15 +257,15 @@ demos:
       adjustments: [function-picker, parameter-slider]
       notes: "Cycle through adjustment functions, sweep sliders."
 
-  - name: Debug Shaders
-    id: DebugShaders
+  - name: Debug Shader
+    id: DebugShader
     description: Shader debug visualizations
     long_description: >
       DebugRenderPipeline with switchable fragment shader modes for visualizing
       mesh attributes — normals, tangents, UVs, depth, wireframe, etc.
     group: Basic
     keywords: []
-    screenshot: DebugShaders.png
+    screenshot: DebugShader.png
     platform: null
     video:
       duration: 8
@@ -274,15 +274,15 @@ demos:
       adjustments: [debug-mode-picker]
       notes: "Cycle through debug modes while rotating."
 
-  - name: PBR Rendering
-    id: PBRRendering
+  - name: PBR
+    id: PBR
     description: Physically based rendering
     long_description: >
       PBRShader with Cook-Torrance BRDF, HDR environment reflections, animated
       lighting, and configurable material properties.
     group: Complex
     keywords: []
-    screenshot: PBRRendering.png
+    screenshot: PBR.png
     platform: null
     video:
       duration: 8
@@ -291,15 +291,15 @@ demos:
       adjustments: []
       notes: "Rotate to show environment reflections. Animated light."
 
-  - name: SDF Raymarching
-    id: SDFRaymarching
+  - name: SDF
+    id: SDF
     description: 3D SDF raymarching
     long_description: >
       Full-screen fragment shader raymarching SDFs with depth output, allowing
       integration with rasterized geometry via WorldView.
     group: Complex
     keywords: [animated, raymarching, configurable]
-    screenshot: SDFRaymarching.png
+    screenshot: SDF.png
     platform: null
     video:
       duration: 8
@@ -358,7 +358,7 @@ demos:
       adjustments: [vcr-effects-toggle, vcr-sliders]
       notes: "Needs a video loaded. Toggle VCR effects, sweep sliders."
 
-  - name: 360° Panorama
+  - name: Panorama
     id: Panorama
     description: Equirectangular panorama viewer
     long_description: >
@@ -375,15 +375,15 @@ demos:
       adjustments: []
       notes: "Needs a panorama loaded. Rotate to look around."
 
-  - name: Wireframe Teapot
-    id: WireframeTeapot
+  - name: Wireframe
+    id: Wireframe
     description: Wireframe mesh rendering
     long_description: >
       WireframeRenderPipeline for line-mode mesh rendering, combined with
       GridShader and AxisLinesRenderPipeline.
     group: Basic
     keywords: []
-    screenshot: WireframeTeapot.png
+    screenshot: Wireframe.png
     platform: null
     video:
       duration: 5
@@ -409,7 +409,7 @@ demos:
       adjustments: [wireframe-toggle]
       notes: "Rotate, toggle wireframe on/off."
 
-  - name: Scene Graph
+  - name: SceneGraph
     id: SceneGraph
     description: Hierarchical scene graph rendering
     long_description: >
@@ -426,15 +426,15 @@ demos:
       adjustments: []
       notes: "Rotate to inspect hierarchy."
 
-  - name: glTF Model Viewer
-    id: GLTFModelViewer
+  - name: GLTF
+    id: GLTF
     description: glTF/GLB model loader and viewer
     long_description: >
       Loading glTF/GLB files, converting them to a SceneGraph via
       GLTFSceneGraphGenerator, and rendering with SceneGraphRenderPass.
     group: Complex
     keywords: []
-    screenshot: GLTFModelViewer.png
+    screenshot: GLTF.png
     platform: null
     video:
       duration: 8
@@ -443,15 +443,15 @@ demos:
       adjustments: []
       notes: "Needs a model loaded. Rotate to inspect."
 
-  - name: Voxel Renderer
-    id: VoxelRenderer
+  - name: Voxel
+    id: Voxel
     description: Compute-raymarched voxel volumes
     long_description: >
       3D texture creation and compute-pass raymarching of voxel volumes, with
       MagicaVoxel .vox file import support.
     group: Complex
     keywords: [configurable]
-    screenshot: VoxelRenderer.png
+    screenshot: Voxel.png
     platform: null
     video:
       duration: 6
@@ -460,15 +460,15 @@ demos:
       adjustments: [scale-buttons]
       notes: "Rotate, increase resolution with x2 button."
 
-  - name: Grass Sphere
-    id: GrassSphere
+  - name: Grass
+    id: Grass
     description: Mesh-shader procedural grass
     long_description: >
       Metal object and mesh shader pipeline with per-point amplification —
       each input point generates multiple segmented grass blade geometry instances.
     group: Complex
     keywords: [mesh-shaders, procedural, animated, configurable]
-    screenshot: GrassSphere.png
+    screenshot: Grass.png
     platform: null
     video:
       duration: 8
@@ -528,8 +528,8 @@ demos:
       adjustments: [scene-picker, line-width-slider]
       notes: "Cycle through scenes, adjust line width."
 
-  - name: Tiled SDF (2D)
-    id: TiledSDF2D
+  - name: Tiled SDF
+    id: TiledSDF
     description: Tile-culled 2D SDF rendering
     long_description: >
       Tile-based compute dispatch with threadgroup-level primitive culling —
@@ -537,7 +537,7 @@ demos:
       memory traffic.
     group: Complex
     keywords: [compute, sdf, tiled, animated, 2d, configurable]
-    screenshot: TiledSDF2D.png
+    screenshot: TiledSDF.png
     platform: null
     video:
       duration: 8
@@ -563,15 +563,15 @@ demos:
       adjustments: [tile-size-toggle]
       notes: "Toggle between 16x16 and 32x32 tile sizes."
 
-  - name: Offscreen Rendering
-    id: OffscreenRendering
+  - name: Offscreen
+    id: Offscreen
     description: Render to CGImage
     long_description: >
       Headless rendering with OffscreenRenderer — no RenderView, just render
       to a CGImage.
     group: Basic
     keywords: [needs-work]
-    screenshot: OffscreenRendering.png
+    screenshot: Offscreen.png
     platform: macOS
     video:
       duration: 4
@@ -580,14 +580,14 @@ demos:
       adjustments: []
       notes: "Static result — brief."
 
-  - name: MetalFX Upscaling
-    id: MetalFXUpscaling
+  - name: MetalFX
+    id: MetalFX
     description: MetalFX spatial upscaling
     long_description: >
       Integrating MetalFXSpatial upsampling into a MetalSprockets pipeline.
     group: Basic
     keywords: [metalfx, needs-work, configurable]
-    screenshot: MetalFXUpscaling.png
+    screenshot: MetalFX.png
     platform: macOS  # canImport(MetalFX)
     video:
       duration: 6
@@ -793,3 +793,58 @@ demos:
       gestures: []
       adjustments: []
       notes: "visionOS immersive Matrix rain."
+
+  - name: Skinning
+    id: Skinning
+    description: Skeletal mesh deformation with bones
+    long_description: >
+      Skeletal animation with a 2-bone rig deforming a capsule mesh. Vertex
+      shader applies per-vertex bone weights to blend between bone transforms,
+      animating between straight and L-shaped poses.
+    group: Basic
+    keywords: [skinning, skeletal, animated]
+    screenshot: null
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: [rotate]
+      adjustments: []
+      notes: "Let bone animation loop, rotate to show deformation."
+
+  - name: Shader Graph
+    id: ShaderGraph
+    description: Build Metal shaders as Swift DSL graphs
+    long_description: >
+      A Swift DSL that generates Metal code via MTLFunctionStitchingGraph.
+      Build fragment shader effects as a graph of nodes and stitch them into
+      a visible_function_table at runtime.
+    group: Complex
+    keywords: [dsl, stitching, visible-functions, configurable]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: []
+      adjustments: [graph-picker]
+      notes: "Cycle through example graphs (solid color, gradient, plasma, etc)."
+
+  - name: Phosphor
+    id: Phosphor
+    description: Live-compile Metal shader snippets (shadertoy-style)
+    long_description: >
+      A shadertoy-style editor: write a Metal snippet, it's compiled at runtime
+      into a visible_function_table entry inside a compute kernel, and the
+      output is ping-ponged into a display texture. Ships with a library of
+      example snippets.
+    group: Complex
+    keywords: [shadertoy, live-compile, visible-functions, compute, configurable]
+    screenshot: null
+    platform: null
+    video:
+      duration: 10
+      interest: high
+      gestures: []
+      adjustments: [snippet-picker]
+      notes: "Cycle through example snippets — visually varied."

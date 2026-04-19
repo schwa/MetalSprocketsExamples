@@ -1,6 +1,6 @@
 # Demos
 
-*34 demos — generated from [`demos.yaml`](demos.yaml)*
+*50 demos — generated from [`demos.yaml`](demos.yaml)*
 
 ## Ungrouped
 
@@ -12,9 +12,9 @@
 
 ## Basic
 
-### Blinn-Phong Lighting
+### Blinn-Phong
 
-![Blinn-Phong Lighting](screenshots/BlinnPhongLighting.png)
+![Blinn-Phong](screenshots/BlinnPhong.png)
 
 > Blinn-Phong lit teapots with skybox
 
@@ -60,9 +60,9 @@ Standalone ComputePass and ComputeDispatch without any rendering — just buffer
 
 ---
 
-### Stencil Buffer
+### Stencil
 
-![Stencil Buffer](screenshots/StencilBuffer.png)
+![Stencil](screenshots/Stencil.png)
 
 > Stencil-masked triangle
 
@@ -70,9 +70,9 @@ Stencil texture creation, blit pass to populate the stencil attachment, and Sten
 
 ---
 
-### LUT Color Grading
+### LUT
 
-![LUT Color Grading](screenshots/LUTColorGrading.png)
+![LUT](screenshots/LUT.png)
 
 > Image color grading via LUTs
 
@@ -94,9 +94,9 @@ GPU-driven cellular automaton — a ComputePass updates a texture each frame, dr
 
 ---
 
-### Debug Shaders
+### Debug Shader
 
-![Debug Shaders](screenshots/DebugShaders.png)
+![Debug Shader](screenshots/DebugShader.png)
 
 > Shader debug visualizations
 
@@ -128,9 +128,9 @@ Streaming AVFoundation video frames into Metal textures, rendered via TextureBil
 
 ---
 
-### 360° Panorama
+### Panorama
 
-![360° Panorama](screenshots/Panorama.png)
+![Panorama](screenshots/Panorama.png)
 
 > Equirectangular panorama viewer
 
@@ -140,9 +140,9 @@ Equirectangular-to-sphere texture mapping with WorldView camera controls and an 
 
 ---
 
-### Wireframe Teapot
+### Wireframe
 
-![Wireframe Teapot](screenshots/WireframeTeapot.png)
+![Wireframe](screenshots/Wireframe.png)
 
 > Wireframe mesh rendering
 
@@ -162,9 +162,9 @@ TrivialMesh procedural geometry generation and conversion to renderable Mesh obj
 
 ---
 
-### Scene Graph
+### SceneGraph
 
-![Scene Graph](screenshots/SceneGraph.png)
+![SceneGraph](screenshots/SceneGraph.png)
 
 > Hierarchical scene graph rendering
 
@@ -198,9 +198,9 @@ MetalCanvas and MetalCanvasRenderPipeline: GPU-accelerated 2D vector path stroki
 
 ---
 
-### Hello Imageblock
+### Tile Average
 
-![Hello Imageblock](screenshots/HelloImageblock.png)
+![Tile Average](screenshots/TileAverage.png)
 
 > Imageblock tile averaging
 
@@ -210,9 +210,9 @@ Metal imageblock APIs: tile memory allocation, imageblock_data load/store, and t
 
 ---
 
-### Offscreen Rendering
+### Offscreen
 
-![Offscreen Rendering](screenshots/OffscreenRendering.png)
+![Offscreen](screenshots/Offscreen.png)
 
 > Render to CGImage
 
@@ -222,9 +222,9 @@ Headless rendering with OffscreenRenderer — no RenderView, just render to a CG
 
 ---
 
-### MetalFX Upscaling
+### MetalFX
 
-![MetalFX Upscaling](screenshots/MetalFXUpscaling.png)
+![MetalFX](screenshots/MetalFX.png)
 
 > MetalFX spatial upscaling
 
@@ -234,11 +234,21 @@ Integrating MetalFXSpatial upsampling into a MetalSprockets pipeline.
 
 ---
 
+### Skinning
+
+> Skeletal mesh deformation with bones
+
+Skeletal animation with a 2-bone rig deforming a capsule mesh. Vertex shader applies per-vertex bone weights to blend between bone transforms, animating between straight and L-shaped poses.
+
+**Tags:** `skinning`  `skeletal`  `animated`
+
+---
+
 ## Complex
 
-### Hit Test Demo
+### Hit Test
 
-![Hit Test Demo](screenshots/HitTestDemo.png)
+![Hit Test](screenshots/HitTest.png)
 
 > GPU-based object picking
 
@@ -248,9 +258,9 @@ Multi-pass rendering with a parallel hit-test pass writing geometry ID, instance
 
 ---
 
-### Depth Buffer
+### Depth
 
-![Depth Buffer](screenshots/DepthBuffer.png)
+![Depth](screenshots/Depth.png)
 
 > Depth buffer visualization
 
@@ -260,9 +270,9 @@ Render-to-texture with separate color and depth outputs. Uses stitchable visible
 
 ---
 
-### Mixed Techniques
+### Mixed
 
-![Mixed Techniques](screenshots/MixedTechniques.png)
+![Mixed](screenshots/Mixed.png)
 
 > Combined render and compute passes
 
@@ -296,9 +306,9 @@ Chaining multiple ComputePass stages — heat simulation, color remap, video ble
 
 ---
 
-### PBR Rendering
+### PBR
 
-![PBR Rendering](screenshots/PBRRendering.png)
+![PBR](screenshots/PBR.png)
 
 > Physically based rendering
 
@@ -306,9 +316,9 @@ PBRShader with Cook-Torrance BRDF, HDR environment reflections, animated lightin
 
 ---
 
-### SDF Raymarching
+### SDF
 
-![SDF Raymarching](screenshots/SDFRaymarching.png)
+![SDF](screenshots/SDF.png)
 
 > 3D SDF raymarching
 
@@ -330,9 +340,9 @@ Compute-to-render buffer sharing: a compute pass updates particle state each fra
 
 ---
 
-### glTF Model Viewer
+### GLTF
 
-![glTF Model Viewer](screenshots/GLTFModelViewer.png)
+![GLTF](screenshots/GLTF.png)
 
 > glTF/GLB model loader and viewer
 
@@ -340,9 +350,9 @@ Loading glTF/GLB files, converting them to a SceneGraph via GLTFSceneGraphGenera
 
 ---
 
-### Voxel Renderer
+### Voxel
 
-![Voxel Renderer](screenshots/VoxelRenderer.png)
+![Voxel](screenshots/Voxel.png)
 
 > Compute-raymarched voxel volumes
 
@@ -352,9 +362,9 @@ Loading glTF/GLB files, converting them to a SceneGraph via GLTFSceneGraphGenera
 
 ---
 
-### Grass Sphere
+### Grass
 
-![Grass Sphere](screenshots/GrassSphere.png)
+![Grass](screenshots/Grass.png)
 
 > Mesh-shader procedural grass
 
@@ -376,15 +386,45 @@ Mesh shader geometry amplification with fully procedural vertex generation — n
 
 ---
 
-### Tiled SDF (2D)
+### Tiled SDF
 
-![Tiled SDF (2D)](screenshots/TiledSDF2D.png)
+![Tiled SDF](screenshots/TiledSDF.png)
 
 > Tile-culled 2D SDF rendering
 
 Tile-based compute dispatch with threadgroup-level primitive culling — primitives are binned per tile into threadgroup memory to reduce global memory traffic.
 
 **Tags:** `compute`  `sdf`  `tiled`  `animated`  `2d`  `configurable`
+
+---
+
+### Ray Tracing
+
+> Cornell box path tracer
+
+Metal ray tracing APIs with hardware-accelerated AccelerationStructure intersection. Progressive path tracing of the classic Cornell box scene with diffuse global illumination.
+
+**Tags:** `ray-tracing`  `path-tracing`  `acceleration-structure`
+
+---
+
+### Shader Graph
+
+> Build Metal shaders as Swift DSL graphs
+
+A Swift DSL that generates Metal code via MTLFunctionStitchingGraph. Build fragment shader effects as a graph of nodes and stitch them into a visible_function_table at runtime.
+
+**Tags:** `dsl`  `stitching`  `visible-functions`  `configurable`
+
+---
+
+### Phosphor
+
+> Live-compile Metal shader snippets (shadertoy-style)
+
+A shadertoy-style editor: write a Metal snippet, it's compiled at runtime into a visible_function_table entry inside a compute kernel, and the output is ping-ponged into a display texture. Ships with a library of example snippets.
+
+**Tags:** `shadertoy`  `live-compile`  `visible-functions`  `compute`  `configurable`
 
 ---
 
@@ -399,5 +439,107 @@ Tile-based compute dispatch with threadgroup-level primitive culling — primiti
 Multiple compute shader functions (multiply, gamma, HSV, levels, temperature/tint, vignette, etc.) applied to an image, showing how to swap between different ComputeKernels at runtime.
 
 **Tags:** `configurable`
+
+---
+
+## Rendering
+
+### Infinite Grid
+
+> An infinite ground plane grid with interactive camera
+
+**Tags:** `MetalSprocketsAddOns`  `grid`  `camera`
+
+---
+
+### Spinning Cube
+
+> A rotating RGB cube with MSAA controls
+
+**Tags:** `MetalSprocketsAddOns`  `msaa`  `animated`
+
+---
+
+### Shadow Map
+
+> Multi-light shadow mapping with PCF and depth bias controls
+
+**Tags:** `MetalSprocketsAddOns`  `shadows`  `pcf`  `configurable`
+
+---
+
+### Ray Traced Shadows
+
+> Hardware-accelerated ray-traced shadows with acceleration structures
+
+**Tags:** `MetalSprocketsAddOns`  `ray-tracing`  `shadows`
+
+---
+
+## Slug
+
+### Slug Debug
+
+> Basic Slug text rendering test
+
+**Tags:** `MetalSprocketsAddOns`  `slug`  `text`
+
+---
+
+### Matrix Rain
+
+> Matrix-style falling text rendered with Slug
+
+**Tags:** `MetalSprocketsAddOns`  `slug`  `text`  `animated`
+
+---
+
+### Spinning Sphere
+
+> Text mapped to a spinning sphere with Slug
+
+**Tags:** `MetalSprocketsAddOns`  `slug`  `text`  `animated`
+
+---
+
+### Text Panel
+
+> Multi-language text rendered with Slug
+
+**Tags:** `MetalSprocketsAddOns`  `slug`  `text`  `i18n`
+
+---
+
+### Terminal
+
+> Live terminal output rendered with Slug
+
+**Tags:** `MetalSprocketsAddOns`  `slug`  `text`  `terminal`  `macOS`
+
+---
+
+### Immersive Matrix Rain
+
+> Matrix rain in immersive visionOS space
+
+**Tags:** `MetalSprocketsAddOns`  `slug`  `visionos`  `animated`  `visionOS`
+
+---
+
+## Platform
+
+### Mobile
+
+> AR-powered mobile rendering demo
+
+**Tags:** `MetalSprocketsAddOns`  `ar`  `ios`  `iOS`
+
+---
+
+### VisionOS
+
+> Immersive visionOS stereo rendering
+
+**Tags:** `MetalSprocketsAddOns`  `visionos`  `stereo`  `visionOS`
 
 ---
