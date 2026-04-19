@@ -2894,10 +2894,12 @@ created: 2026-04-14T16:14:27Z
 ## 381: Absorb Phosphor project into MetalSprocketsExamples
 
 +++
-status: new
+status: closed
 priority: medium
 kind: task
 created: 2026-04-19T15:54:34Z
+updated: 2026-04-19T17:49:44Z
+closed: 2026-04-19T17:49:44Z
 +++
 
 Phosphor (in Current/Phosphor) contains MetalSprockets demo content (e.g. Plasma.metal) that would fit better as demos within MetalSprocketsExamples. Migrate the relevant shaders and demo code into MetalSprocketsExamples and retire the standalone Phosphor project.

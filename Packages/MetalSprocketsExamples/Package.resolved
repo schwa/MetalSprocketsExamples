@@ -1,5 +1,5 @@
 {
-  "originHash" : "f62f8bca3853a27429a916eca6c8a6241f7b2630936bf5ad0f3c78d994742b18",
+  "originHash" : "9feb0c17b284010dc8f8a5512cfa14e6472b733a30dd4e6bd952c54b73a726f7",
   "pins" : [
     {
       "identity" : "demokit",
@@ -61,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "8ed48516d915400550eafab8ab31580949e93300"
+        "revision" : "d6b09a0fb4936ecac0a53bb16e9c0110f24c5a65"
       }
     },
     {
@@ -155,6 +155,15 @@
       }
     },
     {
+      "identity" : "swift-tree-sitter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tree-sitter/swift-tree-sitter",
+      "state" : {
+        "revision" : "08ef81eb8620617b55b08868126707ad72bf754f",
+        "version" : "0.25.0"
+      }
+    },
+    {
       "identity" : "swiftearcut",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/SwiftEarcut",
@@ -188,6 +197,24 @@
       "state" : {
         "branch" : "main",
         "revision" : "8b762c12d595110d1c2cb40a616cc19532eed9db"
+      }
+    },
+    {
+      "identity" : "tree-sitter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tree-sitter/tree-sitter",
+      "state" : {
+        "revision" : "da6fe9beb4f7f67beb75914ca8e0d48ae48d6406",
+        "version" : "0.25.10"
+      }
+    },
+    {
+      "identity" : "tree-sitter-cpp",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tree-sitter/tree-sitter-cpp",
+      "state" : {
+        "branch" : "master",
+        "revision" : "8b5b49eb196bec7040441bee33b2c9a4838d6967"
       }
     },
     {
