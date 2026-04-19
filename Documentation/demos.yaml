@@ -546,15 +546,15 @@ demos:
       adjustments: [primitive-count-slider, visualization-picker, tile-size-toggle]
       notes: "Animated. Cycle visualization modes, adjust primitive count."
 
-  - name: Hello Imageblock
-    id: HelloImageblock
+  - name: Tile Average
+    id: TileAverage
     description: Imageblock tile averaging
     long_description: >
       Metal imageblock APIs: tile memory allocation, imageblock_data load/store,
       and tile dispatch in the simplest possible example.
     group: Basic
     keywords: [imageblock, tile, 2d, configurable]
-    screenshot: HelloImageblock.png
+    screenshot: TileAverage.png
     platform: null
     video:
       duration: 5
@@ -595,3 +595,201 @@ demos:
       gestures: []
       adjustments: [scale-factor-slider]
       notes: "Adjust scale factor to show upscaling quality difference."
+
+  - name: Ray Tracing
+    id: RayTracing
+    description: Cornell box path tracer
+    long_description: >
+      Metal ray tracing APIs with hardware-accelerated AccelerationStructure
+      intersection. Progressive path tracing of the classic Cornell box scene
+      with diffuse global illumination.
+    group: Complex
+    keywords: [ray-tracing, path-tracing, acceleration-structure]
+    screenshot: null
+    platform: null
+    video:
+      duration: 10
+      interest: high
+      gestures: []
+      adjustments: []
+      notes: "Let progressive path tracer converge — visually impressive."
+
+  - name: Infinite Grid
+    id: InfiniteGrid
+    description: An infinite ground plane grid with interactive camera
+    long_description: null
+    group: Rendering
+    keywords: [MetalSprocketsAddOns, grid, camera]
+    screenshot: null
+    platform: null
+    video:
+      duration: 5
+      interest: low
+      gestures: [rotate]
+      adjustments: []
+      notes: "Rotate camera to show infinite grid behavior."
+
+  - name: Spinning Cube
+    id: SpinningCube
+    description: A rotating RGB cube with MSAA controls
+    long_description: null
+    group: Rendering
+    keywords: [MetalSprocketsAddOns, msaa, animated]
+    screenshot: null
+    platform: null
+    video:
+      duration: 5
+      interest: low
+      gestures: []
+      adjustments: [msaa-picker]
+      notes: "Cycle MSAA settings, let cube spin."
+
+  - name: Shadow Map
+    id: ShadowMap
+    description: Multi-light shadow mapping with PCF and depth bias controls
+    long_description: null
+    group: Rendering
+    keywords: [MetalSprocketsAddOns, shadows, pcf, configurable]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: [pcf-slider, bias-slider]
+      notes: "Rotate, adjust PCF softness and depth bias."
+
+  - name: Ray Traced Shadows
+    id: RayTracedShadows
+    description: Hardware-accelerated ray-traced shadows with acceleration structures
+    long_description: null
+    group: Rendering
+    keywords: [MetalSprocketsAddOns, ray-tracing, shadows]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: [rotate]
+      adjustments: []
+      notes: "Rotate to show ray-traced shadow quality."
+
+  - name: Slug Debug
+    id: SlugDebug
+    description: Basic Slug text rendering test
+    long_description: null
+    group: Slug
+    keywords: [MetalSprocketsAddOns, slug, text]
+    screenshot: null
+    platform: null
+    video:
+      duration: 4
+      interest: low
+      gestures: []
+      adjustments: []
+      notes: "Static debug text — brief."
+
+  - name: Matrix Rain
+    id: MatrixRain
+    description: Matrix-style falling text rendered with Slug
+    long_description: null
+    group: Slug
+    keywords: [MetalSprocketsAddOns, slug, text, animated]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      gestures: []
+      adjustments: []
+      notes: "Let animation run — visually iconic."
+
+  - name: Spinning Sphere
+    id: SpinningSphere
+    description: Text mapped to a spinning sphere with Slug
+    long_description: null
+    group: Slug
+    keywords: [MetalSprocketsAddOns, slug, text, animated]
+    screenshot: null
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: []
+      adjustments: []
+      notes: "Let sphere spin, show text wrap."
+
+  - name: Text Panel
+    id: TextPanel
+    description: Multi-language text rendered with Slug
+    long_description: null
+    group: Slug
+    keywords: [MetalSprocketsAddOns, slug, text, i18n]
+    screenshot: null
+    platform: null
+    video:
+      duration: 6
+      interest: medium
+      gestures: []
+      adjustments: []
+      notes: "Show multiple scripts/languages."
+
+  - name: Terminal
+    id: Terminal
+    description: Live terminal output rendered with Slug
+    long_description: null
+    group: Slug
+    keywords: [MetalSprocketsAddOns, slug, text, terminal]
+    screenshot: null
+    platform: macOS
+    video:
+      duration: 8
+      interest: medium
+      gestures: []
+      adjustments: []
+      notes: "Live terminal output scrolling."
+
+  - name: Mobile
+    id: Mobile
+    description: AR-powered mobile rendering demo
+    long_description: null
+    group: Platform
+    keywords: [MetalSprocketsAddOns, ar, ios]
+    screenshot: null
+    platform: iOS
+    video:
+      duration: 6
+      interest: medium
+      gestures: []
+      adjustments: []
+      notes: "iOS-only AR demo."
+
+  - name: VisionOS
+    id: VisionOS
+    description: Immersive visionOS stereo rendering
+    long_description: null
+    group: Platform
+    keywords: [MetalSprocketsAddOns, visionos, stereo]
+    screenshot: null
+    platform: visionOS
+    video:
+      duration: 6
+      interest: medium
+      gestures: []
+      adjustments: []
+      notes: "visionOS-only stereo render."
+
+  - name: Immersive Matrix Rain
+    id: ImmersiveMatrixRain
+    description: Matrix rain in immersive visionOS space
+    long_description: null
+    group: Slug
+    keywords: [MetalSprocketsAddOns, slug, visionos, animated]
+    screenshot: null
+    platform: visionOS
+    video:
+      duration: 8
+      interest: high
+      gestures: []
+      adjustments: []
+      notes: "visionOS immersive Matrix rain."
