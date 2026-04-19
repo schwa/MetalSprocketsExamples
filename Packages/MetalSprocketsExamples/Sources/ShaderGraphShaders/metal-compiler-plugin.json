@@ -1,0 +1,6 @@
+{
+    "output": "default.metallib",
+    "plugin-logging": true,
+    "verbose-logging": true,
+    "logging-prefix": "🔨"
+}

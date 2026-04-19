@@ -2907,10 +2907,12 @@ Phosphor (in Current/Phosphor) contains MetalSprockets demo content (e.g. Plasma
 ## 382: Absorb MetalSprocketsShaderGraph into MetalSprocketsExamples
 
 +++
-status: new
+status: closed
 priority: medium
 kind: task
 created: 2026-04-19T15:56:47Z
+updated: 2026-04-19T16:22:21Z
+closed: 2026-04-19T16:22:21Z
 +++
 
 MetalSprocketsShaderGraph (in Current/MetalSprocketsShaderGraph) provides a Swift DSL that generates Metal code via MTLFunctionStitchingGraph. Migrate its ShaderGraph sources and demo into MetalSprocketsExamples (likely as a dedicated demo) and retire the standalone project.

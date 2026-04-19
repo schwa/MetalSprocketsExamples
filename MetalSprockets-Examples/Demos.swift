@@ -45,7 +45,8 @@ import SwiftUI
         SlugDebugDemoView.self,
         SlugMatrixRainDemoView.self,
         SlugSpinningSphereDemoView.self,
-        SlugTextPanelDemoView.self
+        SlugTextPanelDemoView.self,
+        ShaderGraphDemoView.self
     ]
 
     #if os(macOS)

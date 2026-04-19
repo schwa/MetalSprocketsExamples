@@ -37,6 +37,8 @@ let package = Package(
             dependencies: [
                 "MetalSprocketsExamplesSupport",
                 "MetalSprocketsExampleShaders",
+                "MetalSprocketsShaderGraph",
+                "ShaderGraphSupport",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "DemoKit", package: "DemoKit"),
@@ -85,6 +87,41 @@ let package = Package(
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
+        ),
+        .target(
+            name: "ShaderGraph",
+            dependencies: [
+                "ShaderGraphShaders"
+            ]
+        ),
+        .target(
+            name: "ShaderGraphSupport",
+            dependencies: [
+                "ShaderGraph"
+            ]
+        ),
+        .target(
+            name: "MetalSprocketsShaderGraph",
+            dependencies: [
+                "ShaderGraph",
+                .product(name: "MetalSprockets", package: "MetalSprockets")
+            ]
+        ),
+        .target(
+            name: "ShaderGraphShaders",
+            exclude: ["Metal"],
+            publicHeadersPath: "include",
+            plugins: [
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+            ]
+        ),
+        .testTarget(
+            name: "ShaderGraphTests",
+            dependencies: ["ShaderGraph", "ShaderGraphSupport"]
+        ),
+        .testTarget(
+            name: "MetalSprocketsShaderGraphTests",
+            dependencies: ["MetalSprocketsShaderGraph"]
         ),
         .testTarget(
             name: "MetalSprocketsExamplesTests",
