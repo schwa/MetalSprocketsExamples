@@ -1,6 +1,6 @@
-import SwiftUI
 import SwiftTreeSitter
 import SwiftTreeSitterLayer
+import SwiftUI
 import TreeSitterCPP
 
 struct MetalTextEditor: View {
@@ -52,8 +52,8 @@ struct MetalTextEditor: View {
             return attributedString
         }
         func walk(node: Node, depth: Int = 0) {
-//            let indent = String(repeating: "  ", count: depth)
-//            print("\(indent)\(node.nodeType ?? "<nil>")")
+            // let indent = String(repeating: "  ", count: depth)
+            // print("\(indent)\(node.nodeType ?? "<nil>")")
 
             let nsRange = node.range
             guard let characterRange = Range(nsRange, in: attributedString) else {
@@ -90,10 +90,12 @@ extension Range where Bound == AttributedString.Index {
     init?(_ range: NSRange, in string: AttributedString) {
         // Convert AttributedString to String to get proper indices
         let base = String(string.characters)
-        guard let fromUTF16 = base.utf16.index(base.utf16.startIndex, offsetBy: range.location, limitedBy: base.utf16.endIndex),
-              let toUTF16 = base.utf16.index(fromUTF16, offsetBy: range.length, limitedBy: base.utf16.endIndex),
-              let from = AttributedString.Index(fromUTF16, within: string),
-              let to = AttributedString.Index(toUTF16, within: string) else {
+        guard
+            let fromUTF16 = base.utf16.index(base.utf16.startIndex, offsetBy: range.location, limitedBy: base.utf16.endIndex),
+            let toUTF16 = base.utf16.index(fromUTF16, offsetBy: range.length, limitedBy: base.utf16.endIndex),
+            let from = AttributedString.Index(fromUTF16, within: string),
+            let to = AttributedString.Index(toUTF16, within: string)
+        else {
             return nil
         }
         self = from..<to

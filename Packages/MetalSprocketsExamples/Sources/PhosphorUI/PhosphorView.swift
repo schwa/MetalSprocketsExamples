@@ -2,8 +2,8 @@ import Metal
 import MetalSprockets
 import MetalSprocketsUI
 import MetalSupport
-import SwiftUI
 import simd
+import SwiftUI
 
 /// A shader-toy style view that runs a user-supplied fragment snippet as a
 /// `visible_function_table` entry inside a compute kernel, ping-ponging between
@@ -50,7 +50,7 @@ public struct PhosphorView: View {
         }
     }
 
-    private func recompile() async {
+    private func recompile() {
         do {
             let device = _MTLCreateSystemDefaultDevice()
             let expanded = expandSnippet(source: snippet, style: style)

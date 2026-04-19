@@ -79,7 +79,9 @@ struct PhosphorPipeline: Element {
     }
 
     private func setupTexturesIfNeeded(width: Int, height: Int) {
-        guard let device else { return }
+        guard let device else {
+            return
+        }
         if let existing = textureA, existing.width == width, existing.height == height,
             textureB?.width == width, textureB?.height == height {
             return
@@ -98,4 +100,3 @@ struct PhosphorPipeline: Element {
         textureB = device.makeTexture(descriptor: descriptor)
     }
 }
-
