@@ -32,12 +32,3 @@ func makeVertexDescriptor() -> MTLVertexDescriptor {
     return descriptor
 }
 
-// MARK: - Element Extensions
-
-extension Element {
-    func linkedFunctions(_ functions: [MTLFunction]) -> some Element {
-        let linked = MTLLinkedFunctions()
-        linked.functions = functions
-        return environment(\.linkedFunctions, linked)
-    }
-}
