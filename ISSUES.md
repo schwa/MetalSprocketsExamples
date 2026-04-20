@@ -1557,12 +1557,12 @@ Note: MikkTSpace is identical in both projects and can be ignored.
    - Then build the Examples project to ensure it correctly references the AddOns external package
 
 ## Expected Outcome
-- AddOns project contains the latest code from Examples
-- AddOns project builds successfully
-- Examples project depends on AddOns as an external package
-- Examples project builds successfully
-- No duplication of AddOns code between projects
 
+- `2025-10-29T00:00:00Z`: AddOns project contains the latest code from Examples
+- `2025-10-29T00:00:00Z`: AddOns project builds successfully
+- `2025-10-29T00:00:00Z`: Examples project depends on AddOns as an external package
+- `2025-10-29T00:00:00Z`: Examples project builds successfully
+- `2025-10-29T00:00:00Z`: No duplication of AddOns code between projects
 - `2026-04-02T22:18:00Z`: Migration complete. MetalSprocketsAddOns and MetalSprocketsAddOnsShaders targets successfully moved from Examples to AddOns. Both projects build successfully. Hard-coded paths in metal-compiler-plugin.json tracked separately in #304.
 
 ---
@@ -2789,10 +2789,9 @@ closed: 2026-04-13T15:59:23Z
 
 Promote the following from MetalSprocketsExamples into MetalSprocketsAddOns:
 
-- BlinnPhongShader (+ Lighting support it depends on)
-- DebugRenderPipeline — switchable debug visualization modes (normals, tangents, UVs, depth, wireframe, etc.)
-- VideoTexturePipeline — AVFoundation video frame to Metal texture streaming
-
+- `2026-04-13T06:00:53Z`: BlinnPhongShader (+ Lighting support it depends on)
+- `2026-04-13T06:00:53Z`: DebugRenderPipeline — switchable debug visualization modes (normals, tangents, UVs, depth, wireframe, etc.)
+- `2026-04-13T06:00:53Z`: VideoTexturePipeline — AVFoundation video frame to Metal texture streaming
 - `2026-04-13T15:59:23Z`: Promoted BlinnPhongShader, DebugRenderPipeline, VideoTexturePipeline, and Lighting to MetalSprocketsAddOns. Removed local copies from Examples.
 
 ---
@@ -2927,10 +2926,12 @@ MetalSprocketsShaderGraph (in Current/MetalSprocketsShaderGraph) provides a Swif
 ## 383: PhosphorPipeline relies on zero-cleared ping-pong textures on first frame
 
 +++
-status: new
+status: closed
 priority: medium
 kind: bug
 created: 2026-04-20T18:05:31Z
+updated: 2026-04-20T19:33:49Z
+closed: 2026-04-20T19:33:49Z
 +++
 
 `PhosphorUI/PhosphorPipeline.swift` creates two `rgba32Float` textures with `storageMode = .private` via `device.makeTexture(...)` (lines 99-100) and immediately samples one of them as `previousTexture` in the `Phosphor.computeMain` kernel on frame 0. The shader (`PhosphorShaders/Metal/PhosphorCompute.metal`) passes `previousTexture` straight into snippet functions as `backbuffer` with no frame-index guard.
@@ -2939,15 +2940,19 @@ Not all Apple GPUs zero-initialize newly allocated textures. On devices that don
 
 Fix: after creating `textureA`/`textureB` in `setupTexturesIfNeeded`, explicitly clear them — either via a blit `fillBuffer`-style clear, a small compute clear kernel, or a one-shot render pass with `.clear` load action and `.store`. A frame-index guard in the shader is an alternative but requires plumbing the frame counter into uniforms.
 
+- `2026-04-20T19:33:49Z`: Fixed by explicitly zero-filling both ping-pong textures with MTLTexture.fill(with:using:) after creation in setupTexturesIfNeeded. Required pulling MetalSupport main via a package override in Packages/MetalSprocketsExamples/Package.swift.
+
 ---
 
 ## 384: AppleEventLogoDemo relies on zero-cleared heat textures on first frame
 
 +++
-status: new
+status: closed
 priority: medium
 kind: bug
 created: 2026-04-20T18:05:42Z
+updated: 2026-04-20T19:33:49Z
+closed: 2026-04-20T19:33:49Z
 +++
 
 `MetalSprocketsExamples/Demos/AppleEventLogoDemo/AppleEventLogoDemoView.swift` creates two ping-pong `rgba16Float` heat textures in its `.task { ... }` (lines ~173-177) via `device.makeTexture(descriptor:)` with no explicit initialization. On the first frame, the `heatup` kernel in `AppleEventLogoShaders.metal` reads `previousTexture.read(uint2(sampleCoord))` (line 59) and feeds it back into the next frame, so any uncleared garbage persists and accumulates.
@@ -2955,5 +2960,7 @@ created: 2026-04-20T18:05:42Z
 Not all Apple GPUs zero-initialize newly allocated textures, so on affected devices this will show stale/garbage heat on startup.
 
 Fix: after creating the heat textures, explicitly clear both to zero — a blit clear, a trivial "clear" compute kernel dispatch, or a one-shot render pass with `.clear` load action + `.store` store action will all work. A frame-index guard in the shader is an alternative but more invasive.
+
+- `2026-04-20T19:33:49Z`: Fixed by explicitly zero-filling both heat textures with MTLTexture.fill(with:using:) after creation (UInt64(0) since rgba16Float is 8 bytes/pixel).
 
 ---

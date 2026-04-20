@@ -1,5 +1,6 @@
 import MetalKit
 import MetalSprocketsSupport
+import MetalSupport
 
 public extension MTKMesh {
     static func teapot(options: MTKMesh.Options = []) -> MTKMesh {

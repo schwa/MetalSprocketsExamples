@@ -175,6 +175,16 @@ public struct AppleEventLogoDemoView: View {
                             texture.label = "Heat Texture \(index)"
                             return texture
                         }
+                        // Explicitly zero the ping-pong textures. Not all Apple GPUs
+                        // clear freshly-allocated texture memory, and the heatup
+                        // kernel reads `previousTexture` as feedback on frame 0.
+                        if let queue = device.makeCommandQueue() {
+                            queue.label = "AppleEventLogo.heatTextures.clear"
+                            // rgba16Float = 8 bytes/pixel; fill zeroed bytes.
+                            for texture in heatTextures {
+                                try texture.fill(with: UInt64(0), using: queue)
+                            }
+                        }
 
                         // Create colored output texture
                         let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 256, height: 256, mipmapped: false)

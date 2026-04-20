@@ -24,6 +24,8 @@ let package = Package(
         .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
         .package(url: "https://github.com/schwa/Interaction3D", branch: "main"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.4"),
+        // Override to pick up `MTLTexture.fill()` from main (upstream pins are 1.0.x).
+        .package(url: "https://github.com/schwa/MetalSupport", branch: "main"),
         .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", from: "0.1.2"),
@@ -53,6 +55,7 @@ let package = Package(
                 .product(name: "MetalSprocketsUI", package: "MetalSprockets"),
                 .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns"),
                 .product(name: "MetalSprocketsAddOnsShaders", package: "MetalSprocketsAddOns"),
+                .product(name: "MetalSupport", package: "MetalSupport"),
                 .product(name: "Panels", package: "Panels"),
                 .product(name: "SwiftGLTF", package: "SwiftGLTF"),
                 .product(name: "SwiftMesh", package: "SwiftMesh"),
@@ -107,7 +110,8 @@ let package = Package(
                 "PhosphorShaders",
                 .product(name: "MetalSprockets", package: "MetalSprockets"),
                 .product(name: "MetalSprocketsUI", package: "MetalSprockets"),
-                .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns")
+                .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns"),
+                .product(name: "MetalSupport", package: "MetalSupport")
             ],
             resources: [
                 .copy("Resources/Support.h")

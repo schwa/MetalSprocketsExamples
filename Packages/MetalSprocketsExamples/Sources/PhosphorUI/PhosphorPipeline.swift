@@ -3,6 +3,7 @@ import MetalSprockets
 import MetalSprocketsAddOns
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import PhosphorShaders
 import simd
 
@@ -96,7 +97,20 @@ struct PhosphorPipeline: Element {
         descriptor.usage = [.shaderRead, .shaderWrite]
         descriptor.storageMode = .private
 
-        textureA = device.makeTexture(descriptor: descriptor)
-        textureB = device.makeTexture(descriptor: descriptor)
+        let newTextureA = device.makeTexture(descriptor: descriptor)
+        let newTextureB = device.makeTexture(descriptor: descriptor)
+
+        // Explicitly zero the ping-pong textures. Not all Apple GPUs clear
+        // freshly-allocated texture memory, and the compute kernel reads the
+        // previous texture as feedback on frame 0.
+        if let queue = device.makeCommandQueue() {
+            queue.label = "PhosphorPipeline.clear"
+            let zero = SIMD4<Float>(repeating: 0)
+            try? newTextureA?.fill(with: zero, using: queue)
+            try? newTextureB?.fill(with: zero, using: queue)
+        }
+
+        textureA = newTextureA
+        textureB = newTextureB
     }
 }
