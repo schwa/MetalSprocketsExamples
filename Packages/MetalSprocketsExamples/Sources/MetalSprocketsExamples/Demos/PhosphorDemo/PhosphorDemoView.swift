@@ -18,65 +18,63 @@ public struct PhosphorDemoView: DemoView {
 
     @State private var snippet: String = Example.plasma.source
     @State private var snippetStyle: SnippetStyle = .mainImage
+    @State private var showSnippet: Bool = true
     @State private var showExpandedSnippet = false
     @State private var selectedExample: Example = .plasma
+
 
     public init() {}
 
     public var body: some View {
-        splitContainer
-        .demoConfiguration {
-            Form {
-                Picker("Example", selection: $selectedExample) {
-                    ForEach(Example.allCases) { example in
-                        Text(example.title).tag(example)
-                    }
-                }
-                .onChange(of: selectedExample) { _, newValue in
-                    snippet = newValue.source
-                    snippetStyle = newValue.style
-                }
-
-                Picker("Snippet Style", selection: $snippetStyle) {
-                    ForEach(SnippetStyle.allCases, id: \.self) { style in
-                        Text(String(describing: style)).tag(style)
-                    }
-                }
-
-                Toggle("Show Expanded Source", isOn: $showExpandedSnippet)
-            }
-            .formStyle(.grouped)
+        splitContent
+        .onChange(of: selectedExample) { _, newValue in
+            snippet = newValue.source
+            snippetStyle = newValue.style
         }
-    }
-
-    @ViewBuilder
-    private var splitContainer: some View {
-        #if os(macOS)
-        HSplitView {
-            splitContent
-        }
-        #else
-        HStack {
-            splitContent
-        }
-        #endif
     }
 
     @ViewBuilder
     private var splitContent: some View {
         PhosphorView(snippet: snippet, style: snippetStyle)
-            .frame(minWidth: 300)
+        .overlay(alignment: .topTrailing) {
+            VStack(alignment: .trailing) {
+                HStack {
+                    Picker("Example", selection: $selectedExample) {
+                        ForEach(Example.allCases, id: \.self) { example in
+                            Text(example.title).tag(example)
+                        }
+                    }
 
-        Group {
-            if showExpandedSnippet {
-                let expanded = expandSnippet(source: snippet, style: snippetStyle)
-                TextEditor(text: .constant(expanded))
-            } else {
-                MetalTextEditor(text: $snippet)
+                    Toggle("Source", isOn: $showSnippet)
+                        .toggleStyle(.switch)
+                }
+                if showSnippet {
+                    Group {
+                        if showExpandedSnippet {
+                            let expanded = expandSnippet(source: snippet, style: snippetStyle)
+                            TextEditor(text: .constant(expanded))
+                        } else {
+                            MetalTextEditor(text: $snippet)
+                        }
+                    }
+                    .monospaced()
+                    .frame(minWidth: 300, maxWidth: 800)
+
+                    HStack {
+                        Picker("Snippet Style", selection: $snippetStyle) {
+                            ForEach(SnippetStyle.allCases, id: \.self) { style in
+                                Text(String(describing: style)).tag(style)
+                            }
+                        }
+
+                        Toggle("Show Expanded Source", isOn: $showExpandedSnippet)
+                    }
+                }
             }
+            .padding()
+            .background(.ultraThickMaterial, in: RoundedRectangle(cornerRadius: 8))
+            .padding()
         }
-        .frame(minWidth: 300)
-        .monospaced()
     }
 }
 

@@ -33,6 +33,11 @@ public struct PhosphorView: View {
                     snippetFunction: compiledFunction
                 )
             }
+            // Workaround for MetalSprockets#327: ComputePipeline caches its
+            // MTLComputePipelineState and ignores linkedFunctions changes.
+            // Force a full RenderView teardown when the snippet changes so the
+            // PSO is rebuilt with the new visible function.
+            .id(SnippetKey(source: snippet, style: style))
 
             if let compileError {
                 ContentUnavailableView(
@@ -64,7 +69,7 @@ public struct PhosphorView: View {
     }
 }
 
-private struct SnippetKey: Equatable {
+private struct SnippetKey: Hashable {
     var source: String
     var style: SnippetStyle
 }
