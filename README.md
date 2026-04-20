@@ -2,59 +2,98 @@
 
 A companion collection of examples and demos for [MetalSprockets](https://github.com/schwa/MetalSprockets).
 
+<!-- BEGIN:DEMOS -->
 ## Examples
 
 ### Basic
 
 | Example | Description | Screenshot |
 |---------|-------------|------------|
-| **Triangle** | Basic triangle rendering with animated colors and performance metrics | ![Screenshot](Documentation/Triangle.png) |
-| **Blinn-Phong Lighting** | 3D lighting demonstration using the Blinn-Phong shading model with animated lights | ![Screenshot](Documentation/BlinnPhongLighting.png) |
-| **Skybox** | Environment mapping demonstration using cube textures for 360-degree backgrounds | ![Screenshot](Documentation/Skybox.png) |
-| **Stencil Buffer** | Stencil buffer masking demonstration with checkerboard pattern clipping | ![Screenshot](Documentation/StencilBuffer.png) |
-| **Compute** | Simple compute shader that copies data between GPU buffers | ![Screenshot](Documentation/Compute.png) |
-| **Depth Buffer** | Demonstrates rendering depth buffer to texture with customisable private functions | ![Screenshot](Documentation/DepthBuffer.png) |
-| **LUT Color Grading** | Color grading and correction using Look-Up Tables (LUTs) for cinematic effects | ![Screenshot](Documentation/LUTColorGrading.png) |
-| **Debug Shaders** | Shader debugging visualization with various modes including normals, depth, wireframe, and distance fields | ![Screenshot](Documentation/DebugShaders.png) |
-| **Point Cloud** | Interactive point cloud visualization with thousands of colored points arranged in a torus shape | ![Screenshot](Documentation/PointCloud.png) |
-| **Video Playback** | Full screen video playback with streaming textures rendered through billboard pipeline | ![Screenshot](Documentation/VideoPlayback.png) |
-| **360° Panorama** | Interactive 360-degree panoramic photo viewer with spherical projection and WorldView rotation | ![Screenshot](Documentation/Panorama.png) |
-| **Wireframe Teapot** | Wireframe rendering demo | ![Screenshot](Documentation/WireframeTeapot.png) |
-| **Trivial Mesh** | Procedurally generated geometric primitives (box, tetrahedron, octahedron) with Blinn-Phong lighting | ![Screenshot](Documentation/TrivialMesh.png) |
-| **Scene Graph** | Scene graph traversal demo showing stacked row/column transforms rendered as a 4×4 grid | ![Screenshot](Documentation/SceneGraph.png) |
-| **GraphicsContext3D** | SwiftUI.Canvas-style API for rendering 3D geometry with Path3D and stroke/fill operations | ![Screenshot](Documentation/GraphicsContext3D.png) |
-| **MetalCanvas** | 2D Canvas-style API for rendering SwiftUI Paths with stroke operations using mesh shaders | ![Screenshot](Documentation/MetalCanvas.png) |
-| **Hello Imageblock** | The simplest imageblock demo: computes per-tile average color creating a pixelated/mosaic effect | ![Screenshot](Documentation/HelloImageblock.png) |
-| **Offscreen Rendering** *(macOS only)* | Render-to-texture demonstration showing offscreen rendering capabilities | ![Screenshot](Documentation/OffscreenRendering.png) |
-| **MetalFX Upscaling** *(MetalFX required)* | Image upscaling using MetalFX spatial upsampling for enhanced image quality | ![Screenshot](Documentation/MetalFXUpscaling.png) |
+| **Blinn-Phong** | Blinn-Phong lit teapots with skybox | [<img src="Documentation/screenshots/thumbnails/BlinnPhong.png" width="320" alt="Blinn-Phong">](Documentation/screenshots/BlinnPhong.png) |
+| **Skybox** | Cube-map skybox rendering | [<img src="Documentation/screenshots/thumbnails/Skybox.png" width="320" alt="Skybox">](Documentation/screenshots/Skybox.png) |
+| **Triangle** | Colored triangle with GPU timing | [<img src="Documentation/screenshots/thumbnails/Triangle.png" width="320" alt="Triangle">](Documentation/screenshots/Triangle.png) |
+| **Compute** | Buffer-to-buffer copy via compute | [<img src="Documentation/screenshots/thumbnails/Compute.png" width="320" alt="Compute">](Documentation/screenshots/Compute.png) |
+| **Stencil** | Stencil-masked triangle | [<img src="Documentation/screenshots/thumbnails/Stencil.png" width="320" alt="Stencil">](Documentation/screenshots/Stencil.png) |
+| **LUT** | Image color grading via LUTs | [<img src="Documentation/screenshots/thumbnails/LUT.png" width="320" alt="LUT">](Documentation/screenshots/LUT.png) |
+| **Game of Life** | GPU-driven cellular automaton | [<img src="Documentation/screenshots/thumbnails/GameOfLife.png" width="320" alt="Game of Life">](Documentation/screenshots/GameOfLife.png) |
+| **Debug Shader** | Shader debug visualizations | [<img src="Documentation/screenshots/thumbnails/DebugShader.png" width="320" alt="Debug Shader">](Documentation/screenshots/DebugShader.png) |
+| **Point Cloud** | Interactive torus point cloud | [<img src="Documentation/screenshots/thumbnails/PointCloud.png" width="320" alt="Point Cloud">](Documentation/screenshots/PointCloud.png) |
+| **Video Playback** | Video with VCR distortion effect | [<img src="Documentation/screenshots/thumbnails/VideoPlayback.png" width="320" alt="Video Playback">](Documentation/screenshots/VideoPlayback.png) |
+| **Panorama** | Equirectangular panorama viewer | [<img src="Documentation/screenshots/thumbnails/Panorama.png" width="320" alt="Panorama">](Documentation/screenshots/Panorama.png) |
+| **Wireframe** | Wireframe mesh rendering | [<img src="Documentation/screenshots/thumbnails/Wireframe.png" width="320" alt="Wireframe">](Documentation/screenshots/Wireframe.png) |
+| **Trivial Mesh** | Procedural geometry primitives | [<img src="Documentation/screenshots/thumbnails/TrivialMesh.png" width="320" alt="Trivial Mesh">](Documentation/screenshots/TrivialMesh.png) |
+| **SceneGraph** | Hierarchical scene graph rendering | [<img src="Documentation/screenshots/thumbnails/SceneGraph.png" width="320" alt="SceneGraph">](Documentation/screenshots/SceneGraph.png) |
+| **GraphicsContext3D** | Canvas-style 3D path drawing | [<img src="Documentation/screenshots/thumbnails/GraphicsContext3D.png" width="320" alt="GraphicsContext3D">](Documentation/screenshots/GraphicsContext3D.png) |
+| **MetalCanvas** | 2D path rendering via mesh shaders | [<img src="Documentation/screenshots/thumbnails/MetalCanvas.png" width="320" alt="MetalCanvas">](Documentation/screenshots/MetalCanvas.png) |
+| **Tile Average** | Imageblock tile averaging | [<img src="Documentation/screenshots/thumbnails/TileAverage.png" width="320" alt="Tile Average">](Documentation/screenshots/TileAverage.png) |
+| **Offscreen *(macOS only)*** | Render to CGImage | [<img src="Documentation/screenshots/thumbnails/Offscreen.png" width="320" alt="Offscreen *(macOS only)*">](Documentation/screenshots/Offscreen.png) |
+| **MetalFX *(macOS only)*** | MetalFX spatial upscaling | [<img src="Documentation/screenshots/thumbnails/MetalFX.png" width="320" alt="MetalFX *(macOS only)*">](Documentation/screenshots/MetalFX.png) |
+| **Skinning** | Skeletal mesh deformation with bones | — |
 
 ### Complex
 
 | Example | Description | Screenshot |
 |---------|-------------|------------|
-| **Bouncing Teapots** | Physics simulation of animated teapots with MetalFX upscaling and instanced rendering | ![Screenshot](Documentation/BouncingTeapots.png) |
-| **Hit Test Demo** | Teapot rendering with hit test pipeline that outputs geometry ID, instance ID, triangle ID, depth, and barycentric coordinates | ![Screenshot](Documentation/HitTestDemo.png) |
-| **Mixed Techniques** | Combination of multiple rendering techniques including lighting and animation | ![Screenshot](Documentation/MixedTechniques.png) |
-| **SDF Raymarching** | Real-time signed distance field raymarching with animated shapes, smooth blending, and dynamic lighting | ![Screenshot](Documentation/SDFRaymarching.png) |
-| **Particle Effects** | GPU-accelerated particle system with compute shaders featuring various emitter types like fountains, explosions, and fireworks | ![Screenshot](Documentation/ParticleEffects.png) |
-| **glTF Model Viewer** | glTF model loading and rendering | ![Screenshot](Documentation/GLTFModelViewer.png) |
-| **Grass Sphere** | Procedural grass rendering on a sphere using Object and Mesh shaders with uniform point distribution | ![Screenshot](Documentation/GrassSphere.png) |
-| **Spiral Particles** | Particle system where each particle generates a colorful spiral of triangles using Object and Mesh shaders | ![Screenshot](Documentation/SpiralParticles.png) |
-| **Tiled SDF (2D)** | Tile-based culling for 2D signed distance fields with primitives culled to tiles and stored in threadgroup memory | ![Screenshot](Documentation/TiledSDF2D.png) |
-| **Apple Event Logo** | Apple Event logo recreation | ![Screenshot](Documentation/AppleEventLogo.png) |
+| **Hit Test** | GPU-based object picking | [<img src="Documentation/screenshots/thumbnails/HitTest.png" width="320" alt="Hit Test">](Documentation/screenshots/HitTest.png) |
+| **Depth** | Depth buffer visualization | [<img src="Documentation/screenshots/thumbnails/Depth.png" width="320" alt="Depth">](Documentation/screenshots/Depth.png) |
+| **Mixed** | Combined render and compute passes | [<img src="Documentation/screenshots/thumbnails/Mixed.png" width="320" alt="Mixed">](Documentation/screenshots/Mixed.png) |
+| **Bouncing Teapots** | Physics-driven instanced teapots | [<img src="Documentation/screenshots/thumbnails/BouncingTeapots.png" width="320" alt="Bouncing Teapots">](Documentation/screenshots/BouncingTeapots.png) |
+| **Apple Event Logo** | Thermal-style video effect | [<img src="Documentation/screenshots/thumbnails/AppleEventLogo.png" width="320" alt="Apple Event Logo">](Documentation/screenshots/AppleEventLogo.png) |
+| **PBR** | Physically based rendering | [<img src="Documentation/screenshots/thumbnails/PBR.png" width="320" alt="PBR">](Documentation/screenshots/PBR.png) |
+| **SDF** | 3D SDF raymarching | [<img src="Documentation/screenshots/thumbnails/SDF.png" width="320" alt="SDF">](Documentation/screenshots/SDF.png) |
+| **Particle Effects** | GPU compute particle system | [<img src="Documentation/screenshots/thumbnails/ParticleEffects.png" width="320" alt="Particle Effects">](Documentation/screenshots/ParticleEffects.png) |
+| **GLTF** | glTF/GLB model loader and viewer | [<img src="Documentation/screenshots/thumbnails/GLTF.png" width="320" alt="GLTF">](Documentation/screenshots/GLTF.png) |
+| **Voxel** | Compute-raymarched voxel volumes | [<img src="Documentation/screenshots/thumbnails/Voxel.png" width="320" alt="Voxel">](Documentation/screenshots/Voxel.png) |
+| **Grass** | Mesh-shader procedural grass | [<img src="Documentation/screenshots/thumbnails/Grass.png" width="320" alt="Grass">](Documentation/screenshots/Grass.png) |
+| **Spiral Particles** | Mesh-shader spiral particles | [<img src="Documentation/screenshots/thumbnails/SpiralParticles.png" width="320" alt="Spiral Particles">](Documentation/screenshots/SpiralParticles.png) |
+| **Tiled SDF** | Tile-culled 2D SDF rendering | [<img src="Documentation/screenshots/thumbnails/TiledSDF.png" width="320" alt="Tiled SDF">](Documentation/screenshots/TiledSDF.png) |
+| **Ray Tracing** | Cornell box path tracer | — |
+| **Shader Graph** | Build Metal shaders as Swift DSL graphs | — |
+| **Phosphor** | Live-compile Metal shader snippets (shadertoy-style) | — |
 
-### Other
+### In-progress
 
 | Example | Description | Screenshot |
 |---------|-------------|------------|
-| **Game of Life** | Conway's Game of Life cellular automaton simulation using GPU compute shaders | ![Screenshot](Documentation/GameOfLife.png) |
-| **Voxel Renderer** | Voxel-based rendering | ![Screenshot](Documentation/VoxelRenderer.png) |
-| **PBR Rendering** *(broken)* | Physically Based Rendering with multiple material presets, environment reflections, and animated lighting | ![Screenshot](Documentation/PBRRendering.png) |
-| **Color Adjust** | Color adjustment demo (in-progress) | ![Screenshot](Documentation/ColorAdjust.png) |
+| **Color Adjust** | Compute-based color adjustments | [<img src="Documentation/screenshots/thumbnails/ColorAdjust.png" width="320" alt="Color Adjust">](Documentation/screenshots/ColorAdjust.png) |
+
+### Rendering
+
+| Example | Description | Screenshot |
+|---------|-------------|------------|
+| **Infinite Grid** | An infinite ground plane grid with interactive camera | — |
+| **Spinning Cube** | A rotating RGB cube with MSAA controls | — |
+| **Shadow Map** | Multi-light shadow mapping with PCF and depth bias controls | — |
+| **Ray Traced Shadows** | Hardware-accelerated ray-traced shadows with acceleration structures | — |
+
+### Slug
+
+| Example | Description | Screenshot |
+|---------|-------------|------------|
+| **Slug Debug** | Basic Slug text rendering test | — |
+| **Matrix Rain** | Matrix-style falling text rendered with Slug | — |
+| **Spinning Sphere** | Text mapped to a spinning sphere with Slug | — |
+| **Text Panel** | Multi-language text rendered with Slug | — |
+| **Terminal *(macOS only)*** | Live terminal output rendered with Slug | — |
+| **Immersive Matrix Rain *(visionOS only)*** | Matrix rain in immersive visionOS space | — |
+
+### Platform
+
+| Example | Description | Screenshot |
+|---------|-------------|------------|
+| **Mobile *(iOS only)*** | AR-powered mobile rendering demo | — |
+| **VisionOS *(visionOS only)*** | Immersive visionOS stereo rendering | — |
+<!-- END:DEMOS -->
 
 ## Screenshots
 
-Screenshots are stored in the `Documentation/` directory. To add a screenshot, save a PNG named to match the table above (e.g. `Documentation/Triangle.png`).
+Screenshots and thumbnails live under `Documentation/screenshots/`. The tables above are regenerated from [`Documentation/demos.yaml`](Documentation/demos.yaml); run:
+
+```sh
+uv run --with pyyaml Documentation/generate-docs.py --readme
+```
+
+to refresh them.
 
 ## License
 

@@ -35,13 +35,18 @@ import argparse
 import sys
 
 SCRIPT_DIR = Path(__file__).parent
+REPO_ROOT = SCRIPT_DIR.parent
 YAML_PATH = SCRIPT_DIR / "demos.yaml"
 OUTPUT_MD = SCRIPT_DIR / "DEMOS.md"
+README_MD = REPO_ROOT / "README.md"
 SCREENSHOTS_DIR = SCRIPT_DIR / "screenshots"
 THUMBNAILS_DIR = SCREENSHOTS_DIR / "thumbnails"
 APP_NAME = "MetalSprockets-Examples"
 URL_SCHEME = "metalsprockets-examples"
 THUMB_WIDTH = 320
+
+README_BEGIN_MARKER = "<!-- BEGIN:DEMOS -->"
+README_END_MARKER = "<!-- END:DEMOS -->"
 
 
 def steveo(*args: str) -> dict | None:
@@ -197,17 +202,82 @@ def generate_docs(demos: list[dict]) -> None:
     print(f"Generated {OUTPUT_MD} ({len(demos)} demos)")
 
 
+def generate_readme(demos: list[dict]) -> None:
+    """Regenerate the demo section of README.md between BEGIN/END markers."""
+    # Preserve YAML group order; drop Empty placeholder.
+    groups: OrderedDict[str, list[dict]] = OrderedDict()
+    for d in demos:
+        if d.get("name") == "Empty":
+            continue
+        g = d.get("group") or "Other"
+        groups.setdefault(g, []).append(d)
+
+    lines: list[str] = ["## Examples", ""]
+    for group, group_demos in groups.items():
+        lines.append(f"### {group}")
+        lines.append("")
+        lines.append("| Example | Description | Screenshot |")
+        lines.append("|---------|-------------|------------|")
+        for d in group_demos:
+            name = d["name"]
+            if d.get("platform"):
+                name = f"{name} *({d['platform']} only)*"
+            desc = (d.get("description") or "").strip()
+            file_id = d["id"]
+            shot = d.get("screenshot")
+            if shot:
+                full = f"Documentation/screenshots/{shot}"
+                thumb = f"Documentation/screenshots/thumbnails/{file_id}.png"
+                cell = f'[<img src="{thumb}" width="320" alt="{name}">]({full})'
+            else:
+                cell = "—"
+            lines.append(f"| **{name}** | {desc} | {cell} |")
+        lines.append("")
+
+    new_block = "\n".join(lines).rstrip() + "\n"
+
+    existing = README_MD.read_text() if README_MD.exists() else ""
+    if README_BEGIN_MARKER in existing and README_END_MARKER in existing:
+        before, rest = existing.split(README_BEGIN_MARKER, 1)
+        _, after = rest.split(README_END_MARKER, 1)
+        updated = (
+            before
+            + README_BEGIN_MARKER
+            + "\n"
+            + new_block
+            + README_END_MARKER
+            + after
+        )
+    else:
+        # No markers yet — append a fresh block at the end.
+        sep = "" if existing.endswith("\n") or not existing else "\n"
+        updated = (
+            existing
+            + sep
+            + "\n"
+            + README_BEGIN_MARKER
+            + "\n"
+            + new_block
+            + README_END_MARKER
+            + "\n"
+        )
+
+    README_MD.write_text(updated)
+    print(f"Updated {README_MD.relative_to(REPO_ROOT)} ({sum(len(v) for v in groups.values())} demos)")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate screenshots and docs from demos.yaml")
     parser.add_argument("--screenshots", action="store_true", help="Capture screenshots")
     parser.add_argument("--docs", action="store_true", help="Generate DEMOS.md")
-    parser.add_argument("--all", action="store_true", help="Both screenshots and docs")
+    parser.add_argument("--readme", action="store_true", help="Regenerate the demo tables in README.md")
+    parser.add_argument("--all", action="store_true", help="Screenshots, docs, and readme")
     parser.add_argument("--settle-time", type=float, default=3.0, help="Settle time in seconds (default: 3)")
     parser.add_argument("--demo", type=str, default=None, help="Capture a single demo by name")
     parser.add_argument("--window-size", type=str, default="1024x768", help="Window size WxH (default: 1024x768)")
     args = parser.parse_args()
 
-    if not args.screenshots and not args.docs and not args.all:
+    if not any([args.screenshots, args.docs, args.readme, args.all]):
         args.all = True
 
     w, h = (int(x) for x in args.window_size.split("x"))
@@ -221,6 +291,9 @@ def main() -> None:
 
     if args.all or args.docs:
         generate_docs(demos)
+
+    if args.all or args.readme:
+        generate_readme(demos)
 
 
 if __name__ == "__main__":
