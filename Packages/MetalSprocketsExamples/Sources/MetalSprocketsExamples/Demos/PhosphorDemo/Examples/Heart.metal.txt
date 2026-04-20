@@ -26,6 +26,6 @@ float4 mainImage(float2 position, float2 resolution, float2 mouse, float time, f
     o.r *= 5.0;
     o += min(0.7, 0.001 / length(N));
     o -= o * dot(p, p) * 0.7;
-    
+
     return o;
 }

@@ -30,6 +30,9 @@ namespace Phosphor {
 
         SnippetFunction *snippet = snippetFunctions[0];
         float4 color = snippet(position, resolution, mouse, time, frame, backbuffer);
+        // Snippets often port from Shadertoy and leave alpha at 0. Force opaque
+        // so the texture doesn't composite the window background through.
+        color.a = 1.0;
         outTexture.write(color, gid);
     }
 

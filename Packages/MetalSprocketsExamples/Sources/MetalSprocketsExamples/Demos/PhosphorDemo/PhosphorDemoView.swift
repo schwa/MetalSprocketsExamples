@@ -22,7 +22,6 @@ public struct PhosphorDemoView: DemoView {
     @State private var showExpandedSnippet = false
     @State private var selectedExample: Example = .plasma
 
-
     public init() {}
 
     public var body: some View {
@@ -52,7 +51,7 @@ public struct PhosphorDemoView: DemoView {
                     Group {
                         if showExpandedSnippet {
                             let expanded = expandSnippet(source: snippet, style: snippetStyle)
-                            TextEditor(text: .constant(expanded))
+                            MetalTextEditor(text: .constant(expanded))
                         } else {
                             MetalTextEditor(text: $snippet)
                         }
@@ -147,26 +146,19 @@ extension PhosphorDemoView {
             case .terrainRiver: "TerrainRiver"
             case .voronoiCells: "VoronoiCells"
             case .waterRipples: "WaterRipples"
-            case .twiglGeek: "TwiglGeekBuiltin" // handled below
+            case .twiglGeek: "TwiglGeek"
             }
         }
 
         var style: SnippetStyle {
-            self == .twiglGeek ? .twiglGeek : .mainImage
+            detectSnippetStyle(source: source) ?? .mainImage
         }
 
         var source: String {
-            if self == .twiglGeek {
-                return Self.defaultTwiglGeekSource
-            }
             guard let url = Bundle.module.url(forResource: resourceName, withExtension: "metal.txt", subdirectory: "Examples") else {
                 return "// Missing example resource: \(resourceName).metal.txt"
             }
             return (try? String(contentsOf: url, encoding: .utf8)) ?? "// Failed to load \(resourceName).metal.txt"
         }
-
-        private static let defaultTwiglGeekSource = """
-        for(float i=-fract(t/.1),j;i++<1e2;o+=(cos((j=round(i+t/.1))*j+vec4(0,1,2,3))+1.)*exp(cos(j*j/.1)/.6)*min(1e3-i/.1+9.,i)/5e4/length((FC.xy-r*.5)/r.y+.05*cos(j*j/F4+vec2(0,5))*sqrt(i)));o=tanh(o*o);
-        """
     }
 }

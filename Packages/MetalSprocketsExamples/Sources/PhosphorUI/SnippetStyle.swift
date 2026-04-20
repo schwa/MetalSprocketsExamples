@@ -8,6 +8,35 @@ public enum SnippetStyle: Hashable, CaseIterable, Sendable {
     case mainImage
 }
 
+/// Parses a magic comment of the form `// phosphor:style=<name>` out of a
+/// snippet's source and returns the matching ``SnippetStyle``.
+///
+/// The marker can appear anywhere in the source. Recognised names match the
+/// case names of ``SnippetStyle`` (`raw`, `original`, `twiglGeek`, `mainImage`),
+/// case-insensitive. Returns `nil` if no marker is found or the name is
+/// unrecognised.
+public func detectSnippetStyle(source: String) -> SnippetStyle? {
+    // Look for: // phosphor:style=<name>
+    let pattern = #"//\s*phosphor\s*:\s*style\s*=\s*([A-Za-z]+)"#
+    guard let regex = try? NSRegularExpression(pattern: pattern) else {
+        return nil
+    }
+    let range = NSRange(source.startIndex..., in: source)
+    guard let match = regex.firstMatch(in: source, range: range),
+        match.numberOfRanges >= 2,
+        let nameRange = Range(match.range(at: 1), in: source) else {
+        return nil
+    }
+    let name = source[nameRange].lowercased()
+    switch name {
+    case "raw": return .raw
+    case "original": return .original
+    case "twiglgeek": return .twiglGeek
+    case "mainimage": return .mainImage
+    default: return nil
+    }
+}
+
 public func expandSnippet(source: String, style: SnippetStyle) -> String {
     let supportCode = loadSupportCode()
 
