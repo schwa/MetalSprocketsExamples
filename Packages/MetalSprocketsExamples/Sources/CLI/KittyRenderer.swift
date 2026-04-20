@@ -7,6 +7,7 @@ import MetalSprocketsExamples
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import simd
 
 // Base64 lookup table (outside generic type)

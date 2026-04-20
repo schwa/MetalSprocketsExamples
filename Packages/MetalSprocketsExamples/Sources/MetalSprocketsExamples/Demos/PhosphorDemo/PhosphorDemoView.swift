@@ -24,21 +24,7 @@ public struct PhosphorDemoView: DemoView {
     public init() {}
 
     public var body: some View {
-        HSplitView {
-            PhosphorView(snippet: snippet, style: snippetStyle)
-                .frame(minWidth: 300)
-
-            Group {
-                if showExpandedSnippet {
-                    let expanded = expandSnippet(source: snippet, style: snippetStyle)
-                    TextEditor(text: .constant(expanded))
-                } else {
-                    MetalTextEditor(text: $snippet)
-                }
-            }
-            .frame(minWidth: 300)
-            .monospaced()
-        }
+        splitContainer
         .demoConfiguration {
             Form {
                 Picker("Example", selection: $selectedExample) {
@@ -61,6 +47,36 @@ public struct PhosphorDemoView: DemoView {
             }
             .formStyle(.grouped)
         }
+    }
+
+    @ViewBuilder
+    private var splitContainer: some View {
+        #if os(macOS)
+        HSplitView {
+            splitContent
+        }
+        #else
+        HStack {
+            splitContent
+        }
+        #endif
+    }
+
+    @ViewBuilder
+    private var splitContent: some View {
+        PhosphorView(snippet: snippet, style: snippetStyle)
+            .frame(minWidth: 300)
+
+        Group {
+            if showExpandedSnippet {
+                let expanded = expandSnippet(source: snippet, style: snippetStyle)
+                TextEditor(text: .constant(expanded))
+            } else {
+                MetalTextEditor(text: $snippet)
+            }
+        }
+        .frame(minWidth: 300)
+        .monospaced()
     }
 }
 

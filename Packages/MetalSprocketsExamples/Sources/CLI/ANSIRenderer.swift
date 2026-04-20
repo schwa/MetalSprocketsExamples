@@ -7,6 +7,7 @@ import MetalSprocketsExamples
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import simd
 
 // MARK: - Character Ramps
