@@ -2860,6 +2860,9 @@ closed: 2026-04-14T16:12:39Z
 +++
 
 - `2026-04-14T16:12:39Z`: Fixed in previous commit — skinning shaders moved to SkinningShaders.metal, loaded via ShaderLibrary.
+- `2026-04-14T16:12:39Z`: Fixed in previous commit — skinning shaders moved to SkinningShaders.metal, loaded via ShaderLibrary.
+- `2026-04-14T16:12:39Z`: Fixed in previous commit — skinning shaders moved to SkinningShaders.metal, loaded via ShaderLibrary.
+- `2026-04-14T16:12:39Z`: Fixed in previous commit — skinning shaders moved to SkinningShaders.metal, loaded via ShaderLibrary.
 
 ---
 
@@ -2920,21 +2923,37 @@ closed: 2026-04-19T16:22:21Z
 MetalSprocketsShaderGraph (in Current/MetalSprocketsShaderGraph) provides a Swift DSL that generates Metal code via MTLFunctionStitchingGraph. Migrate its ShaderGraph sources and demo into MetalSprocketsExamples (likely as a dedicated demo) and retire the standalone project.
 
 ---
-## 377: Add a skinning-specific debug view to the skinning demo
-status: new
-priority: medium
-kind: feature
-created: 2026-04-14T03:19:43Z
 
+## 383: PhosphorPipeline relies on zero-cleared ping-pong textures on first frame
 
----
-
-## 378: Skinning demo should NOT embed Metal source code
++++
 status: new
 priority: medium
 kind: bug
-created: 2026-04-14T03:19:50Z
+created: 2026-04-20T18:05:31Z
++++
 
+`PhosphorUI/PhosphorPipeline.swift` creates two `rgba32Float` textures with `storageMode = .private` via `device.makeTexture(...)` (lines 99-100) and immediately samples one of them as `previousTexture` in the `Phosphor.computeMain` kernel on frame 0. The shader (`PhosphorShaders/Metal/PhosphorCompute.metal`) passes `previousTexture` straight into snippet functions as `backbuffer` with no frame-index guard.
+
+Not all Apple GPUs zero-initialize newly allocated textures. On devices that don't, the first-frame feedback will contain garbage until it's overwritten.
+
+Fix: after creating `textureA`/`textureB` in `setupTexturesIfNeeded`, explicitly clear them — either via a blit `fillBuffer`-style clear, a small compute clear kernel, or a one-shot render pass with `.clear` load action and `.store`. A frame-index guard in the shader is an alternative but requires plumbing the frame counter into uniforms.
 
 ---
 
+## 384: AppleEventLogoDemo relies on zero-cleared heat textures on first frame
+
++++
+status: new
+priority: medium
+kind: bug
+created: 2026-04-20T18:05:42Z
++++
+
+`MetalSprocketsExamples/Demos/AppleEventLogoDemo/AppleEventLogoDemoView.swift` creates two ping-pong `rgba16Float` heat textures in its `.task { ... }` (lines ~173-177) via `device.makeTexture(descriptor:)` with no explicit initialization. On the first frame, the `heatup` kernel in `AppleEventLogoShaders.metal` reads `previousTexture.read(uint2(sampleCoord))` (line 59) and feeds it back into the next frame, so any uncleared garbage persists and accumulates.
+
+Not all Apple GPUs zero-initialize newly allocated textures, so on affected devices this will show stale/garbage heat on startup.
+
+Fix: after creating the heat textures, explicitly clear both to zero — a blit clear, a trivial "clear" compute kernel dispatch, or a one-shot render pass with `.clear` load action + `.store` store action will all work. A frame-index guard in the shader is an alternative but more invasive.
+
+---
