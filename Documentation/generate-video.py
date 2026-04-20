@@ -57,8 +57,11 @@ RENDERED_DIR = SCRIPT_DIR / "overlays" / "rendered"
 DEFAULT_WINDOW_SIZE = (1280, 720)
 DEFAULT_DURATION = 5.0
 NAV_SETTLE = 0.8
-PER_DEMO_OVERHEAD = 1.0
-TAIL_PAD = 2.0
+# Budget = sum(max(demo.duration, expected_choreography) + NAV_SETTLE).
+# PER_DEMO_OVERHEAD must match the per-demo sleep the runner actually takes
+# (NAV_SETTLE) or we'll trail dead space at the end of the recording.
+PER_DEMO_OVERHEAD = NAV_SETTLE
+TAIL_PAD = 0.5
 LAUNCH_TIMEOUT = 15.0
 
 
@@ -108,6 +111,17 @@ def filter_demos_for_host(demos: list[dict]) -> list[dict]:
         if p is not None and p != host:
             continue
         out.append(d)
+    # Respect video.order: demos with an order come first (ascending), then
+    # the rest in yaml order. Stable sort preserves in-group ordering.
+    def sort_key(demo: dict) -> tuple[int, int]:
+        order = (demo.get("video") or {}).get("order")
+        if order is None:
+            return (1, 0)  # unordered bucket
+        try:
+            return (0, int(order))
+        except (TypeError, ValueError):
+            return (1, 0)
+    out.sort(key=sort_key)
     return out
 
 
@@ -186,7 +200,7 @@ def set_sidebar(state: str, log_file: Path) -> None:
     if is_visible != want_visible:
         subprocess.run(
             ["steveo", "--app", APP_NAME, "--log-file", str(log_file),
-             "key", "s", "--cmd", "--ctrl"],
+             "key", "cmd+ctrl+s"],
             capture_output=True,
         )
         time.sleep(0.3)
@@ -200,6 +214,155 @@ def wallclock_timestamp() -> str:
 def append_log(log_file: Path, event: dict) -> None:
     with log_file.open("a") as f:
         f.write(json.dumps(event) + "\n")
+
+
+# ─── choreography ────────────────────────────────────────────────────────────
+
+def _coord_pair(v, action: str) -> tuple[int, int]:
+    if not (isinstance(v, (list, tuple)) and len(v) == 2):
+        raise ValueError(f"{action}: expected [x, y], got {v!r}")
+    return int(v[0]), int(v[1])
+
+
+def get_window_origin(log_file: Path) -> tuple[int, int] | None:
+    """Return (x, y) of the target window's frame origin, or None.
+
+    Used for move-to/move-path which don't yet have --window-relative
+    (steveo#50). Remove once that lands.
+    """
+    info = steveo("windows", log_file=log_file)
+    if not (info and info.get("ok") and info.get("data")):
+        return None
+    pos = info["data"][0].get("position") or {}
+    x, y = pos.get("x"), pos.get("y")
+    if x is None or y is None:
+        return None
+    return int(x), int(y)
+
+
+def run_choreography(
+    actions: list,
+    total_budget: float,
+    log_file: Path,
+) -> float:
+    """Execute a choreography list via steveo. Returns seconds elapsed.
+
+    Unknown actions are logged and skipped. `wait` honors `total_budget` so
+    we don't overrun the demo's duration slot too badly — but explicit
+    waits are authoritative; we don't clamp mid-run.
+    """
+    if not actions:
+        return 0.0
+    start = time.monotonic()
+    for step in actions:
+        if not isinstance(step, dict) or len(step) != 1:
+            print(f"  choreography: skipping malformed step {step!r}", file=sys.stderr)
+            continue
+        action, payload = next(iter(step.items()))
+
+        try:
+            if action == "wait":
+                time.sleep(float(payload))
+
+            elif action == "click_text":
+                steveo("click", "--text", str(payload), log_file=log_file)
+
+            elif action == "click_at":
+                x, y = _coord_pair(payload, action)
+                steveo("click-at", "--window-relative", str(x), str(y), log_file=log_file)
+
+            elif action == "drag":
+                fx, fy = _coord_pair(payload["from"], action)
+                tx, ty = _coord_pair(payload["to"], action)
+                cmd = ["drag", "--window-relative", str(fx), str(fy), str(tx), str(ty)]
+                if "duration_ms" in payload:
+                    cmd += ["--duration", str(int(payload["duration_ms"]))]
+                if "easing" in payload:
+                    cmd += ["--easing", str(payload["easing"])]
+                steveo(*cmd, log_file=log_file)
+
+            elif action == "drag_path":
+                fx, fy = _coord_pair(payload["from"], action)
+                tx, ty = _coord_pair(payload["to"], action)
+                cmd = ["drag-path", "--window-relative", str(fx), str(fy), str(tx), str(ty)]
+                for via in payload.get("via", []) or []:
+                    vx, vy = _coord_pair(via, f"{action}.via")
+                    cmd += ["--via", f"{vx},{vy}"]
+                if "duration_ms" in payload:
+                    cmd += ["--duration", str(int(payload["duration_ms"]))]
+                if "easing" in payload:
+                    cmd += ["--easing", str(payload["easing"])]
+                steveo(*cmd, log_file=log_file)
+
+            elif action == "key":
+                # payload: "space"  OR  "cmd+shift+p"  OR  {key: "s", cmd: true, ctrl: true}
+                if isinstance(payload, str):
+                    steveo("key", payload, log_file=log_file)
+                elif isinstance(payload, dict):
+                    key = payload.get("key")
+                    if key is None:
+                        raise ValueError("key action: missing 'key'")
+                    mods = [m for m in ("cmd", "ctrl", "alt", "shift") if payload.get(m)]
+                    combo = "+".join(mods + [str(key)])
+                    steveo("key", combo, log_file=log_file)
+                else:
+                    raise ValueError(f"key action: bad payload {payload!r}")
+
+            elif action == "key_raw":
+                steveo("key", "--raw", str(int(payload)), log_file=log_file)
+
+            elif action == "move_to":
+                # window-rel coords; offset by window origin (steveo#50).
+                x, y = _coord_pair(payload, action)
+                origin = get_window_origin(log_file)
+                if origin is None:
+                    raise RuntimeError("move_to: could not read window origin")
+                steveo("move-to", str(origin[0] + x), str(origin[1] + y),
+                       log_file=log_file)
+
+            elif action == "move_path":
+                # window-rel coords; offset by window origin (steveo#50).
+                fx, fy = _coord_pair(payload["from"], action)
+                tx, ty = _coord_pair(payload["to"], action)
+                origin = get_window_origin(log_file)
+                if origin is None:
+                    raise RuntimeError("move_path: could not read window origin")
+                ox, oy = origin
+                cmd = ["move-path", str(ox + fx), str(oy + fy),
+                                    str(ox + tx), str(oy + ty)]
+                for via in payload.get("via", []) or []:
+                    vx, vy = _coord_pair(via, f"{action}.via")
+                    cmd += ["--via", f"{ox + vx},{oy + vy}"]
+                if "duration_ms" in payload:
+                    cmd += ["--duration", str(int(payload["duration_ms"]))]
+                if "easing" in payload:
+                    cmd += ["--easing", str(payload["easing"])]
+                steveo(*cmd, log_file=log_file)
+
+            elif action == "scroll":
+                # payload: { direction, amount, repeat?, gap_ms? }
+                # Stepped scroll workaround until steveo#47 lands smooth scroll.
+                if not isinstance(payload, dict):
+                    raise ValueError(f"scroll action: bad payload {payload!r}")
+                direction = str(payload.get("direction", "down"))
+                amount = int(payload.get("amount", 20))
+                repeat = int(payload.get("repeat", 1))
+                gap_ms = int(payload.get("gap_ms", 80))
+                for _ in range(repeat):
+                    steveo("scroll", direction, "--amount", str(amount), log_file=log_file)
+                    if gap_ms > 0:
+                        time.sleep(gap_ms / 1000.0)
+
+            else:
+                print(f"  choreography: unknown action {action!r}", file=sys.stderr)
+        except Exception as e:
+            print(f"  choreography: {action} failed: {e}", file=sys.stderr)
+
+        if total_budget > 0 and (time.monotonic() - start) > total_budget * 2:
+            print("  choreography: runaway (2x budget), bailing", file=sys.stderr)
+            break
+
+    return time.monotonic() - start
 
 
 def do_record(args: argparse.Namespace) -> None:
@@ -333,8 +496,20 @@ def do_record(args: argparse.Namespace) -> None:
                 "demo_name": name,
             })
 
-            time.sleep(dur)
-            print(f"{label} ✓ ({dur:.1f}s)", flush=True)
+            video_cfg = d.get("video") or {}
+            choreography = video_cfg.get("choreography") or []
+            if choreography:
+                # Drag/scroll/click need the app frontmost + focused.
+                subprocess.run(
+                    ["steveo", "focus", "--bundle", APP_BUNDLE_ID,
+                     "--log-file", str(log_file)],
+                    capture_output=True,
+                )
+            elapsed = run_choreography(choreography, dur, log_file) if choreography else 0.0
+            remaining = max(0.0, dur - elapsed)
+            if remaining > 0:
+                time.sleep(remaining)
+            print(f"{label} ✓ ({dur:.1f}s, choreography {elapsed:.1f}s)", flush=True)
     finally:
         print("Waiting for recorder to finish...")
         out, err = recorder.communicate(timeout=total_duration + 10.0)
@@ -505,9 +680,13 @@ def load_demo_index() -> dict[str, dict]:
 def render_caption(template: str, demo: dict, width: int, out_path: Path) -> None:
     keywords = demo.get("keywords") or []
     kw_text = "  ·  ".join(keywords[:4])
+    inner_width = max(200, width - 160)  # 80px inset on each side
+    center_x = width // 2
     filled = (
         template
         .replace("{{WIDTH}}", str(width))
+        .replace("{{INNER_WIDTH}}", str(inner_width))
+        .replace("{{CENTER_X}}", str(center_x))
         .replace("{{NAME}}", html.escape(demo.get("name", "")))
         .replace("{{DESCRIPTION}}", html.escape(demo.get("description") or ""))
         .replace("{{KEYWORDS}}", html.escape(kw_text))
@@ -611,8 +790,8 @@ def _add_record_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--no-build", action="store_true")
     p.add_argument("--no-launch", action="store_true")
     p.add_argument("--sidebar", choices=["show", "hide"], default="hide")
-    p.add_argument("--description", choices=["show", "hide"], default="show")
-    p.add_argument("--configuration", choices=["show", "hide"], default="show")
+    p.add_argument("--description", choices=["show", "hide"], default="hide")
+    p.add_argument("--configuration", choices=["show", "hide"], default="hide")
     p.add_argument("--dry-run", action="store_true")
 
 

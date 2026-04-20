@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Lower-third caption template. Variables are substituted by compose-video.py:
-    {{NAME}}         — demo display name
-    {{DESCRIPTION}}  — short description
-    {{KEYWORDS}}     — space-separated keyword chips (or empty string)
+  Lower-third caption template. Variables are substituted by generate-video.py:
+    {{DESCRIPTION}}  — short description (shown)
+    {{NAME}}         — demo display name (unused; kept for compatibility)
+    {{KEYWORDS}}     — keyword chips (unused; kept for compatibility)
     {{WIDTH}}        — overlay width in pixels (matches video width)
+
+  Style: centered rounded rect, white 2px border, semi-opaque black fill,
+  description text only.
 -->
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="{{WIDTH}}" height="160"
-     viewBox="0 0 {{WIDTH}} 160"
+     width="{{WIDTH}}" height="120"
+     viewBox="0 0 {{WIDTH}} 120"
      preserveAspectRatio="xMidYMax meet">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="rgba(0,0,0,0)"/>
-      <stop offset="0.25" stop-color="rgba(0,0,0,0.65)"/>
-      <stop offset="1" stop-color="rgba(0,0,0,0.9)"/>
-    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="{{WIDTH}}" height="160" fill="url(#bg)"/>
-  <text x="40" y="75" fill="white"
-        font-family="SF Pro Display, -apple-system, Helvetica, sans-serif"
-        font-size="36" font-weight="700">{{NAME}}</text>
-  <text x="40" y="115" fill="rgba(255,255,255,0.85)"
+  <!-- Pill: centered horizontally, ~70% of width, 64px tall, 32px radius.
+       Uses SVG attribute-based centering via a transform on a group. -->
+  <g transform="translate({{WIDTH}} 0)">
+    <!-- shift back by half the pill width (computed at render time by
+         resvg/rsvg via CSS calc not being reliable, so we draw full-width
+         with large horizontal padding instead). -->
+  </g>
+  <!-- Simpler: draw pill with fixed horizontal inset. -->
+  <rect x="80" y="28" width="{{INNER_WIDTH}}" height="64"
+        rx="32" ry="32"
+        fill="rgba(0,0,0,0.55)"
+        stroke="rgba(255,255,255,0.95)"
+        stroke-width="2"/>
+  <text x="{{CENTER_X}}" y="70" fill="white"
+        text-anchor="middle"
         font-family="SF Pro Text, -apple-system, Helvetica, sans-serif"
-        font-size="22" font-weight="400">{{DESCRIPTION}}</text>
-  <text x="40" y="145" fill="rgba(255,255,255,0.55)"
-        font-family="SF Mono, Menlo, monospace"
-        font-size="14" font-weight="400">{{KEYWORDS}}</text>
+        font-size="26" font-weight="500">{{DESCRIPTION}}</text>
 </svg>

@@ -13,9 +13,114 @@
 #   video:
 #     duration:       How long to record (seconds)
 #     interest:       low / medium / high
-#     gestures:       List of gestures to perform during recording
-#     adjustments:    List of UI adjustments to make during recording
+#     choreography:   Ordered list of actions performed during recording.
+#                     Each item is a single-key mapping. Actions:
+#
+#       - wait: 2.0                     # idle N seconds (recording keeps rolling)
+#       - click_text: "Run"             # click a button by visible text
+#       - click_at: [512, 400]          # click window-relative coords (0,0 = window frame origin)
+#       - drag:                         # straight drag
+#           from: [512, 400]
+#           to:   [800, 200]
+#           duration_ms: 1500
+#           easing: ease-in-out         # optional: linear|ease-in|ease-out|ease-in-out
+#       - drag_path:                    # bezier drag (1 via = quadratic, 2 = cubic)
+#           from: [512, 400]
+#           to:   [800, 200]
+#           via:  [[650, 300]]
+#           duration_ms: 1500
+#       - key: "space"                  # named key (optional: cmd/ctrl/alt/shift bools)
+#       - key_raw: 30                   # raw keycode fallback
+#
 #     notes:          Freeform notes for choreography
+
+# To find demos needing more work:  rg 'incomplete: true' demos.yaml
+#
+# video.order (optional, int): explicit position in the final reel.
+#   Lower number = earlier. Demos without `order` appear after all ordered
+#   demos, in yaml order.
+# video.role (optional): free-form tag — foundation, highlight, closer, …
+#   Purely informational; ordering is driven by `order`.
+#
+# ── Choreography templates ──────────────────────────────────────────────────
+# Reusable YAML anchors. Reference with `*name`. The `_templates:` key is
+# ignored by generate-video.py — it exists so anchors are parsed before the
+# demos that use them.
+#
+# Window is 1280x720, origin = window frame. Middle ~ (640, 360).
+
+_templates:
+  # Wait, then arc-drag a downward semicircle across the middle of the
+  # window to rotate the camera/scene. Good default for any 3D view with
+  # drag-to-rotate controls.
+  showcase-arc: &showcase_arc
+    - wait: 2
+    - drag_path:
+        from: [565, 360]
+        to:   [715, 360]
+        via:  [[565, 460], [715, 460]]
+        duration_ms: 2000
+        easing: ease-in-out
+    - wait: 1
+
+  # Stepped scroll-zoom out (jerky; replace with smooth scroll once
+  # steveo#47 lands). Cursor must already be over the 3D view.
+  zoom-out-stepped: &zoom_out_stepped
+    - click_at: [640, 360]               # park cursor over the view
+    - scroll: { direction: down, amount: 20, repeat: 15, gap_ms: 80 }
+
+  # Zoom out then back in. Cursor parked at window center (required
+  # because scroll goes where the cursor is, not where the window is).
+  # Stepped scroll workaround (steveo#47 for smooth).
+  # Zoom in only. Cursor parked at window center.
+  zoom-in: &zoom_in
+    - wait: 0.5
+    - click_at: [640, 360]
+    - scroll: { direction: up, amount: 20, repeat: 8, gap_ms: 80 }
+    - wait: 1
+
+  # Zoom out only.
+  zoom-out: &zoom_out
+    - wait: 0.5
+    - click_at: [640, 360]
+    - scroll: { direction: down, amount: 20, repeat: 8, gap_ms: 80 }
+    - wait: 1
+
+  zoom-out-in: &zoom_out_in
+    - wait: 1
+    - click_at: [640, 360]
+    - scroll: { direction: down, amount: 20, repeat: 8, gap_ms: 80 }
+    - wait: 0.8
+    - scroll: { direction: up, amount: 20, repeat: 8, gap_ms: 80 }
+    - wait: 1
+
+  # Arc-drag then zoom out-and-in. Good default for 3D demos where you
+  # want to show both rotation and scale.
+  showcase-arc-zoom: &showcase_arc_zoom
+    - wait: 1
+    - drag_path:
+        from: [565, 360]
+        to:   [715, 360]
+        via:  [[565, 460], [715, 460]]
+        duration_ms: 2000
+        easing: ease-in-out
+    - wait: 0.8
+    - click_at: [640, 360]
+    - scroll: { direction: down, amount: 20, repeat: 8, gap_ms: 80 }
+    - wait: 0.8
+    - scroll: { direction: up, amount: 20, repeat: 8, gap_ms: 80 }
+    - wait: 1
+
+  # Horizontal drag across the middle of the window. Good default for
+  # panoramic / skybox / fully-rotatable scenes where an arc isn't needed.
+  showcase-pan: &showcase_pan
+    - wait: 1
+    - drag:
+        from: [400, 360]
+        to:   [880, 360]
+        duration_ms: 1500
+        easing: ease-in-out
+    - wait: 1
 
 demos:
   - name: Empty
@@ -44,11 +149,10 @@ demos:
     screenshot: BlinnPhong.png
     platform: null
     video:
-      duration: 8
+      duration: 10
       interest: high
-      gestures: [rotate]
-      adjustments: []
-      notes: "Animated light orbits — let it run. Rotate to show highlights."
+      choreography: *showcase_arc
+      notes: "Animated light orbits — let it run, then arc-drag to showcase highlights."
 
   - name: Hit Test
     id: HitTest
@@ -64,9 +168,16 @@ demos:
     video:
       duration: 8
       interest: medium
-      gestures: [click, rotate]
-      adjustments: []
-      notes: "Click on teapot to show hit data. Rotate view."
+      choreography:
+        - wait: 1
+        - move_path:
+            from: [540, 320]
+            to:   [740, 320]
+            via:  [[640, 360]]
+            duration_ms: 2500
+            easing: ease-in-out
+        - wait: 1
+      notes: "Sweep cursor over teapots to show live GPU hit-testing."
 
   - name: Skybox
     id: Skybox
@@ -81,9 +192,8 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: [rotate]
-      adjustments: []
-      notes: "Rotate to show full panoramic skybox."
+      choreography: *showcase_pan
+      notes: "Horizontal pan to show full panoramic skybox."
 
   - name: Triangle
     id: Triangle
@@ -98,9 +208,8 @@ demos:
     video:
       duration: 4
       interest: low
-      gestures: []
-      adjustments: []
-      notes: "Hello world — brief."
+      choreography: []
+      notes: "Hello world — static, hold the shot."
 
   - name: Compute
     id: Compute
@@ -115,9 +224,8 @@ demos:
     video:
       duration: 3
       interest: low
-      gestures: []
-      adjustments: []
-      notes: "No visual output — very brief."
+      choreography: []
+      notes: "No visual output — very brief, static."
 
   - name: Depth
     id: Depth
@@ -130,11 +238,10 @@ demos:
     screenshot: Depth.png
     platform: null
     video:
-      duration: 6
+      duration: 10
       interest: medium
-      gestures: [rotate]
-      adjustments: [contrast-slider, show-depth-toggle]
-      notes: "Toggle depth map on/off, adjust contrast slider."
+      choreography: *showcase_arc_zoom
+      notes: "Arc-drag then zoom out-and-in to show depth buffer behavior."
 
   - name: Mixed
     id: Mixed
@@ -148,11 +255,10 @@ demos:
     screenshot: Mixed.png
     platform: null
     video:
-      duration: 6
+      duration: 10
       interest: medium
-      gestures: [rotate]
-      adjustments: []
-      notes: "Let animation run, rotate to show edge detection."
+      choreography: *showcase_arc_zoom
+      notes: "Arc-drag then zoom to show edge-detection compute effect."
 
   - name: Bouncing Teapots
     id: BouncingTeapots
@@ -165,11 +271,10 @@ demos:
     screenshot: BouncingTeapots.png
     platform: null
     video:
-      duration: 10
+      duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: []
-      notes: "Crowd-pleaser. Let physics run, rotate camera."
+      choreography: *zoom_in
+      notes: "Crowd-pleaser — let physics run, zoom in for close-up chaos."
 
   - name: Stencil
     id: Stencil
@@ -184,8 +289,7 @@ demos:
     video:
       duration: 4
       interest: low
-      gestures: []
-      adjustments: []
+      choreography: []
       notes: "Static — brief."
 
   - name: LUT
@@ -201,9 +305,9 @@ demos:
     video:
       duration: 8
       interest: medium
-      gestures: []
-      adjustments: [lut-picker, intensity-slider]
-      notes: "Cycle through LUT presets, sweep intensity slider."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants LUT picker + intensity slider sweep. Come back."
 
   - name: Game of Life
     id: GameOfLife
@@ -218,9 +322,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: []
-      adjustments: [pause-play, fill-mode]
-      notes: "Let it run — visually mesmerising. Maybe reset mid-recording."
+      choreography: []
+      notes: "Static shot — let the automaton run."
 
   - name: Apple Event Logo
     id: AppleEventLogo
@@ -235,9 +338,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: []
-      adjustments: []
-      notes: "Animated heat effect — let it run."
+      choreography: []
+      notes: "Animated heat effect — static shot, let it run."
 
   - name: Color Adjust
     id: ColorAdjust
@@ -253,9 +355,9 @@ demos:
     video:
       duration: 8
       interest: medium
-      gestures: []
-      adjustments: [function-picker, parameter-slider]
-      notes: "Cycle through adjustment functions, sweep sliders."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants function-picker cycling + slider sweeps. Come back."
 
   - name: Debug Shader
     id: DebugShader
@@ -270,9 +372,8 @@ demos:
     video:
       duration: 8
       interest: medium
-      gestures: [rotate]
-      adjustments: [debug-mode-picker]
-      notes: "Cycle through debug modes while rotating."
+      choreography: *showcase_arc
+      notes: "Arc-drag to rotate through the debug visualization."
 
   - name: PBR
     id: PBR
@@ -287,9 +388,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: []
-      notes: "Rotate to show environment reflections. Animated light."
+      choreography: *showcase_arc
+      notes: "Arc-drag to show environment reflections. Animated light."
 
   - name: SDF
     id: SDF
@@ -304,9 +404,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: [show-depth-toggle]
-      notes: "Animated shapes — let run, rotate, toggle depth view."
+      choreography: *showcase_arc
+      notes: "Animated SDF shapes — let run, arc-drag to rotate."
 
   - name: Point Cloud
     id: PointCloud
@@ -320,9 +419,8 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: [rotate]
-      adjustments: [point-count-slider, point-size-slider]
-      notes: "Rotate torus, adjust point count and size."
+      choreography: *showcase_arc
+      notes: "Arc-drag to rotate the point cloud torus."
 
   - name: Particle Effects
     id: ParticleEffects
@@ -337,9 +435,9 @@ demos:
     video:
       duration: 10
       interest: high
-      gestures: [rotate]
-      adjustments: [emitter-picker]
-      notes: "Cycle through emitter presets — Magic Portal, Fountain, Fireworks."
+      choreography: []   # TODO: open config inspector + cycle emitter presets
+      incomplete: true
+      notes: "INCOMPLETE — want to open config and click through emitter presets (Fountain/Fireworks/Rain/etc.). Popup AX URLs are bare (steveo limitation), click-to-open-then-click-menu-item is flaky. Come back to this."
 
   - name: Video Playback
     id: VideoPlayback
@@ -354,9 +452,9 @@ demos:
     video:
       duration: 8
       interest: medium
-      gestures: []
-      adjustments: [vcr-effects-toggle, vcr-sliders]
-      notes: "Needs a video loaded. Toggle VCR effects, sweep sliders."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — needs video loaded + VCR-effects toggle/slider sweeps. Come back."
 
   - name: Panorama
     id: Panorama
@@ -371,9 +469,9 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: [rotate]
-      adjustments: []
-      notes: "Needs a panorama loaded. Rotate to look around."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — needs a panorama loaded. Come back."
 
   - name: Wireframe
     id: Wireframe
@@ -386,11 +484,10 @@ demos:
     screenshot: Wireframe.png
     platform: null
     video:
-      duration: 5
+      duration: 10
       interest: low
-      gestures: [rotate]
-      adjustments: []
-      notes: "Rotate to show wireframe from different angles."
+      choreography: *showcase_arc_zoom
+      notes: "Arc-drag + zoom to show the wireframe mesh."
 
   - name: Trivial Mesh
     id: TrivialMesh
@@ -403,11 +500,10 @@ demos:
     screenshot: TrivialMesh.png
     platform: null
     video:
-      duration: 6
+      duration: 10
       interest: medium
-      gestures: [rotate]
-      adjustments: [wireframe-toggle]
-      notes: "Rotate, toggle wireframe on/off."
+      choreography: *showcase_arc_zoom
+      notes: "Arc-drag + zoom across procedural geometry primitives."
 
   - name: SceneGraph
     id: SceneGraph
@@ -420,11 +516,10 @@ demos:
     screenshot: SceneGraph.png
     platform: null
     video:
-      duration: 6
+      duration: 10
       interest: medium
-      gestures: [rotate]
-      adjustments: []
-      notes: "Rotate to inspect hierarchy."
+      choreography: *showcase_arc_zoom
+      notes: "Arc-drag + zoom to inspect the scene graph hierarchy."
 
   - name: GLTF
     id: GLTF
@@ -439,9 +534,9 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: []
-      notes: "Needs a model loaded. Rotate to inspect."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — needs a model loaded before capture. Come back."
 
   - name: Voxel
     id: Voxel
@@ -456,9 +551,9 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: [rotate]
-      adjustments: [scale-buttons]
-      notes: "Rotate, increase resolution with x2 button."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants inspector interaction (x2/x4 scale buttons) during capture. Come back."
 
   - name: Grass
     id: Grass
@@ -473,9 +568,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: [blade-sliders]
-      notes: "Rotate, adjust blade length/count. Visually impressive."
+      choreography: *showcase_arc
+      notes: "Arc-drag to rotate the procedural grass field."
 
   - name: Spiral Particles
     id: SpiralParticles
@@ -490,9 +584,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: [particle-count-slider, speed-slider]
-      notes: "Increase particle count, let spirals animate."
+      choreography: *showcase_arc
+      notes: "Arc-drag to rotate through the animated spiral particles."
 
   - name: GraphicsContext3D
     id: GraphicsContext3D
@@ -505,11 +598,22 @@ demos:
     screenshot: GraphicsContext3D.png
     platform: null
     video:
-      duration: 5
-      interest: low
-      gestures: []
-      adjustments: []
-      notes: "Minimal visual — brief."
+      duration: 12
+      interest: medium
+      choreography:
+        - wait: 1
+        - click_at: [640, 360]                    # park cursor for scroll
+        - scroll: { direction: down, amount: 20, repeat: 4, gap_ms: 80 }
+        - wait: 0.5
+        # full 360° rotation as one continuous drag-path (no release mid-gesture)
+        - drag_path:
+            from: [200, 360]
+            to:   [600, 360]
+            via:  [[1080, 360], [200, 360]]
+            duration_ms: 3700
+            easing: linear
+        - wait: 1
+      notes: "Zoom out, then continuous 360° rotation via zigzag drag-path."
 
   - name: MetalCanvas
     id: MetalCanvas
@@ -524,9 +628,8 @@ demos:
     video:
       duration: 5
       interest: medium
-      gestures: []
-      adjustments: [scene-picker, line-width-slider]
-      notes: "Cycle through scenes, adjust line width."
+      choreography: []
+      notes: "Static shot of the 2D path rendering."
 
   - name: Tiled SDF
     id: TiledSDF
@@ -542,9 +645,9 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: []
-      adjustments: [primitive-count-slider, visualization-picker, tile-size-toggle]
-      notes: "Animated. Cycle visualization modes, adjust primitive count."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants visualization-mode cycling + primitive-count sweep. Come back."
 
   - name: Tile Average
     id: TileAverage
@@ -559,9 +662,8 @@ demos:
     video:
       duration: 5
       interest: medium
-      gestures: []
-      adjustments: [tile-size-toggle]
-      notes: "Toggle between 16x16 and 32x32 tile sizes."
+      choreography: []
+      notes: "Static shot of imageblock tile averaging."
 
   - name: Offscreen
     id: Offscreen
@@ -576,9 +678,10 @@ demos:
     video:
       duration: 4
       interest: low
-      gestures: []
-      adjustments: []
-      notes: "Static result — brief."
+      order: 20
+      role: foundation
+      choreography: []
+      notes: "Early demo — static shot of headless-rendered result."
 
   - name: MetalFX
     id: MetalFX
@@ -592,9 +695,9 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: []
-      adjustments: [scale-factor-slider]
-      notes: "Adjust scale factor to show upscaling quality difference."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants scale-factor slider sweep to show upscaling quality. Come back."
 
   - name: Ray Tracing
     id: RayTracing
@@ -608,11 +711,10 @@ demos:
     screenshot: null
     platform: null
     video:
-      duration: 10
+      duration: 12
       interest: high
-      gestures: []
-      adjustments: []
-      notes: "Let progressive path tracer converge — visually impressive."
+      choreography: *showcase_arc_zoom
+      notes: "Arc-drag + zoom through the Cornell box path tracer."
 
   - name: Infinite Grid
     id: InfiniteGrid
@@ -623,11 +725,25 @@ demos:
     screenshot: null
     platform: null
     video:
-      duration: 5
-      interest: low
-      gestures: [rotate]
-      adjustments: []
-      notes: "Rotate camera to show infinite grid behavior."
+      duration: 12
+      interest: high
+      order: 10
+      role: foundation
+      choreography:
+        - wait: 0.5
+        # continuous 360° rotation
+        - drag_path:
+            from: [200, 360]
+            to:   [600, 360]
+            via:  [[1080, 360], [200, 360]]
+            duration_ms: 3700
+            easing: linear
+        - wait: 0.3
+        # big zoom out to reveal the grid extends infinitely
+        - click_at: [640, 360]
+        - scroll: { direction: down, amount: 20, repeat: 16, gap_ms: 80 }
+        - wait: 1
+      notes: "Foundation demo — rotate 360, then big zoom-out to reveal the infinite grid."
 
   - name: Spinning Cube
     id: SpinningCube
@@ -640,9 +756,10 @@ demos:
     video:
       duration: 5
       interest: low
-      gestures: []
-      adjustments: [msaa-picker]
-      notes: "Cycle MSAA settings, let cube spin."
+      order: 0
+      role: foundation
+      choreography: []
+      notes: "First shot — static, let the cube spin."
 
   - name: Shadow Map
     id: ShadowMap
@@ -655,9 +772,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: [pcf-slider, bias-slider]
-      notes: "Rotate, adjust PCF softness and depth bias."
+      choreography: *showcase_arc
+      notes: "Arc-drag to rotate and show shadow behavior."
 
   - name: Ray Traced Shadows
     id: RayTracedShadows
@@ -670,9 +786,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: [rotate]
-      adjustments: []
-      notes: "Rotate to show ray-traced shadow quality."
+      choreography: *showcase_arc
+      notes: "Arc-drag to show ray-traced shadow quality."
 
   - name: Slug Debug
     id: SlugDebug
@@ -683,11 +798,10 @@ demos:
     screenshot: null
     platform: null
     video:
-      duration: 4
+      duration: 8
       interest: low
-      gestures: []
-      adjustments: []
-      notes: "Static debug text — brief."
+      choreography: *zoom_out_in
+      notes: "Zoom out then back in to show the text at different scales."
 
   - name: Matrix Rain
     id: MatrixRain
@@ -698,11 +812,10 @@ demos:
     screenshot: null
     platform: null
     video:
-      duration: 8
+      duration: 10
       interest: high
-      gestures: []
-      adjustments: []
-      notes: "Let animation run — visually iconic."
+      choreography: *zoom_out_in
+      notes: "Let the rain run, zoom out then back in."
 
   - name: Spinning Sphere
     id: SpinningSphere
@@ -715,9 +828,8 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: []
-      adjustments: []
-      notes: "Let sphere spin, show text wrap."
+      choreography: []
+      notes: "Let sphere spin — static shot."
 
   - name: Text Panel
     id: TextPanel
@@ -728,11 +840,10 @@ demos:
     screenshot: null
     platform: null
     video:
-      duration: 6
+      duration: 8
       interest: medium
-      gestures: []
-      adjustments: []
-      notes: "Show multiple scripts/languages."
+      choreography: *zoom_out_in
+      notes: "Zoom out then back in across multi-language text."
 
   - name: Terminal
     id: Terminal
@@ -745,9 +856,9 @@ demos:
     video:
       duration: 8
       interest: medium
-      gestures: []
-      adjustments: []
-      notes: "Live terminal output scrolling."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — complex, needs bespoke choreography. Come back."
 
   - name: Mobile
     id: Mobile
@@ -760,9 +871,8 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: []
-      adjustments: []
-      notes: "iOS-only AR demo."
+      choreography: []
+      notes: "iOS-only — excluded from macOS reel by platform filter."
 
   - name: VisionOS
     id: VisionOS
@@ -775,9 +885,8 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: []
-      adjustments: []
-      notes: "visionOS-only stereo render."
+      choreography: []
+      notes: "visionOS-only — excluded from macOS reel by platform filter."
 
   - name: Immersive Matrix Rain
     id: ImmersiveMatrixRain
@@ -790,9 +899,8 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: []
-      adjustments: []
-      notes: "visionOS immersive Matrix rain."
+      choreography: []
+      notes: "visionOS-only — excluded from macOS reel by platform filter."
 
   - name: Skinning
     id: Skinning
@@ -808,9 +916,8 @@ demos:
     video:
       duration: 6
       interest: medium
-      gestures: [rotate]
-      adjustments: []
-      notes: "Let bone animation loop, rotate to show deformation."
+      choreography: *showcase_arc
+      notes: "Arc-drag to show bone animation + deformation."
 
   - name: Shader Graph
     id: ShaderGraph
@@ -826,9 +933,9 @@ demos:
     video:
       duration: 8
       interest: high
-      gestures: []
-      adjustments: [graph-picker]
-      notes: "Cycle through example graphs (solid color, gradient, plasma, etc)."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants graph-picker cycling through example graphs. Come back."
 
   - name: Phosphor
     id: Phosphor
@@ -845,6 +952,6 @@ demos:
     video:
       duration: 10
       interest: high
-      gestures: []
-      adjustments: [snippet-picker]
-      notes: "Cycle through example snippets — visually varied."
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants snippet-picker cycling. Come back."
