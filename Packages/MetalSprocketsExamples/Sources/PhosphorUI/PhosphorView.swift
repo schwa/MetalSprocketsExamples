@@ -33,11 +33,6 @@ public struct PhosphorView: View {
                     snippetFunction: compiledFunction
                 )
             }
-            // Workaround for MetalSprockets#327: ComputePipeline caches its
-            // MTLComputePipelineState and ignores linkedFunctions changes.
-            // Force a full RenderView teardown when the snippet changes so the
-            // PSO is rebuilt with the new visible function.
-            .id(SnippetKey(source: snippet, style: style))
 
             if let compileError {
                 ContentUnavailableView(
@@ -55,14 +50,24 @@ public struct PhosphorView: View {
         }
     }
 
-    private func recompile() {
-        do {
-            let device = _MTLCreateSystemDefaultDevice()
-            let expanded = expandSnippet(source: snippet, style: style)
-            let function = try SnippetCompiler(device: device).compileSnippet(snippet: expanded)
+    private func recompile() async {
+        let snippet = self.snippet
+        let style = self.style
+        let result = await Task.detached(priority: .userInitiated) { () -> Result<MTLFunction, Error> in
+            do {
+                let device = _MTLCreateSystemDefaultDevice()
+                let expanded = expandSnippet(source: snippet, style: style)
+                let function = try SnippetCompiler(device: device).compileSnippet(snippet: expanded)
+                return .success(function)
+            } catch {
+                return .failure(error)
+            }
+        }.value
+        switch result {
+        case .success(let function):
             compiledFunction = function
             compileError = nil
-        } catch {
+        case .failure(let error):
             compiledFunction = nil
             compileError = error
         }
