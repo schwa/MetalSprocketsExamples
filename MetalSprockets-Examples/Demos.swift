@@ -48,7 +48,8 @@ import SwiftUI
         SlugSpinningSphereDemoView.self,
         SlugTextPanelDemoView.self,
         ShaderGraphDemoView.self,
-        PhosphorDemoView.self
+        PhosphorDemoView.self,
+        StamFluidDemoView.self
     ]
 
     #if os(macOS)
@@ -602,6 +603,17 @@ extension ImmersiveMatrixRainView: @retroactive DemoView {
     }
 }
 #endif
+
+extension StamFluidDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Stam Fluid",
+            description: "Interactive 2D Navier-Stokes fluid",
+            longDescription: "GPU implementation of Jos Stam's \"Real-Time Fluid Dynamics for Games\" (GDC 2003). Full Navier-Stokes solver with diffusion, advection, and pressure projection via red-black Gauss-Seidel relaxation. Drag to inject smoke and apply forces.",
+            group: "Complex"
+        )
+    }
+}
 
 extension TileAverageDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
