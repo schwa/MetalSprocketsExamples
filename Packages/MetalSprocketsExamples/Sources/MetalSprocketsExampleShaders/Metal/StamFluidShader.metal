@@ -3,10 +3,10 @@
 using namespace metal;
 
 // Jos Stam's "Real-Time Fluid Dynamics for Games" (GDC 2003)
-// GPU implementation of the Navier-Stokes solver.
+// GPU implementation using 2D textures (r32Float).
 //
-// Grid is (N+2)*(N+2) with a 1-cell boundary layer.
-// Index macro: IX(i,j) = i + (N+2)*j
+// Grid is (N+2)×(N+2) with a 1-cell boundary layer.
+// Interior cells are [1..N] × [1..N].
 
 namespace StamFluidShader {
 
@@ -17,72 +17,69 @@ namespace StamFluidShader {
         float visc;      // viscosity
     };
 
-    // IX(i,j) for a grid of width (N+2)
-    inline uint IX(uint i, uint j, uint N) {
-        return i + (N + 2) * j;
+    // --- Add source: x += dt * s ---
+    kernel void addSource(texture2d<float, access::read_write> x [[texture(0)]],
+                          texture2d<float, access::read> s [[texture(1)]],
+                          constant FluidParams &params [[buffer(0)]],
+                          uint2 gid [[thread_position_in_grid]]) {
+        uint2 texSize = uint2(x.get_width(), x.get_height());
+        if (gid.x >= texSize.x || gid.y >= texSize.y) return;
+
+        float val = x.read(gid).r + params.dt * s.read(gid).r;
+        x.write(float4(val, 0, 0, 0), gid);
     }
 
-    // --- Add source ---
-    kernel void addSource(device float *x [[buffer(0)]],
-                          device const float *s [[buffer(1)]],
-                          constant FluidParams &params [[buffer(2)]],
-                          uint gid [[thread_position_in_grid]]) {
-        uint size = (params.N + 2) * (params.N + 2);
-        if (gid >= size) return;
-        x[gid] += params.dt * s[gid];
-    }
-
-    // --- Gauss-Seidel relaxation (one iteration) ---
-    // For diffuse: solves (1 + 4a)*x[IX(i,j)] - a*(neighbors) = x0[IX(i,j)]
-    // Red-black ordering for GPU parallelism.
-    kernel void diffuseRedBlack(device float *x [[buffer(0)]],
-                                device const float *x0 [[buffer(1)]],
-                                constant FluidParams &params [[buffer(2)]],
-                                constant int &colorPass [[buffer(3)]],   // 0 = red, 1 = black
-                                constant float &a [[buffer(4)]],
+    // --- Gauss-Seidel relaxation (one red-black iteration) ---
+    kernel void diffuseRedBlack(texture2d<float, access::read_write> x [[texture(0)]],
+                                texture2d<float, access::read> x0 [[texture(1)]],
+                                constant FluidParams &params [[buffer(0)]],
+                                constant int &colorPass [[buffer(1)]],
+                                constant float &a [[buffer(2)]],
                                 uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
-        uint i = gid.x + 1; // interior starts at 1
+        uint i = gid.x + 1;
         uint j = gid.y + 1;
         if (i > N || j > N) return;
-
-        // Red-black: skip cells that don't match this pass
         if (((i + j) % 2) != uint(colorPass)) return;
 
-        x[IX(i, j, N)] = (x0[IX(i, j, N)] + a * (x[IX(i - 1, j, N)] + x[IX(i + 1, j, N)] +
-                                                    x[IX(i, j - 1, N)] + x[IX(i, j + 1, N)])) / (1.0 + 4.0 * a);
+        float center = x0.read(uint2(i, j)).r;
+        float neighbors = x.read(uint2(i - 1, j)).r + x.read(uint2(i + 1, j)).r +
+                           x.read(uint2(i, j - 1)).r + x.read(uint2(i, j + 1)).r;
+        float val = (center + a * neighbors) / (1.0 + 4.0 * a);
+        x.write(float4(val, 0, 0, 0), uint2(i, j));
     }
 
     // --- Set boundary conditions (edges + corners) ---
-    // Dispatch with N+1 threads. Threads 0..N-1 handle edges, thread N handles corners.
-    kernel void setBoundary(device float *x [[buffer(0)]],
-                            constant FluidParams &params [[buffer(1)]],
-                            constant int &b [[buffer(2)]],
+    // Dispatch with N+1 threads.
+    kernel void setBoundary(texture2d<float, access::read_write> x [[texture(0)]],
+                            constant FluidParams &params [[buffer(0)]],
+                            constant int &b [[buffer(1)]],
                             uint gid [[thread_position_in_grid]]) {
         uint N = params.N;
 
         if (gid < N) {
-            // Edge cells
             uint i = gid + 1;
-            x[IX(0, i, N)]     = (b == 1) ? -x[IX(1, i, N)] : x[IX(1, i, N)];
-            x[IX(N + 1, i, N)] = (b == 1) ? -x[IX(N, i, N)] : x[IX(N, i, N)];
-            x[IX(i, 0, N)]     = (b == 2) ? -x[IX(i, 1, N)] : x[IX(i, 1, N)];
-            x[IX(i, N + 1, N)] = (b == 2) ? -x[IX(i, N, N)] : x[IX(i, N, N)];
+            float sign1 = (b == 1) ? -1.0 : 1.0;
+            float sign2 = (b == 2) ? -1.0 : 1.0;
+
+            x.write(float4(sign1 * x.read(uint2(1, i)).r, 0, 0, 0), uint2(0, i));
+            x.write(float4(sign1 * x.read(uint2(N, i)).r, 0, 0, 0), uint2(N + 1, i));
+            x.write(float4(sign2 * x.read(uint2(i, 1)).r, 0, 0, 0), uint2(i, 0));
+            x.write(float4(sign2 * x.read(uint2(i, N)).r, 0, 0, 0), uint2(i, N + 1));
         } else if (gid == N) {
-            // Corner cells
-            x[IX(0, 0, N)]         = 0.5 * (x[IX(1, 0, N)]     + x[IX(0, 1, N)]);
-            x[IX(0, N + 1, N)]     = 0.5 * (x[IX(1, N + 1, N)] + x[IX(0, N, N)]);
-            x[IX(N + 1, 0, N)]     = 0.5 * (x[IX(N, 0, N)]     + x[IX(N + 1, 1, N)]);
-            x[IX(N + 1, N + 1, N)] = 0.5 * (x[IX(N, N + 1, N)] + x[IX(N + 1, N, N)]);
+            x.write(float4(0.5 * (x.read(uint2(1, 0)).r     + x.read(uint2(0, 1)).r), 0, 0, 0), uint2(0, 0));
+            x.write(float4(0.5 * (x.read(uint2(1, N + 1)).r + x.read(uint2(0, N)).r), 0, 0, 0), uint2(0, N + 1));
+            x.write(float4(0.5 * (x.read(uint2(N, 0)).r     + x.read(uint2(N + 1, 1)).r), 0, 0, 0), uint2(N + 1, 0));
+            x.write(float4(0.5 * (x.read(uint2(N, N + 1)).r + x.read(uint2(N + 1, N)).r), 0, 0, 0), uint2(N + 1, N + 1));
         }
     }
 
-    // --- Advect (semi-Lagrangian backtrace) ---
-    kernel void advect(device float *d [[buffer(0)]],
-                       device const float *d0 [[buffer(1)]],
-                       device const float *u [[buffer(2)]],
-                       device const float *v [[buffer(3)]],
-                       constant FluidParams &params [[buffer(4)]],
+    // --- Advect (semi-Lagrangian backtrace with hardware bilinear sampling) ---
+    kernel void advect(texture2d<float, access::write> d [[texture(0)]],
+                       texture2d<float, access::sample> d0 [[texture(1)]],
+                       texture2d<float, access::read> u [[texture(2)]],
+                       texture2d<float, access::read> v [[texture(3)]],
+                       constant FluidParams &params [[buffer(0)]],
                        uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
         uint i = gid.x + 1;
@@ -90,34 +87,29 @@ namespace StamFluidShader {
         if (i > N || j > N) return;
 
         float dt0 = params.dt * float(N);
-        float x = float(i) - dt0 * u[IX(i, j, N)];
-        float y = float(j) - dt0 * v[IX(i, j, N)];
+        float x = float(i) - dt0 * u.read(uint2(i, j)).r;
+        float y = float(j) - dt0 * v.read(uint2(i, j)).r;
 
-        if (x < 0.5) x = 0.5;
-        if (x > float(N) + 0.5) x = float(N) + 0.5;
-        uint i0 = uint(x);
-        uint i1 = i0 + 1;
+        // Clamp to interior
+        x = clamp(x, 0.5f, float(N) + 0.5f);
+        y = clamp(y, 0.5f, float(N) + 0.5f);
 
-        if (y < 0.5) y = 0.5;
-        if (y > float(N) + 0.5) y = float(N) + 0.5;
-        uint j0 = uint(y);
-        uint j1 = j0 + 1;
+        // Sample with bilinear interpolation using normalized coordinates
+        // Pixel center for texel (x,y) is at (x+0.5)/texSize in normalized coords
+        float texW = float(N + 2);
+        float texH = float(N + 2);
+        constexpr sampler bilinear(coord::normalized, address::clamp_to_edge, filter::linear);
+        float val = d0.sample(bilinear, float2((x + 0.5) / texW, (y + 0.5) / texH)).r;
 
-        float s1 = x - float(i0);
-        float s0 = 1.0 - s1;
-        float t1 = y - float(j0);
-        float t0 = 1.0 - t1;
-
-        d[IX(i, j, N)] = s0 * (t0 * d0[IX(i0, j0, N)] + t1 * d0[IX(i0, j1, N)]) +
-                          s1 * (t0 * d0[IX(i1, j0, N)] + t1 * d0[IX(i1, j1, N)]);
+        d.write(float4(val, 0, 0, 0), uint2(i, j));
     }
 
     // --- Project step 1: compute divergence and clear pressure ---
-    kernel void projectDivergence(device float *div [[buffer(0)]],
-                                  device float *p [[buffer(1)]],
-                                  device const float *u [[buffer(2)]],
-                                  device const float *v [[buffer(3)]],
-                                  constant FluidParams &params [[buffer(4)]],
+    kernel void projectDivergence(texture2d<float, access::write> div [[texture(0)]],
+                                  texture2d<float, access::write> p [[texture(1)]],
+                                  texture2d<float, access::read> u [[texture(2)]],
+                                  texture2d<float, access::read> v [[texture(3)]],
+                                  constant FluidParams &params [[buffer(0)]],
                                   uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
         uint i = gid.x + 1;
@@ -125,33 +117,35 @@ namespace StamFluidShader {
         if (i > N || j > N) return;
 
         float h = 1.0 / float(N);
-        div[IX(i, j, N)] = -0.5 * h * (u[IX(i + 1, j, N)] - u[IX(i - 1, j, N)] +
-                                         v[IX(i, j + 1, N)] - v[IX(i, j - 1, N)]);
-        p[IX(i, j, N)] = 0.0;
+        float d = -0.5 * h * (u.read(uint2(i + 1, j)).r - u.read(uint2(i - 1, j)).r +
+                               v.read(uint2(i, j + 1)).r - v.read(uint2(i, j - 1)).r);
+        div.write(float4(d, 0, 0, 0), uint2(i, j));
+        p.write(float4(0, 0, 0, 0), uint2(i, j));
     }
 
-    // --- Project step 2: pressure solve (one Gauss-Seidel iteration, red-black) ---
-    kernel void projectPressureRedBlack(device float *p [[buffer(0)]],
-                                        device const float *div [[buffer(1)]],
-                                        constant FluidParams &params [[buffer(2)]],
-                                        constant int &colorPass [[buffer(3)]],
+    // --- Project step 2: pressure solve (one red-black iteration) ---
+    kernel void projectPressureRedBlack(texture2d<float, access::read_write> p [[texture(0)]],
+                                        texture2d<float, access::read> div [[texture(1)]],
+                                        constant FluidParams &params [[buffer(0)]],
+                                        constant int &colorPass [[buffer(1)]],
                                         uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
         uint i = gid.x + 1;
         uint j = gid.y + 1;
         if (i > N || j > N) return;
-
         if (((i + j) % 2) != uint(colorPass)) return;
 
-        p[IX(i, j, N)] = (div[IX(i, j, N)] + p[IX(i - 1, j, N)] + p[IX(i + 1, j, N)] +
-                           p[IX(i, j - 1, N)] + p[IX(i, j + 1, N)]) / 4.0;
+        float val = (div.read(uint2(i, j)).r +
+                     p.read(uint2(i - 1, j)).r + p.read(uint2(i + 1, j)).r +
+                     p.read(uint2(i, j - 1)).r + p.read(uint2(i, j + 1)).r) / 4.0;
+        p.write(float4(val, 0, 0, 0), uint2(i, j));
     }
 
-    // --- Project step 3: subtract pressure gradient from velocity ---
-    kernel void projectGradientSubtract(device float *u [[buffer(0)]],
-                                        device float *v [[buffer(1)]],
-                                        device const float *p [[buffer(2)]],
-                                        constant FluidParams &params [[buffer(3)]],
+    // --- Project step 3: subtract pressure gradient ---
+    kernel void projectGradientSubtract(texture2d<float, access::read_write> u [[texture(0)]],
+                                        texture2d<float, access::read_write> v [[texture(1)]],
+                                        texture2d<float, access::read> p [[texture(2)]],
+                                        constant FluidParams &params [[buffer(0)]],
                                         uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
         uint i = gid.x + 1;
@@ -159,36 +153,37 @@ namespace StamFluidShader {
         if (i > N || j > N) return;
 
         float h = 1.0 / float(N);
-        u[IX(i, j, N)] -= 0.5 * (p[IX(i + 1, j, N)] - p[IX(i - 1, j, N)]) / h;
-        v[IX(i, j, N)] -= 0.5 * (p[IX(i, j + 1, N)] - p[IX(i, j - 1, N)]) / h;
+        float uVal = u.read(uint2(i, j)).r - 0.5 * (p.read(uint2(i + 1, j)).r - p.read(uint2(i - 1, j)).r) / h;
+        float vVal = v.read(uint2(i, j)).r - 0.5 * (p.read(uint2(i, j + 1)).r - p.read(uint2(i, j - 1)).r) / h;
+        u.write(float4(uVal, 0, 0, 0), uint2(i, j));
+        v.write(float4(vVal, 0, 0, 0), uint2(i, j));
     }
 
-    // --- Decay: multiply all values by a factor < 1 to prevent saturation ---
-    kernel void decay(device float *x [[buffer(0)]],
-                      constant FluidParams &params [[buffer(1)]],
-                      constant float &factor [[buffer(2)]],
-                      uint gid [[thread_position_in_grid]]) {
-        uint size = (params.N + 2) * (params.N + 2);
-        if (gid >= size) return;
-        x[gid] *= factor;
+    // --- Decay: x *= factor ---
+    kernel void decay(texture2d<float, access::read_write> x [[texture(0)]],
+                      constant float &factor [[buffer(0)]],
+                      uint2 gid [[thread_position_in_grid]]) {
+        uint2 texSize = uint2(x.get_width(), x.get_height());
+        if (gid.x >= texSize.x || gid.y >= texSize.y) return;
+        float val = x.read(gid).r * factor;
+        x.write(float4(val, 0, 0, 0), gid);
     }
 
-    // --- Visualization mode for the unified colormap kernel ---
-    // 0=direct (density), 1=speed, 2=vorticity, 3=divergence/pressure (scale+bias)
+    // --- Visualization ---
+
     struct VisualizeParams {
-        float scale;  // multiply raw value
-        float bias;   // add after scale
-        int mode;     // 0=direct, 1=speed(|u,v|), 2=vorticity(curl(u,v)), 3=scalar
+        float scale;
+        float bias;
+        int mode;     // 0=direct scalar, 1=speed(|a,b|), 2=vorticity(curl(a,b))
     };
 
-    // --- Unified colormap visualization ---
-    // bufA is the primary buffer; bufB is the secondary (used for speed/vorticity).
-    kernel void visualizeColormap(device const float *bufA [[buffer(0)]],
-                                  device const float *bufB [[buffer(1)]],
-                                  texture2d<float, access::write> output [[texture(0)]],
-                                  constant FluidParams &params [[buffer(2)]],
-                                  constant VisualizeParams &vizParams [[buffer(3)]],
-                                  texture1d<float, access::sample> colormapTex [[texture(1)]],
+    // Unified colormap visualization. texA is primary, texB is secondary (for speed/vorticity).
+    kernel void visualizeColormap(texture2d<float, access::read> texA [[texture(0)]],
+                                  texture2d<float, access::read> texB [[texture(1)]],
+                                  texture2d<float, access::write> output [[texture(2)]],
+                                  texture1d<float, access::sample> colormapTex [[texture(3)]],
+                                  constant FluidParams &params [[buffer(0)]],
+                                  constant VisualizeParams &vizParams [[buffer(1)]],
                                   uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
         if (gid.x >= N || gid.y >= N) return;
@@ -198,20 +193,20 @@ namespace StamFluidShader {
         float d;
 
         switch (vizParams.mode) {
-        case 1: { // Speed: magnitude of (bufA=u, bufB=v)
-            float uu = bufA[IX(i, j, N)];
-            float vv = bufB[IX(i, j, N)];
+        case 1: { // Speed
+            float uu = texA.read(uint2(i, j)).r;
+            float vv = texB.read(uint2(i, j)).r;
             d = sqrt(uu * uu + vv * vv);
             break;
         }
-        case 2: { // Vorticity: curl of (bufA=u, bufB=v)
-            float dvdx = (bufB[IX(i + 1, j, N)] - bufB[IX(i - 1, j, N)]) * 0.5 * float(N);
-            float dudy = (bufA[IX(i, j + 1, N)] - bufA[IX(i, j - 1, N)]) * 0.5 * float(N);
+        case 2: { // Vorticity
+            float dvdx = (texB.read(uint2(i + 1, j)).r - texB.read(uint2(i - 1, j)).r) * 0.5 * float(N);
+            float dudy = (texA.read(uint2(i, j + 1)).r - texA.read(uint2(i, j - 1)).r) * 0.5 * float(N);
             d = dvdx - dudy;
             break;
         }
-        default: // Direct scalar read from bufA
-            d = bufA[IX(i, j, N)];
+        default:
+            d = texA.read(uint2(i, j)).r;
             break;
         }
 
@@ -222,17 +217,17 @@ namespace StamFluidShader {
         output.write(float4(color, 1.0), gid);
     }
 
-    // --- Visualize velocity (direction → hue, magnitude → brightness) ---
-    kernel void visualizeVelocity(device const float *u [[buffer(0)]],
-                                  device const float *v [[buffer(1)]],
-                                  texture2d<float, access::write> output [[texture(0)]],
-                                  constant FluidParams &params [[buffer(2)]],
+    // Velocity: direction→hue, magnitude→brightness (HSV)
+    kernel void visualizeVelocity(texture2d<float, access::read> u [[texture(0)]],
+                                  texture2d<float, access::read> v [[texture(1)]],
+                                  texture2d<float, access::write> output [[texture(2)]],
+                                  constant FluidParams &params [[buffer(0)]],
                                   uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
         if (gid.x >= N || gid.y >= N) return;
 
-        float uu = u[IX(gid.x + 1, gid.y + 1, N)];
-        float vv = v[IX(gid.x + 1, gid.y + 1, N)];
+        float uu = u.read(uint2(gid.x + 1, gid.y + 1)).r;
+        float vv = v.read(uint2(gid.x + 1, gid.y + 1)).r;
         float mag = sqrt(uu * uu + vv * vv);
         float angle = atan2(vv, uu);
 
