@@ -166,12 +166,6 @@ namespace StamFluidShader {
         v[IX(i, j, N)] -= 0.5 * (p[IX(i, j + 1, N)] - p[IX(i, j - 1, N)]) / h;
     }
 
-    // --- Clear buffer ---
-    kernel void clearBuffer(device float *buf [[buffer(0)]],
-                            uint gid [[thread_position_in_grid]]) {
-        buf[gid] = 0.0;
-    }
-
     // --- Decay: multiply all values by a factor < 1 to prevent saturation ---
     kernel void decay(device float *x [[buffer(0)]],
                       constant FluidParams &params [[buffer(1)]],
