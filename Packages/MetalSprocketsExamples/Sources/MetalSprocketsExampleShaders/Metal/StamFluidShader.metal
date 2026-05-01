@@ -182,34 +182,20 @@ namespace StamFluidShader {
         x[gid] *= factor;
     }
 
-    // --- Visualize density as a texture ---
+    // --- Visualize density as a texture, sampling a 1D colormap texture ---
     kernel void visualizeDensity(device const float *dens [[buffer(0)]],
                                  texture2d<float, access::write> output [[texture(0)]],
                                  constant FluidParams &params [[buffer(1)]],
+                                 texture1d<float, access::sample> colormapTex [[texture(1)]],
                                  uint2 gid [[thread_position_in_grid]]) {
         uint N = params.N;
         if (gid.x >= N || gid.y >= N) return;
 
-        // Map interior cell (i,j) where i=gid.x+1, j=gid.y+1
         float d = dens[IX(gid.x + 1, gid.y + 1, N)];
         d = clamp(d, 0.0f, 1.0f);
 
-        // Fire-like colormap: black -> red -> orange -> yellow -> white
-        float3 color;
-        if (d < 0.25) {
-            float t = d / 0.25;
-            color = float3(t, 0.0, 0.0);
-        } else if (d < 0.5) {
-            float t = (d - 0.25) / 0.25;
-            color = float3(1.0, t * 0.5, 0.0);
-        } else if (d < 0.75) {
-            float t = (d - 0.5) / 0.25;
-            color = float3(1.0, 0.5 + t * 0.5, t * 0.2);
-        } else {
-            float t = (d - 0.75) / 0.25;
-            color = float3(1.0, 1.0, 0.2 + t * 0.8);
-        }
-
+        constexpr sampler s(coord::normalized, address::clamp_to_edge, filter::linear);
+        float3 color = colormapTex.sample(s, d).rgb;
         output.write(float4(color, 1.0), gid);
     }
 

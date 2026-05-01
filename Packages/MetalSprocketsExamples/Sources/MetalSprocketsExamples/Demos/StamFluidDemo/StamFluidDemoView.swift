@@ -10,6 +10,7 @@ public struct StamFluidDemoView: View {
     @State private var diffusion: Float = 0.0001
     @State private var viscosity: Float = 0.0
     @State private var gridN: Int = 128
+    @State private var colormap: Colormap = .fire
 
     // Interaction state
     @State private var interactionPoint: SIMD2<Float>?
@@ -23,7 +24,7 @@ public struct StamFluidDemoView: View {
     public var body: some View {
         GeometryReader { geometry in
             RenderView { _, _ in
-                StamFluid(gridN: gridN, diffusion: diffusion, viscosity: viscosity, isRunning: isRunning, showVelocity: showVelocity, interactionPoint: interactionPoint, interactionVelocity: interactionVelocity, interactionActive: interactionActive)
+                StamFluid(gridN: gridN, diffusion: diffusion, viscosity: viscosity, isRunning: isRunning, showVelocity: showVelocity, interactionPoint: interactionPoint, interactionVelocity: interactionVelocity, interactionActive: interactionActive, colormap: colormap)
             }
             .gesture(
                 DragGesture(minimumDistance: 0)
@@ -55,11 +56,19 @@ public struct StamFluidDemoView: View {
                 Toggle("Show Velocity", isOn: $showVelocity)
 
                 Section("Parameters") {
-                    LabeledContent("Diffusion") {
+                    LabeledContent("Diffusion \(diffusion, specifier: "%.4f")") {
                         Slider(value: $diffusion, in: 0...0.01)
                     }
-                    LabeledContent("Viscosity") {
+                    LabeledContent("Viscosity \(viscosity, specifier: "%.4f")") {
                         Slider(value: $viscosity, in: 0...0.01)
+                    }
+                }
+
+                Section("Colors") {
+                    Picker("Colormap", selection: $colormap) {
+                        ForEach(Colormap.allCases) { map in
+                            Text(map.rawValue).tag(map)
+                        }
                     }
                 }
 
@@ -69,7 +78,9 @@ public struct StamFluidDemoView: View {
                         Text("128").tag(128)
                         Text("256").tag(256)
                         Text("512").tag(512)
-                        Text("1024").tag(1024)
+                        Text("1024").tag(1_024)
+                        Text("2048").tag(2_048)
+                        Text("4096").tag(4_096)
                     }
                 }
 
