@@ -199,7 +199,7 @@ namespace StamFluidShader {
         output.write(float4(color, 1.0), gid);
     }
 
-    // --- Visualize velocity as a texture (direction → hue, magnitude → brightness) ---
+    // --- Visualize velocity (direction → hue, magnitude → brightness) ---
     kernel void visualizeVelocity(device const float *u [[buffer(0)]],
                                   device const float *v [[buffer(1)]],
                                   texture2d<float, access::write> output [[texture(0)]],
@@ -211,13 +211,11 @@ namespace StamFluidShader {
         float uu = u[IX(gid.x + 1, gid.y + 1, N)];
         float vv = v[IX(gid.x + 1, gid.y + 1, N)];
         float mag = sqrt(uu * uu + vv * vv);
-        float angle = atan2(vv, uu); // -pi..pi
+        float angle = atan2(vv, uu);
 
-        // HSV to RGB with hue from angle, saturation=1, value from magnitude
-        float hue = (angle / M_PI_F + 1.0) * 0.5; // 0..1
+        float hue = (angle / M_PI_F + 1.0) * 0.5;
         float val = clamp(mag * 10.0f, 0.0f, 1.0f);
 
-        // Simple HSV->RGB
         float h6 = hue * 6.0;
         float f = h6 - floor(h6);
         float q = val * (1.0 - f);
@@ -232,6 +230,84 @@ namespace StamFluidShader {
         else if (hi == 4) color = float3(t, 0, val);
         else color = float3(val, 0, q);
 
+        output.write(float4(color, 1.0), gid);
+    }
+
+    // --- Visualize speed (velocity magnitude) through colormap ---
+    kernel void visualizeSpeed(device const float *u [[buffer(0)]],
+                               device const float *v [[buffer(1)]],
+                               texture2d<float, access::write> output [[texture(0)]],
+                               constant FluidParams &params [[buffer(2)]],
+                               texture1d<float, access::sample> colormapTex [[texture(1)]],
+                               uint2 gid [[thread_position_in_grid]]) {
+        uint N = params.N;
+        if (gid.x >= N || gid.y >= N) return;
+
+        float uu = u[IX(gid.x + 1, gid.y + 1, N)];
+        float vv = v[IX(gid.x + 1, gid.y + 1, N)];
+        float mag = clamp(sqrt(uu * uu + vv * vv) * 5.0f, 0.0f, 1.0f);
+
+        constexpr sampler s(coord::normalized, address::clamp_to_edge, filter::linear);
+        float3 color = colormapTex.sample(s, mag).rgb;
+        output.write(float4(color, 1.0), gid);
+    }
+
+    // --- Visualize vorticity (curl of velocity) through colormap ---
+    kernel void visualizeVorticity(device const float *u [[buffer(0)]],
+                                   device const float *v [[buffer(1)]],
+                                   texture2d<float, access::write> output [[texture(0)]],
+                                   constant FluidParams &params [[buffer(2)]],
+                                   texture1d<float, access::sample> colormapTex [[texture(1)]],
+                                   uint2 gid [[thread_position_in_grid]]) {
+        uint N = params.N;
+        if (gid.x >= N || gid.y >= N) return;
+
+        uint i = gid.x + 1;
+        uint j = gid.y + 1;
+        // curl = dv/dx - du/dy
+        float dvdx = (v[IX(i + 1, j, N)] - v[IX(i - 1, j, N)]) * 0.5 * float(N);
+        float dudy = (u[IX(i, j + 1, N)] - u[IX(i, j - 1, N)]) * 0.5 * float(N);
+        float curl = dvdx - dudy;
+
+        // Map signed curl to 0..1 (0.5 = zero curl)
+        float d = clamp(curl * 0.5f + 0.5f, 0.0f, 1.0f);
+
+        constexpr sampler s(coord::normalized, address::clamp_to_edge, filter::linear);
+        float3 color = colormapTex.sample(s, d).rgb;
+        output.write(float4(color, 1.0), gid);
+    }
+
+    // --- Visualize divergence through colormap ---
+    kernel void visualizeDivergence(device const float *div [[buffer(0)]],
+                                    texture2d<float, access::write> output [[texture(0)]],
+                                    constant FluidParams &params [[buffer(1)]],
+                                    texture1d<float, access::sample> colormapTex [[texture(1)]],
+                                    uint2 gid [[thread_position_in_grid]]) {
+        uint N = params.N;
+        if (gid.x >= N || gid.y >= N) return;
+
+        float d = div[IX(gid.x + 1, gid.y + 1, N)];
+        d = clamp(d * 50.0f + 0.5f, 0.0f, 1.0f);
+
+        constexpr sampler s(coord::normalized, address::clamp_to_edge, filter::linear);
+        float3 color = colormapTex.sample(s, d).rgb;
+        output.write(float4(color, 1.0), gid);
+    }
+
+    // --- Visualize pressure through colormap ---
+    kernel void visualizePressure(device const float *p [[buffer(0)]],
+                                  texture2d<float, access::write> output [[texture(0)]],
+                                  constant FluidParams &params [[buffer(1)]],
+                                  texture1d<float, access::sample> colormapTex [[texture(1)]],
+                                  uint2 gid [[thread_position_in_grid]]) {
+        uint N = params.N;
+        if (gid.x >= N || gid.y >= N) return;
+
+        float d = p[IX(gid.x + 1, gid.y + 1, N)];
+        d = clamp(d * 50.0f + 0.5f, 0.0f, 1.0f);
+
+        constexpr sampler s(coord::normalized, address::clamp_to_edge, filter::linear);
+        float3 color = colormapTex.sample(s, d).rgb;
         output.write(float4(color, 1.0), gid);
     }
 

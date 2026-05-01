@@ -6,7 +6,7 @@ import SwiftUI
 /// Drag to inject density and apply forces. The fluid follows the Navier-Stokes equations.
 public struct StamFluidDemoView: View {
     @State private var isRunning = true
-    @State private var showVelocity = false
+    @State private var visualization: Visualization = .density
     @State private var diffusion: Float = 0.0001
     @State private var viscosity: Float = 0.0
     @State private var gridN: Int = 128
@@ -24,7 +24,7 @@ public struct StamFluidDemoView: View {
     public var body: some View {
         GeometryReader { geometry in
             RenderView { _, _ in
-                StamFluid(gridN: gridN, diffusion: diffusion, viscosity: viscosity, isRunning: isRunning, showVelocity: showVelocity, interactionPoint: interactionPoint, interactionVelocity: interactionVelocity, interactionActive: interactionActive, colormap: colormap)
+                StamFluid(gridN: gridN, diffusion: diffusion, viscosity: viscosity, isRunning: isRunning, visualization: visualization, interactionPoint: interactionPoint, interactionVelocity: interactionVelocity, interactionActive: interactionActive, colormap: colormap)
             }
             .gesture(
                 DragGesture(minimumDistance: 0)
@@ -53,7 +53,14 @@ public struct StamFluidDemoView: View {
         .demoConfiguration {
             Form {
                 Toggle("Animate", isOn: $isRunning)
-                Toggle("Show Velocity", isOn: $showVelocity)
+
+                Section("Visualization") {
+                    Picker("Field", selection: $visualization) {
+                        ForEach(Visualization.allCases) { vis in
+                            Text(vis.rawValue).tag(vis)
+                        }
+                    }
+                }
 
                 Section("Parameters") {
                     LabeledContent("Diffusion \(diffusion, specifier: "%.4f")") {

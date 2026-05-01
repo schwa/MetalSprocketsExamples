@@ -33,7 +33,7 @@ struct StamFluid: Element {
     let diffusion: Float
     let viscosity: Float
     let isRunning: Bool
-    let showVelocity: Bool
+    let visualization: Visualization
     let interactionPoint: SIMD2<Float>?
     let interactionVelocity: SIMD2<Float>?
     let interactionActive: Bool
@@ -46,12 +46,12 @@ struct StamFluid: Element {
         var visc: Float
     }
 
-    init(gridN: Int = 128, diffusion: Float = 0.0001, viscosity: Float = 0.0, isRunning: Bool = true, showVelocity: Bool = false, interactionPoint: SIMD2<Float>? = nil, interactionVelocity: SIMD2<Float>? = nil, interactionActive: Bool = false, colormap: Colormap = .fire) {
+    init(gridN: Int = 128, diffusion: Float = 0.0001, viscosity: Float = 0.0, isRunning: Bool = true, visualization: Visualization = .density, interactionPoint: SIMD2<Float>? = nil, interactionVelocity: SIMD2<Float>? = nil, interactionActive: Bool = false, colormap: Colormap = .fire) {
         self.gridN = gridN
         self.diffusion = diffusion
         self.viscosity = viscosity
         self.isRunning = isRunning
-        self.showVelocity = showVelocity
+        self.visualization = visualization
         self.interactionPoint = interactionPoint
         self.interactionVelocity = interactionVelocity
         self.interactionActive = interactionActive
@@ -137,30 +137,73 @@ struct StamFluid: Element {
                 }
 
                 // === Visualize ===
-                if let displayTexture, let bufDens, let bufU, let bufV {
-                    try ComputePass {
-                        if showVelocity {
-                            try ComputePipeline(computeKernel: try lib.visualizeVelocity) {
-                                try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg16)
-                                    .parameter("u", buffer: bufU, offset: 0)
-                                    .parameter("v", buffer: bufV, offset: 0)
-                                    .parameter("output", texture: displayTexture)
-                                    .parameter("params", value: params)
-                            }
-                        } else if let colormapTexture {
-                            try ComputePipeline(computeKernel: try lib.visualizeDensity) {
-                                try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg16)
-                                    .parameter("dens", buffer: bufDens, offset: 0)
-                                    .parameter("output", texture: displayTexture)
-                                    .parameter("params", value: params)
-                                    .parameter("colormapTex", texture: colormapTexture)
-                            }
-                        }
-                    }
+                if let displayTexture, let bufDens, let bufU, let bufV, let bufDiv, let bufP, let colormapTexture {
+                    try visualizePass(lib: lib, interior: interior, tg: tg16, params: params, displayTexture: displayTexture, colormapTexture: colormapTexture, bufDens: bufDens, bufU: bufU, bufV: bufV, bufDiv: bufDiv, bufP: bufP)
 
                     try RenderPass {
                         try TextureBillboardPipeline(specifier: .texture2D(displayTexture))
                     }
+                }
+            }
+        }
+    }
+
+    // MARK: - Visualization
+
+    @ElementBuilder
+    // swiftlint:disable:next function_parameter_count
+    private func visualizePass(lib: ShaderNamespace, interior: MTLSize, tg: MTLSize, params: FluidParams, displayTexture: MTLTexture, colormapTexture: MTLTexture, bufDens: MTLBuffer, bufU: MTLBuffer, bufV: MTLBuffer, bufDiv: MTLBuffer, bufP: MTLBuffer) throws -> some Element {
+        try ComputePass {
+            switch visualization {
+            case .density:
+                try ComputePipeline(computeKernel: try lib.visualizeDensity) {
+                    try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
+                        .parameter("dens", buffer: bufDens, offset: 0)
+                        .parameter("output", texture: displayTexture)
+                        .parameter("params", value: params)
+                        .parameter("colormapTex", texture: colormapTexture)
+                }
+            case .velocity:
+                try ComputePipeline(computeKernel: try lib.visualizeVelocity) {
+                    try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
+                        .parameter("u", buffer: bufU, offset: 0)
+                        .parameter("v", buffer: bufV, offset: 0)
+                        .parameter("output", texture: displayTexture)
+                        .parameter("params", value: params)
+                }
+            case .speed:
+                try ComputePipeline(computeKernel: try lib.visualizeSpeed) {
+                    try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
+                        .parameter("u", buffer: bufU, offset: 0)
+                        .parameter("v", buffer: bufV, offset: 0)
+                        .parameter("output", texture: displayTexture)
+                        .parameter("params", value: params)
+                        .parameter("colormapTex", texture: colormapTexture)
+                }
+            case .vorticity:
+                try ComputePipeline(computeKernel: try lib.visualizeVorticity) {
+                    try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
+                        .parameter("u", buffer: bufU, offset: 0)
+                        .parameter("v", buffer: bufV, offset: 0)
+                        .parameter("output", texture: displayTexture)
+                        .parameter("params", value: params)
+                        .parameter("colormapTex", texture: colormapTexture)
+                }
+            case .divergence:
+                try ComputePipeline(computeKernel: try lib.visualizeDivergence) {
+                    try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
+                        .parameter("div", buffer: bufDiv, offset: 0)
+                        .parameter("output", texture: displayTexture)
+                        .parameter("params", value: params)
+                        .parameter("colormapTex", texture: colormapTexture)
+                }
+            case .pressure:
+                try ComputePipeline(computeKernel: try lib.visualizePressure) {
+                    try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
+                        .parameter("p", buffer: bufP, offset: 0)
+                        .parameter("output", texture: displayTexture)
+                        .parameter("params", value: params)
+                        .parameter("colormapTex", texture: colormapTexture)
                 }
             }
         }
@@ -479,6 +522,17 @@ struct StamFluid: Element {
 }
 
 // MARK: - Colormap definitions
+
+enum Visualization: String, CaseIterable, Identifiable {
+    case density = "Density"
+    case velocity = "Velocity"
+    case speed = "Speed"
+    case vorticity = "Vorticity"
+    case divergence = "Divergence"
+    case pressure = "Pressure"
+
+    var id: String { rawValue }
+}
 
 enum Colormap: String, CaseIterable, Identifiable {
     case fire = "Fire"
