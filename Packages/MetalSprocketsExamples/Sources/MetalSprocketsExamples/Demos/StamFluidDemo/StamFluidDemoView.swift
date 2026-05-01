@@ -9,7 +9,7 @@ public struct StamFluidDemoView: View {
     @State private var visualization: Visualization = .density
     @State private var diffusion: Float = 0.0001
     @State private var viscosity: Float = 0.0
-    @State private var gridN: Int = 128
+    @State private var gridN: Int = 1_024
     @State private var colormap: Colormap = .fire
 
     // Interaction state
@@ -64,10 +64,10 @@ public struct StamFluidDemoView: View {
                 }
 
                 Section("Parameters") {
-                    LabeledContent("Diffusion \(diffusion, specifier: "%.4f")") {
+                    LabeledContent("Diffusion \(diffusion, specifier: "%.2e")") {
                         Slider(value: $diffusion, in: 0...0.01)
                     }
-                    LabeledContent("Viscosity \(viscosity, specifier: "%.4f")") {
+                    LabeledContent("Viscosity \(viscosity, specifier: "%.2e")") {
                         Slider(value: $viscosity, in: 0...0.01)
                     }
                 }
