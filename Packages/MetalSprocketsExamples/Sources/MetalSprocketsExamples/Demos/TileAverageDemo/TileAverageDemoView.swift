@@ -174,7 +174,7 @@ struct TileAveragePipeline: Element {
                     .parameter("uniforms", functionType: .vertex, buffer: uniformsBuffer, offset: 0)
                     .parameter("uniforms", functionType: .fragment, buffer: uniformsBuffer, offset: 0)
                 }
-                .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
+                .vertexDescriptor(vertexShader.inferredVertexDescriptor())
 
                 // Step 2: Blit imageblock to color attachment (framebuffer)
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: blitFragmentShader) {
@@ -184,7 +184,7 @@ struct TileAveragePipeline: Element {
                     }
                     .parameter("uniforms", functionType: .vertex, buffer: uniformsBuffer, offset: 0)
                 }
-                .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
+                .vertexDescriptor(vertexShader.inferredVertexDescriptor())
             }
             .renderPassDescriptorModifier { descriptor in
                 // Configure for imageblock usage

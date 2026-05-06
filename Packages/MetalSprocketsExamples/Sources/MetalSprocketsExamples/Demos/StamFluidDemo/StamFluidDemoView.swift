@@ -60,7 +60,6 @@ public struct StamFluidDemoView: View {
                             Text(vis.rawValue).tag(vis)
                         }
                     }
-
                 }
 
                 Section("Parameters") {
@@ -78,7 +77,6 @@ public struct StamFluidDemoView: View {
                             Text(map.rawValue).tag(map)
                         }
                     }
-
                 }
 
                 Section("Grid") {
@@ -91,7 +89,6 @@ public struct StamFluidDemoView: View {
                         Text("2048").tag(2_048)
                         Text("4096").tag(4_096)
                     }
-
                 }
 
                 Section {

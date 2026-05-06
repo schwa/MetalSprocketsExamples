@@ -122,7 +122,7 @@ public struct SDFRenderPipeline {
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertices.count)
                 }
             }
-            .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
+            .vertexDescriptor(vertexShader.inferredVertexDescriptor())
         }
     }
 }

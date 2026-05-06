@@ -63,7 +63,7 @@ public struct TriangleDemoView: View {
                             }
                             .parameter("color", value: color)
                         }
-                        .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
+                        .vertexDescriptor(vertexShader.inferredVertexDescriptor())
                     }
                     .onCommandBufferCompleted { commandBuffer in
                         gpuTime = commandBuffer.gpuEndTime - commandBuffer.gpuStartTime
