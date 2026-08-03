@@ -1,9 +1,9 @@
 // ShaderGraph+MetalSprockets.swift
 // MetalSprockets integration for ShaderGraph
 
+import ExamplesShaderGraph
 import Metal
 import MetalSprockets
-import ShaderGraph
 
 extension ShaderGraph {
     /// Build a stitched visible function from a node.

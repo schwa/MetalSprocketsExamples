@@ -1,5 +1,5 @@
+import ExamplesShaderGraph
 import Metal
-import ShaderGraph
 import ShaderGraphSupport
 import Testing
 

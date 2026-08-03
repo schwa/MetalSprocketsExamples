@@ -10,7 +10,7 @@ public struct GLTFDemoView: View {
     private var url: URL?
 
     @State
-    private var document: Document?
+    private var document: SwiftGLTF.Document?
 
     @State
     private var sceneGraph: SceneGraph?

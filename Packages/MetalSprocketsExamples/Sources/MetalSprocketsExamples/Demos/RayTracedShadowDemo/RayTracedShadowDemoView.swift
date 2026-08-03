@@ -365,11 +365,9 @@ struct RayTracedShadowDemoRenderPass: Element {
             }
 
             // Pass 2: Ray-traced shadow compute pass
-            // swiftlint:disable indentation_width
             if shadowsEnabled,
                let sceneDepthTexture = renderPassDescriptor?.depthAttachment.texture,
                let outputTexture = currentDrawable?.texture {
-                // swiftlint:enable indentation_width
                 let viewMatrix = cameraMatrix.inverse
                 let viewProjection = projectionMatrix * viewMatrix
                 let inverseVP = viewProjection.inverse

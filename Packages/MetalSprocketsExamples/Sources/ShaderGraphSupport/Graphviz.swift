@@ -1,7 +1,7 @@
 // Graphviz.swift
 // Export shader graphs to Graphviz DOT format
 
-import ShaderGraph
+import ExamplesShaderGraph
 
 extension Kind {
     /// Exports the graph rooted at this node to Graphviz DOT format.

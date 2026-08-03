@@ -35,7 +35,7 @@ public extension MagicaVoxelModel {
             }
             return mainChunk
         }
-        self = MagicaVoxelModel.instantiate(mainChunk: mainChunk)
+        self = Self.instantiate(mainChunk: mainChunk)
     }
 }
 

@@ -99,7 +99,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "ShaderGraph",
+            name: "ExamplesShaderGraph",
             dependencies: [
                 "ShaderGraphShaders"
             ]
@@ -128,13 +128,13 @@ let package = Package(
         .target(
             name: "ShaderGraphSupport",
             dependencies: [
-                "ShaderGraph"
+                "ExamplesShaderGraph"
             ]
         ),
         .target(
             name: "MetalSprocketsShaderGraph",
             dependencies: [
-                "ShaderGraph",
+                "ExamplesShaderGraph",
                 .product(name: "MetalSprockets", package: "MetalSprockets")
             ]
         ),
@@ -148,7 +148,7 @@ let package = Package(
         ),
         .testTarget(
             name: "ShaderGraphTests",
-            dependencies: ["ShaderGraph", "ShaderGraphSupport"]
+            dependencies: ["ExamplesShaderGraph", "ShaderGraphSupport"]
         ),
         .testTarget(
             name: "MetalSprocketsShaderGraphTests",
