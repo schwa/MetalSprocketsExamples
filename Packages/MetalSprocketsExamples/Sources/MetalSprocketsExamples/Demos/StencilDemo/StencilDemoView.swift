@@ -5,8 +5,9 @@ import MetalSupport
 import SwiftUI
 
 /// A demo that shows the use of a stencil texture.
-/// This view creates a texture, the size of the output drawable, containing a checkerboard pattern. The texture is regenerated when the drawable size changes.
-/// During the render loop it blits the checkerboard texture into the stencil attachment of the render pass descriptor. A better way would be to just set the stencil attachment storeAction to .store but that is too easy for this demo.
+/// This view creates a texture, the size of the output drawable, containing a checkerboard pattern, and copies it into a linear staging buffer. Both are regenerated when the drawable size changes.
+/// A compute kernel cannot write directly to a `.stencil8` texture and blits between textures require identical pixel formats, so the checkerboard goes via a byte buffer.
+/// During the render loop it blits the staging buffer into the stencil attachment of the render pass descriptor. A better way would be to just set the stencil attachment storeAction to .store but that is too easy for this demo.
 /// It then enables the stencil test and draws a triangle. The resulting triangle should be clipped by the stencil texture.
 public struct StencilDemoView: View {
     let source = """
@@ -38,7 +39,13 @@ public struct StencilDemoView: View {
     """
 
     @State
-    private var texture: MTLTexture?
+    private var stencilBuffer: MTLBuffer?
+
+    @State
+    private var stencilBufferSize: MTLSize = .init(width: 0, height: 0, depth: 1)
+
+    @State
+    private var stencilBufferBytesPerRow: Int = 0
 
     let depthStencilDescriptor: MTLDepthStencilDescriptor = {
         let stencilDescriptor = MTLStencilDescriptor(compareFunction: .equal, readMask: 0xFF, writeMask: 0x00)
@@ -55,19 +62,23 @@ public struct StencilDemoView: View {
             RenderView { _, _ in
                 try BlitPass {
                     EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
-                        if let descriptor = renderPassDescriptor, let stencilAttachmentTexture = descriptor.stencilAttachment.texture, let sourceTexture = texture {
-                            Blit { encoder in
-                                encoder.copy(
-                                    from: sourceTexture,
-                                    sourceSlice: 0,
-                                    sourceLevel: 0,
-                                    sourceOrigin: .init(x: 0, y: 0, z: 0),
-                                    sourceSize: .init(width: sourceTexture.width, height: sourceTexture.height, depth: 1),
-                                    to: stencilAttachmentTexture,
-                                    destinationSlice: 0,
-                                    destinationLevel: 0,
-                                    destinationOrigin: .init(x: 0, y: 0, z: 0)
-                                )
+                        if let descriptor = renderPassDescriptor, let stencilAttachmentTexture = descriptor.stencilAttachment.texture, let stencilBuffer {
+                            let width = min(stencilBufferSize.width, stencilAttachmentTexture.width)
+                            let height = min(stencilBufferSize.height, stencilAttachmentTexture.height)
+                            if width > 0, height > 0 {
+                                Blit { encoder in
+                                    encoder.copy(
+                                        from: stencilBuffer,
+                                        sourceOffset: 0,
+                                        sourceBytesPerRow: stencilBufferBytesPerRow,
+                                        sourceBytesPerImage: stencilBufferBytesPerRow * height,
+                                        sourceSize: .init(width: width, height: height, depth: 1),
+                                        to: stencilAttachmentTexture,
+                                        destinationSlice: 0,
+                                        destinationLevel: 0,
+                                        destinationOrigin: .init(x: 0, y: 0, z: 0)
+                                    )
+                                }
                             }
                         }
                     }
@@ -107,22 +118,55 @@ public struct StencilDemoView: View {
             .metalDepthStencilAttachmentTextureUsage([.shaderWrite, .renderTarget])
             .onDrawableSizeChange { size in
                 do {
-                    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: Int(size.width), height: Int(size.height), mipmapped: false)
+                    let width = Int(size.width)
+                    let height = Int(size.height)
+                    guard width > 0, height > 0 else {
+                        stencilBuffer = nil
+                        return
+                    }
+                    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: width, height: height, mipmapped: false)
                     descriptor.usage = [.shaderRead, .shaderWrite]
 
                     let device = _MTLCreateSystemDefaultDevice()
                     let texture = device.makeTexture(descriptor: descriptor)
                         .orFatalError("Failed to create stencil texture")
                     texture.label = "Faux Stencil Texture"
-                    let pass = try ComputePass {
-                        try CheckerboardKernel_ushort(outputTexture: texture, checkerSize: [100, 100], foregroundColor: 0xFFFF)
+
+                    // Buffer-texture blits want a 256 byte aligned row pitch.
+                    let bytesPerRow = (width + 255) / 256 * 256
+                    let buffer = device.makeBuffer(length: bytesPerRow * height, options: .storageModePrivate)
+                        .orFatalError("Failed to create stencil staging buffer")
+                    buffer.label = "Faux Stencil Buffer"
+
+                    try Group {
+                        try ComputePass {
+                            try CheckerboardKernel_ushort(outputTexture: texture, checkerSize: [100, 100], foregroundColor: 0xFFFF)
+                        }
+                        try BlitPass {
+                            Blit { encoder in
+                                encoder.copy(
+                                    from: texture,
+                                    sourceSlice: 0,
+                                    sourceLevel: 0,
+                                    sourceOrigin: .init(x: 0, y: 0, z: 0),
+                                    sourceSize: .init(width: width, height: height, depth: 1),
+                                    to: buffer,
+                                    destinationOffset: 0,
+                                    destinationBytesPerRow: bytesPerRow,
+                                    destinationBytesPerImage: bytesPerRow * height
+                                )
+                            }
+                        }
                     }
-                    try pass.run()
-                    self.texture = texture
+                    .run()
+
+                    stencilBufferBytesPerRow = bytesPerRow
+                    stencilBufferSize = .init(width: width, height: height, depth: 1)
+                    stencilBuffer = buffer
                 }
                 catch {
                     debugPrint("Stencil texture update failed: \(error)")
-                    texture = nil
+                    stencilBuffer = nil
                 }
             }
         }
