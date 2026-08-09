@@ -106,9 +106,10 @@ struct SceneGraphRenderPass: Element {
                             encoder.draw(mesh)
                         }
                         .pbrMaterial(material)
-                        .pbrUniforms(modelTransform: worldTransform, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                        .pbrModelUniforms(modelTransform: worldTransform)
                     }
                 }
+                .pbrViewUniforms(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                 .pbrEnvironment(environmentTexture)
                 .lighting(lighting)
             }

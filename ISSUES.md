@@ -2321,12 +2321,13 @@ If what you actually meant was that the min/max should be *kept* (e.g. to build 
 ## 347: PBR: break out model uniforms from PBRShader
 
 +++
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:m
 created: 2026-04-03T03:11:53Z
-updated: 2026-04-03T17:30:51Z
+updated: 2026-08-09T17:46:48Z
+closed: 2026-08-09T17:46:48Z
 +++
 
 ---

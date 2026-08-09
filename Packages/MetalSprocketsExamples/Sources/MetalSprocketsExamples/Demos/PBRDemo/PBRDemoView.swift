@@ -61,7 +61,8 @@ public struct PBRDemoView: View {
                         try PBRShader {
                             try Draw(mtkMesh: teapot)
                                 .pbrMaterial(currentMaterial)
-                                .pbrUniforms(modelTransform: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                                .pbrModelUniforms(modelTransform: .identity)
+                                .pbrViewUniforms(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                                 .lighting(lighting)
                                 .pbrEnvironment(environmentTexture)
                                 .parameter("frameUniforms", functionType: .vertex, value: context.frameUniforms)
