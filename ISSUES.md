@@ -3181,3 +3181,30 @@ Notes:
 - The empty-state text should stay for the case where loading the bundled image fails.
 
 ---
+
+## 389: Voxel demo resolution slider snaps back to centre while dragging
+
++++
+status: new
+priority: medium
+kind: bug
+labels: effort:s, regression
+created: 2026-08-09T18:01:49Z
+updated: 2026-08-09T18:01:53Z
++++
+
+Regression from #366 (commit 'Replace voxel /2 and x2 buttons with a resolution slider').
+
+Symptom: the Resolution slider in the Voxel demo can be dragged, but the thumb springs back to the middle of the track instead of following the drag or staying where it is dropped.
+
+The default voxelSize is 32³, which is exponent 5 in the slider's 2...9 range — very close to the visual centre. So 'stuck in the centre' is consistent with the thumb continuously re-reading the initial value, i.e. the setter's write is not reaching the bound state (or is not being read back).
+
+Unverified suspicions, in order:
+1. The slider lives inside .demoConfiguration { }, and DemoKit hands that content to a DemoConfigurationStore (store.content) which renders a captured snapshot of the closure. If the snapshot is stale, the computed Binding writes @State but the displayed control keeps reading the value from the captured copy. That would make every stateful control in every demo's configuration panel suspect, not just this one.
+2. VoxelDemoView.voxelResolutionExponent is a computed Binding whose setter early-returns when the rounded dimension has not changed (VoxelDemoView.swift:111). If SwiftUI drives the thumb purely from the bound value, every intermediate drag position is discarded by that guard.
+
+Worth checking first: does the voxel grid itself actually change resolution while dragging (watch the 'Voxel Size: N x N x N' label)? If the label updates but the thumb does not, suspicion 2 is wrong and it is a redraw problem; if neither updates, the write is not landing at all.
+
+If it turns out to be (1), other demos' configuration sliders are affected too and this should be retitled.
+
+---
