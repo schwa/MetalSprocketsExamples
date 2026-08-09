@@ -10,34 +10,6 @@ import SwiftUI
 /// During the render loop it blits the staging buffer into the stencil attachment of the render pass descriptor. A better way would be to just set the stencil attachment storeAction to .store but that is too easy for this demo.
 /// It then enables the stencil test and draws a triangle. The resulting triangle should be clipped by the stencil texture.
 public struct StencilDemoView: View {
-    let source = """
-    #include <metal_stdlib>
-    using namespace metal;
-
-    struct VertexIn {
-        float2 position [[attribute(0)]];
-    };
-
-    struct VertexOut {
-        float4 position [[position]];
-    };
-
-    [[vertex]] VertexOut vertex_main(
-        const VertexIn in [[stage_in]]
-    ) {
-        VertexOut out;
-        out.position = float4(in.position, 0.0, 1.0);
-        return out;
-    }
-
-    [[fragment]] float4 fragment_main(
-        VertexOut in [[stage_in]],
-        constant float4 &color [[buffer(0)]]
-    ) {
-        return color;
-    }
-    """
-
     @State
     private var stencilBuffer: MTLBuffer?
 
@@ -84,8 +56,9 @@ public struct StencilDemoView: View {
                     }
                 }
                 try RenderPass {
-                    let vertexShader = try VertexShader(source: source)
-                    let fragmentShader = try FragmentShader(source: source)
+                    let shaders = try ShaderNamespace.examples("Stencil")
+                    let vertexShader: VertexShader = try shaders.vertex_main
+                    let fragmentShader: FragmentShader = try shaders.fragment_main
                     try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
                             // 5-pointed star as triangle fan from center

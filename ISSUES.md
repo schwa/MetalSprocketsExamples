@@ -3156,12 +3156,13 @@ Found during the #379 audit.
 ## 387: StencilDemo compiles shaders from an inline source string
 
 +++
-status: new
+status: closed
 priority: low
 kind: enhancement
 labels: effort:s
 created: 2026-08-09T17:59:38Z
-updated: 2026-08-09T17:59:50Z
+updated: 2026-08-09T18:58:45Z
+closed: 2026-08-09T18:58:45Z
 +++
 
 StencilDemoView.swift:87-88 builds its VertexShader and FragmentShader from an inline Metal source string, the same pattern removed from the skinning demo in #378.
