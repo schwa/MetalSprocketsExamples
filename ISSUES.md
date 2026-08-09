@@ -2888,7 +2888,9 @@ Review all demo code to ensure it follows MetalSprockets best practices: load sh
 status: new
 priority: low
 kind: task
+labels: effort:xl, needs-info
 created: 2026-04-14T16:14:27Z
+updated: 2026-08-09T16:21:31Z
 +++
 
 ---
