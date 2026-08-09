@@ -2303,13 +2303,18 @@ Fixed by extracting GLTFMeshAttributes and deriving bitangents after normal gene
 ## 346: GLTF: inefficient accessor info getting and discarding
 
 +++
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
 created: 2026-04-03T03:11:53Z
-updated: 2026-04-03T17:30:51Z
+updated: 2026-08-09T17:29:50Z
+closed: 2026-08-09T17:29:50Z
 +++
+
+- `2026-08-09T17:29:50Z`: Interpreted as: every attribute and index load re-derived accessor.min/max into locals and threw them away, with the same 10-line validation block copy-pasted four times (three attribute overloads plus three index cases). Collapsed into Accessor.assertConsistent(with:) — one vector overload, one integer overload — so the bounds are fetched in exactly one place and the whole check compiles out of release builds.
+
+If what you actually meant was that the min/max should be *kept* (e.g. to build mesh bounds without scanning positions), say so and I will file that separately — this change deliberately preserves existing behaviour.
 
 ---
 

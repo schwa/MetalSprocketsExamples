@@ -209,16 +209,7 @@ extension SwiftGLTF.Mesh.Primitive {
         }
         assert(accessor.componentType == .FLOAT)
         let values = [SIMD2<Float>](withUnsafeData: try container.data(for: accessor))
-        assert(values.count == accessor.count)
-        if let minValues = accessor.min, let maxValues = accessor.max, minValues.count == maxValues.count {
-            assert(values.allSatisfy { value in
-                (0..<min(minValues.count, value.scalarCount)).allSatisfy { index in
-                    let minimum = Float(minValues[index])
-                    let maximum = Float(maxValues[index])
-                    return (minimum...maximum).contains(value[index])
-                }
-            })
-        }
+        accessor.assertConsistent(with: values)
         return values
     }
 
@@ -234,16 +225,7 @@ extension SwiftGLTF.Mesh.Primitive {
             throw GLTGSceneGraphGenerator.Error.unsupportedComponentType
         }
 
-        assert(values.count == accessor.count)
-        if let minValues = accessor.min, let maxValues = accessor.max, minValues.count == maxValues.count {
-            assert(values.allSatisfy { value in
-                (0..<min(minValues.count, value.scalarCount)).allSatisfy { index in
-                    let minimum = Float(minValues[index])
-                    let maximum = Float(maxValues[index])
-                    return (minimum...maximum).contains(value[index])
-                }
-            })
-        }
+        accessor.assertConsistent(with: values)
         return values
     }
 
@@ -253,16 +235,7 @@ extension SwiftGLTF.Mesh.Primitive {
         }
         assert(accessor.componentType == .FLOAT)
         let values = [SIMD4<Float>](withUnsafeData: try container.data(for: accessor))
-        assert(values.count == accessor.count)
-        if let minValues = accessor.min, let maxValues = accessor.max, minValues.count == maxValues.count {
-            assert(values.allSatisfy { value in
-                (0..<min(minValues.count, value.scalarCount)).allSatisfy { index in
-                    let minimum = Float(minValues[index])
-                    let maximum = Float(maxValues[index])
-                    return (minimum...maximum).contains(value[index])
-                }
-            })
-        }
+        accessor.assertConsistent(with: values)
         return values
     }
 
@@ -273,30 +246,15 @@ extension SwiftGLTF.Mesh.Primitive {
         switch indicesAccessor.componentType {
         case .UNSIGNED_BYTE:
             let indices = [UInt8](try container.data(for: indicesAccessor))
-            if let minValues = indicesAccessor.min, let maxValues = indicesAccessor.max, let minValue = minValues.first, let maxValue = maxValues.first {
-                let minByte = UInt8(minValue)
-                let maxByte = UInt8(maxValue)
-                assert(indices.allSatisfy { (minByte...maxByte).contains($0) })
-            }
-            assert(indices.count == indicesAccessor.count)
+            indicesAccessor.assertConsistent(with: indices)
             return indices.map { UInt32($0) }
         case .UNSIGNED_SHORT:
             let indices = [UInt16](withUnsafeData: try container.data(for: indicesAccessor))
-            if let minValues = indicesAccessor.min, let maxValues = indicesAccessor.max, let minValue = minValues.first, let maxValue = maxValues.first {
-                let minShort = UInt16(minValue)
-                let maxShort = UInt16(maxValue)
-                assert(indices.allSatisfy { (minShort...maxShort).contains($0) })
-            }
-            assert(indices.count == indicesAccessor.count)
+            indicesAccessor.assertConsistent(with: indices)
             return indices.map { UInt32($0) }
         case .UNSIGNED_INT:
             let indices = [UInt32](withUnsafeData: try container.data(for: indicesAccessor))
-            if let minValues = indicesAccessor.min, let maxValues = indicesAccessor.max, let minValue = minValues.first, let maxValue = maxValues.first {
-                let minInt = UInt32(minValue)
-                let maxInt = UInt32(maxValue)
-                assert(indices.allSatisfy { (minInt...maxInt).contains($0) })
-            }
-            assert(indices.count == indicesAccessor.count)
+            indicesAccessor.assertConsistent(with: indices)
             return indices
         default:
             throw GLTGSceneGraphGenerator.Error.unsupportedComponentType
