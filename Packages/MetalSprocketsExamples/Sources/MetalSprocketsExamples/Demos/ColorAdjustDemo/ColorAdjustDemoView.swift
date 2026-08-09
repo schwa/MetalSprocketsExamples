@@ -95,9 +95,7 @@ public struct ColorAdjustDemoView: View {
             .SRGB: false
         ])).orFatalError("Failed to load color adjust source texture")
 
-        let adjustedDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
-        adjustedDescriptor.usage = [.shaderRead, .shaderWrite]
-        adjustedTexture = device.makeTexture(descriptor: adjustedDescriptor).orFatalError("Failed to create adjusted texture")
+        adjustedTexture = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: sourceTexture.width, height: sourceTexture.height, label: "Adjusted Texture")
         do {
             shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
                 .namespaced("ColorAdjust")

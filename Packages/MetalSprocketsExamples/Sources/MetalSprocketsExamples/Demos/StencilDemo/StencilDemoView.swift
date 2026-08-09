@@ -124,13 +124,8 @@ public struct StencilDemoView: View {
                         stencilBuffer = nil
                         return
                     }
-                    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: width, height: height, mipmapped: false)
-                    descriptor.usage = [.shaderRead, .shaderWrite]
-
                     let device = _MTLCreateSystemDefaultDevice()
-                    let texture = device.makeTexture(descriptor: descriptor)
-                        .orFatalError("Failed to create stencil texture")
-                    texture.label = "Faux Stencil Texture"
+                    let texture = device.makeTexture2D(pixelFormat: .r8Uint, width: width, height: height, label: "Faux Stencil Texture")
 
                     // Buffer-texture blits want a 256 byte aligned row pitch.
                     let bytesPerRow = (width + 255) / 256 * 256

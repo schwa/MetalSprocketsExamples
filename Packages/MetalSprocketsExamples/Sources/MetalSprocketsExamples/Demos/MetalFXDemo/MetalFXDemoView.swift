@@ -100,11 +100,14 @@ public struct MetalFXDemoView: View {
         }
         .onChange(of: scaleFactor, initial: true) {
             let device = _MTLCreateSystemDefaultDevice()
-            let upscaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: sourceTexture.pixelFormat, width: Int(Double(sourceTexture.width) * scaleFactor), height: Int(Double(sourceTexture.height) * scaleFactor), mipmapped: false)
-            upscaledTextureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-            upscaledTextureDescriptor.storageMode = .private
-            upscaledTexture = device.makeTexture(descriptor: upscaledTextureDescriptor)
-                .orFatalError("Failed to allocate upscaled texture")
+            upscaledTexture = device.makeTexture2D(
+                pixelFormat: sourceTexture.pixelFormat,
+                width: Int(Double(sourceTexture.width) * scaleFactor),
+                height: Int(Double(sourceTexture.height) * scaleFactor),
+                usage: [.shaderRead, .shaderWrite, .renderTarget],
+                storageMode: .private,
+                label: "Upscaled Texture"
+            )
         }
     }
 

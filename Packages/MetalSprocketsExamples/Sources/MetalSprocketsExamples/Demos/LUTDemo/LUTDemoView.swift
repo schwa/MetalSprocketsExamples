@@ -52,9 +52,7 @@ public struct LUTDemoView: View {
             let lutTextureURL = resourceURL.appendingPathComponent("Samples/Sepia Tone.png").assertFileExists()
             self._lutURL = .init(initialValue: lutTextureURL)
             let lutTexture = try Self.make3DLUTTexture(from: lutTextureURL)
-            let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
-            descriptor.usage = [.shaderRead, .shaderWrite]
-            let outputTexture = try device._makeTexture(descriptor: descriptor)
+            let outputTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm_srgb, width: sourceTexture.width, height: sourceTexture.height, label: "LUT Output")
             self.sourceTexture = sourceTexture
             self.lutTexture = lutTexture
             self.outputTexture = outputTexture

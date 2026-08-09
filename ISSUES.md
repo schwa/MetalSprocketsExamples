@@ -2508,15 +2508,21 @@ Filed MetalSupport#11. If you would rather have a local shared device in this re
 ## 358: Extract texture creation helper to reduce boilerplate
 
 +++
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
 created: 2026-04-03T03:15:29Z
-updated: 2026-04-03T17:31:03Z
+updated: 2026-08-09T17:43:03Z
+closed: 2026-08-09T17:43:03Z
 +++
 
 - `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-08-09T17:43:03Z`: Added MTLDevice.makeTexture2D(pixelFormat:width:height:usage:storageMode:mipmapped:label:) in Support/ and adopted it at all 27 texture2DDescriptor sites in the MetalSprocketsExamples target (ColorAdjust, AppleEventLogo x5, BouncingTeapots x4, DepthDemo x3, GameOfLife x2, GLTF x2, LUT, MetalFX, Panorama x2, RayTracing x2, StamFluid x2, Stencil, VideoPlayback, VCR, Voxel). Each was the same four lines: descriptor, usage, makeTexture, label.
+
+It fatalErrors on allocation failure rather than throwing, matching the orFatalError idiom the call sites already used — a demo that cannot allocate its render targets has nothing to fall back to. Two sites (DepthDemo, Panorama) previously swallowed a nil texture silently; they now fail loudly.
+
+Not converted: PhosphorUI (2) and CLI (2) are separate targets that do not depend on the examples module. Say the word if you want the helper hoisted somewhere they can both see it.
 
 ---
 

@@ -344,10 +344,7 @@ struct StamFluid: Element {
         let texSize = gridN + 2
 
         func makeField() -> MTLTexture? {
-            let desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r32Float, width: texSize, height: texSize, mipmapped: false)
-            desc.usage = [.shaderRead, .shaderWrite]
-            desc.storageMode = .shared
-            return device.makeTexture(descriptor: desc)
+            device.makeTexture2D(pixelFormat: .r32Float, width: texSize, height: texSize, storageMode: .shared, label: "Fluid Field")
         }
 
         func makeFieldPair() -> [MTLTexture?] {
@@ -380,10 +377,7 @@ struct StamFluid: Element {
         }
 
         // Display texture (rgba8, N×N interior only)
-        let displayDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: gridN, height: gridN, mipmapped: false)
-        displayDesc.usage = [.shaderRead, .shaderWrite]
-        displayDesc.storageMode = .private
-        displayTexture = device.makeTexture(descriptor: displayDesc)
+        displayTexture = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: gridN, height: gridN, storageMode: .private, label: "Fluid Display")
 
         initialized = true
         initializedN = gridN

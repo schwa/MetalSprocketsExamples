@@ -101,20 +101,9 @@ public struct DepthDemoView: View {
                     return
                 }
                 let device = _MTLCreateSystemDefaultDevice()
-                let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), mipmapped: false)
-                colorDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-                colorTexture = device.makeTexture(descriptor: colorDescriptor)
-                colorTexture?.label = "Color Texture"
-
-                let depthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
-                depthDescriptor.usage = [.renderTarget, .shaderRead]
-                depthTexture = device.makeTexture(descriptor: depthDescriptor)
-                depthTexture?.label = "Depth Texture"
-
-                let adjustedDepthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), mipmapped: false)
-                adjustedDepthDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-                adjustedDepthTexture = device.makeTexture(descriptor: adjustedDepthDescriptor)
-                adjustedDepthTexture?.label = "Adjusted Depth Texture"
+                colorTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead, .shaderWrite], label: "Color Texture")
+                depthTexture = device.makeTexture2D(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead], label: "Depth Texture")
+                adjustedDepthTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead, .shaderWrite], label: "Adjusted Depth Texture")
             }
         }
         .demoConfiguration {

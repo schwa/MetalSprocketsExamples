@@ -369,16 +369,8 @@ private final class RayTracingResources {
         }
         currentSize = size
 
-        let accumDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: size.width, height: size.height, mipmapped: false)
-        accumDescriptor.usage = [.shaderRead, .shaderWrite]
-        accumDescriptor.storageMode = .private
-        accumTexture = device.makeTexture(descriptor: accumDescriptor)
-        accumTexture?.label = "RT Accumulation"
-
-        let outputDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: size.width, height: size.height, mipmapped: false)
-        outputDescriptor.usage = [.shaderRead, .shaderWrite]
-        outputTexture = device.makeTexture(descriptor: outputDescriptor)
-        outputTexture?.label = "RT Output"
+        accumTexture = device.makeTexture2D(pixelFormat: .rgba32Float, width: size.width, height: size.height, storageMode: .private, label: "RT Accumulation")
+        outputTexture = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: size.width, height: size.height, label: "RT Output")
 
         resetAccumulation()
     }

@@ -130,12 +130,8 @@ public struct VoxelDemoView: View {
     }
 
     func makeRenderTexture(size: MTLSize) -> MTLTexture {
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: size.width, height: size.height, mipmapped: false)
-        textureDescriptor.usage = [.shaderRead, .shaderWrite]
         let device = _MTLCreateSystemDefaultDevice()
-        let texture = device.makeTexture(descriptor: textureDescriptor).orFatalError("Failed to create render texture")
-        texture.label = "Color Texture"
-        return texture
+        return device.makeTexture2D(pixelFormat: .rgba8Unorm, width: size.width, height: size.height, label: "Color Texture")
     }
 
     func makeSphereVoxelTexture(device: MTLDevice?, size: MTLSize) throws -> MTLTexture {

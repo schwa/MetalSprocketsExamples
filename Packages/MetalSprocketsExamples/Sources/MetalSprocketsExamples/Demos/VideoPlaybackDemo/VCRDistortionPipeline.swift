@@ -66,16 +66,7 @@ struct VCRDistortionPipeline: Element {
     }
 
     private static func createDefaultNoiseTexture(device: MTLDevice) -> MTLTexture {
-        let descriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .r8Unorm,
-            width: 256,
-            height: 256,
-            mipmapped: false
-        )
-        descriptor.usage = [.shaderRead]
-
-        let texture = device.makeTexture(descriptor: descriptor).orFatalError("Failed to create noise texture")
-        texture.label = "VCR Noise Texture"
+        let texture = device.makeTexture2D(pixelFormat: .r8Unorm, width: 256, height: 256, usage: .shaderRead, label: "VCR Noise Texture")
 
         // Generate random noise
         var noiseData = [UInt8](repeating: 0, count: 256 * 256)

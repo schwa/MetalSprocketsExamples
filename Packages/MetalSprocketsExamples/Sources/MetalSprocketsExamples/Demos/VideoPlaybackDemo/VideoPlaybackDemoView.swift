@@ -241,15 +241,12 @@ public struct VideoPlaybackDemoView: View {
 
     private func getOrCreateDistortedTexture(for videoTexture: MTLTexture) -> MTLTexture? {
         if distortedTexture == nil || distortedTexture?.width != videoTexture.width || distortedTexture?.height != videoTexture.height {
-            let descriptor = MTLTextureDescriptor.texture2DDescriptor(
+            distortedTexture = device.makeTexture2D(
                 pixelFormat: videoTexture.pixelFormat,
                 width: videoTexture.width,
                 height: videoTexture.height,
-                mipmapped: false
+                label: "VCR Distorted Texture"
             )
-            descriptor.usage = [.shaderRead, .shaderWrite]
-            distortedTexture = device.makeTexture(descriptor: descriptor)
-            distortedTexture?.label = "VCR Distorted Texture"
         }
         return distortedTexture
     }

@@ -168,12 +168,8 @@ public struct AppleEventLogoDemoView: View {
                 .task {
                     do {
                         // Create heat textures for ping-ponging
-                        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Float, width: 256, height: 256, mipmapped: false)
-                        textureDescriptor.usage = [.shaderRead, .shaderWrite]
-                        heatTextures = try (0..<2).map { index in
-                            let texture = try device.makeTexture(descriptor: textureDescriptor).orThrow(.resourceCreationFailure("Heat texture"))
-                            texture.label = "Heat Texture \(index)"
-                            return texture
+                        heatTextures = (0..<2).map { index in
+                            device.makeTexture2D(pixelFormat: .rgba16Float, width: 256, height: 256, label: "Heat Texture \(index)")
                         }
                         // Explicitly zero the ping-pong textures. Not all Apple GPUs
                         // clear freshly-allocated texture memory, and the heatup
@@ -187,28 +183,17 @@ public struct AppleEventLogoDemoView: View {
                         }
 
                         // Create colored output texture
-                        let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 256, height: 256, mipmapped: false)
-                        colorDescriptor.usage = [.shaderRead, .shaderWrite]
-                        coloredTexture = try device.makeTexture(descriptor: colorDescriptor).orThrow(.resourceCreationFailure("Colored texture"))
-                        coloredTexture?.label = "Colored Output Texture"
+                        coloredTexture = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: 256, height: 256, label: "Colored Output Texture")
 
                         // Create final blended output texture
-                        finalTexture = try device.makeTexture(descriptor: colorDescriptor).orThrow(.resourceCreationFailure("Final texture"))
-                        finalTexture?.label = "Final Blended Texture"
+                        finalTexture = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: 256, height: 256, label: "Final Blended Texture")
 
                         #if canImport(MetalFX)
                         // Create offscreen texture for rendering at 256x256
-                        let offscreenDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 256, height: 256, mipmapped: false)
-                        offscreenDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-                        offscreenTexture = try device.makeTexture(descriptor: offscreenDescriptor).orThrow(.resourceCreationFailure("Offscreen texture"))
-                        offscreenTexture?.label = "Offscreen Texture"
+                        offscreenTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: 256, height: 256, usage: [.shaderRead, .shaderWrite, .renderTarget], label: "Offscreen Texture")
 
                         // Create upscaled texture at 512x512 (2x upscale)
-                        let upscaledDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 512, height: 512, mipmapped: false)
-                        upscaledDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-                        upscaledDescriptor.storageMode = .private
-                        upscaledTexture = try device.makeTexture(descriptor: upscaledDescriptor).orThrow(.resourceCreationFailure("Upscaled texture"))
-                        upscaledTexture?.label = "Upscaled Texture"
+                        upscaledTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: 512, height: 512, usage: [.shaderRead, .shaderWrite, .renderTarget], storageMode: .private, label: "Upscaled Texture")
                         #endif
 
                         // Create thermal gradient texture

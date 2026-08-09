@@ -286,10 +286,7 @@ extension MTLTexture {
             .orFatalError("Failed to generate red channel image")
         let device = _MTLCreateSystemDefaultDevice()
         let context = CIContext(mtlDevice: device)
-        let outputTextDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Unorm, width: self.width, height: self.height, mipmapped: false)
-        outputTextDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-        let outputTexture = device.makeTexture(descriptor: outputTextDescriptor)
-            .orFatalError("Failed to create red channel texture")
+        let outputTexture = device.makeTexture2D(pixelFormat: .r8Unorm, width: self.width, height: self.height, usage: [.shaderRead, .shaderWrite, .renderTarget], label: "Red Channel")
 
         let commandQueue = device.makeCommandQueue()
             .orFatalError("Failed to create command queue for red channel")
@@ -317,10 +314,7 @@ extension MTLTexture {
             .orFatalError("Failed to generate green channel image")
         let device = _MTLCreateSystemDefaultDevice()
         let context = CIContext(mtlDevice: device)
-        let outputTextDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Unorm, width: self.width, height: self.height, mipmapped: false)
-        outputTextDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-        let outputTexture = device.makeTexture(descriptor: outputTextDescriptor)
-            .orFatalError("Failed to create green channel texture")
+        let outputTexture = device.makeTexture2D(pixelFormat: .r8Unorm, width: self.width, height: self.height, usage: [.shaderRead, .shaderWrite, .renderTarget], label: "Green Channel")
 
         let commandQueue = device.makeCommandQueue()
             .orFatalError("Failed to create command queue for green channel")

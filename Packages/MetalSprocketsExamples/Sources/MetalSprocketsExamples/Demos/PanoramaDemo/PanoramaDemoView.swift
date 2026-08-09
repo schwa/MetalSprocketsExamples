@@ -73,26 +73,21 @@ public struct PanoramaDemoView: View {
                             let width = Int(size.width)
                             let height = Int(size.height)
 
-                            let intermediateDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+                            intermediateTexture = device.makeTexture2D(
                                 pixelFormat: .rgba8Unorm,
                                 width: width,
                                 height: height,
-                                mipmapped: false
+                                usage: [.renderTarget, .shaderRead],
+                                storageMode: .private
                             )
-                            intermediateDescriptor.usage = [.renderTarget, .shaderRead]
-                            intermediateDescriptor.storageMode = .private
-                            intermediateTexture = device.makeTexture(descriptor: intermediateDescriptor)
                             intermediateTexture?.label = "Panorama Intermediate Texture"
 
-                            let outputDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+                            outputTexture = device.makeTexture2D(
                                 pixelFormat: .rgba8Unorm,
                                 width: width,
                                 height: height,
-                                mipmapped: false
+                                storageMode: .private
                             )
-                            outputDescriptor.usage = [.shaderRead, .shaderWrite]
-                            outputDescriptor.storageMode = .private
-                            outputTexture = device.makeTexture(descriptor: outputDescriptor)
                             outputTexture?.label = "Panorama Gamma Output Texture"
                         }
                     } else {

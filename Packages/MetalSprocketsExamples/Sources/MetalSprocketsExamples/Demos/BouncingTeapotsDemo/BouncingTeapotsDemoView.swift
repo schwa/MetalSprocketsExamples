@@ -94,25 +94,12 @@ public struct BouncingTeapotsDemoView: View {
     }
 
     func regenerateTextures() {
-        let offscreenDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(scaleFactor * drawableSize.width), height: Int(scaleFactor * drawableSize.height), mipmapped: false)
-        offscreenDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-        let offscreenTexture = _MTLCreateSystemDefaultDevice().makeTexture(descriptor: offscreenDescriptor).orFatalError("Failed to create offscreen texture")
-        offscreenTexture.label = "Offscreen Texture"
-        self.offscreenTexture = offscreenTexture
+        let device = _MTLCreateSystemDefaultDevice()
+        let offscreenSize = MTLSize(width: Int(scaleFactor * drawableSize.width), height: Int(scaleFactor * drawableSize.height), depth: 1)
 
-        let offscreenDepthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(scaleFactor * drawableSize.width), height: Int(scaleFactor * drawableSize.height), mipmapped: false)
-        offscreenDepthTextureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-        offscreenDepthTextureDescriptor.storageMode = .private
-        let offscreenDepthTexture = _MTLCreateSystemDefaultDevice().makeTexture(descriptor: offscreenDepthTextureDescriptor).orFatalError("Failed to create offscreen depth texture")
-        offscreenDepthTexture.label = "Offscreen Depth Texture"
-        self.offscreenDepthTexture = offscreenDepthTexture
-
-        let upscaledDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(drawableSize.width), height: Int(drawableSize.height), mipmapped: false)
-        upscaledDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-        upscaledDescriptor.storageMode = .private
-        let upscaledTexture = _MTLCreateSystemDefaultDevice().makeTexture(descriptor: upscaledDescriptor).orFatalError("Failed to create upscaled texture")
-        upscaledTexture.label = "Upscaled Texture"
-        self.upscaledTexture = upscaledTexture
+        offscreenTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: offscreenSize.width, height: offscreenSize.height, usage: [.shaderRead, .shaderWrite, .renderTarget], label: "Offscreen Texture")
+        offscreenDepthTexture = device.makeTexture2D(pixelFormat: .depth32Float, width: offscreenSize.width, height: offscreenSize.height, usage: [.shaderRead, .shaderWrite, .renderTarget], storageMode: .private, label: "Offscreen Depth Texture")
+        upscaledTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: Int(drawableSize.width), height: Int(drawableSize.height), usage: [.shaderRead, .shaderWrite, .renderTarget], storageMode: .private, label: "Upscaled Texture")
     }
 }
 
@@ -139,9 +126,7 @@ struct FlyingTeapotsRenderPass: Element {
 
     init(projectionMatrix: float4x4, cameraMatrix: float4x4, simulation: TeapotSimulation, checkerboardColor: Color, offscreenTexture: MTLTexture, offscreenDepthTexture: MTLTexture, upscaledTexture: MTLTexture) {
         let device = _MTLCreateSystemDefaultDevice()
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 2_048, height: 2_048, mipmapped: false)
-        textureDescriptor.usage = [.shaderRead, .shaderWrite]
-        skyboxTexture = device.makeTexture(descriptor: textureDescriptor).orFatalError("Failed to create skybox texture")
+        skyboxTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: 2_048, height: 2_048, label: "Skybox Texture")
         let samplerDescriptor = MTLSamplerDescriptor(supportArgumentBuffers: true)
         skyboxSampler = device.makeSamplerState(descriptor: samplerDescriptor).orFatalError("Failed to create skybox sampler")
         self.checkerboardColor = checkerboardColor

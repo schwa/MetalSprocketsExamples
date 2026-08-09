@@ -99,17 +99,8 @@ struct GameOfLife: Element {
             return
         }
 
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .rgba8Unorm,
-            width: gridSize.width,
-            height: gridSize.height,
-            mipmapped: false
-        )
-        textureDescriptor.usage = [.shaderRead, .shaderWrite]
-        textureDescriptor.storageMode = .private
-
-        textureA = device.makeTexture(descriptor: textureDescriptor)
-        textureB = device.makeTexture(descriptor: textureDescriptor)
+        textureA = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: gridSize.width, height: gridSize.height, storageMode: .private, label: "Game of Life A")
+        textureB = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: gridSize.width, height: gridSize.height, storageMode: .private, label: "Game of Life B")
     }
 
     private func initializeGridIfNeeded() {
