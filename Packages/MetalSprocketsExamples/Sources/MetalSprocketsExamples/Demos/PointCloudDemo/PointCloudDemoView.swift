@@ -177,12 +177,14 @@ private struct PointCloudRenderPipeline: Element {
         return vertexDescriptor
     }
 
+    @MSState
+    private var vertexFunction = ShaderLibrary.examples.requiredFunction(type: VertexShader.self, named: "pointCloudVertex")
+
+    @MSState
+    private var fragmentFunction = ShaderLibrary.examples.requiredFunction(type: FragmentShader.self, named: "pointCloudFragment")
+
     var body: some Element {
         get throws {
-            let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
-            let vertexFunction: VertexShader = try shaderLibrary.pointCloudVertex
-            let fragmentFunction: FragmentShader = try shaderLibrary.pointCloudFragment
-
             try RenderPipeline(
                 vertexShader: vertexFunction,
                 fragmentShader: fragmentFunction

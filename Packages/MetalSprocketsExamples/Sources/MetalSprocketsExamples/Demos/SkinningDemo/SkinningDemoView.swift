@@ -160,6 +160,19 @@ private struct SkinningUniforms {
 // MARK: - View
 
 public struct SkinningDemoView: View {
+    // Held in state rather than looked up inside the RenderView closure, which runs every frame. See #386.
+    @State
+    private var skinningVertexShader = ShaderLibrary.examples.requiredFunction(type: VertexShader.self, named: "skinning_vertex")
+
+    @State
+    private var skinningFragmentShader = ShaderLibrary.examples.requiredFunction(type: FragmentShader.self, named: "skinning_fragment")
+
+    @State
+    private var boneVertexShader = ShaderLibrary.examples.requiredFunction(type: VertexShader.self, named: "bone_vertex")
+
+    @State
+    private var boneFragmentShader = ShaderLibrary.examples.requiredFunction(type: FragmentShader.self, named: "bone_fragment")
+
     @State
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
@@ -210,9 +223,8 @@ public struct SkinningDemoView: View {
 
                         switch rendererMode {
                         case .skinning:
-                            let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
-                            let vertexShader = try shaderLibrary.function(type: VertexShader.self, named: "skinning_vertex")
-                            let fragmentShader = try shaderLibrary.function(type: FragmentShader.self, named: "skinning_fragment")
+                            let vertexShader = skinningVertexShader
+                            let fragmentShader = skinningFragmentShader
 
                             var uniforms = SkinningUniforms(
                                 viewProjectionMatrix: viewProjectionMatrix,
@@ -298,7 +310,9 @@ public struct SkinningDemoView: View {
                         try drawBoneVisualization(
                             boneMatrices: boneMatrices,
                             modelMatrix: modelMatrix,
-                            viewProjectionMatrix: viewProjectionMatrix
+                            viewProjectionMatrix: viewProjectionMatrix,
+                            vertexShader: boneVertexShader,
+                            fragmentShader: boneFragmentShader
                         )
                     }
                 }
@@ -418,12 +432,10 @@ private func skinnedVertexDescriptor() -> MTLVertexDescriptor {
 private func drawBoneVisualization(
     boneMatrices: BoneMatricesData,
     modelMatrix: float4x4,
-    viewProjectionMatrix: float4x4
+    viewProjectionMatrix: float4x4,
+    vertexShader: VertexShader,
+    fragmentShader: FragmentShader
 ) throws -> some Element {
-    let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
-    let vertexShader = try shaderLibrary.function(type: VertexShader.self, named: "bone_vertex")
-    let fragmentShader = try shaderLibrary.function(type: FragmentShader.self, named: "bone_fragment")
-
     // Bone 0: root at (0, -1, 0), joint at (0, 0, 0) — matches box with height=2, centered on Y
     // Bone 1: joint at (0, 0, 0), tip at (0, 1, 0) transformed by bone1 matrix
     let m = modelMatrix

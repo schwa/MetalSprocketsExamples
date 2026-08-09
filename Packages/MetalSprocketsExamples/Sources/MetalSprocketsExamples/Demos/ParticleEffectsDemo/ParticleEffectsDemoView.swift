@@ -209,11 +209,11 @@ private struct ParticleUpdateCompute: Element {
         memcpy(emitterBuffer.contents(), [emitterParams], MemoryLayout<ParticleEmitterParams>.stride)
     }
 
+    @MSState
+    private var updateKernel = ShaderLibrary.examples.requiredFunction(type: ComputeKernel.self, named: "updateParticles")
+
     var body: some Element {
         get throws {
-            let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
-            let updateKernel = try library.function(type: ComputeKernel.self, named: "updateParticles")
-
             let uniforms = ParticleUniforms(
                 viewMatrix: .identity,
                 projectionMatrix: .identity,
@@ -259,13 +259,14 @@ private struct ParticleRenderPipeline: Element {
         MTLVertexDescriptor()  // Using buffer directly, no vertex descriptor needed
     }
 
+    @MSState
+    private var vertexShader = ShaderLibrary.examples.requiredFunction(type: VertexShader.self, named: "particleEffectsVertex")
+
+    @MSState
+    private var fragmentShader = ShaderLibrary.examples.requiredFunction(type: FragmentShader.self, named: "particleEffectsFragment")
+
     var body: some Element {
         get throws {
-            let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
-
-            let vertexShader = try library.function(type: VertexShader.self, named: "particleEffectsVertex")
-            let fragmentShader = try library.function(type: FragmentShader.self, named: "particleEffectsFragment")
-
             try RenderPipeline(
                 vertexShader: vertexShader,
                 fragmentShader: fragmentShader

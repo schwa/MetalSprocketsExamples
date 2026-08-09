@@ -70,9 +70,11 @@ struct StamFluid: Element {
         self.colormap = colormap
     }
 
+    @MSState
+    private var lib = ShaderLibrary.examples.namespaced("StamFluidShader")
+
     var body: some Element {
         get throws {
-            let lib = try ShaderNamespace.examples("StamFluidShader")
             let N = UInt32(gridN)
 
             let params = FluidParams(N: N, dt: 0.1, diff: diffusion, visc: viscosity)

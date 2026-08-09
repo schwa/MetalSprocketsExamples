@@ -60,6 +60,16 @@ public struct GrassDemoView: View {
         print(self.sphereMesh)
     }
 
+    // Held in state rather than looked up in renderGrass, which runs every frame. See #386.
+    @State
+    private var objectShader = ShaderLibrary.examples.requiredFunction(type: ObjectShader.self, named: "grassObjectShader")
+
+    @State
+    private var meshShader = ShaderLibrary.examples.requiredFunction(type: MeshShader.self, named: "grassMeshShader")
+
+    @State
+    private var fragmentShader = ShaderLibrary.examples.requiredFunction(type: FragmentShader.self, named: "grassFragmentShader")
+
     private func ensurePrecomputedPoints() {
         if precomputedGrassPoints.isEmpty || precomputedGrassPoints.count < maxGrassPoints {
             precomputedGrassPoints = generateUniformSpherePoints(count: maxGrassPoints, radius: 1.5)
@@ -180,12 +190,6 @@ public struct GrassDemoView: View {
         let device = _MTLCreateSystemDefaultDevice()
         let grassDataBuffer = try device.makeBuffer(view: .init(count: grassData.count), values: grassData, options: .storageModeShared)
         let uniformsBuffer = try device.makeBuffer(view: .init(count: 1), values: [uniforms], options: .storageModeShared)
-
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let library = try ShaderLibrary(bundle: shaderBundle)
-        let objectShader = try library.function(type: ObjectShader.self, named: "grassObjectShader")
-        let meshShader = try library.function(type: MeshShader.self, named: "grassMeshShader")
-        let fragmentShader = try library.function(type: FragmentShader.self, named: "grassFragmentShader")
 
         return try MeshRenderPipeline(objectShader: objectShader, meshShader: meshShader, fragmentShader: fragmentShader) {
             Draw { encoder in

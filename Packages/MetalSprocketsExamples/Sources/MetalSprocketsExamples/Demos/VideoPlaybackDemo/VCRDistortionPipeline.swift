@@ -45,15 +45,17 @@ struct VCRDistortionPipeline: Element {
         self.frameUniforms = frameUniforms
     }
 
+    @MSState
+    private var distortionKernel = ShaderLibrary.examples.namespaced("VCRDistortion")
+        .requiredFunction(named: "vcr_distortion", type: ComputeKernel.self)
+
     var body: some Element {
         get throws {
-            let shaderLibrary = try ShaderNamespace.examples("VCRDistortion")
-
             let width = outputTexture.width
             let height = outputTexture.height
             let threadsPerGrid = MTLSize(width: width, height: height, depth: 1)
 
-            try ComputePipeline(computeKernel: try shaderLibrary.vcr_distortion) {
+            try ComputePipeline(computeKernel: distortionKernel) {
                 try ComputeDispatch(threadsPerGrid: threadsPerGrid)
                     .parameter("inputTexture", texture: inputTexture)
                     .parameter("outputTexture", texture: outputTexture)

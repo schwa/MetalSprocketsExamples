@@ -3135,12 +3135,13 @@ body no longer has side effects in either demo. Closing.
 ## 386: Shader lookups happen per frame instead of being held in @MSState
 
 +++
-status: new
+status: closed
 priority: low
 kind: enhancement
 labels: effort:m
 created: 2026-08-09T17:59:31Z
-updated: 2026-08-09T17:59:38Z
+updated: 2026-08-09T19:49:52Z
+closed: 2026-08-09T19:49:52Z
 +++
 
 The MetalSprockets idiom for shader functions is to hold them in `@MSState`, the way MetalSprocketsAddOns' GraphicsContext3DRenderPipeline does:
@@ -3162,6 +3163,18 @@ Several demo elements instead resolve the library and look up functions from ins
 ShaderStore caches compiled libraries so this is a dictionary lookup rather than a recompile, which is why it is Low rather than a performance bug. It is still the wrong pattern to copy out of an examples project.
 
 Found during the #379 audit.
+
+\- `2026-08-09T19:49:52Z`: Done. 12 lookups across 8 files now resolve once instead of per frame.
+
+Held in @MSState (Element bodies): RedTriangle, VCRDistortionPipeline, StamFluid, ParticleUpdateCompute, ParticleRenderPipeline, PointCloudRenderElement.
+
+Held in SwiftUI @State (View helpers that run inside the RenderView closure, so not Elements and @MSState does not apply): GrassDemoView, SpiralParticlesDemoView, SkinningDemoView. SkinningDemoView's drawBoneVisualization is a free function, so it now takes the two bone shaders as parameters rather than looking them up itself.
+
+Added ShaderLibrary.examples as the non-throwing accessor this needs — @MSState and @State initialisers cannot throw — mirroring MetalSprocketsAddOns' ShaderLibrary.module. Lookups then go through the existing non-throwing namespaced(_:) / requiredFunction(type:named:).
+
+Correction to my own audit: ShaderGraphDemoView was listed in error. Its lookup is inside .task(id: selectedEffect), which runs once per effect change, not per frame. Left as it was.
+
+Verified by the user: Grass, Spiral Particles, Particle Effects, Point Cloud, Skinning, Stam Fluid and Video Playback all render.
 
 ---
 

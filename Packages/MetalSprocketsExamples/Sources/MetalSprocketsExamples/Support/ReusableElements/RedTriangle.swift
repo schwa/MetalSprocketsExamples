@@ -10,12 +10,16 @@ struct RedTriangle: Element {
         // This line intentionally left blank.
     }
 
+    @MSState
+    private var vertexShader = ShaderLibrary.examples.namespaced("RedTriangle")
+        .requiredFunction(named: "vertex_main", type: VertexShader.self)
+
+    @MSState
+    private var fragmentShader = ShaderLibrary.examples.namespaced("RedTriangle")
+        .requiredFunction(named: "fragment_main", type: FragmentShader.self)
+
     var body: some Element {
         get throws {
-            let library = try ShaderNamespace.examples("RedTriangle")
-            let vertexShader: VertexShader = try library.vertex_main
-            let fragmentShader: FragmentShader = try library.fragment_main
-
             try RenderPass {
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                     Draw { encoder in

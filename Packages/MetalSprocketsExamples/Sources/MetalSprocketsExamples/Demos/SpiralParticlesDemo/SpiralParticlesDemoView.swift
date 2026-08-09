@@ -149,6 +149,16 @@ public struct SpiralParticlesDemoView: View {
         .metalDepthStencilPixelFormat(.depth32Float)
     }
 
+    // Held in state rather than looked up in renderParticles, which runs every frame. See #386.
+    @State
+    private var objectShader = ShaderLibrary.examples.requiredFunction(type: ObjectShader.self, named: "spiralParticleObjectShader")
+
+    @State
+    private var meshShader = ShaderLibrary.examples.requiredFunction(type: MeshShader.self, named: "spiralParticleMeshShader")
+
+    @State
+    private var fragmentShader = ShaderLibrary.examples.requiredFunction(type: FragmentShader.self, named: "spiralParticleFragmentShader")
+
     private func renderParticles(viewProjectionMatrix: float4x4) throws -> some Element {
         // Generate particle data on CPU - positions rotate around center
         // Always allocate for max particles to avoid flickering when count changes
@@ -209,12 +219,6 @@ public struct SpiralParticlesDemoView: View {
             values: [uniforms],
             options: .storageModeShared
         )
-
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let library = try ShaderLibrary(bundle: shaderBundle)
-        let objectShader = try library.function(type: ObjectShader.self, named: "spiralParticleObjectShader")
-        let meshShader = try library.function(type: MeshShader.self, named: "spiralParticleMeshShader")
-        let fragmentShader = try library.function(type: FragmentShader.self, named: "spiralParticleFragmentShader")
 
         return try MeshRenderPipeline(
             objectShader: objectShader,
