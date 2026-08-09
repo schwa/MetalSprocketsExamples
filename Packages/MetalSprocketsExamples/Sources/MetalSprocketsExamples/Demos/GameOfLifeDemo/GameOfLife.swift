@@ -20,16 +20,15 @@ struct GameOfLife: Element {
     @MSState
     private var currentTextureIsA = true
 
+    /// Setup can run more than once (a drawable resize invalidates it), and re-seeding there would
+    /// silently restart the simulation. Seed once; ``pattern`` changes re-seed explicitly.
     @MSState
-    private var initialized = false
+    private var seeded = false
 
     let isRunning: Bool
     let pattern: InitialPattern
 
     private let gridSize = (width: 256, height: 256)
-
-    @MSState
-    private var lastPattern: InitialPattern = .clear
 
     enum InitialPattern: String, CaseIterable {
         case glider = "Glider"
@@ -49,51 +48,57 @@ struct GameOfLife: Element {
 
     var body: some Element {
         get throws {
-            // Initialize textures lazily
-            setupTexturesIfNeeded()
-
-            // Initialize grid if needed
-            if pattern != lastPattern || !initialized {
-                initializeGridIfNeeded()
-                lastPattern = pattern
-                initialized = true
-            }
-
             let shaderLibrary = try ShaderNamespace.examples("GameOfLifeShader")
 
             return try Group {
-                // Update simulation if running
-                if isRunning {
-                    try ComputePass {
-                        try ComputePipeline(computeKernel: try shaderLibrary.updateGrid) {
-                            try ComputeDispatch(threadsPerGrid: MTLSize(width: gridSize.width, height: gridSize.height, depth: 1))
-                            .parameter("currentState", texture: currentTexture)
-                            .parameter("nextState", texture: nextTexture)
+                // Textures are allocated in onSetupEnter, which runs after the first body pass, so the
+                // first frame draws nothing.
+                if let currentTexture, let nextTexture {
+                    // Update simulation if running
+                    if isRunning {
+                        try ComputePass {
+                            try ComputePipeline(computeKernel: try shaderLibrary.updateGrid) {
+                                try ComputeDispatch(threadsPerGrid: MTLSize(width: gridSize.width, height: gridSize.height, depth: 1))
+                                .parameter("currentState", texture: currentTexture)
+                                .parameter("nextState", texture: nextTexture)
+                            }
+                        }
+                        .onCommandBufferCompleted { _ in
+                            // Swap textures after compute pass completes
+                            currentTextureIsA.toggle()
                         }
                     }
-                    .onCommandBufferCompleted { _ in
-                        // Swap textures after compute pass completes
-                        currentTextureIsA.toggle()
+
+                    // Display the current state using billboard shader
+                    try RenderPass {
+                        try TextureBillboardPipeline(specifier: .texture2D(currentTexture))
                     }
                 }
-
-                // Display the current state using billboard shader
-                try RenderPass {
-                    try TextureBillboardPipeline(specifier: .texture2D(currentTexture))
+            }
+            .onSetupEnter { _ in
+                // Allocating and seeding belong in setup, not in body. See #385.
+                setupTextures()
+                guard !seeded else {
+                    return
                 }
+                seeded = true
+                initializeGrid()
+            }
+            .onChange(of: pattern) {
+                initializeGrid()
             }
         }
     }
 
-    private var currentTexture: MTLTexture {
-        currentTextureIsA ? textureA.orFatalError("Missing texture A") : textureB.orFatalError("Missing texture B")
+    private var currentTexture: MTLTexture? {
+        currentTextureIsA ? textureA : textureB
     }
 
-    private var nextTexture: MTLTexture {
-        currentTextureIsA ? textureB.orFatalError("Missing texture B") : textureA.orFatalError("Missing texture A")
+    private var nextTexture: MTLTexture? {
+        currentTextureIsA ? textureB : textureA
     }
 
-    private func setupTexturesIfNeeded() {
+    private func setupTextures() {
         guard textureA == nil || textureB == nil, let device = self.device else {
             return
         }
@@ -102,7 +107,7 @@ struct GameOfLife: Element {
         textureB = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: gridSize.width, height: gridSize.height, storageMode: .private, label: "Game of Life B")
     }
 
-    private func initializeGridIfNeeded() {
+    private func initializeGrid() {
         guard let device = self.device, let textureA = self.textureA, let textureB = self.textureB else {
             return
         }
