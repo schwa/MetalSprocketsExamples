@@ -28,6 +28,16 @@ public struct VoxelDemoView: View {
     @State
     private var voxelSize = MTLSize(width: 32, height: 32, depth: 32)
 
+    /// Slider position for ``voxelSize``, as a power-of-two exponent.
+    ///
+    /// This is stored rather than computed from `voxelSize` on purpose. A computed `Binding` has to
+    /// capture `self`, and DemoKit snapshots the `demoConfiguration` content into an `AnyView` once,
+    /// so the capture freezes: writes reach the live `@State` box but reads come back from the frozen
+    /// copy, and the slider springs back to its starting position. A projected binding writes and reads
+    /// through the same box. See #389.
+    @State
+    private var voxelSizeExponent = VoxelResolution.exponent(forDimension: 32)
+
     @State
     private var voxelScale: SIMD3<Float> = [0.125, 0.125, 0.125]
 
@@ -55,6 +65,9 @@ public struct VoxelDemoView: View {
                     colorTexture = makeRenderTexture(size: MTLSize(drawableSize))
                 }
             }
+        }
+        .onChange(of: voxelSizeExponent) { _, new in
+            applyVoxelSizeExponent(new)
         }
         .onChange(of: voxelSize, initial: true) {
             generateDefaultVoxelTexture()
@@ -85,7 +98,7 @@ public struct VoxelDemoView: View {
                 Text("Voxel Scale: \(voxelScale.x) x \(voxelScale.y) x \(voxelScale.z)")
                 LabeledContent("Resolution") {
                     Slider(
-                        value: voxelResolutionExponent,
+                        value: $voxelSizeExponent,
                         in: Double(VoxelResolution.minimumExponent)...Double(VoxelResolution.maximumExponent),
                         step: 1
                     )
@@ -99,21 +112,17 @@ public struct VoxelDemoView: View {
         }
     }
 
-    /// Drives ``voxelSize`` as a power of two, keeping the rendered model the same size on screen.
+    /// Applies a new slider position to ``voxelSize``, keeping the rendered model the same size on screen.
     ///
-    /// The old pair of "/2" and "x2" buttons scaled ``voxelScale`` inversely so the voxel grid kept
-    /// its physical extent; the slider preserves that coupling.
-    private var voxelResolutionExponent: Binding<Double> {
-        Binding {
-            VoxelResolution.exponent(forDimension: voxelSize.width)
-        } set: { newValue in
-            let dimension = VoxelResolution.dimension(forExponent: newValue)
-            guard dimension != voxelSize.width else {
-                return
-            }
-            voxelScale *= Float(voxelSize.width) / Float(dimension)
-            voxelSize = MTLSize(width: dimension, height: dimension, depth: dimension)
+    /// The old pair of "/2" and "x2" buttons scaled ``voxelScale`` inversely so the voxel grid kept its
+    /// physical extent; the slider preserves that coupling.
+    private func applyVoxelSizeExponent(_ exponent: Double) {
+        let dimension = VoxelResolution.dimension(forExponent: exponent)
+        guard dimension != voxelSize.width else {
+            return
         }
+        voxelScale *= Float(voxelSize.width) / Float(dimension)
+        voxelSize = MTLSize(width: dimension, height: dimension, depth: dimension)
     }
 
     func generateDefaultVoxelTexture() {

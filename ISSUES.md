@@ -3190,7 +3190,7 @@ priority: medium
 kind: bug
 labels: effort:s, regression
 created: 2026-08-09T18:01:49Z
-updated: 2026-08-09T18:01:53Z
+updated: 2026-08-09T18:13:07Z
 +++
 
 Regression from #366 (commit 'Replace voxel /2 and x2 buttons with a resolution slider').
@@ -3206,5 +3206,15 @@ Unverified suspicions, in order:
 Worth checking first: does the voxel grid itself actually change resolution while dragging (watch the 'Voxel Size: N x N x N' label)? If the label updates but the thumb does not, suspicion 2 is wrong and it is a redraw problem; if neither updates, the write is not landing at all.
 
 If it turns out to be (1), other demos' configuration sliders are affected too and this should be retitled.
+
+- `2026-08-09T18:13:07Z`: Diagnosed with steveo against a running build.
+
+Two separate defects, stacked:
+
+1. Mine (fixed here). voxelResolutionExponent was a computed Binding, so its get/set closures captured self. DemoKit snapshots the demoConfiguration content into an AnyView once, so that capture escapes and freezes. Instrumented build showed it exactly: 'set newValue=9.0 dimension=512 current=256' — the write lands and the read-back inside the setter sees it — while 620 consecutive 'get -> 5.0 (dimension 32)' calls read a by-value copy of @State frozen at the snapshot. Writes went through the box, reads came from the frozen copy. Replaced with a plain @State exponent plus a projected binding and an onChange, which is what every other demo does.
+
+2. DemoKit (not fixed here, filed separately). The whole configuration panel is a frozen snapshot: DemoConfigurationModifier does 'store?.content = AnyView(configuration())' inside .onAppear and never refreshes it. Verified by screenshot diff — after dragging, the 3D viewport changes but the panel is pixel-identical, and 'Voxel Size: 32 x 32 x 32' stays stale while the real state is 512. Particle Effects behaves identically once you aim the drag correctly, so this affects every demo, not just this one.
+
+So the reported symptom — thumb springs back to centre — will persist until the DemoKit side is fixed. Leaving this open until then.
 
 ---
