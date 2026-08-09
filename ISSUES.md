@@ -2474,15 +2474,19 @@ Deliberately left alone:
 ## 356: Extract shader library convenience to eliminate 16x boilerplate
 
 +++
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:m
 created: 2026-04-03T03:15:29Z
-updated: 2026-04-03T17:31:02Z
+updated: 2026-08-09T17:50:10Z
+closed: 2026-08-09T17:50:10Z
 +++
 
 - `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-08-09T17:50:10Z`: Added ShaderNamespace.examples(_:) and adopted it at 22 sites across 19 files. Each was 'try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("Foo")', often preceded by a throwaway 'let shaderBundle = Bundle.metalSprocketsExampleShaders()' line; ten of those locals are now gone too.
+
+Left as-is: the handful of sites that use the library without a namespace (ParticleEffects, PointCloud, SpiralParticles, Grass, RayTracing, MixedDemo, LUT, CircleGrid), and PhosphorUI/CLI which are separate targets with their own shader bundles.
 
 ---
 

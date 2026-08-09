@@ -35,7 +35,7 @@ struct DepthTextureView: View {
         }
         .task {
             do {
-                let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("DepthTextureView")
+                let shaderLibrary = try ShaderNamespace.examples("DepthTextureView")
                 vertexShader = try shaderLibrary.vertex_main
                 fragmentShader = try shaderLibrary.fragment_main
 

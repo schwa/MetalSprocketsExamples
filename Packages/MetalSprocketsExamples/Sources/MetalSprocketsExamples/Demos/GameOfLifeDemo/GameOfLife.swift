@@ -59,8 +59,7 @@ struct GameOfLife: Element {
                 initialized = true
             }
 
-            let shaderBundle = Bundle.metalSprocketsExampleShaders()
-            let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("GameOfLifeShader")
+            let shaderLibrary = try ShaderNamespace.examples("GameOfLifeShader")
 
             return try Group {
                 // Update simulation if running
@@ -108,8 +107,7 @@ struct GameOfLife: Element {
             return
         }
 
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        guard let shaderLibrary = try? ShaderLibrary(bundle: shaderBundle).namespaced("GameOfLifeShader") else {
+        guard let shaderLibrary = try? ShaderNamespace.examples("GameOfLifeShader") else {
             return
         }
 

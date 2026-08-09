@@ -179,8 +179,7 @@ private struct PointCloudRenderPipeline: Element {
 
     var body: some Element {
         get throws {
-            let bundle = Bundle.metalSprocketsExampleShaders()
-            let shaderLibrary = try ShaderLibrary(bundle: bundle)
+            let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
             let vertexFunction: VertexShader = try shaderLibrary.pointCloudVertex
             let fragmentFunction: FragmentShader = try shaderLibrary.pointCloudFragment
 

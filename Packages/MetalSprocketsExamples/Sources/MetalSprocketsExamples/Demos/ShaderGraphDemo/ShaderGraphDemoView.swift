@@ -57,7 +57,7 @@ public struct ShaderGraphDemoView: DemoView {
         .task(id: selectedEffect) {
             do {
                 let device = _MTLCreateSystemDefaultDevice()
-                let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("ShaderGraphDemo")
+                let library = try ShaderNamespace.examples("ShaderGraphDemo")
                 vertexShader = try library.vertex_main
                 fragmentShader = try library.fragment_main
                 stitchedFunction = try selectedEffect.makeVisibleFunction(device: device)

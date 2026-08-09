@@ -47,8 +47,7 @@ struct VCRDistortionPipeline: Element {
 
     var body: some Element {
         get throws {
-            let shaderBundle = Bundle.metalSprocketsExampleShaders()
-            let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("VCRDistortion")
+            let shaderLibrary = try ShaderNamespace.examples("VCRDistortion")
 
             let width = outputTexture.width
             let height = outputTexture.height

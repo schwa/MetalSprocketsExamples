@@ -152,8 +152,7 @@ public struct VoxelDemoView: View {
         }
         texture.label = "Voxel Texture"
 
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("VoxelShaders")
+        let shaderLibrary = try ShaderNamespace.examples("VoxelShaders")
         let kernel: ComputeKernel = try shaderLibrary.voxel_generateSphere
 
         let computePass = try ComputePass(label: "GenerateVoxelSphere") {

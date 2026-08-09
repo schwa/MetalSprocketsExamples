@@ -175,8 +175,7 @@ struct TiledSDFPipeline: Element {
         self.tileSize = tileSize
         self.visualMode = visualMode
 
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let library = try ShaderLibrary(bundle: shaderBundle).namespaced("TiledSDFShader")
+        let library = try ShaderNamespace.examples("TiledSDFShader")
         cullKernel = try library.cullPrimitivesToTiles
         vertexShader = try library.function(named: "sdfVertex", type: VertexShader.self)
         fragmentShader = try library.function(named: "sdfFragment", type: FragmentShader.self)

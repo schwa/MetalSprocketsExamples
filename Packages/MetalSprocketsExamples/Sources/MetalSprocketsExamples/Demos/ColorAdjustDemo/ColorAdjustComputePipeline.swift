@@ -25,7 +25,7 @@ struct ColorAdjustComputePipeline<T>: Element {
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
         self.outputTexture = outputTexture
-        let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("ColorAdjust")
+        let shaderLibrary = try ShaderNamespace.examples("ColorAdjust")
         self.kernel = try shaderLibrary.colorAdjust
 
         let mapTextureCoordinateFunction = try mapTextureCoordinateFunction ?? shaderLibrary.function(named: "mapTextureCoordinateIdentity", type: VisibleFunction.self)
@@ -52,7 +52,7 @@ struct ColorAdjustComputePipeline<T>: Element {
 
 extension ColorAdjustComputePipeline where T == Float {
     static func gammaAdjustPipeline(inputSpecifier: ColorSource, inputParameters: Float, outputTexture: MTLTexture) throws -> Self {
-        let shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("ColorAdjust")
+        let shaderLibrary = try ShaderNamespace.examples("ColorAdjust")
         let colorAdjustFunction = try shaderLibrary.function(named: "gamma", type: VisibleFunction.self)
         return try ColorAdjustComputePipeline(inputSpecifier: inputSpecifier, inputParameters: inputParameters, outputTexture: outputTexture, colorAdjustFunction: colorAdjustFunction)
     }

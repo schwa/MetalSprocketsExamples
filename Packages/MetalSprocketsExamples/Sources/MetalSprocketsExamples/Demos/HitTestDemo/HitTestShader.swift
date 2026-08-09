@@ -12,8 +12,7 @@ struct HitTestShader<Content>: Element where Content: Element {
     init(@ElementBuilder content: () throws -> Content) throws {
         let device = _MTLCreateSystemDefaultDevice()
         assert(device.argumentBuffersSupport == .tier2)
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("HitTest")
+        let shaderLibrary = try ShaderNamespace.examples("HitTest")
         vertexShader = try shaderLibrary.vertex_main
         fragmentShader = try shaderLibrary.fragment_main
         self.content = try content()

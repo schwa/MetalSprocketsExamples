@@ -105,8 +105,7 @@ struct TileAveragePipeline: Element {
         self.tileSize = tileSize
         self.time = time
 
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let library = try ShaderLibrary(bundle: shaderBundle).namespaced("TileAverageShader")
+        let library = try ShaderNamespace.examples("TileAverageShader")
         vertexShader = try library.function(named: "tileAverageVertex", type: VertexShader.self)
         fragmentShader = try library.function(named: "tileAverageFragment", type: FragmentShader.self)
         blitFragmentShader = try library.function(named: "tileAverageBlitFragment", type: FragmentShader.self)

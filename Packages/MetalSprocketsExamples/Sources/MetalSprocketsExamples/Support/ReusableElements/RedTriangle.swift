@@ -12,7 +12,7 @@ struct RedTriangle: Element {
 
     var body: some Element {
         get throws {
-            let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("RedTriangle")
+            let library = try ShaderNamespace.examples("RedTriangle")
             let vertexShader: VertexShader = try library.vertex_main
             let fragmentShader: FragmentShader = try library.fragment_main
 

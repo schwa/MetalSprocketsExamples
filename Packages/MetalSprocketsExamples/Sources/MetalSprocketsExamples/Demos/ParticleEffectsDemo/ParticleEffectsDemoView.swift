@@ -211,8 +211,7 @@ private struct ParticleUpdateCompute: Element {
 
     var body: some Element {
         get throws {
-            let bundle = Bundle.metalSprocketsExampleShaders()
-            let library = try ShaderLibrary(bundle: bundle)
+            let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
             let updateKernel = try library.function(type: ComputeKernel.self, named: "updateParticles")
 
             let uniforms = ParticleUniforms(
@@ -262,8 +261,7 @@ private struct ParticleRenderPipeline: Element {
 
     var body: some Element {
         get throws {
-            let bundle = Bundle.metalSprocketsExampleShaders()
-            let library = try ShaderLibrary(bundle: bundle)
+            let library = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
 
             let vertexShader = try library.function(type: VertexShader.self, named: "particleEffectsVertex")
             let fragmentShader = try library.function(type: FragmentShader.self, named: "particleEffectsFragment")

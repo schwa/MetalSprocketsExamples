@@ -14,8 +14,7 @@ struct PBRShader<Content>: Element where Content: Element {
     var content: Content
 
     init(@ElementBuilder content: () throws -> Content) throws {
-        let shaderBundle = Bundle.metalSprocketsExampleShaders()
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("PBR")
+        let shaderLibrary = try ShaderNamespace.examples("PBR")
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main
         self.content = try content()

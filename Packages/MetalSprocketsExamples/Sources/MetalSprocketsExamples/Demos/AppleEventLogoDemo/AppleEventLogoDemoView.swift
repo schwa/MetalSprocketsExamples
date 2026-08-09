@@ -53,7 +53,7 @@ public struct AppleEventLogoDemoView: View {
     private var size: CGSize = .zero
 
     @State
-    private var shaderLibrary = (try? ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("AppleEventLogoShaders"))
+    private var shaderLibrary = (try? ShaderNamespace.examples("AppleEventLogoShaders"))
         .orFatalError("Failed to load Apple event shader library")
 
     public init() {

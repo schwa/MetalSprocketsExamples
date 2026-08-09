@@ -82,7 +82,7 @@ struct StamFluid: Element {
                 }
             }
 
-            let lib = try ShaderLibrary(bundle: Bundle.metalSprocketsExampleShaders()).namespaced("StamFluidShader")
+            let lib = try ShaderNamespace.examples("StamFluidShader")
             let N = UInt32(gridN)
 
             if colormapTexture == nil || activeColormap != colormap {
