@@ -72,14 +72,6 @@ struct StamFluid: Element {
 
     var body: some Element {
         get throws {
-            if isRunning {
-                srcIndex = 1 - srcIndex
-                clearSourceTexture()
-                if interactionActive, let point = interactionPoint, let vel = interactionVelocity {
-                    writeInteraction(point: point, velocity: vel, N: gridN)
-                }
-            }
-
             let lib = try ShaderNamespace.examples("StamFluidShader")
             let N = UInt32(gridN)
 
@@ -138,6 +130,25 @@ struct StamFluid: Element {
             .onSetupEnter { _ in
                 setupTexturesIfNeeded()
                 rebuildColormapTextureIfNeeded()
+            }
+            // The CPU-side source writes run after body has bound srcU/srcV/srcDens at the current
+            // srcIndex but before anything is encoded, so they land in the buffer this frame reads.
+            // srcIndex only advances once the GPU is finished with that buffer — see the completion
+            // handler below — which is what keeps the CPU off a texture that is still in flight.
+            .onWorkloadEnter { _ in
+                guard isRunning else {
+                    return
+                }
+                clearSourceTexture()
+                if interactionActive, let point = interactionPoint, let vel = interactionVelocity {
+                    writeInteraction(point: point, velocity: vel, N: gridN)
+                }
+            }
+            .onCommandBufferCompleted { _ in
+                guard isRunning else {
+                    return
+                }
+                srcIndex = 1 - srcIndex
             }
             .onChange(of: gridN) {
                 setupTexturesIfNeeded()
