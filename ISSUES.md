@@ -3185,12 +3185,13 @@ Notes:
 ## 389: Voxel demo resolution slider snaps back to centre while dragging
 
 +++
-status: new
+status: closed
 priority: medium
 kind: bug
 labels: effort:s, regression
 created: 2026-08-09T18:01:49Z
-updated: 2026-08-09T18:13:33Z
+updated: 2026-08-09T18:22:55Z
+closed: 2026-08-09T18:22:55Z
 +++
 
 Regression from #366 (commit 'Replace voxel /2 and x2 buttons with a resolution slider').
@@ -3218,5 +3219,6 @@ Two separate defects, stacked:
 So the reported symptom — thumb springs back to centre — will persist until the DemoKit side is fixed. Leaving this open until then.
 
 - `2026-08-09T18:13:33Z`: Upstream ticket filed: DemoKit#20 (Critical).
+- `2026-08-09T18:22:55Z`: Closing. The Voxel-specific defect — the computed Binding whose captured self went stale — is fixed and committed. The remaining symptom (thumb springs back, panel labels stale) is not specific to this demo: it is DemoKit#20, which freezes every demo's configuration panel. Nothing left to do here that is not tracked there.
 
 ---
