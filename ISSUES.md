@@ -2230,10 +2230,18 @@ priority: medium
 kind: task
 labels: effort:m
 created: 2026-04-03T00:57:08Z
-updated: 2026-04-03T17:30:51Z
+updated: 2026-08-09T17:51:18Z
 +++
 
 Many demos had their UI controls moved to demoConfiguration and camera angles changed. The per-demo documentation and screenshots need updating to reflect the new layouts.
+
+\- `2026-08-09T17:51:18Z`: Punting: half of this needs the app on screen.
+
+Documentation/DEMOS.md is generated from Documentation/demos.yaml by generate-docs.py, and embeds 47 screenshots from Documentation/screenshots/. Regenerating those screenshots means running each demo and capturing it — I cannot do that from here, and stale screenshots are the bigger half of what this issue is about.
+
+The text half is doable but needs a reference: to know which of the 50 descriptions went stale in the demoConfiguration migration I would have to diff each description against the demo's current controls, and several descriptions describe controls generically enough that I would be guessing.
+
+Unblocker: either regenerate the screenshots yourself and I will do the demos.yaml text pass alongside, or tell me which demos changed layout and I will rewrite just those entries.
 
 ---
 
@@ -2294,7 +2302,7 @@ updated: 2026-08-09T16:42:01Z
 closed: 2026-08-09T16:42:01Z
 +++
 
-- `2026-08-09T16:42:01Z`: Investigated: the (x,y,z,w) handling was already correct where it ran — bitangent = cross(normal, tangent.xyz) * tangent.w matches the glTF spec. The real defect was ordering: bitangents were only derived inside 'if let perVertexNormals', so a primitive supplying TANGENT but no NORMAL got tangents, then had smooth normals generated, and ended up with no bitangents at all (withTangents() is skipped because tangents are already set).
+\- `2026-08-09T16:42:01Z`: Investigated: the (x,y,z,w) handling was already correct where it ran — bitangent = cross(normal, tangent.xyz) * tangent.w matches the glTF spec. The real defect was ordering: bitangents were only derived inside 'if let perVertexNormals', so a primitive supplying TANGENT but no NORMAL got tangents, then had smooth normals generated, and ended up with no bitangents at all (withTangents() is skipped because tangents are already set).
 
 Fixed by extracting GLTFMeshAttributes and deriving bitangents after normal generation.
 
@@ -2312,7 +2320,7 @@ updated: 2026-08-09T17:29:50Z
 closed: 2026-08-09T17:29:50Z
 +++
 
-- `2026-08-09T17:29:50Z`: Interpreted as: every attribute and index load re-derived accessor.min/max into locals and threw them away, with the same 10-line validation block copy-pasted four times (three attribute overloads plus three index cases). Collapsed into Accessor.assertConsistent(with:) — one vector overload, one integer overload — so the bounds are fetched in exactly one place and the whole check compiles out of release builds.
+\- `2026-08-09T17:29:50Z`: Interpreted as: every attribute and index load re-derived accessor.min/max into locals and threw them away, with the same 10-line validation block copy-pasted four times (three attribute overloads plus three index cases). Collapsed into Accessor.assertConsistent(with:) — one vector overload, one integer overload — so the bounds are fetched in exactly one place and the whole check compiles out of release builds.
 
 If what you actually meant was that the min/max should be *kept* (e.g. to build mesh bounds without scanning positions), say so and I will file that separately — this change deliberately preserves existing behaviour.
 
@@ -2343,7 +2351,7 @@ created: 2026-04-03T03:11:53Z
 updated: 2026-08-09T17:30:38Z
 +++
 
-- `2026-08-09T17:30:38Z`: Scoped it out; punting because it needs a design decision from you.
+\- `2026-08-09T17:30:38Z`: Scoped it out; punting because it needs a design decision from you.
 
 metallic/roughness/ambientOcclusion are ColorSource (float3 + texture2D + textureCube + depth2D + sampler in the argument buffer) and the shader immediately throws away two thirds of it: 'material.metallic.resolve(uv).r'. Doing this properly means a ScalarSource / ScalarSourceArgumentBuffer — scalar value, or texture plus a channel selector.
 
@@ -2459,8 +2467,8 @@ updated: 2026-08-09T17:35:16Z
 closed: 2026-08-09T17:35:16Z
 +++
 
-- `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
-- `2026-08-09T17:35:16Z`: MetalSprockets already supports this: ComputeDispatch takes 'threadsPerThreadgroup: MTLSize? = nil', and nil derives the size from the pipeline state at dispatch time using threadExecutionWidth x (maxTotalThreadsPerThreadgroup / threadExecutionWidth). Nothing new needed here — the demos just weren't using it.
+\- `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+\- `2026-08-09T17:35:16Z`: MetalSprockets already supports this: ComputeDispatch takes 'threadsPerThreadgroup: MTLSize? = nil', and nil derives the size from the pipeline state at dispatch time using threadExecutionWidth x (maxTotalThreadsPerThreadgroup / threadExecutionWidth). Nothing new needed here — the demos just weren't using it.
 
 Dropped the hardcoded size from 17 ComputeDispatch sites across 13 files (ColorAdjust, AppleEventLogo x3, Compute, GameOfLife, LUT x2, MixedDemo, ParticleEffects, Phosphor, TiledSDF, VCR, Voxel x2, Checkerboard x2, CircleGrid, ANSIRenderer), including the four TODO: #355 markers. Several were 32x32 = 1024 threads, which is above maxTotalThreadsPerThreadgroup for some pipelines — those were latent dispatch failures.
 
@@ -2483,8 +2491,8 @@ updated: 2026-08-09T17:50:10Z
 closed: 2026-08-09T17:50:10Z
 +++
 
-- `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
-- `2026-08-09T17:50:10Z`: Added ShaderNamespace.examples(_:) and adopted it at 22 sites across 19 files. Each was 'try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("Foo")', often preceded by a throwaway 'let shaderBundle = Bundle.metalSprocketsExampleShaders()' line; ten of those locals are now gone too.
+\- `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+\- `2026-08-09T17:50:10Z`: Added ShaderNamespace.examples(_:) and adopted it at 22 sites across 19 files. Each was 'try ShaderLibrary(bundle: .metalSprocketsExampleShaders()).namespaced("Foo")', often preceded by a throwaway 'let shaderBundle = Bundle.metalSprocketsExampleShaders()' line; ten of those locals are now gone too.
 
 Left as-is: the handful of sites that use the library without a namespace (ParticleEffects, PointCloud, SpiralParticles, Grass, RayTracing, MixedDemo, LUT, CircleGrid), and PhosphorUI/CLI which are separate targets with their own shader bundles.
 
@@ -2501,8 +2509,8 @@ created: 2026-04-03T03:15:29Z
 updated: 2026-08-09T17:36:17Z
 +++
 
-- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
-- `2026-08-09T17:36:17Z`: Punting here: the 45 (now 57) call sites already go through one wrapper, _MTLCreateSystemDefaultDevice() from MetalSupport. It is centralized — it just isn't cached, so every call hits MTLCreateSystemDefaultDevice() again.
+\- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+\- `2026-08-09T17:36:17Z`: Punting here: the 45 (now 57) call sites already go through one wrapper, _MTLCreateSystemDefaultDevice() from MetalSupport. It is centralized — it just isn't cached, so every call hits MTLCreateSystemDefaultDevice() again.
 
 Fixing that in MetalSupport is one static let and benefits every consumer, including MetalSupport's own ad-hoc calls in MTKMesh+Extensions and MTLCommandBufferDescriptor+Extensions. Rewriting 57 sites here to a local ExampleDevice.shared would duplicate the wrapper and diverge from upstream.
 
@@ -2522,8 +2530,8 @@ updated: 2026-08-09T17:43:03Z
 closed: 2026-08-09T17:43:03Z
 +++
 
-- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
-- `2026-08-09T17:43:03Z`: Added MTLDevice.makeTexture2D(pixelFormat:width:height:usage:storageMode:mipmapped:label:) in Support/ and adopted it at all 27 texture2DDescriptor sites in the MetalSprocketsExamples target (ColorAdjust, AppleEventLogo x5, BouncingTeapots x4, DepthDemo x3, GameOfLife x2, GLTF x2, LUT, MetalFX, Panorama x2, RayTracing x2, StamFluid x2, Stencil, VideoPlayback, VCR, Voxel). Each was the same four lines: descriptor, usage, makeTexture, label.
+\- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+\- `2026-08-09T17:43:03Z`: Added MTLDevice.makeTexture2D(pixelFormat:width:height:usage:storageMode:mipmapped:label:) in Support/ and adopted it at all 27 texture2DDescriptor sites in the MetalSprocketsExamples target (ColorAdjust, AppleEventLogo x5, BouncingTeapots x4, DepthDemo x3, GameOfLife x2, GLTF x2, LUT, MetalFX, Panorama x2, RayTracing x2, StamFluid x2, Stencil, VideoPlayback, VCR, Voxel). Each was the same four lines: descriptor, usage, makeTexture, label.
 
 It fatalErrors on allocation failure rather than throwing, matching the orFatalError idiom the call sites already used — a demo that cannot allocate its render targets has nothing to fall back to. Two sites (DepthDemo, Panorama) previously swallowed a nil texture silently; they now fail loudly.
 
@@ -2539,10 +2547,15 @@ priority: medium
 kind: enhancement
 labels: effort:m
 created: 2026-04-03T03:15:29Z
-updated: 2026-04-03T17:31:03Z
+updated: 2026-08-09T17:50:43Z
 +++
 
-- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+\- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+\- `2026-08-09T17:50:43Z`: Looked at every lighting setup: BlinnPhong (two point lights, warm/cool), ShadowMap (two point lights driven by ambientLight/lightIntensity state), TrivialMesh (one spot), RayTracedShadow (light data built at runtime), SceneGraph (derived from the scene graph), plus the existing Lighting.demo() preset used by the rest.
+
+There is less duplication here than the issue implies. What actually repeats is the shape — 'try Lighting(ambientLightColor:lights:)' inside a do/catch that fatalErrors — and the grey-ambient spelling '[x, x, x]'. The light rigs themselves are all different, and in an examples project seeing the rig inline is arguably the point.
+
+Punting on a decision rather than guessing: do you want (a) just a small 'Lighting(ambientGray:lights:)' convenience plus a shared throwing-init helper, leaving each demo's rig inline, or (b) the rigs hoisted into named presets next to Lighting.demo() so the demo bodies read 'lighting = .studio'? (b) removes more code but hides the thing several of these demos exist to show.
 
 ---
 
@@ -2558,8 +2571,8 @@ updated: 2026-08-09T17:45:06Z
 closed: 2026-08-09T17:45:06Z
 +++
 
-- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
-- `2026-08-09T17:45:06Z`: Added .onUsableDrawableSizeChange(perform:) plus an isUsableDrawableSize(_:) predicate in Support/, and adopted it in the five demos that allocate from the drawable size (HitTest, Depth, Stencil, Panorama, BouncingTeapots).
+\- `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+\- `2026-08-09T17:45:06Z`: Added .onUsableDrawableSizeChange(perform:) plus an isUsableDrawableSize(_:) predicate in Support/, and adopted it in the five demos that allocate from the drawable size (HitTest, Depth, Stencil, Panorama, BouncingTeapots).
 
 Each had its own guard, and they disagreed: HitTest returned early, Depth guarded after assigning drawableSize, Stencil niled its buffer first, Panorama had no guard at all and would allocate a zero-sized texture during layout. The predicate also rejects sub-pixel sizes (>= 1 rather than > 0), which the hand-written 'width > 0' guards let through.
 
@@ -2642,7 +2655,7 @@ created: 2026-04-03T05:27:48Z
 updated: 2026-08-09T16:43:28Z
 +++
 
-- `2026-08-09T16:43:28Z`: Partial fix committed, leaving open for visual confirmation.
+\- `2026-08-09T16:43:28Z`: Partial fix committed, leaving open for visual confirmation.
 
 Found a definite bug: grassMeshShader emitted the object-space normal straight into VertexOut, and grassFragmentShader lights it against a fixed world-space lightDir. GrassUniforms already carried modelMatrix but nothing used it — dead field. So as the sphere rotated, the lit side rotated with the model instead of staying put, which reads as inverted/backwards shading. Now the normal is transformed by modelMatrix before shading.
 
@@ -2667,17 +2680,27 @@ closed: 2026-08-09T17:28:13Z
 ## 367: Accessibility pass: add labels to all interactive controls
 
 +++
-status: open
+status: closed
 priority: medium
 kind: task
 labels: accessibility, effort:l
 created: 2026-04-03T06:27:01Z
-updated: 2026-04-03T17:31:02Z
+updated: 2026-08-09T17:57:28Z
+closed: 2026-08-09T17:57:28Z
 +++
 
 Sliders, pickers, and popups across demos are missing accessibility labels. SwiftUI doesn't automatically associate adjacent StaticText with controls. Need to add `.accessibilityLabel()` to all interactive controls (sliders, toggles, pickers, buttons) across all demos. This also blocks automated UI testing with steveo since controls can't be found by name.
 
-- `2026-04-03T17:31:02Z`: Related: #368 (Interaction3D accessibility is a subset of this)
+\- `2026-04-03T17:31:02Z`: Related: #368 (Interaction3D accessibility is a subset of this)
+\- `2026-08-09T17:57:28Z`: Done, though the scope turned out to be much smaller than the issue implies: most demos had already been labelled. Audited every interactive control across the demos:
+
+- Sliders: 80 total, 17 were unlabelled (Grid x6, ShadowMap x4, RayTracedShadow x3, StamFluid x2, GraphicsContext3D, Skinning). All now labelled. Where two sections reused the same LabeledContent title ('Line Width', 'Brightness', 'Intensity'), the accessibility label is disambiguated — 'Minor Grid Line Width' vs 'Major Grid Line Width', 'Light Intensity' vs 'Shadow Intensity' — so steveo can address them uniquely.
+- TextFields: ColorAdjust's 4x4 colour matrix was 16 unlabelled fields; they now read 'Color matrix row N column M'.
+- Pickers with empty titles (TileAverage, TiledSDF x2): already carried accessibilityLabel.
+- Toggles, ColorPickers, Steppers: all constructed with visible titles, which SwiftUI already exposes.
+- Images: the three systemName images are decorative and already accessibilityHidden(true) next to real text.
+
+Interaction3D's Turntable/WorldView controls remain unlabelled — that is #368, filed upstream as Interaction3D#15.
 
 ---
 
@@ -2877,8 +2900,8 @@ RenderView-based demos (Spinning Cube, GraphicsContext3D) render with incorrect 
 
 Duplicated from MetalSprocketsAddOns#3.
 
-- `2026-04-14T16:12:57Z`: Related to #376 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
-- `2026-08-09T16:43:45Z`: Punting: same blocker as #376, plus the repro list is stale. One of the two named demos ('Spinning Cube') no longer exists — there is no cube/spinning demo directory under Demos/ anymore. That leaves GraphicsContext3D, which is exactly #376's case, so this issue currently has no distinct reproduction of its own.
+\- `2026-04-14T16:12:57Z`: Related to #376 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
+\- `2026-08-09T16:43:45Z`: Punting: same blocker as #376, plus the repro list is stale. One of the two named demos ('Spinning Cube') no longer exists — there is no cube/spinning demo directory under Demos/ anymore. That leaves GraphicsContext3D, which is exactly #376's case, so this issue currently has no distinct reproduction of its own.
 
 Unblocker: name a demo that still shows the wrong-aspect-on-first-load symptom (as opposed to #376's renders-nothing symptom), or confirm this can be folded into #376.
 
@@ -2899,8 +2922,8 @@ GraphicsContext3D content is completely invisible on initial load. Requires a wi
 
 Duplicated from MetalSprocketsAddOns#7.
 
-- `2026-04-14T16:12:57Z`: Related to #375 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
-- `2026-08-09T16:28:04Z`: Investigated: GraphicsContext3DDemoView itself looks correct — it derives aspect/viewport from the closure's drawableSize, and MetalSprockets' RenderViewViewModel.draw() already re-syncs currentDrawableSize defensively before invoking content. The suspect is GraphicsContext3DRenderPipeline (MetalSprocketsAddOns): geometry is only regenerated when 'hasValidViewport && (previousContext != context || previousViewProjection != viewProjection || previousViewport != viewport)'. If the pipeline's @MSState survives across the zero-size frames while previousContext/ViewProjection/Viewport get populated at a degenerate viewport, joinCount/fillVertexCount stay 0 and nothing draws until a resize dirties the comparison.
+\- `2026-04-14T16:12:57Z`: Related to #375 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
+\- `2026-08-09T16:28:04Z`: Investigated: GraphicsContext3DDemoView itself looks correct — it derives aspect/viewport from the closure's drawableSize, and MetalSprockets' RenderViewViewModel.draw() already re-syncs currentDrawableSize defensively before invoking content. The suspect is GraphicsContext3DRenderPipeline (MetalSprocketsAddOns): geometry is only regenerated when 'hasValidViewport && (previousContext != context || previousViewProjection != viewProjection || previousViewport != viewport)'. If the pipeline's @MSState survives across the zero-size frames while previousContext/ViewProjection/Viewport get populated at a degenerate viewport, joinCount/fillVertexCount stay 0 and nothing draws until a resize dirties the comparison.
 
 Punting: can't confirm without running the app and watching the first frames, and the fix would land in MetalSprocketsAddOns, not here. Unblocker: run the demo with MS_RENDERVIEW_LOG_FRAME=1 and report the first few drawableSize values, or confirm you want me to launch the app and inspect it.
 

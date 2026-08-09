@@ -65,9 +65,11 @@ public struct StamFluidDemoView: View {
                 Section("Parameters") {
                     LabeledContent("Diffusion \(diffusion, specifier: "%.2e")") {
                         Slider(value: $diffusion, in: 0...0.01)
+                            .accessibilityLabel("Diffusion")
                     }
                     LabeledContent("Viscosity \(viscosity, specifier: "%.2e")") {
                         Slider(value: $viscosity, in: 0...0.01)
+                            .accessibilityLabel("Viscosity")
                     }
                 }
 

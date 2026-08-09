@@ -70,12 +70,15 @@ public struct GridDemoView: View {
                 Section("Minor Grid") {
                     LabeledContent("Line Width") {
                         Slider(value: $minorLineWidth, in: 0.001...0.1)
+                            .accessibilityLabel("Minor Grid Line Width")
                     }
                     LabeledContent("Scale") {
                         Slider(value: $gridScale, in: 0.1...10)
+                            .accessibilityLabel("Minor Grid Scale")
                     }
                     LabeledContent("Brightness") {
                         Slider(value: $gridBrightness, in: 0...1)
+                            .accessibilityLabel("Minor Grid Brightness")
                     }
                 }
 
@@ -89,9 +92,11 @@ public struct GridDemoView: View {
                         }
                         LabeledContent("Line Width") {
                             Slider(value: $majorLineWidth, in: 0.005...0.2)
+                                .accessibilityLabel("Major Grid Line Width")
                         }
                         LabeledContent("Brightness") {
                             Slider(value: $majorBrightness, in: 0...1)
+                                .accessibilityLabel("Major Grid Brightness")
                         }
                     }
                 }
@@ -101,6 +106,7 @@ public struct GridDemoView: View {
                     if axisLinesEnabled {
                         LabeledContent("Width") {
                             Slider(value: $axisLineWidth, in: 0.005...0.1)
+                                .accessibilityLabel("Axis Line Width")
                         }
                     }
                 }

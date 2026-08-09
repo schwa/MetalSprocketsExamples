@@ -339,6 +339,7 @@ public struct ColorAdjustDemoView: View {
                                     TextField("", value: binding, format: .number.precision(.fractionLength(2)))
                                         .frame(width: 60)
                                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .accessibilityLabel("Color matrix row \(row + 1) column \(col + 1)")
                                 }
                             }
                         }

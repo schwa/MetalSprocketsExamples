@@ -208,6 +208,7 @@ public struct GraphicsContext3DDemoView: View {
                 Section("Stroke") {
                     LabeledContent("Line Width") {
                         Slider(value: $lineWidth, in: 0.5...20)
+                            .accessibilityLabel("Line Width")
                     }
                     Picker("Cap", selection: $capStyleIndex) {
                         Text("Butt").tag(0)

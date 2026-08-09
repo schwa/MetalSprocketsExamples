@@ -205,17 +205,21 @@ public struct ShadowMapDemoView: View {
                 Section("Lighting") {
                     LabeledContent("Ambient") {
                         Slider(value: $ambientLight, in: 0...1)
+                            .accessibilityLabel("Ambient Light")
                     }
                     LabeledContent("Intensity") {
                         Slider(value: $lightIntensity, in: 1...1_000)
+                            .accessibilityLabel("Light Intensity")
                     }
                 }
                 Section("Shadow Map") {
                     LabeledContent("Depth Bias") {
                         Slider(value: $depthBias, in: 0...10)
+                            .accessibilityLabel("Shadow Map Depth Bias")
                     }
                     LabeledContent("Slope Scale") {
                         Slider(value: $slopeScale, in: 0...10)
+                            .accessibilityLabel("Shadow Map Slope Scale")
                     }
                     Picker("Resolution", selection: $shadowMapResolution) {
                         Text("128").tag(128)

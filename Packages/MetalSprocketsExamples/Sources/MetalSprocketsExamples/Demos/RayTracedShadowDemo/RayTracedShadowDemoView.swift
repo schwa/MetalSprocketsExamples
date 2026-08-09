@@ -185,14 +185,17 @@ public struct RayTracedShadowDemoView: View {
                 Section("Lighting") {
                     LabeledContent("Ambient") {
                         Slider(value: $ambientLight, in: 0...1)
+                            .accessibilityLabel("Ambient Light")
                     }
                     LabeledContent("Intensity") {
                         Slider(value: $lightIntensity, in: 1...1_000)
+                            .accessibilityLabel("Light Intensity")
                     }
                 }
                 Section("Ray Traced Shadows") {
                     LabeledContent("Intensity") {
                         Slider(value: $shadowIntensity, in: 0...1)
+                            .accessibilityLabel("Shadow Intensity")
                     }
                     Toggle("Debug", isOn: $shadowDebug)
                 }

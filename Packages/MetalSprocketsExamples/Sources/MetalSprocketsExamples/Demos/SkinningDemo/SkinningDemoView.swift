@@ -332,6 +332,7 @@ public struct SkinningDemoView: View {
                     Text("Bend Angle: \(Angle(radians: Double(bendAngle)).degrees.formatted(.number.precision(.fractionLength(1))))°")
                     Slider(value: $bendAngle, in: -Float.pi...Float.pi)
                         .disabled(animating)
+                        .accessibilityLabel("Bend Angle")
                 }
             }
             .fixedSize()
