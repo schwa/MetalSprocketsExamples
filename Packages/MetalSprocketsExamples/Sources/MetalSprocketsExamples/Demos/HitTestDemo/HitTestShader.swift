@@ -24,7 +24,7 @@ struct HitTestShader<Content>: Element where Content: Element {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
             }
-            .renderPipelineDescriptorModifier { descriptor in
+            .renderPipelineDescriptorTransformer { descriptor in
                 descriptor.colorAttachments[0].pixelFormat = .r32Sint
                 descriptor.colorAttachments[1].pixelFormat = .r32Sint
                 descriptor.colorAttachments[2].pixelFormat = .r32Sint

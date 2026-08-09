@@ -156,6 +156,8 @@ public struct ShadowMapDemoView: View {
         .id("\(useInverseZ)-\(shadowDebug)") // Workaround: force RenderView recreation to clear cached state (MetalSprockets#314)
         .metalDepthStencilPixelFormat(.depth32Float)
         .metalDepthStencilAttachmentTextureUsage([.renderTarget, .shaderRead])
+        // The shadow mask compute pass writes into the drawable.
+        .metalFramebufferOnly(false)
         .metalClearColor(MTLClearColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1))
     }
 
@@ -400,25 +402,21 @@ struct ShadowMapDemoRenderPass: Element {
             }
 
             // Pass 3: Shadow mask overlay — reads scene depth + shadow map, darkens shadowed areas
-            if shadowsEnabled, let sceneDepthTexture = renderPassDescriptor?.depthAttachment.texture {
+            // ShadowMaskPass opens its own compute encoder, so it is a sibling of the scene pass.
+            if shadowsEnabled,
+               let sceneDepthTexture = renderPassDescriptor?.depthAttachment.texture,
+               let colorTexture = renderPassDescriptor?.colorAttachments[0].texture {
                 let viewMatrix = cameraMatrix.inverse
                 let viewProjection = projectionMatrix * viewMatrix
                 let inverseVP = viewProjection.inverse
 
-                try RenderPass(label: "Shadow Mask") {
-                    try ShadowMaskPass(
-                        sceneDepthTexture: sceneDepthTexture,
-                        shadowMap: shadowMap,
-                        inverseViewProjection: inverseVP,
-                        debug: shadowDebug
-                    )
-                }
-                .renderPassDescriptorModifier { descriptor in
-                    // Keep existing color, no depth needed
-                    descriptor.colorAttachments[0].loadAction = .load
-                    descriptor.depthAttachment.loadAction = .dontCare
-                    descriptor.depthAttachment.storeAction = .dontCare
-                }
+                try ShadowMaskPass(
+                    sceneDepthTexture: sceneDepthTexture,
+                    outputTexture: colorTexture,
+                    shadowMap: shadowMap,
+                    inverseViewProjection: inverseVP,
+                    debug: shadowDebug
+                )
             }
         }
     }

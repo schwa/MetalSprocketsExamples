@@ -57,8 +57,10 @@ public struct SlugDebugDemoView: View {
         let cx = Float(mesh.bounds.midX)
         let cy = Float(mesh.bounds.midY)
         let center = float4x4.translation(-cx, -cy, 0)
-        scene.modelMatrices[0] = center * float4x4.translation(0, 15, 0)
-        scene.modelMatrices[1] = center * float4x4.translation(0, -15, 0)
+        scene.withModelMatrices { matrices in
+            matrices[0] = center * float4x4.translation(0, 15, 0)
+            matrices[1] = center * float4x4.translation(0, -15, 0)
+        }
 
         camera.frameBounds(size: mesh.bounds.size, aspectRatio: 1.0)
     }

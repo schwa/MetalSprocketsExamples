@@ -61,12 +61,18 @@ extension Element {
         let argumentBuffer = material.toArgumentBuffer()
 
         return self.parameter("material", functionType: .fragment, value: argumentBuffer)
-            .useResource(material.albedo, usage: .read, stages: .fragment)
-            .useResource(material.metallic, usage: .read, stages: .fragment)
-            .useResource(material.roughness, usage: .read, stages: .fragment)
-            .useResource(material.ambientOcclusion, usage: .read, stages: .fragment)
-            .useResource(material.emissive, usage: .read, stages: .fragment)
+            .useColorSource(material.albedo)
+            .useColorSource(material.metallic)
+            .useColorSource(material.roughness)
+            .useColorSource(material.ambientOcclusion)
+            .useColorSource(material.emissive)
             .useResource(material.normal, usage: .read, stages: .fragment)
+    }
+
+    // Only the 2D texture case is forwarded: cube and depth textures hang when used with
+    // argument buffers on iOS/macOS.
+    private func useColorSource(_ source: ColorSource) -> some Element {
+        useResource(source.texture2D, usage: .read, stages: .fragment)
     }
 }
 

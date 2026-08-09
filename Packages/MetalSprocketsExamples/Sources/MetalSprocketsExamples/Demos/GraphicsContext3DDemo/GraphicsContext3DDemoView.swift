@@ -319,9 +319,11 @@ public struct GraphicsContext3DDemoView: View {
         for (i, label) in labels.enumerated() {
             let mesh = scene.meshes[i]
             let centering = float4x4.translation(-Float(mesh.bounds.midX), -Float(mesh.bounds.midY), 0)
-            scene.modelMatrices[i] = float4x4.translation(label.position.x, label.position.y, label.position.z)
-                * float4x4.scale(scale, scale, scale)
-                * centering
+            scene.withModelMatrices { matrices in
+                matrices[i] = float4x4.translation(label.position.x, label.position.y, label.position.z)
+                    * float4x4.scale(scale, scale, scale)
+                    * centering
+            }
         }
 
         slugScene = scene

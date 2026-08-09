@@ -132,9 +132,10 @@ private struct SpinningSphereRenderView: View {
                 .onChange(of: timeline.date) {
                     let elapsed = Float(timeline.date.timeIntervalSince(startTime))
                     let computed = Self.computeModelMatrices(channels: channels, elapsed: elapsed, sphereRadius: sphereRadius)
-                    let matrices = scene.modelMatrices
-                    for i in 0..<min(computed.count, matrices.count) {
-                        matrices[i] = computed[i]
+                    scene.withModelMatrices { matrices in
+                        for i in 0..<min(computed.count, matrices.count) {
+                            matrices[i] = computed[i]
+                        }
                     }
                 }
         }

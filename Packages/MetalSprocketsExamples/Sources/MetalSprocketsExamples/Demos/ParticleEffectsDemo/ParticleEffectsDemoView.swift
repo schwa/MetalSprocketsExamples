@@ -290,7 +290,7 @@ private struct ParticleRenderPipeline: Element {
                 }
             }
             .vertexDescriptor(vertexDescriptor)
-            .renderPipelineDescriptorModifier { renderPipelineDescriptor in
+            .renderPipelineDescriptorTransformer { renderPipelineDescriptor in
                 // Simple additive blending for glow effect (optional)
                 renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
                 renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add

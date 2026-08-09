@@ -188,7 +188,9 @@ public struct SlugTerminalDemoView: View {
             await MainActor.run {
                 if let scene {
                     let mesh = scene.meshes[0]
-                    scene.modelMatrices[0] = float4x4.translation(-Float(mesh.bounds.midX), -Float(mesh.bounds.midY), 0)
+                    scene.withModelMatrices { matrices in
+                        matrices[0] = float4x4.translation(-Float(mesh.bounds.midX), -Float(mesh.bounds.midY), 0)
+                    }
                     self.scene = scene
                     rebuildCount += 1
                     if isFirstBuild {
