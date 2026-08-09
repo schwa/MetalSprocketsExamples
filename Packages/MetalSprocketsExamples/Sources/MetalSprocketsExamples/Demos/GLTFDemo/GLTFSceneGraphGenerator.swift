@@ -127,42 +127,12 @@ class GLTGSceneGraphGenerator {
         }
 
         var swiftMesh = SwiftMesh.Mesh(positions: positions, faces: faces)
-
-        // Map per-vertex attributes to per-corner (half-edge) arrays
-        if let perVertexNormals {
-            swiftMesh.normals = swiftMesh.topology.halfEdges.map { he in
-                perVertexNormals[he.origin.raw]
-            }
-        }
-        if let perVertexUVs {
-            swiftMesh.textureCoordinates = swiftMesh.topology.halfEdges.map { he in
-                perVertexUVs[he.origin.raw]
-            }
-        }
-        if let perVertexTangents {
-            // GLTF tangents are (x, y, z, w)
-            swiftMesh.tangents = swiftMesh.topology.halfEdges.map { he in
-                perVertexTangents[he.origin.raw].xyz
-            }
-            if let perVertexNormals {
-                swiftMesh.bitangents = swiftMesh.topology.halfEdges.map { he in
-                    let normal = perVertexNormals[he.origin.raw]
-                    let tangent = perVertexTangents[he.origin.raw]
-                    return cross(normal, tangent.xyz) * tangent.w
-                }
-            }
-        }
-
-        // Generate missing attributes
-        if swiftMesh.textureCoordinates == nil {
-            swiftMesh = swiftMesh.withSphericalUVs()
-        }
-        if swiftMesh.normals == nil {
-            swiftMesh = swiftMesh.withSmoothNormals()
-        }
-        if swiftMesh.tangents == nil {
-            swiftMesh = swiftMesh.withTangents()
-        }
+        GLTFMeshAttributes.apply(
+            to: &swiftMesh,
+            perVertexNormals: perVertexNormals,
+            perVertexTangents: perVertexTangents,
+            perVertexUVs: perVertexUVs
+        )
 
         let device = _MTLCreateSystemDefaultDevice()
         node.mesh = MetalMesh(mesh: swiftMesh, device: device)

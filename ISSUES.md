@@ -2285,13 +2285,18 @@ closed: 2026-04-03T04:28:58Z
 ## 345: GLTF: tangents are (x,y,z,w) — needs investigation
 
 +++
-status: open
+status: closed
 priority: medium
 kind: bug
 labels: effort:m
 created: 2026-04-03T03:11:53Z
-updated: 2026-04-03T17:30:51Z
+updated: 2026-08-09T16:42:01Z
+closed: 2026-08-09T16:42:01Z
 +++
+
+- `2026-08-09T16:42:01Z`: Investigated: the (x,y,z,w) handling was already correct where it ran — bitangent = cross(normal, tangent.xyz) * tangent.w matches the glTF spec. The real defect was ordering: bitangents were only derived inside 'if let perVertexNormals', so a primitive supplying TANGENT but no NORMAL got tangents, then had smooth normals generated, and ended up with no bitangents at all (withTangents() is skipped because tangents are already set).
+
+Fixed by extracting GLTFMeshAttributes and deriving bitangents after normal generation.
 
 ---
 

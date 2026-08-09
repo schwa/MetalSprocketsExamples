@@ -1,8 +1,43 @@
 [defaults]
-destination = "mac"
+container = "MetalSprocketsExamples"
+extra_args = [
+]
+
+[defaults.build]
 scheme = "MetalSprockets-Examples"
-extra_args = ["-skipPackagePluginValidation", "-skipMacroValidation"]
+
+[defaults.test]
+scheme = "MetalSprocketsExamples"
+
+[defaults.run]
+scheme = "MetalSprockets-Examples"
+
+[defaults.archive]
 
 [output]
 
 [new.blueprint_defaults]
+
+[hooks.build]
+pre = []
+post = []
+
+[hooks.test]
+pre = []
+post = []
+
+[hooks.run]
+pre = []
+post = []
+
+[hooks.install]
+pre = []
+post = []
+
+[hooks.clean]
+pre = []
+post = []
+
+[hooks.archive]
+pre = []
+post = []
