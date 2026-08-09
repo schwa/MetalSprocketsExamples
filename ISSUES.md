@@ -2965,17 +2965,32 @@ closed: 2026-04-14T16:12:39Z
 ## 379: Audit all code for MetalSprockets best practices
 
 +++
-status: open
+status: closed
 priority: medium
 kind: task
 labels: effort:l
 created: 2026-04-14T16:11:05Z
-updated: 2026-04-14T16:12:52Z
+updated: 2026-08-09T17:59:50Z
+closed: 2026-08-09T17:59:50Z
 +++
 
 Review all demo code to ensure it follows MetalSprockets best practices: load shaders from ShaderLibrary (not inline source strings), avoid side effects in Element body, use onChange/onWorkloadEnter for lifecycle, use proper resource declaration patterns, etc.
 
-- `2026-04-14T16:13:02Z`: #378 (skinning inline shader strings) was the first item addressed under this audit — now closed.
+\- `2026-04-14T16:13:02Z`: #378 (skinning inline shader strings) was the first item addressed under this audit — now closed.
+\- `2026-08-09T17:59:50Z`: Audit done. Checked the demo sources against the documented MetalSprockets practices; findings filed as separate issues.
+
+Filed:
+- #385 (bug, effort:m) — GameOfLife and StamFluid allocate textures and mutate state inside Element body instead of onSetupEnter/onWorkloadEnter. The clearest violation, and both are demos people will copy as a simulation template.
+- #386 (enhancement, effort:m) — 10 sites resolve shader functions inside body rather than holding them in @MSState. ShaderStore caches, so this is idiom rather than performance.
+- #387 (enhancement, effort:s) — StencilDemo still builds shaders from an inline source string, same as #378 did.
+
+Checked and clean:
+- Depth testing (G7): every element using .depthCompare renders into a pass that has a depth attachment, either via the host view's .metalDepthStencilPixelFormat or an explicit .depthAttachment (DepthDemo) or OffscreenRenderer's own depth texture (ScreenshotSupport). No silent no-op depth.
+- Inline shader source elsewhere: TriangleDemo and ComputeDemo are deliberate and documented as such in demos.yaml.
+- Icon-only controls / decorative images: already accessibilityHidden with adjacent text (see #367).
+- Threadgroup sizing, texture creation, drawable-size guards, shader-library boilerplate: addressed in #355, #358, #360, #356 during this run.
+
+Closing this as the audit itself; the three issues above carry the remaining work.
 
 ---
 
@@ -3061,5 +3076,85 @@ Not all Apple GPUs zero-initialize newly allocated textures, so on affected devi
 Fix: after creating the heat textures, explicitly clear both to zero — a blit clear, a trivial "clear" compute kernel dispatch, or a one-shot render pass with `.clear` load action + `.store` store action will all work. A frame-index guard in the shader is an alternative but more invasive.
 
 - `2026-04-20T19:33:49Z`: Fixed by explicitly zero-filling both heat textures with MTLTexture.fill(with:using:) after creation (UInt64(0) since rgba16Float is 8 bytes/pixel).
+
+---
+
+## 385: GameOfLife and StamFluid do resource setup and state mutation inside Element body
+
++++
+status: new
+priority: medium
+kind: bug
+labels: effort:m
+created: 2026-08-09T17:59:22Z
+updated: 2026-08-09T17:59:31Z
++++
+
+MetalSprockets treats `Element.body` like SwiftUI's `View.body`: declarative and pure, with side effects belonging in `onChange` / `onWorkloadEnter` / `onSetupEnter`. Two demos ignore that and allocate resources and mutate state from `body`.
+
+GameOfLife.swift:50-60
+- calls `setupTexturesIfNeeded()` (allocates two MTLTextures)
+- calls `initializeGridIfNeeded()` and writes `lastPattern` / `initialized`
+
+StamFluid.swift:73-90
+- calls `setupTexturesIfNeeded()`
+- flips `srcIndex`, calls `clearSourceTexture()` and `writeInteraction(...)` (both encode GPU work / write texture memory)
+- rebuilds `colormapTexture` when the colormap changes
+
+These are the demos most likely to be copied as a template for a simulation, so the wrong pattern propagates. Move allocation into `onSetupEnter` and the per-frame simulation stepping into `onWorkloadEnter`, leaving `body` returning elements only.
+
+Found during the #379 audit.
+
+---
+
+## 386: Shader lookups happen per frame instead of being held in @MSState
+
++++
+status: new
+priority: low
+kind: enhancement
+labels: effort:m
+created: 2026-08-09T17:59:31Z
+updated: 2026-08-09T17:59:38Z
++++
+
+The MetalSprockets idiom for shader functions is to hold them in `@MSState`, the way MetalSprocketsAddOns' GraphicsContext3DRenderPipeline does:
+
+    @MSState private var meshShader = ShaderLibrary.module.namespaced("...").requiredFunction(named: "...", type: MeshShader.self)
+
+Several demo elements instead resolve the library and look up functions from inside `var body`, so the lookup runs on every frame the element is evaluated:
+
+- StamFluid.swift:85
+- VCRDistortionPipeline.swift:50
+- RedTriangle.swift:15
+- SpiralParticlesDemoView.swift:214
+- ParticleEffectsDemoView.swift:214 and :264
+- PointCloudDemoView.swift:182
+- GrassDemoView.swift:185
+- ShaderGraphDemoView.swift:60
+- SkinningDemoView.swift:213
+
+ShaderStore caches compiled libraries so this is a dictionary lookup rather than a recompile, which is why it is Low rather than a performance bug. It is still the wrong pattern to copy out of an examples project.
+
+Found during the #379 audit.
+
+---
+
+## 387: StencilDemo compiles shaders from an inline source string
+
++++
+status: new
+priority: low
+kind: enhancement
+labels: effort:s
+created: 2026-08-09T17:59:38Z
+updated: 2026-08-09T17:59:50Z
++++
+
+StencilDemoView.swift:87-88 builds its VertexShader and FragmentShader from an inline Metal source string, the same pattern removed from the skinning demo in #378.
+
+Two other demos do this deliberately and should stay as they are — TriangleDemo is documented as 'inline Metal source compiled at runtime' and ComputeDemo demonstrates swapping ComputeKernels at runtime. StencilDemo is not about runtime compilation; demos.yaml describes it as 'Stencil texture creation, blit pass to populate the stencil attachment, and StencilState configuration'. Its shaders should move to a .metal file in MetalSprocketsExampleShaders and load through ShaderNamespace.examples("Stencil").
+
+Found during the #379 audit.
 
 ---
