@@ -55,10 +55,11 @@ public extension Element {
     /// These do not vary per model, so apply this once around everything drawn with the same camera
     /// rather than per draw.
     func pbrViewUniforms(cameraMatrix: float4x4, projectionMatrix: float4x4) -> some Element {
-        let viewUniforms = [PBRAmplifiedUniforms(
+        let uniforms = PBRAmplifiedUniforms(
             viewProjectionMatrix: projectionMatrix * cameraMatrix.inverse,
             cameraPosition: cameraMatrix.translation
-        )]
+        )
+        let viewUniforms = [uniforms]
         return self
             .parameter("amplifiedUniforms", functionType: .vertex, values: viewUniforms)
             .parameter("amplifiedUniforms", functionType: .fragment, values: viewUniforms)
