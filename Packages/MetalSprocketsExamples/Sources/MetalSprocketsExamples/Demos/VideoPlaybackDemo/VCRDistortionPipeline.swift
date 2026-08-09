@@ -53,10 +53,9 @@ struct VCRDistortionPipeline: Element {
             let width = outputTexture.width
             let height = outputTexture.height
             let threadsPerGrid = MTLSize(width: width, height: height, depth: 1)
-            let threadsPerThreadgroup = MTLSize(width: 16, height: 16, depth: 1)
 
             try ComputePipeline(computeKernel: try shaderLibrary.vcr_distortion) {
-                try ComputeDispatch(threadsPerGrid: threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+                try ComputeDispatch(threadsPerGrid: threadsPerGrid)
                     .parameter("inputTexture", texture: inputTexture)
                     .parameter("outputTexture", texture: outputTexture)
                     .parameter("noiseTexture", texture: noiseTexture.orFatalError("Noise texture should be initialized"))

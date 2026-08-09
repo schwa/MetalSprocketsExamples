@@ -67,10 +67,7 @@ struct GameOfLife: Element {
                 if isRunning {
                     try ComputePass {
                         try ComputePipeline(computeKernel: try shaderLibrary.updateGrid) {
-                            try ComputeDispatch(
-                                threadsPerGrid: MTLSize(width: gridSize.width, height: gridSize.height, depth: 1),
-                                threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1)
-                            )
+                            try ComputeDispatch(threadsPerGrid: MTLSize(width: gridSize.width, height: gridSize.height, depth: 1))
                             .parameter("currentState", texture: currentTexture)
                             .parameter("nextState", texture: nextTexture)
                         }

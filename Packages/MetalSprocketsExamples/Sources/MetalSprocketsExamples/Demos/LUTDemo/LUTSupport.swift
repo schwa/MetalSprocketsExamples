@@ -31,9 +31,7 @@ func create3DLUT(device: MTLDevice, from lut2DTexture: MTLTexture) throws -> MTL
     let texture3D = try device.makeTexture(descriptor: descriptor).orThrow(.resourceCreationFailure("3D LUT texture"))
     let pass = try ComputePass(label: "create3DLUT") {
         try ComputePipeline(label: "create3DLUT", computeKernel: .init(source: source)) {
-            let threadsPerThreadgroup = MTLSize(width: 16, height: 8, depth: 8)
-            // TODO: #355 Compute threads per threadgroup
-            try ComputeDispatch(threadsPerGrid: size, threadsPerThreadgroup: threadsPerThreadgroup)
+            try ComputeDispatch(threadsPerGrid: size)
                 .parameter("lut2D", texture: lut2DTexture)
                 .parameter("lut3D", texture: texture3D)
         }

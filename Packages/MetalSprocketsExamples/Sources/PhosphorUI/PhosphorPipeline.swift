@@ -54,10 +54,7 @@ struct PhosphorPipeline: Element {
                 if let writeTexture, let readTexture, let snippetFunction, let linkedFunctions {
                     try ComputePass {
                         try ComputePipeline(computeKernel: kernel) {
-                            try ComputeDispatch(
-                                threadsPerGrid: MTLSize(width: width, height: height, depth: 1),
-                                threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1)
-                            )
+                            try ComputeDispatch(threadsPerGrid: MTLSize(width: width, height: height, depth: 1))
                             .parameter("uniforms", value: uniforms)
                             .parameter("outTexture", texture: writeTexture)
                             .parameter("previousTexture", texture: readTexture)

@@ -72,7 +72,7 @@ public struct AppleEventLogoDemoView: View {
                                 let currentTexture = heatTextures[1 - currentTextureIndex]
 
                                 try ComputePipeline(computeKernel: try shaderLibrary.heatup) {
-                                    try ComputeDispatch(threadsPerGrid: MTLSize(width: 256, height: 256, depth: 1), threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1))
+                                    try ComputeDispatch(threadsPerGrid: MTLSize(width: 256, height: 256, depth: 1))
                                         .parameter("previousTexture", texture: previousTexture)
                                         .parameter("currentTexture", texture: currentTexture)
                                         .parameter("heatParameters", value: heatParameters)

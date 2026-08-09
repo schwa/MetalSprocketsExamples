@@ -2339,8 +2339,20 @@ priority: medium
 kind: enhancement
 labels: effort:s
 created: 2026-04-03T03:11:53Z
-updated: 2026-04-03T17:30:51Z
+updated: 2026-08-09T17:30:38Z
 +++
+
+- `2026-08-09T17:30:38Z`: Scoped it out; punting because it needs a design decision from you.
+
+metallic/roughness/ambientOcclusion are ColorSource (float3 + texture2D + textureCube + depth2D + sampler in the argument buffer) and the shader immediately throws away two thirds of it: 'material.metallic.resolve(uv).r'. Doing this properly means a ScalarSource / ScalarSourceArgumentBuffer — scalar value, or texture plus a channel selector.
+
+Blast radius is wider than effort:s suggests:
+- PBRShaders.h argument buffer layout (three fields change type)
+- PBRShaders.metal resolve sites
+- PBRMaterial.swift construction and useColorSource plumbing
+- GLTFSceneGraphGenerator, which currently burns two CIFilter render passes per material (redChannel() / greenChannel()) purely to split a metallicRoughness texture into two RGB textures. A channel-selecting ScalarSource deletes both.
+
+Question before I build it: should ScalarSource live upstream in MetalSprocketsAddOns next to ColorSource (it is the same kind of type, and BlinnPhong's 'shininess' would want it too), or stay local to this repo's example shaders? I did not want to invent a public upstream type without your call.
 
 ---
 
@@ -2437,15 +2449,24 @@ closed: 2026-04-03T04:50:19Z
 ## 355: Centralize threadsPerThreadgroup computation instead of hardcoding
 
 +++
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
 created: 2026-04-03T03:12:53Z
-updated: 2026-04-03T17:31:02Z
+updated: 2026-08-09T17:35:16Z
+closed: 2026-08-09T17:35:16Z
 +++
 
 - `2026-04-03T17:31:02Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-08-09T17:35:16Z`: MetalSprockets already supports this: ComputeDispatch takes 'threadsPerThreadgroup: MTLSize? = nil', and nil derives the size from the pipeline state at dispatch time using threadExecutionWidth x (maxTotalThreadsPerThreadgroup / threadExecutionWidth). Nothing new needed here — the demos just weren't using it.
+
+Dropped the hardcoded size from 17 ComputeDispatch sites across 13 files (ColorAdjust, AppleEventLogo x3, Compute, GameOfLife, LUT x2, MixedDemo, ParticleEffects, Phosphor, TiledSDF, VCR, Voxel x2, Checkerboard x2, CircleGrid, ANSIRenderer), including the four TODO: #355 markers. Several were 32x32 = 1024 threads, which is above maxTotalThreadsPerThreadgroup for some pipelines — those were latent dispatch failures.
+
+Deliberately left alone:
+- StamFluid: already centralized, one tg16 constant threaded through the solver, plus one 1D dispatch sized from N. Unpicking the parameter from ~10 functions is a bigger change than this issue.
+- GameOfLife's raw computeEncoder.dispatchThreadgroups path: not a ComputeDispatch, needs the explicit size for its threadgroup arithmetic.
+- RayTracingDemo's manual encoder: covered by #370.
 
 ---
 

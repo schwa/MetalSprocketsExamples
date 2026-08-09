@@ -160,18 +160,9 @@ public struct VoxelDemoView: View {
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle).namespaced("VoxelShaders")
         let kernel: ComputeKernel = try shaderLibrary.voxel_generateSphere
 
-        let threadsPerThreadgroup = MTLSize(
-            width: max(1, min(4, size.width)),
-            height: max(1, min(4, size.height)),
-            depth: max(1, min(4, size.depth))
-        )
-
         let computePass = try ComputePass(label: "GenerateVoxelSphere") {
             try ComputePipeline(computeKernel: kernel) {
-                try ComputeDispatch(
-                    threadsPerGrid: size,
-                    threadsPerThreadgroup: threadsPerThreadgroup
-                )
+                try ComputeDispatch(threadsPerGrid: size)
                 .parameter("voxelTexture", texture: texture)
             }
         }

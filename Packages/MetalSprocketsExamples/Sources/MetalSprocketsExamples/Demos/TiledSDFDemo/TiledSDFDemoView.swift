@@ -243,9 +243,8 @@ struct TiledSDFPipeline: Element {
                 try ComputePass {
                     try ComputePipeline(computeKernel: cullKernel) {
                         let threadsPerGrid = MTLSize(width: primitiveCount, height: 1, depth: 1)
-                        let threadsPerThreadgroup = MTLSize(width: min(64, primitiveCount), height: 1, depth: 1)
 
-                        try ComputeDispatch(threadsPerGrid: threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+                        try ComputeDispatch(threadsPerGrid: threadsPerGrid)
                             .parameter("primitives", buffer: primitivesBuffer)
                             .parameter("tilePrimitives", buffer: tilePrimitivesBuffer)
                             .parameter("tilePrimitiveCounts", buffer: tilePrimitiveCountsBuffer)

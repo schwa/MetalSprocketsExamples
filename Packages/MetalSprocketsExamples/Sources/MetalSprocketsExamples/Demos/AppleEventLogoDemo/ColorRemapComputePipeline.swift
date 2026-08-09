@@ -41,8 +41,7 @@ struct ColorRemapComputePipeline: Element {
                         width: outputTexture.width,
                         height: outputTexture.height,
                         depth: 1
-                    ),
-                    threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1)
+                    )
                 )
                 .parameter("inputTexture", texture: inputTexture)
                 .parameter("outputTexture", texture: outputTexture)

@@ -21,8 +21,7 @@ struct CircleGridKernel: Element {
     var body: some Element {
         get throws {
             try ComputePipeline(computeKernel: kernel) {
-                // TODO: #355 Compute threads per threadgroup
-                try ComputeDispatch(threadsPerGrid: .init(width: outputTexture.width, height: outputTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))
+                try ComputeDispatch(threadsPerGrid: .init(width: outputTexture.width, height: outputTexture.height, depth: 1))
                     .parameter("outputTexture", texture: outputTexture)
                     .parameter("spacing", value: spacing)
                     .parameter("radius", value: radius)

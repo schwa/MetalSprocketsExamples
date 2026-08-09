@@ -40,10 +40,7 @@ struct VoxelToTextureComputePipeline: Element {
                 let invViewProj = simd_inverse(viewProj)
                 let cameraPosition = cameraMatrix.columns.3.xyz
                 if case let .standard(zRange) = projection.depthMode {
-                    try ComputeDispatch(
-                        threadsPerGrid: outputTexture.size,
-                        threadsPerThreadgroup: MTLSize(width: 32, height: 32, depth: 1) // TODO: #355 hard coded threadsPerThreadgroup
-                    )
+                    try ComputeDispatch(threadsPerGrid: outputTexture.size)
                     .parameter("voxelTexture", texture: voxelTexture)
                     .parameter("outputTexture", texture: outputTexture)
                     .parameter("projectionMatrix", value: projectionMatrix)

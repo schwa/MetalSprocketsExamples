@@ -36,7 +36,7 @@ struct ColorAdjustComputePipeline<T>: Element {
     var body: some Element {
         get throws {
             try ComputePipeline(computeKernel: kernel) {
-                try ComputeDispatch(threadsPerGrid: [outputTexture.width, outputTexture.height, 1], threadsPerThreadgroup: [16, 16, 1])
+                try ComputeDispatch(threadsPerGrid: [outputTexture.width, outputTexture.height, 1])
                     // TODO: #350 Maybe a .argumentBuffer() is a better solution
                     .parameter("inputSpecifier", value: inputSpecifier.toArgumentBuffer())
                     .parameter("inputParameters", value: inputParameters)

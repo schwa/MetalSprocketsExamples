@@ -35,7 +35,7 @@ public struct ComputeDemoView: View {
                             let kernel = try ComputeKernel(source: source)
                             let compute = try ComputePass {
                                 try ComputePipeline(computeKernel: kernel) {
-                                    try ComputeDispatch(threadsPerGrid: .init(width: count, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1_024, height: 1, depth: 1))
+                                    try ComputeDispatch(threadsPerGrid: .init(width: count, height: 1, depth: 1))
                                         .parameter("src", buffer: inputBuffer)
                                         .parameter("dst", buffer: outputBuffer)
                                 }

@@ -181,10 +181,7 @@ struct ANSIRenderer<Demo: DemoRenderPass> {
 
             try ComputePass {
                 try ComputePipeline(computeKernel: computeKernel) {
-                    try ComputeDispatch(
-                        threadsPerGrid: MTLSize(width: terminal.width, height: terminal.height, depth: 1),
-                        threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1)
-                    )
+                    try ComputeDispatch(threadsPerGrid: MTLSize(width: terminal.width, height: terminal.height, depth: 1))
                     .parameter("inputTexture", texture: colorTexture)
                     .parameter("outputBuffer", buffer: ansiBuffer)
                     .parameter("shadeChars", buffer: shadeCharsBuffer)

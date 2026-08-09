@@ -39,8 +39,7 @@ struct ThermalVideoBlendPipeline: Element {
                             width: outputTexture.width,
                             height: outputTexture.height,
                             depth: 1
-                        ),
-                        threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1)
+                        )
                     )
                     .parameter("thermalTexture", texture: thermalTexture)
                     .parameter("videoTexture", texture: videoTexture)
@@ -58,8 +57,7 @@ struct ThermalVideoBlendPipeline: Element {
                             width: outputTexture.width,
                             height: outputTexture.height,
                             depth: 1
-                        ),
-                        threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1)
+                        )
                     )
                     .parameter("thermalTexture", texture: thermalTexture)
                     .parameter("outputTexture", texture: outputTexture)

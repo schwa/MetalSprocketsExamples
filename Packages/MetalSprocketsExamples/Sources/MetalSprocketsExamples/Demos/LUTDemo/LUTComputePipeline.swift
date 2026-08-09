@@ -30,9 +30,7 @@ struct LUTComputePipeline: Element {
         get throws {
             try ComputePipeline(computeKernel: kernel) {
                 let threads = MTLSize(width: inputTexture.width, height: inputTexture.height, depth: 1)
-                let threadsPerThreadgroup = MTLSize(width: 32, height: 32, depth: 1)
-                // TODO: #355 Compute threads per threadgroup
-                try ComputeDispatch(threadsPerGrid: threads, threadsPerThreadgroup: threadsPerThreadgroup)
+                try ComputeDispatch(threadsPerGrid: threads)
                     .parameter("inputTexture", texture: inputTexture)
                     .parameter("lutTexture", texture: lutTexture)
                     .parameter("outputTexture", texture: outputTexture)

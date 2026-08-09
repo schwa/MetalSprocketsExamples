@@ -225,10 +225,7 @@ private struct ParticleUpdateCompute: Element {
             )
 
             try ComputePipeline(computeKernel: updateKernel) {
-                try ComputeDispatch(
-                    threadsPerGrid: MTLSize(width: particleCount, height: 1, depth: 1),
-                    threadsPerThreadgroup: MTLSize(width: 64, height: 1, depth: 1)
-                )
+                try ComputeDispatch(threadsPerGrid: MTLSize(width: particleCount, height: 1, depth: 1))
                 .parameter("particles", buffer: particleBuffer)
                 .parameter("uniforms", value: uniforms)
                 .parameter("emitter", buffer: emitterBuffer)
