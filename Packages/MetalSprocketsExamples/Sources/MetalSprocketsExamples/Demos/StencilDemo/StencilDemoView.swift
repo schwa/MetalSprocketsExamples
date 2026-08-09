@@ -116,14 +116,10 @@ public struct StencilDemoView: View {
             .aspectRatio(1.0, contentMode: .fit)
             .metalDepthStencilPixelFormat(.stencil8)
             .metalDepthStencilAttachmentTextureUsage([.shaderWrite, .renderTarget])
-            .onDrawableSizeChange { size in
+            .onUsableDrawableSizeChange { size in
                 do {
                     let width = Int(size.width)
                     let height = Int(size.height)
-                    guard width > 0, height > 0 else {
-                        stencilBuffer = nil
-                        return
-                    }
                     let device = _MTLCreateSystemDefaultDevice()
                     let texture = device.makeTexture2D(pixelFormat: .r8Uint, width: width, height: height, label: "Faux Stencil Texture")
 

@@ -68,7 +68,7 @@ public struct PanoramaDemoView: View {
                                 }
                             }
                         }
-                        .onDrawableSizeChange { size in
+                        .onUsableDrawableSizeChange { size in
                             let device = _MTLCreateSystemDefaultDevice()
                             let width = Int(size.width)
                             let height = Int(size.height)
@@ -78,17 +78,16 @@ public struct PanoramaDemoView: View {
                                 width: width,
                                 height: height,
                                 usage: [.renderTarget, .shaderRead],
-                                storageMode: .private
+                                storageMode: .private,
+                                label: "Panorama Intermediate Texture"
                             )
-                            intermediateTexture?.label = "Panorama Intermediate Texture"
-
                             outputTexture = device.makeTexture2D(
                                 pixelFormat: .rgba8Unorm,
                                 width: width,
                                 height: height,
-                                storageMode: .private
+                                storageMode: .private,
+                                label: "Panorama Gamma Output Texture"
                             )
-                            outputTexture?.label = "Panorama Gamma Output Texture"
                         }
                     } else {
                         Text("Use 'Load Panorama' to load a 360° image")

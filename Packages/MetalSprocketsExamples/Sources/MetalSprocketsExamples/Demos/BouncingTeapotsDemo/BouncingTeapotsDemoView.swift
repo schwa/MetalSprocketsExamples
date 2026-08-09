@@ -81,7 +81,7 @@ public struct BouncingTeapotsDemoView: View {
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
-            .onDrawableSizeChange { size in
+            .onUsableDrawableSizeChange { size in
                 drawableSize = size
             }
             .onChange(of: drawableSize) {

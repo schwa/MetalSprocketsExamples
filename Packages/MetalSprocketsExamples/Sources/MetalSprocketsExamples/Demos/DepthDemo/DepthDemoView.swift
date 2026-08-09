@@ -94,12 +94,9 @@ public struct DepthDemoView: View {
                     }
                 }
             }
-            .onDrawableSizeChange { size in
+            .onUsableDrawableSizeChange { size in
                 drawableSize = size
 
-                guard size.width > 0, size.height > 0 else {
-                    return
-                }
                 let device = _MTLCreateSystemDefaultDevice()
                 colorTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead, .shaderWrite], label: "Color Texture")
                 depthTexture = device.makeTexture2D(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead], label: "Depth Texture")

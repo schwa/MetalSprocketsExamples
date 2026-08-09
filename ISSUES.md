@@ -2544,15 +2544,21 @@ updated: 2026-04-03T17:31:03Z
 ## 360: Standardize onDrawableSizeChange texture recreation pattern
 
 +++
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:s
 created: 2026-04-03T03:15:29Z
-updated: 2026-04-03T17:31:03Z
+updated: 2026-08-09T17:45:06Z
+closed: 2026-08-09T17:45:06Z
 +++
 
 - `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-08-09T17:45:06Z`: Added .onUsableDrawableSizeChange(perform:) plus an isUsableDrawableSize(_:) predicate in Support/, and adopted it in the five demos that allocate from the drawable size (HitTest, Depth, Stencil, Panorama, BouncingTeapots).
+
+Each had its own guard, and they disagreed: HitTest returned early, Depth guarded after assigning drawableSize, Stencil niled its buffer first, Panorama had no guard at all and would allocate a zero-sized texture during layout. The predicate also rejects sub-pixel sizes (>= 1 rather than > 0), which the hand-written 'width > 0' guards let through.
+
+The six sites that only do 'drawableSize = $0' keep the plain modifier — they do not allocate, and forwarding a zero there is harmless.
 
 ---
 

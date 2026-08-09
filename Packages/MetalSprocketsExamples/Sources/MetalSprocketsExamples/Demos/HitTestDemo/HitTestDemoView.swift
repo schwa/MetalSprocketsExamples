@@ -163,10 +163,7 @@ public struct HitTestDemoView: View {
                     .coordinateSpace(name: "RenderView")
                     .frame(width: 512, height: 512)
                     .metalDepthStencilPixelFormat(.depth32Float)
-                    .onDrawableSizeChange { size in
-                        guard size.width > 0, size.height > 0 else {
-                            return
-                        }
+                    .onUsableDrawableSizeChange { size in
                         drawableSize = size
                         hitTestTextures = HitTestTextures(device: device, size: size)
                     }
