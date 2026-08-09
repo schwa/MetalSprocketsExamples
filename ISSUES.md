@@ -3190,7 +3190,7 @@ priority: medium
 kind: bug
 labels: effort:s, regression
 created: 2026-08-09T18:01:49Z
-updated: 2026-08-09T18:13:07Z
+updated: 2026-08-09T18:13:33Z
 +++
 
 Regression from #366 (commit 'Replace voxel /2 and x2 buttons with a resolution slider').
@@ -3207,7 +3207,7 @@ Worth checking first: does the voxel grid itself actually change resolution whil
 
 If it turns out to be (1), other demos' configuration sliders are affected too and this should be retitled.
 
-- `2026-08-09T18:13:07Z`: Diagnosed with steveo against a running build.
+\- `2026-08-09T18:13:07Z`: Diagnosed with steveo against a running build.
 
 Two separate defects, stacked:
 
@@ -3216,5 +3216,7 @@ Two separate defects, stacked:
 2. DemoKit (not fixed here, filed separately). The whole configuration panel is a frozen snapshot: DemoConfigurationModifier does 'store?.content = AnyView(configuration())' inside .onAppear and never refreshes it. Verified by screenshot diff — after dragging, the 3D viewport changes but the panel is pixel-identical, and 'Voxel Size: 32 x 32 x 32' stays stale while the real state is 512. Particle Effects behaves identically once you aim the drag correctly, so this affects every demo, not just this one.
 
 So the reported symptom — thumb springs back to centre — will persist until the DemoKit side is fixed. Leaving this open until then.
+
+- `2026-08-09T18:13:33Z`: Upstream ticket filed: DemoKit#20 (Critical).
 
 ---
