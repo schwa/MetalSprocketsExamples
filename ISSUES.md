@@ -3085,9 +3085,9 @@ Fix: after creating the heat textures, explicitly clear both to zero — a blit 
 status: new
 priority: medium
 kind: bug
-labels: effort:m
+labels: effort:m, blocked
 created: 2026-08-09T17:59:22Z
-updated: 2026-08-09T17:59:31Z
+updated: 2026-08-09T18:48:53Z
 +++
 
 MetalSprockets treats `Element.body` like SwiftUI's `View.body`: declarative and pure, with side effects belonging in `onChange` / `onWorkloadEnter` / `onSetupEnter`. Two demos ignore that and allocate resources and mutate state from `body`.
@@ -3104,6 +3104,19 @@ StamFluid.swift:73-90
 These are the demos most likely to be copied as a template for a simulation, so the wrong pattern propagates. Move allocation into `onSetupEnter` and the per-frame simulation stepping into `onWorkloadEnter`, leaving `body` returning elements only.
 
 Found during the #379 audit.
+
+\- `2026-08-09T18:48:53Z`: GameOfLife half is done and committed: allocation and seeding moved to onSetupEnter, pattern changes to onChange, body guards on the textures existing, and a 'seeded' flag stops a drawable resize from restarting the simulation. Verified on a running build.
+
+StamFluid half: attempted and reverted. Moving its per-frame work out of body needs the srcU/srcV/srcDens double-buffer index to advance somewhere other than body. The obvious place — onCommandBufferCompleted, which is what GameOfLife uses for its swap — crashes hard:
+
+    Thread 4 Crashed:: Dispatch queue: com.Metal.CompletionQueueDispatch
+    TraversalContext.currentNode.getter (TraversalContext.swift:23) — Index out of range
+    StateBox.wrappedValue.getter -> MSState.wrappedValue.getter
+    closure in StamFluid.body.getter
+
+@MSState needs the element-tree traversal context and there is none on Metal's completion queue. Filed MetalSprockets#392 to decide what the supported pattern is, and #390 for the two existing sites in this repo that already do this and have merely been lucky.
+
+Leaving #385 open for StamFluid, blocked on MetalSprockets#392.
 
 ---
 
@@ -3220,5 +3233,29 @@ So the reported symptom — thumb springs back to centre — will persist until 
 
 - `2026-08-09T18:13:33Z`: Upstream ticket filed: DemoKit#20 (Critical).
 - `2026-08-09T18:22:55Z`: Closing. The Voxel-specific defect — the computed Binding whose captured self went stale — is fixed and committed. The remaining symptom (thumb springs back, panel labels stale) is not specific to this demo: it is DemoKit#20, which freezes every demo's configuration panel. Nothing left to do here that is not tracked there.
+
+---
+
+## 390: GameOfLife and PhosphorPipeline flip @MSState from onCommandBufferCompleted
+
++++
+status: new
+priority: medium
+kind: bug
+labels: effort:s, blocked
+created: 2026-08-09T18:48:44Z
+updated: 2026-08-09T18:48:53Z
++++
+
+Both do the same double-buffer swap from a Metal completion handler:
+
+- GameOfLife.swift:66 — 'currentTextureIsA.toggle()'
+- PhosphorPipeline.swift:65 — 'currentTextureIsA.toggle()'
+
+That is unsafe: @MSState access needs the element-tree traversal context, which does not exist on Metal's completion queue. It crashed hard when I did the same thing in StamFluid (see MetalSprockets#392 for the trace). These two have not crashed in practice, which is worse — if a traversal is in flight when the completion fires, the write lands on whatever node happens to be current instead of trapping.
+
+Blocked on MetalSprockets#392 deciding what the supported pattern is. If the answer is 'hop to the main thread', both sites need updating; if the framework grows a safe affordance, they should adopt it.
+
+Found during #385.
 
 ---
