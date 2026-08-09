@@ -1,5 +1,5 @@
 {
-  "originHash" : "bcf6a1991f16ea12eae7445f35cfd5a4d146d138761c1fc05ee5b0536f571714",
+  "originHash" : "e1361b36e22fbfa5711aaa1a19e7d4867d81fc8017bdedd6c9505492b1b35dca",
   "pins" : [
     {
       "identity" : "demokit",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/schwa/DemoKit",
       "state" : {
         "branch" : "main",
-        "revision" : "157f503ea6296221b461f401aa92a4d81026aee5"
+        "revision" : "b8b7d286e7e8c8ed0f3c59425fc4e2c3e8d86d9c"
       }
     },
     {
@@ -70,7 +70,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "4bb5f15ca82ebc63be0b1f193bec9ae70fa98097"
+        "revision" : "ba0401789acbc965809b6ab894f7423efda3e958"
       }
     },
     {
