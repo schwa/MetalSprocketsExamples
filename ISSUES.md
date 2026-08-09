@@ -3082,12 +3082,13 @@ Fix: after creating the heat textures, explicitly clear both to zero — a blit 
 ## 385: GameOfLife and StamFluid do resource setup and state mutation inside Element body
 
 +++
-status: new
+status: closed
 priority: medium
 kind: bug
 labels: effort:m, blocked
 created: 2026-08-09T17:59:22Z
-updated: 2026-08-09T18:48:53Z
+updated: 2026-08-09T19:33:46Z
+closed: 2026-08-09T19:33:46Z
 +++
 
 MetalSprockets treats `Element.body` like SwiftUI's `View.body`: declarative and pure, with side effects belonging in `onChange` / `onWorkloadEnter` / `onSetupEnter`. Two demos ignore that and allocate resources and mutate state from `body`.
@@ -3117,6 +3118,17 @@ StamFluid half: attempted and reverted. Moving its per-frame work out of body ne
 @MSState needs the element-tree traversal context and there is none on Metal's completion queue. Filed MetalSprockets#392 to decide what the supported pattern is, and #390 for the two existing sites in this repo that already do this and have merely been lucky.
 
 Leaving #385 open for StamFluid, blocked on MetalSprockets#392.
+
+\- `2026-08-09T19:33:46Z`: StamFluid half done, in two steps:
+
+1. Allocation and colormap rebuild moved to onSetupEnter / onChange(of: gridN) / onChange(of: colormap). The existing 'if let texU, ...' guards already covered the first frame, which is evaluated before setup runs.
+2. Per-frame source writes moved to onWorkloadEnter, and the srcIndex double-buffer flip to onCommandBufferCompleted.
+
+Ordering, for the record: body binds srcU/srcV/srcDens at the current srcIndex; onWorkloadEnter then clears and writes that same buffer before anything is encoded; srcIndex only advances after the GPU signals completion, so the CPU never writes a texture still in flight.
+
+Step 2 is the change that crashed on the first attempt, before MetalSprockets#392 landed. With the traversal-context fix it is the documented pattern.
+
+body no longer has side effects in either demo. Closing.
 
 ---
 
