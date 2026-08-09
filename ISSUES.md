@@ -3178,10 +3178,10 @@ Found during the #379 audit.
 +++
 status: new
 priority: medium
-kind: enhancement
+kind: bug
 labels: effort:s
 created: 2026-08-09T18:00:21Z
-updated: 2026-08-09T19:06:03Z
+updated: 2026-08-09T19:06:13Z
 +++
 
 PanoramaDemoView renders nothing until the user picks a file: with no panoramaTexture it shows "Use 'Load Panorama' to load a 360° image" (PanoramaDemoView.swift:93), and the minimap overlay is hidden too. Every other demo shows something the moment it opens, and this one is also the reason the demo has no useful screenshot in DEMOS.md.
