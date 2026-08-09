@@ -69,9 +69,9 @@ Origin: GitHub issue #246
 status: open
 priority: low
 kind: feature
-labels: effort:l
+labels: effort:l, deferred
 created: 2025-10-22T00:00:00Z
-updated: 2026-04-03T17:30:56Z
+updated: 2026-08-09T16:23:47Z
 +++
 
 It's MacPaint but Metal!
@@ -585,9 +585,9 @@ We have DemoView (via DemoKit) and Examples in UltraviolenceExamples/ExampleElem
 status: open
 priority: low
 kind: feature
-labels: effort:l
+labels: effort:l, deferred
 created: 2025-10-26T00:00:00Z
-updated: 2026-04-03T17:30:57Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 Add visionOS-specific demos, e.g. immersive mode rendering.
@@ -600,9 +600,9 @@ Add visionOS-specific demos, e.g. immersive mode rendering.
 status: open
 priority: low
 kind: feature
-labels: effort:l
+labels: effort:l, deferred
 created: 2025-10-26T00:00:00Z
-updated: 2026-04-03T17:30:57Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 *Imported from #67*
@@ -633,9 +633,9 @@ closed: 2026-04-04T01:36:14Z
 status: open
 priority: low
 kind: feature
-labels: effort:l
+labels: effort:l, deferred
 created: 2025-10-26T00:00:00Z
-updated: 2026-04-03T17:30:57Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 *Imported from #72*
@@ -826,9 +826,9 @@ Implement spatial computing demos leveraging VisionOS capabilities like immersiv
 status: open
 priority: low
 kind: feature
-labels: effort:m
+labels: effort:m, deferred
 created: 2025-10-26T00:00:00Z
-updated: 2026-04-03T17:30:57Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 Implement https://www.4rknova.com/blog/2025/08/30/foil-sticker
@@ -1842,9 +1842,9 @@ Shows 'No File' placeholder. Bundle a default equirectangular panorama so the de
 status: open
 priority: low
 kind: enhancement
-labels: effort:m
+labels: effort:m, deferred
 created: 2026-04-02T21:41:22Z
-updated: 2026-04-03T17:30:51Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 Currently shows three flat colored bars which don't showcase 3D path capabilities. Either improve the demo scene to show compelling 3D Path content, or consider deprecating this demo.
@@ -1857,9 +1857,9 @@ Currently shows three flat colored bars which don't showcase 3D path capabilitie
 status: open
 priority: low
 kind: enhancement
-labels: effort:m
+labels: effort:m, deferred
 created: 2026-04-02T21:41:22Z
-updated: 2026-04-03T17:30:51Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 The random lines demo works but the feature needs a bigger plan. Consider deprecating or developing a proper roadmap for the Canvas API.
@@ -2520,9 +2520,9 @@ updated: 2026-04-03T17:31:03Z
 status: open
 priority: medium
 kind: task
-labels: effort:l
+labels: effort:l, deferred
 created: 2026-04-03T03:15:59Z
-updated: 2026-04-03T17:30:52Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 ---
@@ -2626,12 +2626,13 @@ priority: medium
 kind: task
 labels: accessibility, upstream, effort:m
 created: 2026-04-03T06:27:31Z
-updated: 2026-04-03T17:31:02Z
+updated: 2026-08-09T16:23:47Z
 +++
 
 The Turntable camera control popup and related WorldView interaction controls from the Interaction3D package have no accessibility labels. Need to add `.accessibilityLabel()` to the camera mode picker and any other interactive elements. This blocks automated UI testing via steveo. Upstream fix needed in Interaction3D project.
 
 - `2026-04-03T17:31:02Z`: Related: #367 (parent accessibility pass covering all controls)
+- `2026-08-09T16:23:47Z`: Upstream ticket filed: Interaction3D#15.
 
 ---
 
@@ -2756,10 +2757,12 @@ closed: 2026-04-14T16:15:47Z
 status: open
 priority: low
 kind: feature
-labels: effort:l
+labels: effort:l, needs-info
 created: 2026-04-04T02:34:33Z
-updated: 2026-04-14T16:12:52Z
+updated: 2026-08-09T16:23:47Z
 +++
+
+- `2026-08-09T16:23:47Z`: needs-info: no description. What should this demo show beyond the existing RT demos — which scene, what AO parameters are exposed, and does it reuse the existing ray tracing pipeline?
 
 ---
 
@@ -2802,9 +2805,9 @@ Promote the following from MetalSprocketsExamples into MetalSprocketsAddOns:
 status: open
 priority: medium
 kind: bug
-labels: effort:m
+labels: effort:m, upstream
 created: 2026-04-14T02:52:09Z
-updated: 2026-04-14T16:12:52Z
+updated: 2026-08-09T16:23:47Z
 +++
 
 RenderView-based demos (Spinning Cube, GraphicsContext3D) render with incorrect aspect ratio or empty content on first load. Requires window resize or navigating away and back to fix. Likely caused by RenderView receiving a stale/zero drawable size before the NavigationSplitView detail column finishes layout. May be a DemoKit or MetalSprockets RenderView issue.
@@ -2821,9 +2824,9 @@ Duplicated from MetalSprocketsAddOns#3.
 status: open
 priority: high
 kind: bug
-labels: effort:m
+labels: effort:m, upstream
 created: 2026-04-14T02:52:21Z
-updated: 2026-04-14T16:12:52Z
+updated: 2026-08-09T16:23:47Z
 +++
 
 GraphicsContext3D content is completely invisible on initial load. Requires a window resize to trigger rendering. Affects both the standalone GraphicsContext3D demo and the BlinnPhong demo light marker. Possibly related to #375 (wrong size/aspect on initial load) but this is a complete rendering failure, not just wrong aspect.
@@ -2840,10 +2843,12 @@ Duplicated from MetalSprocketsAddOns#7.
 status: open
 priority: medium
 kind: feature
-labels: effort:m
+labels: effort:m, needs-info
 created: 2026-04-14T03:19:43Z
-updated: 2026-04-14T16:12:52Z
+updated: 2026-08-09T16:23:47Z
 +++
+
+- `2026-08-09T16:23:47Z`: needs-info: no description. What should the debug view visualize — joint/bone axes, weight heatmap per vertex, bind vs. animated pose overlay, something else?
 
 ---
 
@@ -2888,9 +2893,9 @@ Review all demo code to ensure it follows MetalSprockets best practices: load sh
 status: new
 priority: low
 kind: task
-labels: effort:xl, needs-info
+labels: effort:xl, needs-info, deferred
 created: 2026-04-14T16:14:27Z
-updated: 2026-08-09T16:21:31Z
+updated: 2026-08-09T16:23:48Z
 +++
 
 ---
