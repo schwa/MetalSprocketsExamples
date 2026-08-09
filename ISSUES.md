@@ -3260,12 +3260,13 @@ So the reported symptom — thumb springs back to centre — will persist until 
 ## 390: GameOfLife and PhosphorPipeline flip @MSState from onCommandBufferCompleted
 
 +++
-status: new
+status: closed
 priority: medium
 kind: bug
-labels: effort:s, blocked
+labels: effort:s
 created: 2026-08-09T18:48:44Z
-updated: 2026-08-09T18:48:53Z
+updated: 2026-08-09T19:24:42Z
+closed: 2026-08-09T19:24:42Z
 +++
 
 Both do the same double-buffer swap from a Metal completion handler:
@@ -3278,5 +3279,23 @@ That is unsafe: @MSState access needs the element-tree traversal context, which 
 Blocked on MetalSprockets#392 deciding what the supported pattern is. If the answer is 'hop to the main thread', both sites need updating; if the framework grows a safe affordance, they should adopt it.
 
 Found during #385.
+
+\- `2026-08-09T19:24:42Z`: Resolved upstream by MetalSprockets#392 (ba04017); no change needed here.
+
+The fix makes StateBox consult the traversal context only when System.current is the box's own system, so an off-isolation read from a GPU completion handler no longer races the node stack. More to the point, CommandBufferElement's documentation now blesses this exact pattern:
+
+    The handler runs on one of Metal's completion queues, not on the isolation that built the element
+    tree. Reading and writing @MSState from it is supported — the canonical double-buffer swap below
+    works — but a read taken here does not register a dependency [...]
+
+    .onCommandBufferCompleted { _ in
+        currentTextureIsA.toggle()
+    }
+
+That is verbatim what GameOfLife.swift:66 and PhosphorPipeline.swift:65 do, so both sites are correct as written.
+
+The dependency caveat does not bite either of them: body reads currentTexture (and so currentTextureIsA) during traversal, which is where the dependency registers; the handler only needs its write to notify.
+
+Verified against the updated dependency on a running build: Game of Life animates, and the Phosphor demo renders and animates.
 
 ---
