@@ -2491,12 +2491,17 @@ updated: 2026-04-03T17:31:02Z
 status: open
 priority: medium
 kind: enhancement
-labels: effort:s
+labels: effort:s, upstream
 created: 2026-04-03T03:15:29Z
-updated: 2026-04-03T17:31:03Z
+updated: 2026-08-09T17:36:17Z
 +++
 
 - `2026-04-03T17:31:03Z`: Related: part of a batch of boilerplate-reduction enhancements (#355-#360)
+- `2026-08-09T17:36:17Z`: Punting here: the 45 (now 57) call sites already go through one wrapper, _MTLCreateSystemDefaultDevice() from MetalSupport. It is centralized — it just isn't cached, so every call hits MTLCreateSystemDefaultDevice() again.
+
+Fixing that in MetalSupport is one static let and benefits every consumer, including MetalSupport's own ad-hoc calls in MTKMesh+Extensions and MTLCommandBufferDescriptor+Extensions. Rewriting 57 sites here to a local ExampleDevice.shared would duplicate the wrapper and diverge from upstream.
+
+Filed MetalSupport#11. If you would rather have a local shared device in this repo anyway, say so and I will do the sweep.
 
 ---
 
