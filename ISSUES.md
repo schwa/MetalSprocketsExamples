@@ -3158,3 +3158,26 @@ Two other demos do this deliberately and should stay as they are — TriangleDem
 Found during the #379 audit.
 
 ---
+
+## 388: Panorama demo starts empty; ship a default panorama image
+
++++
+status: new
+priority: medium
+kind: enhancement
+labels: effort:s
+created: 2026-08-09T18:00:21Z
+updated: 2026-08-09T18:00:24Z
++++
+
+PanoramaDemoView renders nothing until the user picks a file: with no panoramaTexture it shows "Use 'Load Panorama' to load a 360° image" (PanoramaDemoView.swift:93), and the minimap overlay is hidden too. Every other demo shows something the moment it opens, and this one is also the reason the demo has no useful screenshot in DEMOS.md.
+
+Ship an equirectangular image in Resources/ and load it as the initial texture, keeping SuperImportWidget so a user can still swap in their own.
+
+Notes:
+- Resources/ already carries IndoorEnvironmentHDRI013_1K-HDR.exr, which is equirectangular; worth checking whether it works here before sourcing anything new. If it does, this is a couple of lines.
+- Needs a licence that allows redistribution (Poly Haven's CC0 HDRIs are the obvious source if a new one is needed).
+- Keep the file small — the repo already carries a video and a .glb.
+- The empty-state text should stay for the case where loading the bundled image fails.
+
+---
