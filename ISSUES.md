@@ -2565,13 +2565,16 @@ The StencilDemoView renders the triangle without any checkerboard stencil clippi
 ## 364: the .frame(infinite, infinite).black() is causing black to leak into sidebar
 
 +++
-status: open
+status: closed
 priority: medium
 kind: bug
 labels: effort:s
 created: 2026-04-03T05:19:21Z
-updated: 2026-04-03T17:30:52Z
+updated: 2026-08-09T16:29:02Z
+closed: 2026-08-09T16:29:02Z
 +++
+
+- `2026-08-09T16:29:02Z`: Obsolete: the pattern this issue names no longer exists. `rg 'infinity'` across the sources finds exactly one hit (VideoPlaybackDemoView loopEnd), and there is no `.black()` helper or `.frame(maxWidth: .infinity, maxHeight: .infinity)` on any demo root — the demoConfiguration migration replaced them. Demos now use a plain `.background(.black)` inside DemoKit's detail column, which is itself `ZStack { Color.clear; ... }.clipped()`, so it cannot paint outside the detail column. No code change; closing as no-longer-reproducible. Reopen with a screenshot if black still bleeds into the sidebar — the suspect would then be `.background(.black)` on the demo roots, not the old frame modifier.
 
 ---
 
@@ -2826,7 +2829,7 @@ priority: high
 kind: bug
 labels: effort:m, upstream
 created: 2026-04-14T02:52:21Z
-updated: 2026-08-09T16:23:47Z
+updated: 2026-08-09T16:28:03Z
 +++
 
 GraphicsContext3D content is completely invisible on initial load. Requires a window resize to trigger rendering. Affects both the standalone GraphicsContext3D demo and the BlinnPhong demo light marker. Possibly related to #375 (wrong size/aspect on initial load) but this is a complete rendering failure, not just wrong aspect.
@@ -2834,6 +2837,9 @@ GraphicsContext3D content is completely invisible on initial load. Requires a wi
 Duplicated from MetalSprocketsAddOns#7.
 
 - `2026-04-14T16:12:57Z`: Related to #375 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
+- `2026-08-09T16:28:04Z`: Investigated: GraphicsContext3DDemoView itself looks correct — it derives aspect/viewport from the closure's drawableSize, and MetalSprockets' RenderViewViewModel.draw() already re-syncs currentDrawableSize defensively before invoking content. The suspect is GraphicsContext3DRenderPipeline (MetalSprocketsAddOns): geometry is only regenerated when 'hasValidViewport && (previousContext != context || previousViewProjection != viewProjection || previousViewport != viewport)'. If the pipeline's @MSState survives across the zero-size frames while previousContext/ViewProjection/Viewport get populated at a degenerate viewport, joinCount/fillVertexCount stay 0 and nothing draws until a resize dirties the comparison.
+
+Punting: can't confirm without running the app and watching the first frames, and the fix would land in MetalSprocketsAddOns, not here. Unblocker: run the demo with MS_RENDERVIEW_LOG_FRAME=1 and report the first few drawableSize values, or confirm you want me to launch the app and inspect it.
 
 ---
 
