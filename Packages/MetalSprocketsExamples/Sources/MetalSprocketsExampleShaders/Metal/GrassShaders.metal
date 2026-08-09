@@ -27,6 +27,10 @@ void grassMeshShader(MeshType mesh_out, const device GrassPointData* pointData [
     float3 bitangent = data.bitangent;
     float bladeLength = data.bladeLength;
 
+    // The light is world-space, so the shading normal has to be too. Blade geometry stays in object
+    // space because modelViewProjection already carries the model transform.
+    float3 worldNormal = normalize((uniforms.modelMatrix * float4(normal, 0.0)).xyz);
+
     uint vertexCount = 0;
     uint primitiveCount = 0;
 
@@ -73,8 +77,8 @@ void grassMeshShader(MeshType mesh_out, const device GrassPointData* pointData [
             float greenIntensity = 0.35 + 0.35 * tipFade;
             float4 color = float4(0.1 * greenIntensity, greenIntensity, 0.15 * greenIntensity, 1.0);
 
-            mesh_out.set_vertex(vertexCount++, VertexOut{pos0, normal, color});
-            mesh_out.set_vertex(vertexCount++, VertexOut{pos1, normal, color});
+            mesh_out.set_vertex(vertexCount++, VertexOut{pos0, worldNormal, color});
+            mesh_out.set_vertex(vertexCount++, VertexOut{pos1, worldNormal, color});
 
             if (seg > 0) {
                 uint base = vertexCount - 4;

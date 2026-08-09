@@ -2591,8 +2591,14 @@ priority: medium
 kind: bug
 labels: effort:m
 created: 2026-04-03T05:27:48Z
-updated: 2026-04-03T17:30:52Z
+updated: 2026-08-09T16:43:28Z
 +++
+
+- `2026-08-09T16:43:28Z`: Partial fix committed, leaving open for visual confirmation.
+
+Found a definite bug: grassMeshShader emitted the object-space normal straight into VertexOut, and grassFragmentShader lights it against a fixed world-space lightDir. GrassUniforms already carried modelMatrix but nothing used it — dead field. So as the sphere rotated, the lit side rotated with the model instead of staying put, which reads as inverted/backwards shading. Now the normal is transformed by modelMatrix before shading.
+
+Not closing because the issue says 'flipped' with no description and I could not verify on screen. If it still looks wrong, the next suspect is that every blade uses the ground normal rather than its own facing normal (cross(bladeDirection, bladeRight)), so blades are shaded like the sphere surface rather than like blades. Can you eyeball the demo and say which it is?
 
 ---
 
