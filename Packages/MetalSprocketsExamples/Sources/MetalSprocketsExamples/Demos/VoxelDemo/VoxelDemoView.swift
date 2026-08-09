@@ -83,22 +83,36 @@ public struct VoxelDemoView: View {
 
                 Text("# voxels: \(voxelSize.width * voxelSize.height * voxelSize.depth) (\(memory.formatted(.byteCount(style: .memory))) )")
                 Text("Voxel Scale: \(voxelScale.x) x \(voxelScale.y) x \(voxelScale.z)")
-                HStack {
-                    Button("/2") {
-                        voxelSize = MTLSize(width: voxelSize.width / 2, height: voxelSize.height / 2, depth: voxelSize.depth / 2)
-                        voxelScale *= 2
-                    }
-                    .disabled(voxelSize.width <= 4 || voxelSize.height <= 4 || voxelSize.depth <= 4)
-                    Button("x2") {
-                        voxelSize = MTLSize(width: voxelSize.width * 2, height: voxelSize.height * 2, depth: voxelSize.depth * 2)
-                        voxelScale *= 0.5
-                    }
-                    .disabled(voxelSize.width >= 512 || voxelSize.height >= 512 || voxelSize.depth >= 512)
+                LabeledContent("Resolution") {
+                    Slider(
+                        value: voxelResolutionExponent,
+                        in: Double(VoxelResolution.minimumExponent)...Double(VoxelResolution.maximumExponent),
+                        step: 1
+                    )
+                    .accessibilityLabel("Voxel Resolution")
+                    .accessibilityValue("\(voxelSize.width) cubed")
                 }
 
                 SuperImportWidget(url: $magicaVoxelURL, identifier: "magica-voxel", allowedContentTypes: [.magicaVoxel])
             }
             .formStyle(.grouped)
+        }
+    }
+
+    /// Drives ``voxelSize`` as a power of two, keeping the rendered model the same size on screen.
+    ///
+    /// The old pair of "/2" and "x2" buttons scaled ``voxelScale`` inversely so the voxel grid kept
+    /// its physical extent; the slider preserves that coupling.
+    private var voxelResolutionExponent: Binding<Double> {
+        Binding {
+            VoxelResolution.exponent(forDimension: voxelSize.width)
+        } set: { newValue in
+            let dimension = VoxelResolution.dimension(forExponent: newValue)
+            guard dimension != voxelSize.width else {
+                return
+            }
+            voxelScale *= Float(voxelSize.width) / Float(dimension)
+            voxelSize = MTLSize(width: dimension, height: dimension, depth: dimension)
         }
     }
 

@@ -2605,12 +2605,13 @@ Not closing because the issue says 'flipped' with no description and I could not
 ## 366: replace /2 *2 buttons in voxel with a slider
 
 +++
-status: open
+status: closed
 priority: medium
 kind: enhancement
 labels: effort:xs
 created: 2026-04-03T05:59:54Z
-updated: 2026-04-03T17:30:52Z
+updated: 2026-08-09T17:28:13Z
+closed: 2026-08-09T17:28:13Z
 +++
 
 ---
@@ -2821,7 +2822,7 @@ priority: medium
 kind: bug
 labels: effort:m, upstream
 created: 2026-04-14T02:52:09Z
-updated: 2026-08-09T16:23:47Z
+updated: 2026-08-09T16:43:45Z
 +++
 
 RenderView-based demos (Spinning Cube, GraphicsContext3D) render with incorrect aspect ratio or empty content on first load. Requires window resize or navigating away and back to fix. Likely caused by RenderView receiving a stale/zero drawable size before the NavigationSplitView detail column finishes layout. May be a DemoKit or MetalSprockets RenderView issue.
@@ -2829,6 +2830,9 @@ RenderView-based demos (Spinning Cube, GraphicsContext3D) render with incorrect 
 Duplicated from MetalSprocketsAddOns#3.
 
 - `2026-04-14T16:12:57Z`: Related to #376 — both are initial-load rendering failures, likely same root cause in RenderView layout timing.
+- `2026-08-09T16:43:45Z`: Punting: same blocker as #376, plus the repro list is stale. One of the two named demos ('Spinning Cube') no longer exists — there is no cube/spinning demo directory under Demos/ anymore. That leaves GraphicsContext3D, which is exactly #376's case, so this issue currently has no distinct reproduction of its own.
+
+Unblocker: name a demo that still shows the wrong-aspect-on-first-load symptom (as opposed to #376's renders-nothing symptom), or confirm this can be folded into #376.
 
 ---
 
