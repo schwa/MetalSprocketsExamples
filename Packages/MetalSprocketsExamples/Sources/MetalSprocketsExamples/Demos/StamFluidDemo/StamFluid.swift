@@ -72,8 +72,6 @@ struct StamFluid: Element {
 
     var body: some Element {
         get throws {
-            setupTexturesIfNeeded()
-
             if isRunning {
                 srcIndex = 1 - srcIndex
                 clearSourceTexture()
@@ -84,11 +82,6 @@ struct StamFluid: Element {
 
             let lib = try ShaderNamespace.examples("StamFluidShader")
             let N = UInt32(gridN)
-
-            if colormapTexture == nil || activeColormap != colormap {
-                colormapTexture = buildColormapTexture(colormap)
-                activeColormap = colormap
-            }
 
             let params = FluidParams(N: N, dt: 0.1, diff: diffusion, visc: viscosity)
             let interior = MTLSize(width: Int(N), height: Int(N), depth: 1)
@@ -140,7 +133,28 @@ struct StamFluid: Element {
                     }
                 }
             }
+            // Allocation and colormap rebuilds used to happen inline at the top of body. See #385.
+            // The guards above cover the first frame, which runs before setup.
+            .onSetupEnter { _ in
+                setupTexturesIfNeeded()
+                rebuildColormapTextureIfNeeded()
+            }
+            .onChange(of: gridN) {
+                setupTexturesIfNeeded()
+            }
+            .onChange(of: colormap) {
+                rebuildColormapTextureIfNeeded()
+            }
         }
+    }
+
+    /// Rebuilds the colormap texture when the selected colormap changes.
+    private func rebuildColormapTextureIfNeeded() {
+        guard colormapTexture == nil || activeColormap != colormap else {
+            return
+        }
+        colormapTexture = buildColormapTexture(colormap)
+        activeColormap = colormap
     }
 
     // MARK: - Visualization
