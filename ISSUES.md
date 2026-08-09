@@ -3173,7 +3173,7 @@ Found during the #379 audit.
 
 ---
 
-## 388: Panorama demo starts empty; ship a default panorama image
+## 388: SuperImportWell ignores a caller-supplied default URL, so Panorama opens on "No File"
 
 +++
 status: new
@@ -3181,7 +3181,7 @@ priority: medium
 kind: enhancement
 labels: effort:s
 created: 2026-08-09T18:00:21Z
-updated: 2026-08-09T18:00:24Z
+updated: 2026-08-09T19:06:03Z
 +++
 
 PanoramaDemoView renders nothing until the user picks a file: with no panoramaTexture it shows "Use 'Load Panorama' to load a 360° image" (PanoramaDemoView.swift:93), and the minimap overlay is hidden too. Every other demo shows something the moment it opens, and this one is also the reason the demo has no useful screenshot in DEMOS.md.
@@ -3193,6 +3193,26 @@ Notes:
 - Needs a licence that allows redistribution (Poly Haven's CC0 HDRIs are the obvious source if a new one is needed).
 - Keep the file small — the repo already carries a video and a .glb.
 - The empty-state text should stay for the case where loading the bundled image fails.
+
+\- `2026-08-09T19:06:03Z`: My original diagnosis was wrong. The image is already there and already wired up: PanoramaDemoView.swift:22 seeds panoramaURL from Bundle.module.url(forResource: "IndoorEnvironmentHDRI013_1K-HDR", withExtension: "exr"), the file is 1024x512 equirectangular, and it ships in the bundle (confirmed inside the built .app).
+
+The demo still opens on a warning triangle and 'No File'. That text is ContentUnavailableView in SuperImportWell.swift:28, and it is reached because SuperImportWell gates its content on its own helper.url, not on the binding it was handed:
+
+    if let url = helper.url { content(url) } else { ContentUnavailableView("No File", ...) }
+
+SuperImportHelper.url is initialised from storedURL(), i.e. a previously imported file in the caches directory. Nil on a fresh install. The sync is one-way — '.onChange(of: helper.url) { url = helper.url }' — so the demo's default never reaches the helper and the panorama is never shown.
+
+So this is not 'ship a default image', it is 'SuperImportWell ignores a caller-supplied default'. Retitling is warranted. It affects any demo that wants to ship a default: Panorama today, GLTF and Voxel if they ever want one.
+
+Attempted fix, reverted because I could not verify it: in SuperImportWell.init, adopt the binding when the helper has no stored file.
+
+    let helper = SuperImportHelper(identifier: identifier, allowedContentTypes: allowedContentTypes)
+    if helper.url == nil { helper.url = url.wrappedValue }
+    self._helper = State(initialValue: helper)
+
+That builds, but the demo still showed 'No File' afterwards, so either the fix does not take (helper state already restored elsewhere) or panoramaURL is nil at init for a reason I have not pinned down. I burned a lot of cycles on instrumentation that did not report — worth knowing for the next attempt: Swift inlines string literals of 15 bytes or fewer as immediates, so 'strings' on the binary will not find short debug markers, and print() to a redirected file is block-buffered so nothing appears until the process exits.
+
+Next step for whoever picks this up: confirm whether panoramaURL is non-nil at SuperImportWell.init, using a marker string longer than 15 bytes and reading the log after quitting the app.
 
 ---
 
