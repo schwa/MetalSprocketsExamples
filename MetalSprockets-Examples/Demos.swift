@@ -51,7 +51,8 @@ import SwiftUI
         PhosphorDemoView.self,
         StamFluidDemoView.self,
         LiquidGlassDemoView.self,
-        OpenSeaDemoView.self
+        OpenSeaDemoView.self,
+        GargantuaDemoView.self
     ]
 
     #if os(macOS)
@@ -624,6 +625,18 @@ extension TileAverageDemoView: @retroactive DemoView {
             description: "Imageblock tile averaging",
             longDescription: "Metal **imageblock** APIs: tile memory allocation, `imageblock_data` load/store, and tile dispatch in the simplest possible example.",
             group: "Basic"
+        )
+    }
+}
+
+extension GargantuaDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Gargantua",
+            systemImage: "circle.circle",
+            description: "Black hole with geodesic ray marching",
+            longDescription: "A Schwarzschild **black hole**: null geodesics marched per pixel through curved spacetime, with a Novikov-Thorne accretion disk (relativistic beaming, Doppler shift, gravitational redshift), baked milky way and disk-noise LUTs, MetalFX spatial upscaling, a compute bloom pyramid, and a cinematic camera path.",
+            group: "Complex"
         )
     }
 }

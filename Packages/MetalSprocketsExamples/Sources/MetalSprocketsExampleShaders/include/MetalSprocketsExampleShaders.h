@@ -2,6 +2,7 @@
 
 #import "MetalSprocketsAddOnsShaders.h"
 
+#import "GargantuaShaders.h"
 #import "GrassShaders.h"
 #import "LiquidGlassShaders.h"
 #import "OpenSeaShaders.h"
