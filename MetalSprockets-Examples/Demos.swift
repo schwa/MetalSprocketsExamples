@@ -53,7 +53,8 @@ import SwiftUI
         LiquidGlassDemoView.self,
         OpenSeaDemoView.self,
         GargantuaDemoView.self,
-        MeshDissolveDemoView.self
+        MeshDissolveDemoView.self,
+        StargateDemoView.self
     ]
 
     #if os(macOS)
@@ -625,6 +626,18 @@ extension TileAverageDemoView: @retroactive DemoView {
             name: "Tile Average",
             description: "Imageblock tile averaging",
             longDescription: "Metal **imageblock** APIs: tile memory allocation, `imageblock_data` load/store, and tile dispatch in the simplest possible example.",
+            group: "Basic"
+        )
+    }
+}
+
+extension StargateDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Stargate",
+            systemImage: "sparkles.rectangle.stack",
+            description: "2001-style slit-scan effect",
+            longDescription: "Procedural recreation of the **2001: A Space Odyssey** slit-scan sequence: a fullscreen fragment shader warps screen space into a tunnel with streaks stretched along its depth axis. Five variants evolve the look from a radial tunnel to the film's organic vertical-vanishing-line shot, with per-layer feature toggles.",
             group: "Basic"
         )
     }
