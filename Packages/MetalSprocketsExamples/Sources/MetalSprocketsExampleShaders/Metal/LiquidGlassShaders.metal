@@ -4,23 +4,8 @@ using namespace metal;
 
 namespace LiquidGlass {
 
-    #define MAX_PILLS 8
-
-    // Layout must match Uniforms in LiquidGlassPipeline.swift.
-    struct Uniforms {
-        float2 resolution;
-        float time;
-        uint pillCount;
-        float ior;
-        float dispersion;
-        float bevelWidth;
-        float frost;
-        float blend;
-        float padding0;
-        float padding1;
-        float padding2;
-        float4 pills[MAX_PILLS]; // center.xy, halfSize.zw in pixels
-    };
+    // LiquidGlassUniforms is declared in LiquidGlassShaders.h, shared with Swift.
+    using Uniforms = LiquidGlassUniforms;
 
     struct VSOut {
         float4 position [[position]];
@@ -107,7 +92,7 @@ namespace LiquidGlass {
     }
 
     [[fragment]] half4 liquidGlassFragment(VSOut in [[stage_in]],
-                                           constant Uniforms &uniforms,
+                                           constant LiquidGlassUniforms &uniforms,
                                            texture2d<half> textTexture) {
         constant Uniforms &u = uniforms;
         texture2d<half> textTex = textTexture;

@@ -1,4 +1,5 @@
 import Foundation
+import MetalSprocketsExampleShaders
 
 struct Pill: Equatable {
     /// Center in normalized view coordinates (0...1, y down).
@@ -7,8 +8,11 @@ struct Pill: Equatable {
     var halfSize: SIMD2<Float>
 }
 
+/// User-tweakable state, in resolution-independent units so the demo behaves
+/// the same at any view size. `LiquidGlassPipeline.makeUniforms()` converts to
+/// pixels for the shader.
 struct GlassParameters: Equatable {
-    static let maxPills = 8
+    static let maxPills = Int(kLiquidGlassMaxPills)
 
     var pills: [Pill] = [
         Pill(center: [0.38, 0.42], halfSize: [0.24, 0.11]),

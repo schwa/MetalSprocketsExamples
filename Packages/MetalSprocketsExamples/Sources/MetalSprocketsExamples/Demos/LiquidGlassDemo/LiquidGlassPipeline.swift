@@ -1,24 +1,15 @@
 import Metal
 import MetalSprockets
+import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import simd
 
-// Layout must match Uniforms in LiquidGlassShaders.metal.
-struct LiquidGlassUniforms {
-    var resolution: SIMD2<Float> = .zero
-    var time: Float = 0
-    var pillCount: UInt32 = 0
-    var ior: Float = 1.45
-    var dispersion: Float = 0.04
-    var bevelWidth: Float = 30
-    var frost: Float = 1.5
-    var blend: Float = 1
-    var padding0: Float = 0
-    var padding1: Float = 0
-    var padding2: Float = 0
-    var pills: (SIMD4<Float>, SIMD4<Float>, SIMD4<Float>, SIMD4<Float>, SIMD4<Float>, SIMD4<Float>, SIMD4<Float>, SIMD4<Float>) = (.zero, .zero, .zero, .zero, .zero, .zero, .zero, .zero)
-}
-
+/// Draws a fullscreen triangle whose fragment shader does all the work:
+/// SDF pills refracting a procedurally generated background.
+///
+/// The uniforms struct (`LiquidGlassUniforms`) lives in a C header compiled
+/// into both this module and the Metal shaders, so CPU and GPU always agree
+/// on its memory layout.
 struct LiquidGlassPipeline: Element {
     let parameters: GlassParameters
     let time: Float
@@ -56,6 +47,8 @@ struct LiquidGlassPipeline: Element {
                 }
             }
             .onSetupEnter { environment in
+                // Texture creation needs a device, which is only available once
+                // the element is set up; the guard makes this a one-time cost.
                 guard textTexture == nil, let device = environment.device else {
                     return
                 }
@@ -64,6 +57,8 @@ struct LiquidGlassPipeline: Element {
         }
     }
 
+    /// Converts the view-space `GlassParameters` (normalized 0...1 coordinates,
+    /// fractions of view height) into the pixel-space values the shader expects.
     private func makeUniforms() -> LiquidGlassUniforms {
         let pills = Array(parameters.pills.prefix(GlassParameters.maxPills))
         var uniforms = LiquidGlassUniforms()
@@ -74,8 +69,12 @@ struct LiquidGlassPipeline: Element {
         uniforms.dispersion = parameters.dispersion
         uniforms.frost = parameters.frost
         uniforms.blend = parameters.blend * resolution.y
+        // The bevel cannot be wider than the smallest pill's half-extent, or the
+        // height profile would fold over itself.
         let smallestExtent = pills.map { min($0.halfSize.x, $0.halfSize.y) * resolution.y }.min() ?? 1
         uniforms.bevelWidth = min(parameters.bevel * resolution.y, smallestExtent * 0.95)
+        // C fixed-size arrays import into Swift as tuples; write through raw
+        // bytes to index them.
         withUnsafeMutableBytes(of: &uniforms.pills) { buffer in
             let slots = buffer.bindMemory(to: SIMD4<Float>.self)
             for (index, pill) in pills.enumerated() {

@@ -3,6 +3,7 @@
 #import "MetalSprocketsAddOnsShaders.h"
 
 #import "GrassShaders.h"
+#import "LiquidGlassShaders.h"
 #import "MetalCanvasShaders.h"
 #import "PBRShaders.h"
 #import "Panorama.h"
