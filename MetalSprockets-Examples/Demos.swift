@@ -52,7 +52,8 @@ import SwiftUI
         StamFluidDemoView.self,
         LiquidGlassDemoView.self,
         OpenSeaDemoView.self,
-        GargantuaDemoView.self
+        GargantuaDemoView.self,
+        MeshDissolveDemoView.self
     ]
 
     #if os(macOS)
@@ -624,6 +625,18 @@ extension TileAverageDemoView: @retroactive DemoView {
             name: "Tile Average",
             description: "Imageblock tile averaging",
             longDescription: "Metal **imageblock** APIs: tile memory allocation, `imageblock_data` load/store, and tile dispatch in the simplest possible example.",
+            group: "Basic"
+        )
+    }
+}
+
+extension MeshDissolveDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Mesh Dissolve",
+            systemImage: "cube.transparent",
+            description: "Triplanar-grid dissolve effects",
+            longDescription: "A cube shaded with a **triplanar projected grid** and a dozen dissolve effects (noise, voronoi chunks, fracture, crumble with vertex displacement, hex cells, voxel collapse, ...). Each effect is a scalar field compared against an animated threshold, with `discard_fragment` and a leading-edge glow.",
             group: "Basic"
         )
     }

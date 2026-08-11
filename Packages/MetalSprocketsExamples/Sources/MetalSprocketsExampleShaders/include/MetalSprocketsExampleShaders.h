@@ -6,6 +6,7 @@
 #import "GrassShaders.h"
 #import "LiquidGlassShaders.h"
 #import "OpenSeaShaders.h"
+#import "MeshDissolveShaders.h"
 #import "MetalCanvasShaders.h"
 #import "PBRShaders.h"
 #import "Panorama.h"
