@@ -49,7 +49,8 @@ import SwiftUI
         SlugTextPanelDemoView.self,
         ShaderGraphDemoView.self,
         PhosphorDemoView.self,
-        StamFluidDemoView.self
+        StamFluidDemoView.self,
+        LiquidGlassDemoView.self
     ]
 
     #if os(macOS)
@@ -621,6 +622,18 @@ extension TileAverageDemoView: @retroactive DemoView {
             name: "Tile Average",
             description: "Imageblock tile averaging",
             longDescription: "Metal **imageblock** APIs: tile memory allocation, `imageblock_data` load/store, and tile dispatch in the simplest possible example.",
+            group: "Basic"
+        )
+    }
+}
+
+extension LiquidGlassDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Liquid Glass",
+            systemImage: "drop",
+            description: "Refractive liquid-glass pills over an animated background",
+            longDescription: "Apple-style **liquid glass**: SDF pills with a circular bevel refract an animated marquee background, with chromatic dispersion, fresnel rim glow, frost blur, and smooth-min blending so dragged pills merge like liquid.",
             group: "Basic"
         )
     }
