@@ -50,7 +50,8 @@ import SwiftUI
         ShaderGraphDemoView.self,
         PhosphorDemoView.self,
         StamFluidDemoView.self,
-        LiquidGlassDemoView.self
+        LiquidGlassDemoView.self,
+        OpenSeaDemoView.self
     ]
 
     #if os(macOS)
@@ -623,6 +624,18 @@ extension TileAverageDemoView: @retroactive DemoView {
             description: "Imageblock tile averaging",
             longDescription: "Metal **imageblock** APIs: tile memory allocation, `imageblock_data` load/store, and tile dispatch in the simplest possible example.",
             group: "Basic"
+        )
+    }
+}
+
+extension OpenSeaDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Open Sea",
+            systemImage: "water.waves",
+            description: "Gerstner-wave ocean with analytic sky",
+            longDescription: "A realtime **ocean**: five Gerstner wave components displace a camera-centred radial grid generated entirely from vertex IDs (no vertex buffer), with analytic normals, FBM capillary detail, fresnel sky reflection, sun glitter, crest foam, and a time-of-day palette. Drag to orbit, pinch to zoom.",
+            group: "Complex"
         )
     }
 }
