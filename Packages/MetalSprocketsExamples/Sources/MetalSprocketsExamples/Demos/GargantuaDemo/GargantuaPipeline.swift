@@ -264,7 +264,11 @@ struct GargantuaPipeline: Element {
 
         func make(_ width: Int, _ height: Int, usage: MTLTextureUsage, label: String) -> MTLTexture? {
             let descriptor = MTLTextureDescriptor.texture2DDescriptor(
-                pixelFormat: .rgba16Float, width: max(1, width), height: max(1, height), mipmapped: false)
+                pixelFormat: .rgba16Float,
+                width: max(1, width),
+                height: max(1, height),
+                mipmapped: false
+            )
             descriptor.usage = usage
             descriptor.storageMode = .private
             let texture = device.makeTexture(descriptor: descriptor)

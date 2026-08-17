@@ -126,15 +126,15 @@ enum StargateVersion: String, CaseIterable, Identifiable, Sendable {
 struct StargateFeatures: OptionSet, Hashable, Sendable {
     let rawValue: UInt32
 
-    static let streaks = StargateFeatures(rawValue: 1 << 0)
-    static let sliceFade = StargateFeatures(rawValue: 1 << 1)
-    static let radialBands = StargateFeatures(rawValue: 1 << 2)
-    static let core = StargateFeatures(rawValue: 1 << 3)
-    static let vignette = StargateFeatures(rawValue: 1 << 4)
-    static let flicker = StargateFeatures(rawValue: 1 << 5)
-    static let filmTone = StargateFeatures(rawValue: 1 << 6)
-    static let colorPalette = StargateFeatures(rawValue: 1 << 7)
-    static let tunnelGrid = StargateFeatures(rawValue: 1 << 8)
+    static let streaks = Self(rawValue: 1 << 0)
+    static let sliceFade = Self(rawValue: 1 << 1)
+    static let radialBands = Self(rawValue: 1 << 2)
+    static let core = Self(rawValue: 1 << 3)
+    static let vignette = Self(rawValue: 1 << 4)
+    static let flicker = Self(rawValue: 1 << 5)
+    static let filmTone = Self(rawValue: 1 << 6)
+    static let colorPalette = Self(rawValue: 1 << 7)
+    static let tunnelGrid = Self(rawValue: 1 << 8)
 
     static let all: StargateFeatures = [.streaks, .sliceFade, .radialBands, .core, .vignette, .flicker, .filmTone, .colorPalette, .tunnelGrid]
 }
