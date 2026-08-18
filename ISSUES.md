@@ -3324,3 +3324,153 @@ The dependency caveat does not bite either of them: body reads currentTexture (a
 Verified against the updated dependency on a running build: Game of Life animates, and the Phosphor demo renders and animates.
 
 ---
+
+## 391: ANSIParser has no call sites
+
++++
+status: new
+priority: low
+kind: task
+labels: cleanup, ponytail-audit
+created: 2026-08-18T17:31:56Z
++++
+
+## What's wrong
+
+`ANSIParser` appears to be leftover support code. The audit found no references outside its own file, so it adds maintenance surface without serving a demo.
+
+## Evidence
+
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Support/ANSIParser.swift`
+- Repository search only finds the declaration.
+
+---
+
+## 392: BufferView helpers have no call sites
+
++++
+status: new
+priority: low
+kind: task
+labels: cleanup, ponytail-audit
+created: 2026-08-18T17:31:56Z
++++
+
+## What's wrong
+
+`BufferView` and its `MTLBuffer`/`MTLDevice` convenience subscripts appear unused. The audit found no call sites outside the helper file itself.
+
+## Evidence
+
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamplesSupport/BufferView.swift`
+- Repository search only finds declarations and same-file extensions.
+
+---
+
+## 393: VisionOS immersive cube content is not wired into the app
+
++++
+status: new
+priority: medium
+kind: bug
+labels: cleanup, visionos, ponytail-audit
+created: 2026-08-18T17:31:57Z
++++
+
+## What's wrong
+
+The VisionOS demo calls `openImmersiveSpace(id: "ImmersiveCube")`, but the audit did not find a matching `ImmersiveSpace` scene registration. `ImmersiveCubeContent` appears disconnected from the app entry point.
+
+## Evidence
+
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Demos/VisionOSDemo/VisionOSDemoView.swift`
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Support/ImmersiveCubeElement.swift`
+- `MetalSprockets-Examples/MetalSprocketsExamplesApp.swift`
+
+---
+
+## 394: SDF demo carries a direct AsyncAlgorithms dependency
+
++++
+status: new
+priority: low
+kind: task
+labels: cleanup, dependencies, ponytail-audit
+created: 2026-08-18T17:31:57Z
++++
+
+## What's wrong
+
+`AsyncAlgorithms` is imported in one demo to advance SDF time. That makes the package graph heavier for a small piece of frame timing logic.
+
+## Evidence
+
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Demos/SDFDemo/SDFDemoView.swift` imports `AsyncAlgorithms`.
+- `Packages/MetalSprocketsExamples/Package.swift` declares `swift-async-algorithms` and product `AsyncAlgorithms`.
+- Repository import search found no other `AsyncAlgorithms` imports.
+
+---
+
+## 395: Package declares unused direct dependencies
+
++++
+status: new
+priority: low
+kind: task
+labels: cleanup, dependencies, ponytail-audit
+created: 2026-08-18T17:31:57Z
++++
+
+## What's wrong
+
+The package declares direct dependencies that the audit could not find in source imports or symbol searches. They add package-resolution/build graph noise without visible use.
+
+## Evidence
+
+- `swift-collections` / `Collections` is declared in `Package.swift`, but no source imports `Collections`.
+- `earcut-swift` / `earcut` is declared in `Package.swift`, but source search found no `earcut` usage.
+
+---
+
+## 396: SceneGraph demo uses a dependency for one editor panel
+
++++
+status: new
+priority: low
+kind: task
+labels: cleanup, dependencies, ponytail-audit
+created: 2026-08-18T17:31:58Z
++++
+
+## What's wrong
+
+`Panels` is a direct package dependency, but the audit found it imported in only the SceneGraph demo for its editor panel. That is a narrow use for a package-wide dependency.
+
+## Evidence
+
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Demos/SceneGraphDemo/SceneGraphDemoView.swift` imports `Panels`.
+- `Packages/MetalSprocketsExamples/Package.swift` declares `Panels`.
+- Repository import search found no other `Panels` imports.
+
+---
+
+## 397: TimingFunction abstraction has one tiny caller
+
++++
+status: new
+priority: low
+kind: task
+labels: cleanup,ponytail-audit
+created: 2026-08-18T17:31:58Z
++++
+
+## What's wrong
+
+The timing helper defines a protocol plus multiple concrete types, but the audit found usage only in the lighting animator. The abstraction is larger than its current use.
+
+## Evidence
+
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamplesSupport/TimingFunction.swift`
+- `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Support/LightingModels/Lighting+Stuff.swift`
+
+---
