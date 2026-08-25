@@ -3460,7 +3460,7 @@ created: 2026-08-18T17:31:58Z
 status: new
 priority: low
 kind: task
-labels: cleanup,ponytail-audit
+labels: cleanup, ponytail-audit
 created: 2026-08-18T17:31:58Z
 +++
 
@@ -3472,5 +3472,23 @@ The timing helper defines a protocol plus multiple concrete types, but the audit
 
 - `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamplesSupport/TimingFunction.swift`
 - `Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Support/LightingModels/Lighting+Stuff.swift`
+
+---
+
+## 398: Release builds can embed development-only Metal shader source
+
++++
+status: new
+priority: high
+kind: bug
+labels: metal,release-builds
+created: 2026-08-25T22:10:26Z
++++
+
+The MetalCompilerPlugin is attached to the MetalSprocketsExampleShaders, PhosphorShaders, and ShaderGraphShaders targets, but the manifest does not provide a configuration-dependent compilation condition to the plugin. MetalCompilerPlugin cannot read SwiftPM's active debug or release configuration directly. As a result, its debug metallib behavior cannot differ safely between configurations, and release products can contain development-only embedded Metal shader source. App Store validation reports ITMS-91306 for affected archives.
+
+Expected: Debug builds retain shader debugging support. Release builds produce metallibs without embedded development-only shader source.
+
+Actual: The plugin invocation has no target build-setting signal that distinguishes debug from release.
 
 ---
