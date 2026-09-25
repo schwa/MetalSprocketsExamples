@@ -936,22 +936,3 @@ demos:
       choreography: []
       incomplete: true
       notes: "INCOMPLETE — wants graph-picker cycling through example graphs. Come back."
-
-  - name: Phosphor
-    id: Phosphor
-    description: Live-compile Metal shader snippets (shadertoy-style)
-    long_description: >
-      A shadertoy-style editor: write a Metal snippet, it's compiled at runtime
-      into a visible_function_table entry inside a compute kernel, and the
-      output is ping-ponged into a display texture. Ships with a library of
-      example snippets.
-    group: Complex
-    keywords: [shadertoy, live-compile, visible-functions, compute, configurable]
-    screenshot: null
-    platform: null
-    video:
-      duration: 10
-      interest: high
-      choreography: []
-      incomplete: true
-      notes: "INCOMPLETE — wants snippet-picker cycling. Come back."

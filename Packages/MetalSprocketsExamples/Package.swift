@@ -42,7 +42,6 @@ let package = Package(
                 "MetalSprocketsExamplesSupport",
                 "MetalSprocketsExampleShaders",
                 "MetalSprocketsShaderGraph",
-                "PhosphorUI",
                 "ShaderGraphSupport",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                 .product(name: "Collections", package: "swift-collections"),
@@ -73,8 +72,7 @@ let package = Package(
                 .copy("Resources/IndoorEnvironmentHDRI013_1K-HDR.exr"),
                 .copy("Resources/Samples"),
                 .copy("Resources/teapot.obj"),
-                .copy("Resources/VirtualCity.glb"),
-                .copy("Demos/PhosphorDemo/Examples")
+                .copy("Resources/VirtualCity.glb")
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
@@ -102,27 +100,6 @@ let package = Package(
             name: "ExamplesShaderGraph",
             dependencies: [
                 "ShaderGraphShaders"
-            ]
-        ),
-        .target(
-            name: "PhosphorUI",
-            dependencies: [
-                "PhosphorShaders",
-                .product(name: "MetalSprockets", package: "MetalSprockets"),
-                .product(name: "MetalSprocketsUI", package: "MetalSprockets"),
-                .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns"),
-                .product(name: "MetalSupport", package: "MetalSupport")
-            ],
-            resources: [
-                .copy("Resources/Support.h")
-            ]
-        ),
-        .target(
-            name: "PhosphorShaders",
-            exclude: ["Metal"],
-            publicHeadersPath: "include",
-            plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(

@@ -48,7 +48,6 @@ import SwiftUI
         SlugSpinningSphereDemoView.self,
         SlugTextPanelDemoView.self,
         ShaderGraphDemoView.self,
-        PhosphorDemoView.self,
         StamFluidDemoView.self,
         LiquidGlassDemoView.self,
         OpenSeaDemoView.self,

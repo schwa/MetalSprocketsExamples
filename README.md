@@ -49,7 +49,6 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 | **Tiled SDF** | Tile-culled 2D SDF rendering | [<img src="Documentation/screenshots/thumbnails/TiledSDF.png" width="320" alt="Tiled SDF">](Documentation/screenshots/TiledSDF.png) |
 | **Ray Tracing** | Cornell box path tracer | — |
 | **Shader Graph** | Build Metal shaders as Swift DSL graphs | — |
-| **Phosphor** | Live-compile Metal shader snippets (shadertoy-style) | — |
 
 ### In-progress
 

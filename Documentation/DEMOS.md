@@ -418,16 +418,6 @@ A Swift DSL that generates Metal code via MTLFunctionStitchingGraph. Build fragm
 
 ---
 
-### Phosphor
-
-> Live-compile Metal shader snippets (shadertoy-style)
-
-A shadertoy-style editor: write a Metal snippet, it's compiled at runtime into a visible_function_table entry inside a compute kernel, and the output is ping-ponged into a display texture. Ships with a library of example snippets.
-
-**Tags:** `shadertoy`  `live-compile`  `visible-functions`  `compute`  `configurable`
-
----
-
 ## In-progress
 
 ### Color Adjust
