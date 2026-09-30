@@ -32,7 +32,6 @@ steps:
 
   - label: ":hammer: Example ({{matrix.destination}}, {{matrix.configuration}})"
     key: "example"
-    # DerivedData lives in the checkout, so jobs on different agents never share (and lock) one build database.
     matrix:
       setup:
         destination:
@@ -48,7 +47,6 @@ steps:
       -scheme MetalSprockets-Examples
       -configuration {{matrix.configuration}}
       -destination '{{matrix.destination}}'
-      -derivedDataPath .derivedData/{{matrix.configuration}}
       -skipPackagePluginValidation
       -skipMacroValidation
       CODE_SIGNING_ALLOWED=NO
