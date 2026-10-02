@@ -39,3 +39,6 @@ Documentation/reel-raw.mov.timeline.json
 Documentation/reel-raw.log.jsonl
 Documentation/reel-raw.recorder.jsonl
 Documentation/overlays/rendered/
+
+# SwiftPM resolved pins
+Packages/MetalSprocketsExamples/Package.resolved
