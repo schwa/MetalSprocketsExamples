@@ -26,6 +26,9 @@ public struct VoxelDemoView: View {
     private var colorTexture: MTLTexture?
 
     @State
+    private var resourceCollection: ResourceCollection?
+
+    @State
     private var voxelSize = MTLSize(width: 32, height: 32, depth: 32)
 
     /// Slider position for ``voxelSize``, as a power-of-two exponent.
@@ -51,18 +54,24 @@ public struct VoxelDemoView: View {
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             RenderView { _, drawableSize in
-                try ComputePass(label: "VoxelToTexture") {
-                    if let voxelTexture, let colorTexture {
-                        try VoxelToTextureComputePipeline(projection: projection, aspectRatio: Float(drawableSize.width / drawableSize.height), cameraMatrix: cameraMatrix, voxelTexture: voxelTexture, outputTexture: colorTexture, voxelScale: voxelScale)
+                try Group {
+                    try ComputePass(label: "VoxelToTexture") {
+                        // The previous frame may still be sampling the color texture.
+                        QueueBarrier(after: .fragment, before: .dispatch)
+                        if let voxelTexture, let colorTexture {
+                            try VoxelToTextureComputePipeline(projection: projection, aspectRatio: Float(drawableSize.width / drawableSize.height), cameraMatrix: cameraMatrix, voxelTexture: voxelTexture, outputTexture: colorTexture, voxelScale: voxelScale)
+                        }
+                    }
+                    .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
+                    try RenderPass {
+                        if let colorTexture {
+                            try TextureBillboardPipeline(specifier: .texture2D(colorTexture))
+                        }
                     }
                 }
-                try RenderPass {
-                    if let colorTexture {
-                        try TextureBillboardPipeline(specifier: .texture2D(colorTexture))
-                    }
-                }
+                .useResourceCollection(resourceCollection ?? makeResourceCollection())
                 .onChange(of: drawableSize, initial: true) { _, _ in
-                    colorTexture = makeRenderTexture(size: MTLSize(drawableSize))
+                    replace(&colorTexture, with: makeRenderTexture(size: MTLSize(drawableSize)))
                 }
             }
         }
@@ -80,7 +89,7 @@ public struct VoxelDemoView: View {
             do {
                 let model = try MagicaVoxelModel(contentsOf: magicaVoxelURL)
                 let texture = try model.makeTexture()
-                voxelTexture = texture
+                replace(&voxelTexture, with: texture)
                 voxelScale = SIMD3<Float>(0.01, 0.01, 0.01)
             }
             catch {
@@ -128,7 +137,7 @@ public struct VoxelDemoView: View {
     func generateDefaultVoxelTexture() {
         let device = _MTLCreateSystemDefaultDevice()
         do {
-            voxelTexture = try makeSphereVoxelTexture(device: device, size: voxelSize)
+            replace(&voxelTexture, with: try makeSphereVoxelTexture(device: device, size: voxelSize))
             if voxelScale == SIMD3<Float>(0, 0, 0) {
                 voxelScale = SIMD3<Float>(1, 1, 1)
             }
@@ -136,6 +145,22 @@ public struct VoxelDemoView: View {
         catch {
             assertionFailure("Failed to create voxel texture: \(error)")
         }
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: _MTLCreateSystemDefaultDevice())
+        try collection.register([voxelTexture, colorTexture])
+        resourceCollection = collection
+        return collection
+    }
+
+    private func replace(_ texture: inout MTLTexture?, with newTexture: MTLTexture) {
+        do {
+            try resourceCollection?.replace([texture], with: [newTexture])
+        } catch {
+            assertionFailure("\(error)")
+        }
+        texture = newTexture
     }
 
     func makeRenderTexture(size: MTLSize) -> MTLTexture {

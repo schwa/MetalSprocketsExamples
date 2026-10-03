@@ -88,11 +88,12 @@ public struct SDFRenderPipeline {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 // Full-screen quad vertices (triangle strip order)
-                let vertices: [Packed3<Float>] = [
-                    [-1, -1, 0],
-                    [ 1, -1, 0],
-                    [-1, 1, 0],
-                    [ 1, 1, 0]
+                // Packed float3 per vertex (stride 12) to match the inferred vertex descriptor.
+                let vertices: [Float] = [
+                    -1, -1, 0,
+                    1, -1, 0,
+                    -1, 1, 0,
+                    1, 1, 0
                 ]
 
                 // Extract camera position from camera matrix
@@ -116,10 +117,10 @@ public struct SDFRenderPipeline {
                 )
 
                 Draw { encoder in
-                    encoder.setVertexUnsafeBytes(of: vertices, index: 0)
-                    encoder.setFragmentUnsafeBytes(of: uniforms, index: 0)
-                    encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertices.count)
+                    encoder.drawPrimitives(primitiveType: .triangleStrip, vertexStart: 0, vertexCount: 4)
                 }
+                .vertexValues(vertices, index: 0)
+                .parameter("uniforms", functionType: .fragment, value: uniforms)
             }
             .vertexDescriptor(vertexShader.inferredVertexDescriptor())
         }

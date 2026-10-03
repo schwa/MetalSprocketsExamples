@@ -25,6 +25,13 @@ struct GameOfLife: Element {
     @MSState
     private var seeded = false
 
+    /// Seeding runs as a compute pass in the next frame, on the same queue, so it is ordered against in-flight frames.
+    @MSState
+    private var pendingSeed: InitialPattern?
+
+    @MSState
+    private var resourceCollection: ResourceCollection?
+
     let isRunning: Bool
     let pattern: InitialPattern
 
@@ -49,45 +56,70 @@ struct GameOfLife: Element {
     var body: some Element {
         get throws {
             let shaderLibrary = try ShaderNamespace.examples("GameOfLifeShader")
+            let resourceCollection = try self.resourceCollection ?? makeResourceCollection()
 
             return try Group {
                 // Textures are allocated in onSetupEnter, which runs after the first body pass, so the
                 // first frame draws nothing.
                 if let currentTexture, let nextTexture {
+                    if let pendingSeed {
+                        try ComputePass(label: "Seed") {
+                            // Overwrites what earlier frames may still be stepping or displaying.
+                            QueueBarrier(after: [.dispatch, .fragment], before: .dispatch)
+                            try seedPipeline(pattern: pendingSeed, texture: currentTexture, shaderLibrary: shaderLibrary)
+                        }
+                        .onSubmissionCommitted { _ in
+                            if self.pendingSeed == pendingSeed {
+                                self.pendingSeed = nil
+                            }
+                        }
+                    }
+
                     // Update simulation if running
                     if isRunning {
                         try ComputePass {
+                            // Reads the previous step's output and overwrites what the previous frame displayed.
+                            QueueBarrier(after: [.dispatch, .fragment], before: .dispatch)
                             try ComputePipeline(computeKernel: try shaderLibrary.updateGrid) {
                                 try ComputeDispatch(threadsPerGrid: MTLSize(width: gridSize.width, height: gridSize.height, depth: 1))
                                 .parameter("currentState", texture: currentTexture)
                                 .parameter("nextState", texture: nextTexture)
                             }
                         }
-                        .onCommandBufferCompleted { _ in
-                            // Swap textures after compute pass completes
+                        .onSubmissionCommitted { _ in
+                            // Queue barriers order later frames after this step, so swap once it is committed.
                             currentTextureIsA.toggle()
                         }
                     }
 
                     // Display the current state using billboard shader
                     try RenderPass {
+                        // currentTexture was written by the previous frame's step (or this frame's seed).
+                        QueueBarrier(after: .dispatch, before: .fragment)
                         try TextureBillboardPipeline(specifier: .texture2D(currentTexture))
                     }
                 }
             }
+            .useResourceCollection(resourceCollection)
             .onSetupEnter { _ in
                 // Allocating and seeding belong in setup, not in body. See #385.
-                setupTextures()
+                try setupTextures()
                 guard !seeded else {
                     return
                 }
                 seeded = true
-                initializeGrid()
+                pendingSeed = pattern
             }
             .onChange(of: pattern) {
-                initializeGrid()
+                pendingSeed = pattern
             }
         }
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: device.orThrow(.missingEnvironment("device")))
+        resourceCollection = collection
+        return collection
     }
 
     private var currentTexture: MTLTexture? {
@@ -98,83 +130,40 @@ struct GameOfLife: Element {
         currentTextureIsA ? textureB : textureA
     }
 
-    private func setupTextures() {
+    private func setupTextures() throws {
         guard textureA == nil || textureB == nil, let device = self.device else {
             return
         }
 
         textureA = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: gridSize.width, height: gridSize.height, storageMode: .private, label: "Game of Life A")
         textureB = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: gridSize.width, height: gridSize.height, storageMode: .private, label: "Game of Life B")
+        try resourceCollection?.register([textureA, textureB])
     }
 
-    private func initializeGrid() {
-        guard let device = self.device, let textureA = self.textureA, let textureB = self.textureB else {
-            return
-        }
-
-        guard let shaderLibrary = try? ShaderNamespace.examples("GameOfLifeShader") else {
-            return
-        }
-
-        let initKernel: ComputeKernel
-        var parameters: [(String, Any)] = []
-
-        do {
-            switch pattern {
-            case .glider:
-                initKernel = try shaderLibrary.initializeGlider
-                // Place glider at center
-                let offset = SIMD2<UInt32>(UInt32(gridSize.width / 2), UInt32(gridSize.height / 2))
-                parameters.append(("offset", offset))
-            case .random:
-                initKernel = try shaderLibrary.initializeRandom
-                let density: Float = 0.3
-                let seed = UInt32.random(in: 0..<UInt32.max)
-                parameters.append(("density", density))
-                parameters.append(("seed", seed))
-            case .clear:
-                initKernel = try shaderLibrary.clearGrid
-            case .blinker:
-                initKernel = try shaderLibrary.clearGrid // Start with clear then add pattern manually
-            case .toad:
-                initKernel = try shaderLibrary.clearGrid // Start with clear then add pattern manually
+    // Only the current texture needs seeding; the next step overwrites the other one.
+    @ElementBuilder
+    private func seedPipeline(pattern: InitialPattern, texture: MTLTexture, shaderLibrary: ShaderNamespace) throws -> some Element {
+        let grid = MTLSize(width: gridSize.width, height: gridSize.height, depth: 1)
+        switch pattern {
+        case .glider:
+            try ComputePipeline(computeKernel: try shaderLibrary.initializeGlider) {
+                try ComputeDispatch(threadsPerGrid: grid)
+                    .parameter("texture", texture: texture)
+                    .parameter("offset", value: SIMD2<UInt32>(UInt32(gridSize.width / 2), UInt32(gridSize.height / 2)))
             }
-        } catch {
-            return
-        }
-
-        // Initialize both textures
-        for texture in [textureA, textureB] {
-            let commandQueue = device.makeCommandQueue().orFatalError("Failed to create command queue")
-            let commandBuffer = commandQueue.makeCommandBuffer().orFatalError("Failed to create command buffer")
-            let computeEncoder = commandBuffer.makeComputeCommandEncoder().orFatalError("Failed to create compute encoder")
-
-            guard let pipelineState = try? device.makeComputePipelineState(function: initKernel.function) else { continue }
-            computeEncoder.setComputePipelineState(pipelineState)
-            computeEncoder.setTexture(texture, index: 0)
-
-            // Set parameters based on pattern
-            for (index, (_, value)) in parameters.enumerated() {
-                if let uint2Value = value as? SIMD2<UInt32> {
-                    computeEncoder.setBytes([uint2Value], length: MemoryLayout<SIMD2<UInt32>>.size, index: index)
-                } else if let floatValue = value as? Float {
-                    computeEncoder.setBytes([floatValue], length: MemoryLayout<Float>.size, index: index)
-                } else if let uintValue = value as? UInt32 {
-                    computeEncoder.setBytes([uintValue], length: MemoryLayout<UInt32>.size, index: index)
-                }
+        case .random:
+            try ComputePipeline(computeKernel: try shaderLibrary.initializeRandom) {
+                try ComputeDispatch(threadsPerGrid: grid)
+                    .parameter("texture", texture: texture)
+                    .parameter("density", value: Float(0.3))
+                    .parameter("seed", value: UInt32.random(in: 0..<UInt32.max))
             }
-
-            let threadsPerThreadgroup = MTLSize(width: 16, height: 16, depth: 1)
-            let threadgroups = MTLSize(
-                width: (gridSize.width + 15) / 16,
-                height: (gridSize.height + 15) / 16,
-                depth: 1
-            )
-            computeEncoder.dispatchThreadgroups(threadgroups, threadsPerThreadgroup: threadsPerThreadgroup)
-
-            computeEncoder.endEncoding()
-            commandBuffer.commit()
-            commandBuffer.waitUntilCompleted()
+        case .clear, .blinker, .toad:
+            // Blinker and toad have no kernels yet; they start clear.
+            try ComputePipeline(computeKernel: try shaderLibrary.clearGrid) {
+                try ComputeDispatch(threadsPerGrid: grid)
+                    .parameter("texture", texture: texture)
+            }
         }
     }
 }

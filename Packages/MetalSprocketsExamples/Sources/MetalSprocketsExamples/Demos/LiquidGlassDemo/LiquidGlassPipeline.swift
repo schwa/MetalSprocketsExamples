@@ -24,6 +24,9 @@ struct LiquidGlassPipeline: Element {
     @MSState
     private var textTexture: MTLTexture?
 
+    @MSState
+    private var resourceCollection: ResourceCollection?
+
     init(parameters: GlassParameters, time: Float, resolution: SIMD2<Float>) throws {
         self.parameters = parameters
         self.time = time
@@ -36,14 +39,15 @@ struct LiquidGlassPipeline: Element {
     var body: some Element {
         get throws {
             try Group {
-                if let textTexture {
+                if let textTexture, let resourceCollection {
                     try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
-                            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                            encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                         }
                         .parameter("uniforms", value: makeUniforms())
                         .parameter("textTexture", texture: textTexture)
                     }
+                    .useResourceCollection(resourceCollection)
                 }
             }
             .onSetupEnter { environment in
@@ -52,7 +56,11 @@ struct LiquidGlassPipeline: Element {
                 guard textTexture == nil, let device = environment.device else {
                     return
                 }
-                textTexture = try? makeLiquidGlassTextTexture(device: device)
+                let textTexture = try makeLiquidGlassTextTexture(device: device)
+                let collection = try ResourceCollection(device: device)
+                try collection.register(textTexture)
+                self.textTexture = textTexture
+                resourceCollection = collection
             }
         }
     }

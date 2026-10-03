@@ -163,6 +163,7 @@ public struct GrassDemoView: View {
             Draw { encoder in
                 encoder.draw(sphereMesh)
             }
+            .metalMeshResources(sphereMesh)
         }
         .vertexDescriptor(MTLVertexDescriptor(sphereMesh.vertexDescriptor))
         .depthCompare(function: .less, enabled: true)
@@ -193,10 +194,8 @@ public struct GrassDemoView: View {
 
         return try MeshRenderPipeline(objectShader: objectShader, meshShader: meshShader, fragmentShader: fragmentShader) {
             Draw { encoder in
-                encoder.drawMeshThreadgroups(MTLSize(width: pointCount, height: 1, depth: 1), threadsPerObjectThreadgroup: MTLSize(width: 1, height: 1, depth: 1), threadsPerMeshThreadgroup: MTLSize(width: 1, height: 1, depth: 1))
+                encoder.drawMeshThreadgroups(threadgroupsPerGrid: MTLSize(width: pointCount, height: 1, depth: 1), threadsPerObjectThreadgroup: MTLSize(width: 1, height: 1, depth: 1), threadsPerMeshThreadgroup: MTLSize(width: 1, height: 1, depth: 1))
             }
-            .parameter("pointData", functionType: .object, buffer: grassDataBuffer, offset: 0)
-            .parameter("uniforms", functionType: .object, buffer: uniformsBuffer, offset: 0)
             .parameter("pointData", functionType: .mesh, buffer: grassDataBuffer, offset: 0)
             .parameter("uniforms", functionType: .mesh, buffer: uniformsBuffer, offset: 0)
         }

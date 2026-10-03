@@ -76,6 +76,7 @@ struct SceneGraphRenderPass: Element {
                         try Draw { encoder in
                             encoder.draw(mesh)
                         }
+                        .metalMeshResources(mesh)
                         .blinnPhongMaterial(material)
                         .blinnPhongMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: worldTransform, cameraMatrix: cameraMatrix)
                     }
@@ -105,6 +106,7 @@ struct SceneGraphRenderPass: Element {
                         Draw { encoder in
                             encoder.draw(mesh)
                         }
+                        .metalMeshResources(mesh)
                         .pbrMaterial(material)
                         .pbrModelUniforms(modelTransform: worldTransform)
                     }

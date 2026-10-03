@@ -39,6 +39,7 @@ struct GargantuaPipeline: Element {
     @MSState private var diskNoiseMap: MTLTexture?
     @MSState private var diskStreakMap: MTLTexture?
     @MSState private var baked = false
+    @MSState private var resourceCollection: ResourceCollection?
 
     @MSState private var simTime: Float = 0
     @MSState private var lastTime: Float?
@@ -77,7 +78,8 @@ struct GargantuaPipeline: Element {
 
     var body: some Element {
         get throws {
-            try Group {
+            let resourceCollection = try self.resourceCollection ?? makeResourceCollection()
+            return try Group {
                 if let scene = sceneTexture, let milkywayMap, let diskNoiseMap, let diskStreakMap,
                    bloomTextures.count == bloomLevels {
                     if !baked {
@@ -89,14 +91,17 @@ struct GargantuaPipeline: Element {
                     }
                     if bloomEnabled {
                         try ComputePass(label: "bloom") {
+                            // Scene comes from the ray pass or MetalFX upscale.
+                            QueueBarrier(after: .all, before: .dispatch)
                             try bloomPass(scene: scene)
                         }
                     }
                     try compositePass(scene: scene)
                 }
             }
+            .useResourceCollection(resourceCollection)
             .onChange(of: allocationKey, initial: true) { _, _ in
-                allocateTargets()
+                do { try allocateTargets() } catch { assertionFailure("\(error)") }
             }
             .onWorkloadEnter { _ in
                 let delta = min(max(time - (lastTime ?? time), 0.0005), 0.1)
@@ -142,18 +147,40 @@ struct GargantuaPipeline: Element {
                 .parameter("dst", texture: diskStreak)
             }
         }
-        .onCommandBufferCompleted { _ in
+        .onSubmissionCommitted { _ in
+            // Later passes wait on this with queue barriers, so later frames can use the LUTs right away.
             baked = true
         }
+        // The perform: label selects the isolated overload; a trailing closure resolves to the @Sendable one.
+        // swiftlint:disable:next trailing_closure
+        .onCommandBufferCompleted(perform: { result in
+            // Bake again if the GPU did not finish the work.
+            if result.outcome != .completed {
+                baked = false
+            }
+        })
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: device.orThrow(.missingEnvironment("device")))
+        resourceCollection = collection
+        return collection
+    }
+
+    private var allTextures: [MTLTexture?] {
+        [sceneTexture, rayTexture, milkywayMap, diskNoiseMap, diskStreakMap] + bloomTextures
     }
 
     @ElementBuilder
     private func rayPass(into target: MTLTexture, milkyway: MTLTexture, diskNoise: MTLTexture, diskStreak: MTLTexture) throws -> some Element {
         let uniforms = makeRayUniforms(target: target)
         try RenderPass(label: "raymarch") {
+            // The LUTs may have been baked by a compute pass in this or an earlier frame, and without MetalFX the
+            // target is the scene texture, which the previous frame's composite may still be sampling.
+            QueueBarrier(after: [.dispatch, .fragment], before: .fragment)
             try RenderPipeline(vertexShader: rayVertexShader, fragmentShader: rayFragmentShader) {
                 Draw { encoder in
-                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                    encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                 }
                 .parameter("uniforms", value: uniforms)
                 .parameter("milkywayMap", texture: milkyway)
@@ -173,7 +200,7 @@ struct GargantuaPipeline: Element {
 
     /// Progressive dual-filter bloom: prefilter into mip 0, downsample chain,
     /// then a tent upsample chain accumulating back into mip 0. One compute
-    /// pass; Metal's serial encoder ordering handles the mip dependencies.
+    /// pass; each dispatch starts with a barrier on the previous one.
     /// (Unrolled: `ElementBuilder`, like `ViewBuilder`, has no `for` loops.)
     @ElementBuilder
     private func bloomPass(scene: MTLTexture) throws -> some Element {
@@ -203,6 +230,7 @@ struct GargantuaPipeline: Element {
 
     @ElementBuilder
     private func bloomDispatch(kernel: ComputeKernel, src: MTLTexture, dst: MTLTexture, uniforms: GargantuaBloomUniforms) throws -> some Element {
+        EncoderBarrier(after: .dispatch, before: .dispatch)
         try ComputePipeline(computeKernel: kernel) {
             try ComputeDispatch(
                 threadsPerGrid: MTLSize(width: dst.width, height: dst.height, depth: 1),
@@ -222,9 +250,10 @@ struct GargantuaPipeline: Element {
             b: SIMD4(params.grain, params.ca, bloomEnabled ? params.bloomStrength : 0, params.bloomRadius)
         )
         try RenderPass(label: "composite") {
+            QueueBarrier(after: .all, before: .fragment)
             try RenderPipeline(vertexShader: rayVertexShader, fragmentShader: compositeFragmentShader) {
                 Draw { encoder in
-                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                    encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                 }
                 .parameter("scene", texture: scene)
                 .parameter("bloomTex", texture: bloomTextures[0])
@@ -254,9 +283,13 @@ struct GargantuaPipeline: Element {
         GargantuaBloomUniforms(a: SIMD4(1 / Float(source.width), 1 / Float(source.height), z, w))
     }
 
-    private func allocateTargets() {
+    private func allocateTargets() throws {
         guard let device else {
             return
+        }
+        let oldTextures = allTextures
+        defer {
+            do { try resourceCollection?.replace(oldTextures, with: allTextures) } catch { assertionFailure("\(error)") }
         }
         let key = allocationKey
         let width = key.width

@@ -40,5 +40,7 @@ Documentation/reel-raw.log.jsonl
 Documentation/reel-raw.recorder.jsonl
 Documentation/overlays/rendered/
 
+# Buildkite per-checkout DerivedData
+.derivedData/
 # SwiftPM resolved pins
 Packages/MetalSprocketsExamples/Package.resolved

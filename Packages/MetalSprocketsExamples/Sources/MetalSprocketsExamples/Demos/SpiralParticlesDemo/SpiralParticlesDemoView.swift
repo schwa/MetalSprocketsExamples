@@ -230,7 +230,7 @@ public struct SpiralParticlesDemoView: View {
                 // 1 thread per object threadgroup (each handles one particle)
                 // 32 threads per mesh threadgroup (to parallelize spiral generation)
                 encoder.drawMeshThreadgroups(
-                    MTLSize(width: particleCount, height: 1, depth: 1),
+                    threadgroupsPerGrid: MTLSize(width: particleCount, height: 1, depth: 1),
                     threadsPerObjectThreadgroup: MTLSize(width: 1, height: 1, depth: 1),
                     threadsPerMeshThreadgroup: MTLSize(width: 32, height: 1, depth: 1)
                 )

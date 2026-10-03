@@ -8,6 +8,7 @@ import MetalSprocketsAddOns
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
 import MetalSprocketsUI
+import MetalSupport
 import simd
 import SwiftUI
 
@@ -219,20 +220,18 @@ public struct SkinningDemoView: View {
                         let modelMatrix = simd_float4x4(translation: [0, 1.0, 0])
                         let cameraPosition = SIMD3<Float>(cameraMatrix.columns.3.x, cameraMatrix.columns.3.y, cameraMatrix.columns.3.z)
 
-                        let indexBufferLength = MemoryLayout<UInt32>.stride * meshIndices.count
+                        let indexBuffer = try _MTLCreateSystemDefaultDevice().makeBuffer(view: .init(count: meshIndices.count), values: meshIndices, options: .storageModeShared)
 
                         switch rendererMode {
                         case .skinning:
                             let vertexShader = skinningVertexShader
                             let fragmentShader = skinningFragmentShader
 
-                            var uniforms = SkinningUniforms(
+                            let uniforms = SkinningUniforms(
                                 viewProjectionMatrix: viewProjectionMatrix,
                                 modelMatrix: modelMatrix,
                                 cameraPosition: cameraPosition
                             )
-
-                            let vertexBufferLength = MemoryLayout<SkinnedVertex>.stride * vertices.count
 
                             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                                 Draw { encoder in
@@ -240,36 +239,24 @@ public struct SkinningDemoView: View {
                                     if showWireframe {
                                         encoder.setTriangleFillMode(.lines)
                                     }
-
-                                    guard let vertexBuffer = encoder.device.makeBuffer(bytes: vertices, length: vertexBufferLength, options: []) else {
-                                        return
-                                    }
-                                    encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-
-                                    encoder.setVertexBytes(&uniforms, length: MemoryLayout<SkinningUniforms>.stride, index: 1)
-                                    encoder.setFragmentBytes(&uniforms, length: MemoryLayout<SkinningUniforms>.stride, index: 1)
-
-                                    var bones = boneMatrices
-                                    encoder.setVertexBytes(&bones, length: MemoryLayout<BoneMatricesData>.stride, index: 2)
-
-                                    guard let indexBuffer = encoder.device.makeBuffer(bytes: meshIndices, length: indexBufferLength, options: []) else {
-                                        return
-                                    }
                                     encoder.drawIndexedPrimitives(
-                                        type: .triangle,
+                                        primitiveType: .triangle,
                                         indexCount: meshIndices.count,
                                         indexType: .uint32,
-                                        indexBuffer: indexBuffer,
-                                        indexBufferOffset: 0
+                                        indexBuffer: indexBuffer.gpuAddress,
+                                        indexBufferLength: indexBuffer.length
                                     )
                                 }
+                                .useResource(indexBuffer, usage: .read, stages: .vertex)
+                                .vertexValues(vertices, index: 0)
+                                .parameter("uniforms", value: uniforms)
+                                .parameter("bones", functionType: .vertex, value: boneMatrices)
                             }
                             .vertexDescriptor(skinnedVertexDescriptor())
                             .depthCompare(function: .less, enabled: true)
 
                         case .debug:
                             let skinnedVertices = cpuSkinVertices(vertices, boneMatrices: boneMatrices)
-                            let vertexBufferLength = MemoryLayout<DebugVertex>.stride * skinnedVertices.count
 
                             try DebugRenderPipeline(
                                 modelMatrix: modelMatrix,
@@ -285,22 +272,16 @@ public struct SkinningDemoView: View {
                                         encoder.setTriangleFillMode(.lines)
                                     }
 
-                                    guard let vertexBuffer = encoder.device.makeBuffer(bytes: skinnedVertices, length: vertexBufferLength, options: []) else {
-                                        return
-                                    }
-                                    encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-
-                                    guard let indexBuffer = encoder.device.makeBuffer(bytes: meshIndices, length: indexBufferLength, options: []) else {
-                                        return
-                                    }
                                     encoder.drawIndexedPrimitives(
-                                        type: .triangle,
+                                        primitiveType: .triangle,
                                         indexCount: meshIndices.count,
                                         indexType: .uint32,
-                                        indexBuffer: indexBuffer,
-                                        indexBufferOffset: 0
+                                        indexBuffer: indexBuffer.gpuAddress,
+                                        indexBufferLength: indexBuffer.length
                                     )
                                 }
+                                .useResource(indexBuffer, usage: .read, stages: .vertex)
+                                .vertexValues(skinnedVertices, index: 0)
                             }
                             .vertexDescriptor(debugVertexDescriptor())
                             .depthCompare(function: .less, enabled: true)
@@ -468,7 +449,7 @@ private func drawBoneVisualization(
         var viewProjectionMatrix: float4x4
     }
 
-    var uniforms = BoneUniforms(viewProjectionMatrix: viewProjectionMatrix)
+    let uniforms = BoneUniforms(viewProjectionMatrix: viewProjectionMatrix)
 
     let descriptor = MTLVertexDescriptor()
     descriptor.attributes[0].format = .float3
@@ -478,20 +459,21 @@ private func drawBoneVisualization(
     descriptor.layouts[0].stepFunction = .perVertex
 
     return try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+        // Bone lines in yellow
         Draw { encoder in
-            encoder.setVertexBytes(lineVertices, length: MemoryLayout<SIMD3<Float>>.stride * lineVertices.count, index: 0)
-            encoder.setVertexBytes(&uniforms, length: MemoryLayout<BoneUniforms>.stride, index: 1)
-
-            // Draw bone lines in yellow
-            var boneColor = SIMD4<Float>(1, 0.9, 0.2, 1)
-            encoder.setVertexBytes(&boneColor, length: MemoryLayout<SIMD4<Float>>.stride, index: 2)
-            encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: 4)
-
-            // Draw joint markers in red
-            var jointColor = SIMD4<Float>(1, 0.2, 0.2, 1)
-            encoder.setVertexBytes(&jointColor, length: MemoryLayout<SIMD4<Float>>.stride, index: 2)
-            encoder.drawPrimitives(type: .line, vertexStart: 4, vertexCount: lineVertices.count - 4)
+            encoder.drawPrimitives(primitiveType: .line, vertexStart: 0, vertexCount: 4)
         }
+        .vertexValues(lineVertices, index: 0)
+        .parameter("uniforms", value: uniforms)
+        .parameter("color", value: SIMD4<Float>(1, 0.9, 0.2, 1))
+
+        // Joint markers in red
+        Draw { encoder in
+            encoder.drawPrimitives(primitiveType: .line, vertexStart: 4, vertexCount: lineVertices.count - 4)
+        }
+        .vertexValues(lineVertices, index: 0)
+        .parameter("uniforms", value: uniforms)
+        .parameter("color", value: SIMD4<Float>(1, 0.2, 0.2, 1))
     }
     .vertexDescriptor(descriptor)
     .depthCompare(function: .always, enabled: false)

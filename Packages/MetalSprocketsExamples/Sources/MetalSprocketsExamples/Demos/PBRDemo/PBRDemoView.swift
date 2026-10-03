@@ -21,6 +21,7 @@ public struct PBRDemoView: View {
     @State private var animationStartTime: Date?
     @State private var animationTime: Double = 0
     @State private var lighting: Lighting
+    @State private var residency = ResidencyTracker()
 
     let teapot: MTKMesh
     let environmentTexture: MTLTexture
@@ -59,7 +60,8 @@ public struct PBRDemoView: View {
                         AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
                         LightingVisualizer(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lighting: lighting)
                         try PBRShader {
-                            try Draw(mtkMesh: teapot)
+                            try Draw(mesh: teapot)
+                                .vertexBuffers(of: teapot)
                                 .pbrMaterial(currentMaterial)
                                 .pbrModelUniforms(modelTransform: .identity)
                                 .pbrViewUniforms(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
@@ -71,6 +73,7 @@ public struct PBRDemoView: View {
                         .vertexDescriptor(teapot.vertexDescriptor)
                         .depthCompare(function: .less, enabled: true)
                     }
+                    .useResourceCollection(residency.collection(for: [environmentTexture] + teapot.buffers + lighting.argumentBufferResources, device: environmentTexture.device))
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
                 .onChange(of: timeline.date) {

@@ -19,6 +19,9 @@ public struct StencilDemoView: View {
     @State
     private var stencilBufferBytesPerRow: Int = 0
 
+    @State
+    private var resourceCollection: ResourceCollection?
+
     let depthStencilDescriptor: MTLDepthStencilDescriptor = {
         let stencilDescriptor = MTLStencilDescriptor(compareFunction: .equal, readMask: 0xFF, writeMask: 0x00)
         return MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: false, frontFaceStencil: stencilDescriptor, backFaceStencil: stencilDescriptor)
@@ -32,35 +35,41 @@ public struct StencilDemoView: View {
         ZStack {
             Color.clear
             RenderView { _, _ in
-                try BlitPass {
+                try ComputePass {
+                    // The stencil attachment is reused across frames; the previous frame may still be testing against it.
+                    QueueBarrier(after: .fragment, before: .blit)
                     EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
                         if let descriptor = renderPassDescriptor, let stencilAttachmentTexture = descriptor.stencilAttachment.texture, let stencilBuffer {
                             let width = min(stencilBufferSize.width, stencilAttachmentTexture.width)
                             let height = min(stencilBufferSize.height, stencilAttachmentTexture.height)
                             if width > 0, height > 0 {
-                                Blit { encoder in
+                                ComputeCommand { encoder in
                                     encoder.copy(
-                                        from: stencilBuffer,
+                                        sourceBuffer: stencilBuffer,
                                         sourceOffset: 0,
                                         sourceBytesPerRow: stencilBufferBytesPerRow,
                                         sourceBytesPerImage: stencilBufferBytesPerRow * height,
                                         sourceSize: .init(width: width, height: height, depth: 1),
-                                        to: stencilAttachmentTexture,
+                                        destinationTexture: stencilAttachmentTexture,
                                         destinationSlice: 0,
                                         destinationLevel: 0,
                                         destinationOrigin: .init(x: 0, y: 0, z: 0)
                                     )
                                 }
+                                .useComputeResources([stencilBuffer, stencilAttachmentTexture], usage: [.read, .write])
                             }
                         }
                     }
                 }
+                // Covers the whole submission, including the render pass.
+                .useResourceCollection(resourceCollection ?? makeResourceCollection())
                 try RenderPass {
+                    QueueBarrier(after: .blit, before: [.vertex, .fragment])
                     let shaders = try ShaderNamespace.examples("Stencil")
                     let vertexShader: VertexShader = try shaders.vertex_main
                     let fragmentShader: FragmentShader = try shaders.fragment_main
                     try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                        Draw { encoder in
+                        let vertices: [SIMD2<Float>] = {
                             // 5-pointed star as triangle fan from center
                             let points = 5
                             let center = SIMD2<Float>(0, 0)
@@ -74,9 +83,12 @@ public struct StencilDemoView: View {
                                 vertices.append(contentsOf: [center, outer, inner])
                                 vertices.append(contentsOf: [center, inner, nextOuter])
                             }
-                            encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * vertices.count, index: 0)
-                            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+                            return vertices
+                        }()
+                        Draw { encoder in
+                            encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: vertices.count)
                         }
+                        .vertexValues(vertices, index: 0)
                         .parameter("color", value: SIMD4<Float>([0.5, 1, 0.5, 1]))
                     }
                     .vertexDescriptor(vertexShader.inferredVertexDescriptor())
@@ -106,34 +118,45 @@ public struct StencilDemoView: View {
                         try ComputePass {
                             try CheckerboardKernel_ushort(outputTexture: texture, checkerSize: [100, 100], foregroundColor: 0xFFFF)
                         }
-                        try BlitPass {
-                            Blit { encoder in
+                        try ComputePass {
+                            QueueBarrier(after: .dispatch, before: .blit)
+                            ComputeCommand { encoder in
                                 encoder.copy(
-                                    from: texture,
+                                    sourceTexture: texture,
                                     sourceSlice: 0,
                                     sourceLevel: 0,
                                     sourceOrigin: .init(x: 0, y: 0, z: 0),
                                     sourceSize: .init(width: width, height: height, depth: 1),
-                                    to: buffer,
+                                    destinationBuffer: buffer,
                                     destinationOffset: 0,
                                     destinationBytesPerRow: bytesPerRow,
                                     destinationBytesPerImage: bytesPerRow * height
                                 )
                             }
+                            .useComputeResources([texture, buffer], usage: [.read, .write])
                         }
                     }
                     .run()
 
                     stencilBufferBytesPerRow = bytesPerRow
                     stencilBufferSize = .init(width: width, height: height, depth: 1)
+                    try resourceCollection?.replace([stencilBuffer], with: [buffer])
                     stencilBuffer = buffer
                 }
                 catch {
                     debugPrint("Stencil texture update failed: \(error)")
+                    resourceCollection?.unregister([stencilBuffer])
                     stencilBuffer = nil
                 }
             }
         }
         .background(.black)
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: _MTLCreateSystemDefaultDevice())
+        try collection.register([stencilBuffer])
+        resourceCollection = collection
+        return collection
     }
 }

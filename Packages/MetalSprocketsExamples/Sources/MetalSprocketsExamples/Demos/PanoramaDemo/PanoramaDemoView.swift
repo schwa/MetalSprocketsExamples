@@ -30,6 +30,7 @@ public struct PanoramaDemoView: View {
     @State private var intermediateTexture: MTLTexture?
     @State private var outputTexture: MTLTexture?
     @State private var loadTask: Task<Void, Never>?
+    @State private var resourceCollection: ResourceCollection?
 
     public init() {
         // This line intentionally left blank.
@@ -39,39 +40,51 @@ public struct PanoramaDemoView: View {
         ZStack {
             SuperImportWell(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image]) { _ in
                 WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                    if let panoramaTexture, let mesh {
+                    if let panoramaTexture, let mesh, let resourceCollection {
                         RenderView { _, drawableSize in
-                            if applyGammaCorrection, let intermediateTexture, let outputTexture {
-                                // Render panorama to intermediate texture
-                                try RenderPass {
-                                    try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
-                                }
-                                .renderPassDescriptorModifier { descriptor in
-                                    descriptor.colorAttachments[0].texture = intermediateTexture
-                                    descriptor.colorAttachments[0].loadAction = .clear
-                                    descriptor.colorAttachments[0].storeAction = .store
-                                }
+                            try Group {
+                                if applyGammaCorrection, let intermediateTexture, let outputTexture {
+                                    // Render panorama to intermediate texture
+                                    try RenderPass {
+                                        // The previous frame's gamma pass may still be reading the intermediate texture.
+                                        QueueBarrier(after: .dispatch, before: .fragment)
+                                        try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
+                                    }
+                                    .renderPassDescriptorModifier { descriptor in
+                                        descriptor.colorAttachments[0].texture = intermediateTexture
+                                        descriptor.colorAttachments[0].loadAction = .clear
+                                        descriptor.colorAttachments[0].storeAction = .store
+                                    }
 
-                                // Apply gamma correction using ColorAdjustComputePipeline
-                                try ComputePass(label: "GammaCorrection") {
-                                    try ColorAdjustComputePipeline.gammaAdjustPipeline(inputSpecifier: .texture2D(intermediateTexture), inputParameters: 2.2, outputTexture: outputTexture)
-                                }
+                                    // Apply gamma correction using ColorAdjustComputePipeline
+                                    try ComputePass(label: "GammaCorrection") {
+                                        // Reads the intermediate texture, and overwrites the output the previous frame sampled.
+                                        QueueBarrier(after: .fragment, before: .dispatch)
+                                        try ColorAdjustComputePipeline.gammaAdjustPipeline(inputSpecifier: .texture2D(intermediateTexture), inputParameters: 2.2, outputTexture: outputTexture)
+                                    }
+                                    .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
 
-                                // Render gamma-corrected result to screen
-                                try RenderPass {
-                                    try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
-                                }
-                            } else {
-                                // Render directly without gamma correction
-                                try RenderPass {
-                                    try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
+                                    // Render gamma-corrected result to screen
+                                    try RenderPass {
+                                        try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
+                                    }
+                                } else {
+                                    // Render directly without gamma correction
+                                    try RenderPass {
+                                        try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showMS: showMS)
+                                    }
                                 }
                             }
+                            .useResourceCollection(resourceCollection)
                         }
                         .onUsableDrawableSizeChange { size in
                             let device = _MTLCreateSystemDefaultDevice()
                             let width = Int(size.width)
                             let height = Int(size.height)
+                            let oldTargets = [intermediateTexture, outputTexture]
+                            defer {
+                                updateResidency(removing: oldTargets, adding: [intermediateTexture, outputTexture])
+                            }
 
                             intermediateTexture = device.makeTexture2D(
                                 pixelFormat: .rgba8Unorm,
@@ -95,9 +108,9 @@ public struct PanoramaDemoView: View {
                     }
                 }
                 .overlay(alignment: .bottomTrailing) {
-                    if let panoramaTexture {
+                    if let panoramaTexture, let resourceCollection {
                         ZStack {
-                            PanoramaMiniMapView(panoramaTexture: panoramaTexture, cameraMatrix: cameraMatrix)
+                            PanoramaMiniMapView(panoramaTexture: panoramaTexture, cameraMatrix: cameraMatrix, resourceCollection: resourceCollection)
                         }
                         .frame(width: 320, height: 320)
                         .padding(8)
@@ -130,12 +143,24 @@ public struct PanoramaDemoView: View {
             }
         }
         .onChange(of: meshType, initial: true) {
+            let oldBuffers = mesh?.buffers ?? []
             switch meshType {
             case .sphere:
                 mesh = MTKMesh.sphere(extent: [50, 50, 50], inwardNormals: true)
             case .box:
                 mesh = MTKMesh.box(extent: [50, 50, 50], inwardNormals: true)
             }
+            updateResidency(removing: oldBuffers, adding: mesh?.buffers ?? [])
+        }
+    }
+
+    private func updateResidency(removing old: [(any MTLAllocation)?], adding new: [(any MTLAllocation)?]) {
+        do {
+            let collection = try resourceCollection ?? ResourceCollection(device: _MTLCreateSystemDefaultDevice())
+            try collection.replace(old, with: new)
+            resourceCollection = collection
+        } catch {
+            assertionFailure("\(error)")
         }
     }
 
@@ -150,6 +175,7 @@ public struct PanoramaDemoView: View {
                     return
                 }
                 await MainActor.run {
+                    updateResidency(removing: [panoramaTexture], adding: [texture])
                     panoramaTexture = texture
                 }
             } catch {

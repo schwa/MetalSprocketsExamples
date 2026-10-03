@@ -18,6 +18,9 @@ public struct MetalFXDemoView: View {
     @State
     private var upscaledTexture: MTLTexture?
 
+    @State
+    private var resourceCollection: ResourceCollection?
+
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
         let textureLoader = MTKTextureLoader(device: device)
@@ -34,13 +37,15 @@ public struct MetalFXDemoView: View {
         ZStack {
             Color.clear
             Group {
-                if let upscaledTexture {
+                if let upscaledTexture, let resourceCollection {
                     ScrollView([.horizontal, .vertical]) {
                         RenderView { _, _ in
+                            // MetalFXSpatial orders itself against earlier and later queue work.
                             MetalFXSpatial(inputTexture: sourceTexture, outputTexture: upscaledTexture)
                             try RenderPass {
                                 try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
                             }
+                            .useResourceCollection(resourceCollection)
                         }
                         .frame(width: Double(upscaledTexture.width), height: Double(upscaledTexture.height))
                         .overlay(alignment: .topLeading) {
@@ -100,6 +105,16 @@ public struct MetalFXDemoView: View {
         }
         .onChange(of: scaleFactor, initial: true) {
             let device = _MTLCreateSystemDefaultDevice()
+            let oldTexture = upscaledTexture
+            defer {
+                do {
+                    let collection = try resourceCollection ?? ResourceCollection(device: device)
+                    try collection.replace([oldTexture], with: [upscaledTexture])
+                    resourceCollection = collection
+                } catch {
+                    assertionFailure("\(error)")
+                }
+            }
             upscaledTexture = device.makeTexture2D(
                 pixelFormat: sourceTexture.pixelFormat,
                 width: Int(Double(sourceTexture.width) * scaleFactor),

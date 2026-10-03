@@ -161,8 +161,10 @@ private enum CornellBox {
 @MainActor
 private final class RayTracingResources {
     let device: MTLDevice
+    // Only for the one-time acceleration structure build, which waits for completion before anything uses it.
     let commandQueue: MTLCommandQueue
-    let computePipeline: MTLComputePipelineState
+    let kernel: ComputeKernel
+    let resourceCollection: ResourceCollection
 
     // Acceleration structures
     var instanceAccelerationStructure: MTLAccelerationStructure?
@@ -180,7 +182,6 @@ private final class RayTracingResources {
     var accumTexture: MTLTexture?
     var outputTexture: MTLTexture?
 
-    var frameIndex: UInt32 = 0
     var currentSize: MTLSize = .init()
 
     init() throws {
@@ -193,10 +194,8 @@ private final class RayTracingResources {
         let shaderBundle = Bundle.metalSprocketsExampleShaders()
         let library = try ShaderLibrary(bundle: shaderBundle)
         let namespacedLibrary = library.namespaced("RayTracingShaders")
-        let kernel: ComputeKernel = try namespacedLibrary.raytrace_kernel
-        let pipelineDescriptor = MTLComputePipelineDescriptor()
-        pipelineDescriptor.computeFunction = kernel.function
-        computePipeline = try device.makeComputePipelineState(descriptor: pipelineDescriptor, options: []).0
+        kernel = try namespacedLibrary.raytrace_kernel
+        resourceCollection = try ResourceCollection(device: device)
     }
 
     func buildAccelerationStructures() throws {
@@ -361,81 +360,20 @@ private final class RayTracingResources {
         commandBuffer.waitUntilCompleted()
 
         instanceAccelerationStructure = accelStructure
+        try resourceCollection.register(
+            [vertexBuffer, indexBuffer, materialBuffer, materialIndexBuffer, normalBuffer, instanceBuffer, accelStructure] + primitiveAccelerationStructures
+        )
     }
 
-    func ensureTextures(size: MTLSize) {
+    func ensureTextures(size: MTLSize) throws {
         guard size.width != currentSize.width || size.height != currentSize.height else {
             return
         }
         currentSize = size
-
+        let oldTextures = [accumTexture, outputTexture]
         accumTexture = device.makeTexture2D(pixelFormat: .rgba32Float, width: size.width, height: size.height, storageMode: .private, label: "RT Accumulation")
         outputTexture = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: size.width, height: size.height, label: "RT Output")
-
-        resetAccumulation()
-    }
-
-    func resetAccumulation() {
-        frameIndex = 0
-    }
-
-    func clearTextures() {
-        // Recreate both textures from scratch (zeroed)
-        let size = currentSize
-        currentSize = .init()
-        accumTexture = nil
-        outputTexture = nil
-        ensureTextures(size: size)
-        frameIndex = 0
-    }
-
-    func render(uniforms: RayTracingUniforms) throws {
-        guard
-            let instanceAccelerationStructure,
-            let materialBuffer,
-            let vertexBuffer,
-            let indexBuffer,
-            let materialIndexBuffer,
-            let normalBuffer,
-            let accumTexture,
-            let outputTexture,
-            let commandBuffer = commandQueue.makeCommandBuffer()
-        else {
-            return
-        }
-
-        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
-            return
-        }
-        encoder.setComputePipelineState(computePipeline)
-
-        var mutableUniforms = uniforms
-        mutableUniforms.frameIndex = frameIndex
-
-        encoder.setBytes(&mutableUniforms, length: MemoryLayout<RayTracingUniforms>.stride, index: 0)
-        encoder.setAccelerationStructure(instanceAccelerationStructure, bufferIndex: 1)
-        encoder.setBuffer(materialBuffer, offset: 0, index: 2)
-        encoder.setBuffer(vertexBuffer, offset: 0, index: 3)
-        encoder.setBuffer(indexBuffer, offset: 0, index: 4)
-        encoder.setBuffer(materialIndexBuffer, offset: 0, index: 5)
-        encoder.setBuffer(normalBuffer, offset: 0, index: 6)
-        encoder.setTexture(accumTexture, index: 0)
-        encoder.setTexture(outputTexture, index: 1)
-
-        // Make acceleration structures visible
-        for primAS in primitiveAccelerationStructures {
-            encoder.useResource(primAS, usage: .read)
-        }
-
-        let threadgroupSize = MTLSize(width: 8, height: 8, depth: 1)
-        let gridSize = MTLSize(width: currentSize.width, height: currentSize.height, depth: 1)
-        encoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadgroupSize)
-        encoder.endEncoding()
-
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-
-        frameIndex += 1
+        try resourceCollection.replace(oldTextures, with: [accumTexture, outputTexture])
     }
 }
 
@@ -443,18 +381,13 @@ private final class RayTracingResources {
 
 public struct RayTracingDemoView: View {
     @State private var resources: RayTracingResources?
-    @State private var outputTexture: MTLTexture?
     @State private var samplesPerPixel: UInt32 = 1
     @State private var maxBounces: UInt32 = 5
     @State private var frameIndex: UInt32 = 0
-    @State private var isRendering = false
     @State private var isPaused = false
-    @State private var displayTexture: MTLTexture?
     @State private var renderSize = CGSize(width: 512, height: 512)
-    @State private var needsReset = false
     @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 3.2])
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
-    @State private var lastCameraMatrix: simd_float4x4 = .init(translation: [0, 0, 3.2])
 
     public init() {
         // This line intentionally left blank.
@@ -465,10 +398,16 @@ public struct RayTracingDemoView: View {
             ZStack {
                 Color.black
                 RenderView { _, _ in
-                    if let displayTexture {
-                        try RenderPass {
-                            try TextureBillboardPipeline(specifier: .texture2D(displayTexture))
+                    if let resources, let outputTexture = resources.outputTexture {
+                        try Group {
+                            if !isPaused {
+                                try traceElement(resources: resources)
+                            }
+                            try RenderPass {
+                                try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
+                            }
                         }
+                        .useResourceCollection(resources.resourceCollection)
                     }
                 }
                 .aspectRatio(1.0, contentMode: .fit)
@@ -478,17 +417,17 @@ public struct RayTracingDemoView: View {
             do {
                 let res = try RayTracingResources()
                 try res.buildAccelerationStructures()
+                try res.ensureTextures(size: MTLSize(width: Int(renderSize.width), height: Int(renderSize.height), depth: 1))
                 resources = res
-                await startRendering()
             } catch {
                 print("Ray tracing setup failed: \(error)")
             }
         }
         .onChange(of: maxBounces) { _, _ in
-            needsReset = true
+            frameIndex = 0
         }
         .onChange(of: cameraMatrix) { _, _ in
-            needsReset = true
+            frameIndex = 0
         }
         .demoConfiguration {
             Form {
@@ -500,66 +439,77 @@ public struct RayTracingDemoView: View {
                     isPaused.toggle()
                 }
                 Button("Reset") {
-                    needsReset = true
+                    frameIndex = 0
                 }
             }
             .formStyle(.grouped)
         }
     }
 
-    @MainActor
-    private func startRendering() async {
-        guard let resources
-        else {
-            return
-        }
-        isRendering = true
-
-        let width = Int(renderSize.width)
-        let height = Int(renderSize.height)
-        resources.ensureTextures(size: MTLSize(width: width, height: height, depth: 1))
-
-        while isRendering {
-            if needsReset {
-                resources.frameIndex = 0
-                frameIndex = 0
-                needsReset = false
+    // One progressive sample per frame, on the RenderView's queue, so it is ordered against the frames that display it.
+    @ElementBuilder
+    private func traceElement(resources: RayTracingResources) throws -> some Element {
+        if let instanceAccelerationStructure = resources.instanceAccelerationStructure,
+           let materialBuffer = resources.materialBuffer,
+           let vertexBuffer = resources.vertexBuffer,
+           let indexBuffer = resources.indexBuffer,
+           let materialIndexBuffer = resources.materialIndexBuffer,
+           let normalBuffer = resources.normalBuffer,
+           let accumTexture = resources.accumTexture,
+           let outputTexture = resources.outputTexture {
+            let size = resources.currentSize
+            let tracedFrameIndex = frameIndex
+            try ComputePass(label: "Ray Trace") {
+                // Accumulates into the previous sample, and overwrites the output the previous frame sampled.
+                QueueBarrier(after: [.dispatch, .fragment], before: .dispatch)
+                try ComputePipeline(computeKernel: resources.kernel) {
+                    try ComputeDispatch(threadsPerGrid: size, threadsPerThreadgroup: MTLSize(width: 8, height: 8, depth: 1))
+                        .parameter("uniforms", value: uniforms(size: size, frameIndex: tracedFrameIndex))
+                        .parameter("accelerationStructure", accelerationStructure: instanceAccelerationStructure)
+                        .parameter("materials", buffer: materialBuffer)
+                        .parameter("vertices", buffer: vertexBuffer)
+                        .parameter("indices", buffer: indexBuffer)
+                        .parameter("materialIndices", buffer: materialIndexBuffer)
+                        .parameter("normals", buffer: normalBuffer)
+                        .parameter("accumTexture", texture: accumTexture)
+                        .parameter("outputTexture", texture: outputTexture)
+                }
             }
-
-            if !isPaused {
-                // Derive camera vectors from cameraMatrix
-                let camMatrix = cameraMatrix
-                let cameraPosition = SIMD3<Float>(camMatrix.columns.3.x, camMatrix.columns.3.y, camMatrix.columns.3.z)
-                let cameraForward = -normalize(SIMD3<Float>(camMatrix.columns.2.x, camMatrix.columns.2.y, camMatrix.columns.2.z))
-                let cameraRight = normalize(SIMD3<Float>(camMatrix.columns.0.x, camMatrix.columns.0.y, camMatrix.columns.0.z))
-                let cameraUp = normalize(SIMD3<Float>(camMatrix.columns.1.x, camMatrix.columns.1.y, camMatrix.columns.1.z))
-
-                // Light quad corners (from CornellBox geometry)
-                let lightCorner = SIMD3<Float>(-0.24, 1.98 + CornellBox.yOffset, 0.16)
-                let lightEdge1  = SIMD3<Float>(0.23 - (-0.24), 0, 0)  // along X
-                let lightEdge2  = SIMD3<Float>(0, 0, -0.22 - 0.16)    // along Z
-                let uniforms = RayTracingUniforms(
-                    cameraPosition: cameraPosition,
-                    cameraForward: cameraForward,
-                    cameraRight: cameraRight,
-                    cameraUp: cameraUp,
-                    resolution: SIMD2<Float>(Float(width), Float(height)),
-                    frameIndex: resources.frameIndex,
-                    samplesPerPixel: samplesPerPixel,
-                    maxBounces: maxBounces,
-                    lightCorner: lightCorner,
-                    lightEdge1: lightEdge1,
-                    lightEdge2: lightEdge2,
-                    lightEmission: SIMD3<Float>(17, 12, 4)
-                )
-
-                try? resources.render(uniforms: uniforms)
-                displayTexture = resources.outputTexture
-                frameIndex = resources.frameIndex
+            .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
+            .onSubmissionCommitted { _ in
+                // A camera or setting change may have reset the count since this frame was built.
+                if frameIndex == tracedFrameIndex {
+                    frameIndex += 1
+                }
             }
-
-            // Yield to let UI update
-            try? await Task.sleep(for: .milliseconds(1))
         }
+    }
+
+    private func uniforms(size: MTLSize, frameIndex: UInt32) -> RayTracingUniforms {
+        // Derive camera vectors from cameraMatrix
+        let camMatrix = cameraMatrix
+        let cameraPosition = SIMD3<Float>(camMatrix.columns.3.x, camMatrix.columns.3.y, camMatrix.columns.3.z)
+        let cameraForward = -normalize(SIMD3<Float>(camMatrix.columns.2.x, camMatrix.columns.2.y, camMatrix.columns.2.z))
+        let cameraRight = normalize(SIMD3<Float>(camMatrix.columns.0.x, camMatrix.columns.0.y, camMatrix.columns.0.z))
+        let cameraUp = normalize(SIMD3<Float>(camMatrix.columns.1.x, camMatrix.columns.1.y, camMatrix.columns.1.z))
+
+        // Light quad corners (from CornellBox geometry)
+        let lightCorner = SIMD3<Float>(-0.24, 1.98 + CornellBox.yOffset, 0.16)
+        let lightEdge1  = SIMD3<Float>(0.23 - (-0.24), 0, 0)  // along X
+        let lightEdge2  = SIMD3<Float>(0, 0, -0.22 - 0.16)    // along Z
+        return RayTracingUniforms(
+            cameraPosition: cameraPosition,
+            cameraForward: cameraForward,
+            cameraRight: cameraRight,
+            cameraUp: cameraUp,
+            resolution: SIMD2<Float>(Float(size.width), Float(size.height)),
+            frameIndex: frameIndex,
+            samplesPerPixel: samplesPerPixel,
+            maxBounces: maxBounces,
+            lightCorner: lightCorner,
+            lightEdge1: lightEdge1,
+            lightEdge2: lightEdge2,
+            lightEmission: SIMD3<Float>(17, 12, 4)
+        )
     }
 }

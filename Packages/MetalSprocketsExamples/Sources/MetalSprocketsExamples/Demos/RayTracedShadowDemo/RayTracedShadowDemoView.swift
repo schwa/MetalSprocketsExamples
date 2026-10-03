@@ -32,6 +32,7 @@ public struct RayTracedShadowDemoView: View {
 
     @State private var lighting: Lighting?
     @State private var accelManager: AccelerationStructureManager?
+    @State private var resourceCollection: ResourceCollection?
     @State private var lightPositions: [SIMD3<Float>] = Array(repeating: .zero, count: lightCount)
     @State private var renderOptions: RayTracedShadowDemoRenderPass.Options = .all
 
@@ -102,7 +103,7 @@ public struct RayTracedShadowDemoView: View {
     public var body: some View {
         TimelineView(.animation) { timeline in
             RenderView { _, drawableSize in
-                if let lighting, let accelManager {
+                if let lighting, let accelManager, let resourceCollection {
                     let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
                     let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
 
@@ -122,6 +123,7 @@ public struct RayTracedShadowDemoView: View {
                         shadowDebug: shadowDebug,
                         shadowIntensity: shadowIntensity
                     )
+                    .useResourceCollection(resourceCollection)
                 }
             }
             .id("\(shadowDebug)")
@@ -229,6 +231,11 @@ public struct RayTracedShadowDemoView: View {
                 instances.append(.init(meshIndex: 1, transform: groundModelMatrix))
                 try manager.build(meshes: uniqueMeshes, instances: instances)
                 accelManager = manager
+
+                let collection = try ResourceCollection(device: groundMesh.vertexBuffers[0].buffer.device)
+                try collection.register([manager.instanceAccelerationStructure] + manager.primitiveAccelerationStructures)
+                try collection.register(lighting?.argumentBufferResources ?? [])
+                resourceCollection = collection
             } catch {
                 fatalError("Failed to initialize Ray Traced Shadow demo: \(error)")
             }
@@ -275,6 +282,8 @@ struct RayTracedShadowDemoRenderPass: Element {
 
             // Pass 1: Main scene render pass
             try RenderPass(label: "Main Scene") {
+                // The depth attachment is reused across frames; the previous shadow pass may still be reading it.
+                QueueBarrier(after: .dispatch, before: .fragment)
                 let viewMatrix = cameraMatrix.inverse
                 let viewProjection = projectionMatrix * viewMatrix
 
@@ -330,10 +339,8 @@ struct RayTracedShadowDemoRenderPass: Element {
                         try Group {
                             // Teapots
                             ForEach(teapots) { model in
-                                try Draw { encoder in
-                                    encoder.setVertexBuffers(of: model.mesh)
-                                    encoder.draw(model.mesh)
-                                }
+                                try Draw(mesh: model.mesh)
+                                .vertexBuffers(of: model.mesh)
                                 .blinnPhongMaterial(model.material)
                                 .blinnPhongMatrices(
                                     projectionMatrix: projectionMatrix,
@@ -344,10 +351,8 @@ struct RayTracedShadowDemoRenderPass: Element {
                             }
 
                             // Ground plane
-                            try Draw { encoder in
-                                encoder.setVertexBuffers(of: groundMesh)
-                                encoder.draw(groundMesh)
-                            }
+                            try Draw(mesh: groundMesh)
+                            .vertexBuffers(of: groundMesh)
                             .blinnPhongMaterial(groundMaterial)
                             .blinnPhongMatrices(
                                 projectionMatrix: projectionMatrix,

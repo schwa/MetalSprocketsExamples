@@ -153,7 +153,6 @@ struct ImmersiveMatrixRainElement: Element, @unchecked Sendable {
                 viewConstants: viewConstants,
                 viewports: context.viewports,
                 colorPixelFormat: context.drawable.colorTextures[0].pixelFormat,
-                depthPixelFormat: context.drawable.depthTextures[0].pixelFormat,
                 reverseZ: true
             )
         }

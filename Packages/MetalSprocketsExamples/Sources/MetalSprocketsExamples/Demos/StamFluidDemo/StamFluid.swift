@@ -22,17 +22,12 @@ struct StamFluid: Element {
     @MSState private var texP: MTLTexture?
     @MSState private var texDiv: MTLTexture?
 
-    // Double-buffered source inputs (shared, CPU-writable)
-    @MSState private var srcU: [MTLTexture?] = [nil, nil]
-    @MSState private var srcV: [MTLTexture?] = [nil, nil]
-    @MSState private var srcDens: [MTLTexture?] = [nil, nil]
-    @MSState private var srcIndex: Int = 0
-
     @MSState private var displayTexture: MTLTexture?
     @MSState private var colormapTexture: MTLTexture?
     @MSState private var activeColormap: Colormap = .fire
     @MSState private var initialized: Bool = false
     @MSState private var initializedN: Int = 0
+    @MSState private var resourceCollection: ResourceCollection?
 
     let gridN: Int
     let diffusion: Float
@@ -49,6 +44,12 @@ struct StamFluid: Element {
         var dt: Float
         var diff: Float
         var visc: Float
+    }
+
+    struct Splat {
+        var center: SIMD2<Int32>
+        var radius: Int32
+        var amount: Float
     }
 
     struct VisualizeParams {
@@ -81,93 +82,119 @@ struct StamFluid: Element {
             let interior = MTLSize(width: Int(N), height: Int(N), depth: 1)
             let fullGrid = MTLSize(width: Int(N) + 2, height: Int(N) + 2, depth: 1)
             let tg16 = MTLSize(width: 16, height: 16, depth: 1)
+            let resourceCollection = try self.resourceCollection ?? makeResourceCollection()
 
             return try Group {
-                // swiftlint:disable:next line_length
-                if isRunning, let texU, let texV, let texUPrev, let texVPrev, let texDens, let texDensPrev, let texP, let texDiv, let curSrcU = srcU[srcIndex], let curSrcV = srcV[srcIndex], let curSrcDens = srcDens[srcIndex] {
-                    let a_visc = params.dt * params.visc * Float(N) * Float(N)
-                    let a_diff = params.dt * params.diff * Float(N) * Float(N)
+                // One encoder for the whole solver: steps are ordered with cheap EncoderBarriers, not a pass and a
+                // queue-wide barrier per dispatch (that was ~230 encoders per frame).
+                try ComputePass(label: "Stam Fluid") {
+                    // Waits for the previous frame's solver, and for its render pass to finish sampling the display.
+                    QueueBarrier(after: [.dispatch, .blit, .fragment], before: [.dispatch, .blit])
 
-                    // === Velocity step ===
-                    try addSourcePass(lib: lib, x: texU, s: curSrcU, params: params, fullGrid: fullGrid, tg: tg16)
-                    try addSourcePass(lib: lib, x: texV, s: curSrcV, params: params, fullGrid: fullGrid, tg: tg16)
+                    if isRunning, let texU, let texV, let texUPrev, let texVPrev, let texDens, let texDensPrev, let texP, let texDiv {
+                        let a_visc = params.dt * params.visc * Float(N) * Float(N)
+                        let a_diff = params.dt * params.diff * Float(N) * Float(N)
+                        let splats = interactionSplats()
 
-                    try blitCopyTex(from: texU, to: texUPrev)
-                    try diffusePass(lib: lib, x: texU, x0: texUPrev, b: 1, a: a_visc, params: params, N: N, interior: interior, tg: tg16)
+                        // === Velocity step ===
+                        if let splats {
+                            try addSourcePass(lib: lib, x: texU, splat: splats.u, params: params, fullGrid: fullGrid, tg: tg16)
+                            try addSourcePass(lib: lib, x: texV, splat: splats.v, params: params, fullGrid: fullGrid, tg: tg16)
+                        }
 
-                    try blitCopyTex(from: texV, to: texVPrev)
-                    try diffusePass(lib: lib, x: texV, x0: texVPrev, b: 2, a: a_visc, params: params, N: N, interior: interior, tg: tg16)
+                        try blitCopyTex(from: texU, to: texUPrev)
+                        try diffusePass(lib: lib, x: texU, x0: texUPrev, b: 1, a: a_visc, params: params, N: N, interior: interior, tg: tg16)
 
-                    try projectPass(lib: lib, u: texU, v: texV, p: texP, div: texDiv, params: params, N: N, interior: interior, tg: tg16)
+                        try blitCopyTex(from: texV, to: texVPrev)
+                        try diffusePass(lib: lib, x: texV, x0: texVPrev, b: 2, a: a_visc, params: params, N: N, interior: interior, tg: tg16)
 
-                    try blitCopyTex(from: texU, to: texUPrev)
-                    try blitCopyTex(from: texV, to: texVPrev)
-                    try advectPass(lib: lib, d: texU, d0: texUPrev, u: texUPrev, v: texVPrev, b: 1, params: params, N: N, interior: interior, tg: tg16)
-                    try advectPass(lib: lib, d: texV, d0: texVPrev, u: texUPrev, v: texVPrev, b: 2, params: params, N: N, interior: interior, tg: tg16)
+                        try projectPass(lib: lib, u: texU, v: texV, p: texP, div: texDiv, params: params, N: N, interior: interior, tg: tg16)
 
-                    try projectPass(lib: lib, u: texU, v: texV, p: texP, div: texDiv, params: params, N: N, interior: interior, tg: tg16)
+                        try blitCopyTex(from: texU, to: texUPrev)
+                        try blitCopyTex(from: texV, to: texVPrev)
+                        try advectPass(lib: lib, d: texU, d0: texUPrev, u: texUPrev, v: texVPrev, b: 1, params: params, N: N, interior: interior, tg: tg16)
+                        try advectPass(lib: lib, d: texV, d0: texVPrev, u: texUPrev, v: texVPrev, b: 2, params: params, N: N, interior: interior, tg: tg16)
 
-                    // === Density step ===
-                    try addSourcePass(lib: lib, x: texDens, s: curSrcDens, params: params, fullGrid: fullGrid, tg: tg16)
+                        try projectPass(lib: lib, u: texU, v: texV, p: texP, div: texDiv, params: params, N: N, interior: interior, tg: tg16)
 
-                    try blitCopyTex(from: texDens, to: texDensPrev)
-                    try diffusePass(lib: lib, x: texDens, x0: texDensPrev, b: 0, a: a_diff, params: params, N: N, interior: interior, tg: tg16)
+                        // === Density step ===
+                        if let splats {
+                            try addSourcePass(lib: lib, x: texDens, splat: splats.density, params: params, fullGrid: fullGrid, tg: tg16)
+                        }
 
-                    try blitCopyTex(from: texDens, to: texDensPrev)
-                    try advectPass(lib: lib, d: texDens, d0: texDensPrev, u: texU, v: texV, b: 0, params: params, N: N, interior: interior, tg: tg16)
+                        try blitCopyTex(from: texDens, to: texDensPrev)
+                        try diffusePass(lib: lib, x: texDens, x0: texDensPrev, b: 0, a: a_diff, params: params, N: N, interior: interior, tg: tg16)
 
-                    try decayPass(lib: lib, x: texDens, fullGrid: fullGrid, tg: tg16)
+                        try blitCopyTex(from: texDens, to: texDensPrev)
+                        try advectPass(lib: lib, d: texDens, d0: texDensPrev, u: texU, v: texV, b: 0, params: params, N: N, interior: interior, tg: tg16)
+
+                        try decayPass(lib: lib, x: texDens, fullGrid: fullGrid, tg: tg16)
+                    }
+
+                    // === Visualize ===
+                    if let displayTexture, let texDens, let texU, let texV, let texDiv, let texP, let colormapTexture {
+                        try visualizePass(lib: lib, interior: interior, tg: tg16, params: params, display: displayTexture, cmap: colormapTexture, dens: texDens, u: texU, v: texV, div: texDiv, p: texP)
+                    }
                 }
 
-                // === Visualize ===
-                if let displayTexture, let texDens, let texU, let texV, let texDiv, let texP, let colormapTexture {
-                    try visualizePass(lib: lib, interior: interior, tg: tg16, params: params, display: displayTexture, cmap: colormapTexture, dens: texDens, u: texU, v: texV, div: texDiv, p: texP)
+                if let displayTexture {
                     try RenderPass {
+                        QueueBarrier(after: .dispatch, before: .fragment)
                         try TextureBillboardPipeline(specifier: .texture2D(displayTexture))
                     }
                 }
             }
+            .useResourceCollection(resourceCollection)
             // Allocation and colormap rebuilds used to happen inline at the top of body. See #385.
             // The guards above cover the first frame, which runs before setup.
             .onSetupEnter { _ in
-                setupTexturesIfNeeded()
-                rebuildColormapTextureIfNeeded()
-            }
-            // The CPU-side source writes run after body has bound srcU/srcV/srcDens at the current
-            // srcIndex but before anything is encoded, so they land in the buffer this frame reads.
-            // srcIndex only advances once the GPU is finished with that buffer — see the completion
-            // handler below — which is what keeps the CPU off a texture that is still in flight.
-            .onWorkloadEnter { _ in
-                guard isRunning else {
-                    return
-                }
-                clearSourceTexture()
-                if interactionActive, let point = interactionPoint, let vel = interactionVelocity {
-                    writeInteraction(point: point, velocity: vel, N: gridN)
-                }
-            }
-            .onCommandBufferCompleted { _ in
-                guard isRunning else {
-                    return
-                }
-                srcIndex = 1 - srcIndex
+                try setupTexturesIfNeeded()
+                try rebuildColormapTextureIfNeeded()
             }
             .onChange(of: gridN) {
-                setupTexturesIfNeeded()
+                do { try setupTexturesIfNeeded() } catch { assertionFailure("\(error)") }
             }
             .onChange(of: colormap) {
-                rebuildColormapTextureIfNeeded()
+                do { try rebuildColormapTextureIfNeeded() } catch { assertionFailure("\(error)") }
             }
         }
     }
 
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: device.orThrow(.missingEnvironment("device")))
+        resourceCollection = collection
+        return collection
+    }
+
+    private var allTextures: [MTLTexture?] {
+        [texU, texV, texUPrev, texVPrev, texDens, texDensPrev, texP, texDiv, displayTexture]
+    }
+
+    // Sources are computed on the GPU from these values, so no CPU-written texture can be in flight.
+    private func interactionSplats() -> (u: Splat, v: Splat, density: Splat)? {
+        guard interactionActive, let point = interactionPoint, let velocity = interactionVelocity else {
+            return nil
+        }
+        let center = SIMD2<Int32>(Int32(point.x * Float(gridN)) + 1, Int32(point.y * Float(gridN)) + 1)
+        let radius = Int32(max(2, gridN / 32))
+        let force: Float = 20.0
+        let densityAmount: Float = 10.0
+        return (
+            u: Splat(center: center, radius: radius, amount: force * velocity.x),
+            v: Splat(center: center, radius: radius, amount: force * velocity.y),
+            density: Splat(center: center, radius: radius, amount: densityAmount)
+        )
+    }
+
     /// Rebuilds the colormap texture when the selected colormap changes.
-    private func rebuildColormapTextureIfNeeded() {
+    private func rebuildColormapTextureIfNeeded() throws {
         guard colormapTexture == nil || activeColormap != colormap else {
             return
         }
+        let old = colormapTexture
         colormapTexture = buildColormapTexture(colormap)
         activeColormap = colormap
+        try resourceCollection?.replace([old], with: [colormapTexture])
     }
 
     // MARK: - Visualization
@@ -175,7 +202,7 @@ struct StamFluid: Element {
     @ElementBuilder
     // swiftlint:disable:next function_parameter_count
     private func visualizePass(lib: ShaderNamespace, interior: MTLSize, tg: MTLSize, params: FluidParams, display: MTLTexture, cmap: MTLTexture, dens: MTLTexture, u: MTLTexture, v: MTLTexture, div: MTLTexture, p: MTLTexture) throws -> some Element {
-        try ComputePass {
+        try orderedPass {
             switch visualization {
             case .velocity:
                 try ComputePipeline(computeKernel: try lib.visualizeVelocity) {
@@ -226,30 +253,38 @@ struct StamFluid: Element {
     // MARK: - Solver element builders
 
     @ElementBuilder
-    private func addSourcePass(lib: ShaderNamespace, x: MTLTexture, s: MTLTexture, params: FluidParams, fullGrid: MTLSize, tg: MTLSize) throws -> some Element {
-        try ComputePass {
-            try ComputePipeline(computeKernel: try lib.addSource) {
+    private func addSourcePass(lib: ShaderNamespace, x: MTLTexture, splat: Splat, params: FluidParams, fullGrid: MTLSize, tg: MTLSize) throws -> some Element {
+        try orderedPass {
+            try ComputePipeline(computeKernel: try lib.addSplat) {
                 try ComputeDispatch(threadsPerGrid: fullGrid, threadsPerThreadgroup: tg)
                     .parameter("x", texture: x)
-                    .parameter("s", texture: s)
                     .parameter("params", value: params)
+                    .parameter("splat", value: splat)
             }
         }
     }
 
+    // Every solver step reads what the previous one wrote. Metal 4 does not track hazards inside an encoder either.
+    @ElementBuilder
+    private func orderedPass<Content: Element>(@ElementBuilder content: () throws -> Content) throws -> some Element {
+        EncoderBarrier(after: [.dispatch, .blit], before: [.dispatch, .blit])
+        try content()
+    }
+
     @ElementBuilder
     private func blitCopyTex(from src: MTLTexture, to dst: MTLTexture) throws -> some Element {
-        try BlitPass {
-            Blit { encoder in
-                encoder.copy(from: src, to: dst)
+        try orderedPass {
+            ComputeCommand { encoder in
+                encoder.copy(sourceTexture: src, destinationTexture: dst)
             }
+            .useComputeResources([src, dst], usage: [.read, .write])
         }
     }
 
     @ElementBuilder
     private func diffusePass(lib: ShaderNamespace, x: MTLTexture, x0: MTLTexture, b: Int, a: Float, params: FluidParams, N: UInt32, interior: MTLSize, tg: MTLSize) throws -> some Element {
         ForEach(0..<20, id: \.self) { _ in
-            try ComputePass {
+            try orderedPass {
                 try ComputePipeline(computeKernel: try lib.diffuseRedBlack) {
                     try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
                         .parameter("x", texture: x)
@@ -259,7 +294,7 @@ struct StamFluid: Element {
                         .parameter("a", value: a)
                 }
             }
-            try ComputePass {
+            try orderedPass {
                 try ComputePipeline(computeKernel: try lib.diffuseRedBlack) {
                     try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
                         .parameter("x", texture: x)
@@ -275,7 +310,7 @@ struct StamFluid: Element {
 
     @ElementBuilder
     private func advectPass(lib: ShaderNamespace, d: MTLTexture, d0: MTLTexture, u: MTLTexture, v: MTLTexture, b: Int, params: FluidParams, N: UInt32, interior: MTLSize, tg: MTLSize) throws -> some Element {
-        try ComputePass {
+        try orderedPass {
             try ComputePipeline(computeKernel: try lib.advect) {
                 try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
                     .parameter("d", texture: d)
@@ -290,7 +325,7 @@ struct StamFluid: Element {
 
     @ElementBuilder
     private func projectPass(lib: ShaderNamespace, u: MTLTexture, v: MTLTexture, p: MTLTexture, div: MTLTexture, params: FluidParams, N: UInt32, interior: MTLSize, tg: MTLSize) throws -> some Element {
-        try ComputePass {
+        try orderedPass {
             try ComputePipeline(computeKernel: try lib.projectDivergence) {
                 try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
                     .parameter("div", texture: div)
@@ -304,7 +339,7 @@ struct StamFluid: Element {
         try boundaryPass(lib: lib, x: p, b: 0, params: params, N: N)
 
         ForEach(0..<20, id: \.self) { _ in
-            try ComputePass {
+            try orderedPass {
                 try ComputePipeline(computeKernel: try lib.projectPressureRedBlack) {
                     try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
                         .parameter("p", texture: p)
@@ -313,7 +348,7 @@ struct StamFluid: Element {
                         .parameter("colorPass", value: Int32(0))
                 }
             }
-            try ComputePass {
+            try orderedPass {
                 try ComputePipeline(computeKernel: try lib.projectPressureRedBlack) {
                     try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
                         .parameter("p", texture: p)
@@ -325,7 +360,7 @@ struct StamFluid: Element {
         }
         try boundaryPass(lib: lib, x: p, b: 0, params: params, N: N)
 
-        try ComputePass {
+        try orderedPass {
             try ComputePipeline(computeKernel: try lib.projectGradientSubtract) {
                 try ComputeDispatch(threadsPerGrid: interior, threadsPerThreadgroup: tg)
                     .parameter("u", texture: u)
@@ -340,7 +375,7 @@ struct StamFluid: Element {
 
     @ElementBuilder
     private func decayPass(lib: ShaderNamespace, x: MTLTexture, fullGrid: MTLSize, tg: MTLSize) throws -> some Element {
-        try ComputePass {
+        try orderedPass {
             try ComputePipeline(computeKernel: try lib.decay) {
                 try ComputeDispatch(threadsPerGrid: fullGrid, threadsPerThreadgroup: tg)
                     .parameter("x", texture: x)
@@ -351,7 +386,7 @@ struct StamFluid: Element {
 
     @ElementBuilder
     private func boundaryPass(lib: ShaderNamespace, x: MTLTexture, b: Int, params: FluidParams, N: UInt32) throws -> some Element {
-        try ComputePass {
+        try orderedPass {
             try ComputePipeline(computeKernel: try lib.setBoundary) {
                 try ComputeDispatch(threadsPerGrid: MTLSize(width: Int(N) + 1, height: 1, depth: 1), threadsPerThreadgroup: MTLSize(width: min(256, Int(N) + 1), height: 1, depth: 1))
                     .parameter("x", texture: x)
@@ -363,19 +398,16 @@ struct StamFluid: Element {
 
     // MARK: - Texture setup
 
-    private func setupTexturesIfNeeded() {
+    private func setupTexturesIfNeeded() throws {
         guard !initialized || initializedN != gridN, let device else {
             return
         }
+        let oldTextures = allTextures
 
         let texSize = gridN + 2
 
         func makeField() -> MTLTexture? {
             device.makeTexture2D(pixelFormat: .r32Float, width: texSize, height: texSize, storageMode: .shared, label: "Fluid Field")
-        }
-
-        func makeFieldPair() -> [MTLTexture?] {
-            [makeField(), makeField()]
         }
 
         texU = makeField()
@@ -386,20 +418,13 @@ struct StamFluid: Element {
         texDensPrev = makeField()
         texP = makeField()
         texDiv = makeField()
-        srcU = makeFieldPair()
-        srcV = makeFieldPair()
-        srcDens = makeFieldPair()
-        srcIndex = 0
 
         // Clear all textures
         let zeros = [Float](repeating: 0, count: texSize * texSize)
         let bytesPerRow = texSize * MemoryLayout<Float>.stride
         let region = MTLRegionMake2D(0, 0, texSize, texSize)
-        let allTextures: [MTLTexture?] = [
-            texU, texV, texUPrev, texVPrev, texDens, texDensPrev, texP, texDiv,
-            srcU[0], srcU[1], srcV[0], srcV[1], srcDens[0], srcDens[1]
-        ]
-        for tex in allTextures {
+        let fieldTextures: [MTLTexture?] = [texU, texV, texUPrev, texVPrev, texDens, texDensPrev, texP, texDiv]
+        for tex in fieldTextures {
             tex?.replace(region: region, mipmapLevel: 0, withBytes: zeros, bytesPerRow: bytesPerRow)
         }
 
@@ -408,69 +433,7 @@ struct StamFluid: Element {
 
         initialized = true
         initializedN = gridN
-    }
-
-    // MARK: - CPU-side source texture management
-
-    private func clearSourceTexture() {
-        guard let su = srcU[srcIndex], let sv = srcV[srcIndex], let sd = srcDens[srcIndex] else {
-            return
-        }
-        let texSize = gridN + 2
-        let zeros = [Float](repeating: 0, count: texSize * texSize)
-        let bytesPerRow = texSize * MemoryLayout<Float>.stride
-        let region = MTLRegionMake2D(0, 0, texSize, texSize)
-        su.replace(region: region, mipmapLevel: 0, withBytes: zeros, bytesPerRow: bytesPerRow)
-        sv.replace(region: region, mipmapLevel: 0, withBytes: zeros, bytesPerRow: bytesPerRow)
-        sd.replace(region: region, mipmapLevel: 0, withBytes: zeros, bytesPerRow: bytesPerRow)
-    }
-
-    private func writeInteraction(point: SIMD2<Float>, velocity: SIMD2<Float>, N: Int) {
-        guard let su = srcU[srcIndex], let sv = srcV[srcIndex], let sd = srcDens[srcIndex] else {
-            return
-        }
-
-        let texSize = N + 2
-        let gi = Int(point.x * Float(N)) + 1
-        let gj = Int(point.y * Float(N)) + 1
-        let radius = max(2, N / 32)
-        let force: Float = 20.0
-        let densityAmount: Float = 10.0
-
-        // Build small patch arrays, then write rows
-        for dj in -radius...radius {
-            let jj = gj + dj
-            guard jj >= 1, jj <= N else {
-                continue
-            }
-            for di in -radius...radius {
-                let ii = gi + di
-                guard ii >= 1, ii <= N else {
-                    continue
-                }
-                let dist = sqrt(Float(di * di + dj * dj))
-                guard dist <= Float(radius) else {
-                    continue
-                }
-                let falloff = 1.0 - dist / Float(radius)
-                let region = MTLRegionMake2D(ii, jj, 1, 1)
-                let bytesPerRow = texSize * MemoryLayout<Float>.stride
-                var dVal = densityAmount * falloff
-                var uVal = force * velocity.x * falloff
-                var vVal = force * velocity.y * falloff
-                // Read existing, add, write back
-                var existing: Float = 0
-                sd.getBytes(&existing, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
-                dVal += existing
-                sd.replace(region: region, mipmapLevel: 0, withBytes: &dVal, bytesPerRow: bytesPerRow)
-                su.getBytes(&existing, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
-                uVal += existing
-                su.replace(region: region, mipmapLevel: 0, withBytes: &uVal, bytesPerRow: bytesPerRow)
-                sv.getBytes(&existing, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
-                vVal += existing
-                sv.replace(region: region, mipmapLevel: 0, withBytes: &vVal, bytesPerRow: bytesPerRow)
-            }
-        }
+        try resourceCollection?.replace(oldTextures, with: allTextures)
     }
 
     // MARK: - Colormap texture generation

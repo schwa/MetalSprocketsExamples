@@ -24,6 +24,8 @@ struct SixelRenderer<Demo: DemoRenderPass> {
     let depthTexture: MTLTexture
 
     let offscreenRenderer: OffscreenRenderer
+    // OffscreenRenderer only keeps textures it creates itself resident across frames.
+    let resourceCollection: ResourceCollection
 
     // Pixel readback buffer (reused across frames)
     var pixelBuffer: [UInt8]
@@ -132,6 +134,10 @@ struct SixelRenderer<Demo: DemoRenderPass> {
             colorTexture: colorTexture,
             depthTexture: depthTexture
         )
+        self.resourceCollection = try ResourceCollection(device: device)
+        for resource in [colorTexture, depthTexture] {
+            try resourceCollection.register(resource)
+        }
     }
 
     // Convert int to ASCII digits
@@ -155,7 +161,7 @@ struct SixelRenderer<Demo: DemoRenderPass> {
             cameraMatrix: cameraMatrix
         )
 
-        _ = try offscreenRenderer.render(demoPass)
+        _ = try offscreenRenderer.render(demoPass.useResourceCollection(resourceCollection))
     }
 
     mutating func printFrame() {

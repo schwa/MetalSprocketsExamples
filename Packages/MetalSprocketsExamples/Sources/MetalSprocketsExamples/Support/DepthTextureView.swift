@@ -25,10 +25,10 @@ struct DepthTextureView: View {
                 try RenderPass(label: "Depth Texture View") {
                     try RenderPipeline(label: "Depth Texture View", vertexShader: vertexShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
-                            encoder.setFragmentTexture(depthTexture, index: 0)
-                            encoder.setFragmentSamplerState(sampler, index: 0)
-                            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                            encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                         }
+                        .parameter("depthTexture", texture: depthTexture)
+                        .parameter("textureSampler", samplerState: sampler)
                     }
                 }
             }

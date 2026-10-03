@@ -17,16 +17,24 @@ namespace StamFluidShader {
         float visc;      // viscosity
     };
 
-    // --- Add source: x += dt * s ---
-    kernel void addSource(texture2d<float, access::read_write> x [[texture(0)]],
-                          texture2d<float, access::read> s [[texture(1)]],
-                          constant FluidParams &params [[buffer(0)]],
-                          uint2 gid [[thread_position_in_grid]]) {
-        uint2 texSize = uint2(x.get_width(), x.get_height());
-        if (gid.x >= texSize.x || gid.y >= texSize.y) return;
+    struct Splat {
+        int2 center;     // interior cell coordinates
+        int radius;      // in cells
+        float amount;    // source value at the center
+    };
 
-        float val = x.read(gid).r + params.dt * s.read(gid).r;
-        x.write(float4(val, 0, 0, 0), gid);
+    // --- Add source: x += dt * s, where s is a radial splat with linear falloff ---
+    kernel void addSplat(texture2d<float, access::read_write> x [[texture(0)]],
+                         constant FluidParams &params [[buffer(0)]],
+                         constant Splat &splat [[buffer(1)]],
+                         uint2 gid [[thread_position_in_grid]]) {
+        if (gid.x < 1 || gid.y < 1 || gid.x > params.N || gid.y > params.N) return;
+
+        float dist = length(float2(int2(gid) - splat.center));
+        if (dist > float(splat.radius)) return;
+
+        float s = splat.amount * (1.0 - dist / float(splat.radius));
+        x.write(float4(x.read(gid).r + params.dt * s, 0, 0, 0), gid);
     }
 
     // --- Gauss-Seidel relaxation (one red-black iteration) ---

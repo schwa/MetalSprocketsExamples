@@ -105,6 +105,8 @@ struct ANSIRenderer<Demo: DemoRenderPass> {
     let shadeCount: UInt32
     let computeKernel: ComputeKernel
     let offscreenRenderer: OffscreenRenderer
+    // OffscreenRenderer only keeps textures it creates itself resident across frames.
+    let resourceCollection: ResourceCollection
 
     static var bytesPerCell: Int { 20 }  // "\x1b[38;2;RRR;GGG;BBBmX"
 
@@ -167,6 +169,10 @@ struct ANSIRenderer<Demo: DemoRenderPass> {
             colorTexture: colorTexture,
             depthTexture: depthTexture
         )
+        self.resourceCollection = try ResourceCollection(device: device)
+        for resource: any MTLResource in [colorTexture, depthTexture, ansiBuffer, shadeCharsBuffer] {
+            try resourceCollection.register(resource)
+        }
     }
 
     func render(frameUniforms: MetalSprocketsUI.FrameUniforms, cameraMatrix: simd_float4x4) throws {
@@ -180,6 +186,8 @@ struct ANSIRenderer<Demo: DemoRenderPass> {
             demoPass
 
             try ComputePass {
+                // Reads the color texture the demo's render pass just wrote.
+                QueueBarrier(after: .fragment, before: .dispatch)
                 try ComputePipeline(computeKernel: computeKernel) {
                     try ComputeDispatch(threadsPerGrid: MTLSize(width: terminal.width, height: terminal.height, depth: 1))
                     .parameter("inputTexture", texture: colorTexture)
@@ -190,7 +198,7 @@ struct ANSIRenderer<Demo: DemoRenderPass> {
             }
         }
 
-        _ = try offscreenRenderer.render(element)
+        _ = try offscreenRenderer.render(element.useResourceCollection(resourceCollection))
     }
 
     func printFrame() {

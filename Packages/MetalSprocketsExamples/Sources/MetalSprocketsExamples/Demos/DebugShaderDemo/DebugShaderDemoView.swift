@@ -54,10 +54,8 @@ public struct DebugShaderDemoView: View {
                     cameraPosition: cameraMatrix.translation,
                     viewProjectionMatrix: viewProjectionMatrix
                 ) {
-                    Draw { encoder in
-                        encoder.setVertexBuffers(of: teapot)
-                        encoder.draw(teapot)
-                    }
+                    Draw(mesh: teapot)
+                        .vertexBuffers(of: teapot)
                 }
                 .vertexDescriptor(teapot.vertexDescriptor)
                 .depthCompare(function: .less, enabled: true)

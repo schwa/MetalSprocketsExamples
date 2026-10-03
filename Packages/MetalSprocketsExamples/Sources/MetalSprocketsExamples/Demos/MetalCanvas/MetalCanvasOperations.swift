@@ -30,6 +30,10 @@ struct MetalCanvasOperations {
     let segmentsBuffer: MTLBuffer
     let limits: Limits
 
+    var buffers: [any MTLBuffer] {
+        [drawOperationsBuffer, segmentOffsetsBuffer, segmentsBuffer]
+    }
+
     init(device: MTLDevice, limits: Limits = Limits()) throws {
         self.limits = limits
 

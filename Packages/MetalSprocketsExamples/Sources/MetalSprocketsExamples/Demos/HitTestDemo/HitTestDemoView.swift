@@ -51,15 +51,20 @@ public struct HitTestDemoView: View {
     private var visualizationMode: HitTestVisualizationMode = .none
     @State
     private var renderViewSize: CGSize = .zero
+    /// Hit queries are answered from a copy made inside the frame, so the CPU never reads textures the GPU is writing.
+    @State
+    private var pendingHitLocation: SIMD2<Int>?
+    @State
+    private var pendingGridExport = false
+    @State
+    private var resourceCollection: ResourceCollection?
 
     private let device: MTLDevice
-    private let commandQueue: MTLCommandQueue
 
     public init() {
         self.lighting = (try? Lighting.demo()).orFatalError("Failed to load demo lighting")
         let device = _MTLCreateSystemDefaultDevice()
         self.device = device
-        self.commandQueue = device.makeCommandQueue().orFatalError("Failed to create command queue")
         let skyboxCrossTexture = (try? device.makeTexture(name: "Skybox", bundle: .main))
             .orFatalError("Failed to load skybox cross texture")
         self.skyboxTexture = (try? device.makeTextureCubeFromCrossTexture(texture: skyboxCrossTexture))
@@ -79,10 +84,8 @@ public struct HitTestDemoView: View {
                         try RenderPass {
                             // Render teapot with Blinn-Phong shading
                             try BlinnPhongShader {
-                                try Draw { encoder in
-                                    encoder.setVertexBuffers(of: mesh)
-                                    encoder.draw(mesh)
-                                }
+                                try Draw(mesh: mesh)
+                                .vertexBuffers(of: mesh)
                                 .blinnPhongMaterial(material)
                                 .blinnPhongMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: modelMatrix, cameraMatrix: cameraMatrix)
                                 .lighting(lighting)
@@ -90,15 +93,17 @@ public struct HitTestDemoView: View {
                             .vertexDescriptor(mesh.vertexDescriptor)
                             .depthCompare(function: .less, enabled: true)
                         }
+                        // Covers the whole submission.
+                        .useResourceCollection(resourceCollection ?? makeResourceCollection())
 
                         // Hit test rendering pass (to offscreen textures)
                         if let textures = hitTestTextures {
                             try RenderPass {
+                                // The previous frame's readback copy and visualization may still read these targets.
+                                QueueBarrier(after: [.blit, .fragment], before: .fragment)
                                 try HitTestShader {
-                                    Draw { encoder in
-                                        encoder.setVertexBuffers(of: mesh)
-                                        encoder.draw(mesh)
-                                    }
+                                    Draw(mesh: mesh)
+                                    .vertexBuffers(of: mesh)
                                     .hitTestMatrices(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix, modelMatrix: modelMatrix)
                                     .geometryID(0)
                                 }
@@ -136,6 +141,10 @@ public struct HitTestDemoView: View {
                                 descriptor.depthAttachment.clearDepth = 1.0
                                 descriptor.depthAttachment.storeAction = .dontCare
                             }
+
+                            if pendingHitLocation != nil || pendingGridExport {
+                                try readbackPass(textures: textures)
+                            }
                         }
 
                         // Visualize the selected hit test texture if requested
@@ -156,6 +165,8 @@ public struct HitTestDemoView: View {
                             }
 
                             try RenderPass {
+                                // Samples what the hit test pass just wrote.
+                                QueueBarrier(after: .fragment, before: .fragment)
                                 try TextureBillboardPipeline(specifierA: .texture2D(sourceTexture), specifierB: .color([0, 0, 0]), colorTransformFunctionName: colorTransformName)
                             }
                         }
@@ -165,13 +176,13 @@ public struct HitTestDemoView: View {
                     .metalDepthStencilPixelFormat(.depth32Float)
                     .onUsableDrawableSizeChange { size in
                         drawableSize = size
-                        hitTestTextures = HitTestTextures(device: device, size: size)
+                        replaceHitTestTextures(HitTestTextures(device: device, size: size))
                     }
                     .onAppear {
                         if hitTestTextures == nil {
                             let size = CGSize(width: 1_920, height: 1_080) // Default size
                             drawableSize = size
-                            hitTestTextures = HitTestTextures(device: device, size: size)
+                            replaceHitTestTextures(HitTestTextures(device: device, size: size))
                         }
                     }
                     .onTapGesture(coordinateSpace: .named("RenderView")) { location in
@@ -274,87 +285,69 @@ public struct HitTestDemoView: View {
             return
         }
 
-        // Synchronize the buffers if needed on macOS
-        #if os(macOS)
-        if textures.geometryIDBuffer.storageMode == .managed {
-            // Create a command buffer to synchronize managed buffers
-            guard let commandBuffer = commandQueue.makeCommandBuffer() else {
-                return
-            }
-            guard let blitEncoder = commandBuffer.makeBlitCommandEncoder() else {
-                return
-            }
-            blitEncoder.synchronize(resource: textures.geometryIDBuffer)
-            blitEncoder.synchronize(resource: textures.instanceIDBuffer)
-            blitEncoder.synchronize(resource: textures.triangleIDBuffer)
-            blitEncoder.synchronize(resource: textures.depthBuffer)
-            blitEncoder.synchronize(resource: textures.triangleCoordinatesBuffer)
-            blitEncoder.endEncoding()
-            commandBuffer.commit()
-            commandBuffer.waitUntilCompleted()
-        }
-        #endif
-
-        // Calculate the pixel offset in the buffer
-        let bytesPerRow = textures.bytesPerRow
-        let pixelOffset = metalY * (bytesPerRow / 4) + metalX // Divide by 4 since bytesPerRow is in bytes
-
-        // Read directly from the buffers
-        let geometryIDPtr = textures.geometryIDBuffer.contents().assumingMemoryBound(to: Int32.self)
-        let geometryID = geometryIDPtr[pixelOffset]
-
-        let instanceIDPtr = textures.instanceIDBuffer.contents().assumingMemoryBound(to: Int32.self)
-        let instanceID = instanceIDPtr[pixelOffset]
-
-        let triangleIDPtr = textures.triangleIDBuffer.contents().assumingMemoryBound(to: Int32.self)
-        let triangleID = triangleIDPtr[pixelOffset]
-
-        let depthPtr = textures.depthBuffer.contents().assumingMemoryBound(to: Float.self)
-        let depth = depthPtr[pixelOffset]
-
-        // For RGBA32Float texture, we need to account for 4 components per pixel
-        let triangleCoordsOffset = pixelOffset * 4
-        let coordsPtr = textures.triangleCoordinatesBuffer.contents().assumingMemoryBound(to: Float.self)
-        let triangleCoords = SIMD3<Float>(coordsPtr[triangleCoordsOffset], coordsPtr[triangleCoordsOffset + 1], coordsPtr[triangleCoordsOffset + 2])
-
-        // Store the result
-        lastHitResult = HitTestResult(
-            location: CGPoint(x: metalX, y: metalY),
-            geometryID: geometryID,
-            instanceID: instanceID,
-            triangleID: triangleID,
-            depth: depth,
-            triangleCoords: triangleCoords
-        )
+        pendingHitLocation = [metalX, metalY]
     }
 
     func performFullGridHitTest() {
-        guard let textures = hitTestTextures else {
-            return
-        }
+        pendingGridExport = true
+    }
 
+    // Copies the requested pixels into a buffer that only this frame writes, after the hit test pass, and reads it on completion.
+    @ElementBuilder
+    private func readbackPass(textures: HitTestTextures) throws -> some Element {
+        let readback = try HitTestReadback(device: device, textures: textures, location: pendingHitLocation, exportGrid: pendingGridExport)
+        try ComputePass(label: "Hit Test Readback") {
+            QueueBarrier(after: .fragment, before: .blit)
+            ComputeCommand { encoder in
+                readback.encode(encoder)
+            }
+            .useComputeResources(readback.resources, usage: [.read, .write])
+        }
+        .onSubmissionCommitted { _ in
+            if pendingHitLocation == readback.location {
+                pendingHitLocation = nil
+            }
+            if readback.gridBuffer != nil {
+                pendingGridExport = false
+            }
+        }
+        // The perform: label selects the isolated overload; a trailing closure resolves to the @Sendable one.
+        // swiftlint:disable:next trailing_closure
+        .onCommandBufferCompleted(perform: { result in
+            guard result.outcome == .completed else {
+                return
+            }
+            if let hit = readback.hitResult() {
+                lastHitResult = hit
+            }
+            if let gridBuffer = readback.gridBuffer {
+                exportGrid(from: gridBuffer, textures: textures)
+            }
+        })
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: device)
+        try collection.register(mesh.buffers + lighting.argumentBufferResources + (hitTestTextures?.resources ?? []))
+        resourceCollection = collection
+        return collection
+    }
+
+    private func replaceHitTestTextures(_ newTextures: HitTestTextures) {
+        do {
+            try resourceCollection?.replace(hitTestTextures?.resources ?? [], with: newTextures.resources)
+        } catch {
+            assertionFailure("\(error)")
+        }
+        hitTestTextures = newTextures
+    }
+
+    private func exportGrid(from gridBuffer: MTLBuffer, textures: HitTestTextures) {
         let width = Int(textures.size.width)
         let height = Int(textures.size.height)
         let bytesPerRow = textures.bytesPerRow
 
-        // Synchronize buffers on macOS
-        #if os(macOS)
-        if textures.geometryIDBuffer.storageMode == .managed {
-            guard let commandBuffer = commandQueue.makeCommandBuffer() else {
-                return
-            }
-            guard let blitEncoder = commandBuffer.makeBlitCommandEncoder() else {
-                return
-            }
-            blitEncoder.synchronize(resource: textures.geometryIDBuffer)
-            blitEncoder.endEncoding()
-            commandBuffer.commit()
-            commandBuffer.waitUntilCompleted()
-        }
-        #endif
-
-        // Read the geometry ID buffer
-        let geometryIDPtr = textures.geometryIDBuffer.contents().assumingMemoryBound(to: Int32.self)
+        let geometryIDPtr = gridBuffer.contents().assumingMemoryBound(to: Int32.self)
 
         // Create a grid of hit/no-hit values
         var hitGrid = Array(repeating: Array(repeating: false, count: width), count: height)
@@ -426,6 +419,90 @@ struct HitTestResult {
     let triangleCoords: SIMD3<Float>
 }
 
+/// One frame's readback: single pixels for a hit query, and the whole geometry ID texture for an export.
+struct HitTestReadback {
+    let textures: HitTestTextures
+    let location: SIMD2<Int>?
+    let pixelBuffer: MTLBuffer?
+    let gridBuffer: MTLBuffer?
+
+    // Byte offsets in pixelBuffer.
+    private static let geometryIDOffset = 0
+    private static let instanceIDOffset = 4
+    private static let triangleIDOffset = 8
+    private static let depthOffset = 12
+    private static let triangleCoordinatesOffset = 16
+    private static let pixelBufferLength = 32
+
+    init(device: MTLDevice, textures: HitTestTextures, location: SIMD2<Int>?, exportGrid: Bool) throws {
+        self.textures = textures
+        self.location = location
+        pixelBuffer = try location.map { _ in
+            try device.makeBuffer(length: Self.pixelBufferLength, options: .storageModeShared).orThrow(.resourceCreationFailure("Hit test pixel readback"))
+        }
+        gridBuffer = try exportGrid ? device.makeBuffer(length: textures.geometryIDBuffer.length, options: .storageModeShared).orThrow(.resourceCreationFailure("Hit test grid readback")) : nil
+    }
+
+    var resources: [any MTLResource] {
+        textures.resources + [pixelBuffer, gridBuffer].compactMap(\.self)
+    }
+
+    func encode(_ encoder: any MTL4ComputeCommandEncoder) {
+        if let location, let pixelBuffer {
+            let pixels: [(MTLTexture, Int, Int)] = [
+                (textures.geometryIDTexture, Self.geometryIDOffset, 4),
+                (textures.instanceIDTexture, Self.instanceIDOffset, 4),
+                (textures.triangleIDTexture, Self.triangleIDOffset, 4),
+                (textures.depthTexture, Self.depthOffset, 4),
+                (textures.triangleCoordinatesTexture, Self.triangleCoordinatesOffset, 16)
+            ]
+            for (texture, offset, bytesPerPixel) in pixels {
+                encoder.copy(
+                    sourceTexture: texture,
+                    sourceSlice: 0,
+                    sourceLevel: 0,
+                    sourceOrigin: MTLOrigin(x: location.x, y: location.y, z: 0),
+                    sourceSize: MTLSize(width: 1, height: 1, depth: 1),
+                    destinationBuffer: pixelBuffer,
+                    destinationOffset: offset,
+                    destinationBytesPerRow: bytesPerPixel,
+                    destinationBytesPerImage: bytesPerPixel
+                )
+            }
+        }
+        if let gridBuffer {
+            let size = MTLSize(width: Int(textures.size.width), height: Int(textures.size.height), depth: 1)
+            encoder.copy(
+                sourceTexture: textures.geometryIDTexture,
+                sourceSlice: 0,
+                sourceLevel: 0,
+                sourceOrigin: MTLOrigin(x: 0, y: 0, z: 0),
+                sourceSize: size,
+                destinationBuffer: gridBuffer,
+                destinationOffset: 0,
+                destinationBytesPerRow: textures.bytesPerRow,
+                destinationBytesPerImage: textures.bytesPerRow * size.height
+            )
+        }
+    }
+
+    func hitResult() -> HitTestResult? {
+        guard let location, let pixelBuffer else {
+            return nil
+        }
+        let bytes = UnsafeRawPointer(pixelBuffer.contents())
+        let coordinates = bytes.load(fromByteOffset: Self.triangleCoordinatesOffset, as: SIMD4<Float>.self)
+        return HitTestResult(
+            location: CGPoint(x: location.x, y: location.y),
+            geometryID: bytes.load(fromByteOffset: Self.geometryIDOffset, as: Int32.self),
+            instanceID: bytes.load(fromByteOffset: Self.instanceIDOffset, as: Int32.self),
+            triangleID: bytes.load(fromByteOffset: Self.triangleIDOffset, as: Int32.self),
+            depth: bytes.load(fromByteOffset: Self.depthOffset, as: Float.self),
+            triangleCoords: SIMD3<Float>(coordinates.x, coordinates.y, coordinates.z)
+        )
+    }
+}
+
 struct HitTestTextures {
     let geometryIDTexture: MTLTexture
     let instanceIDTexture: MTLTexture
@@ -440,6 +517,13 @@ struct HitTestTextures {
     let triangleCoordinatesBuffer: MTLBuffer
     let size: CGSize
     let bytesPerRow: Int
+
+    var resources: [any MTLResource] {
+        [
+            geometryIDTexture, instanceIDTexture, triangleIDTexture, depthTexture, triangleCoordinatesTexture, depthStencilTexture,
+            geometryIDBuffer, instanceIDBuffer, triangleIDBuffer, depthBuffer, triangleCoordinatesBuffer
+        ]
+    }
 
     init(device: MTLDevice, size: CGSize) {
         self.size = size

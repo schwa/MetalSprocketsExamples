@@ -10,6 +10,7 @@ import UniformTypeIdentifiers
 struct PanoramaMiniMapView: View {
     let panoramaTexture: MTLTexture
     let cameraMatrix: simd_float4x4
+    let resourceCollection: ResourceCollection
 
     var body: some View {
         ZStack {
@@ -17,6 +18,7 @@ struct PanoramaMiniMapView: View {
                 try RenderPass {
                     try PanoramaMinimapElement(panoramaTexture: panoramaTexture)
                 }
+                .useResourceCollection(resourceCollection)
             }
             .metalClearColor(MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0))
 

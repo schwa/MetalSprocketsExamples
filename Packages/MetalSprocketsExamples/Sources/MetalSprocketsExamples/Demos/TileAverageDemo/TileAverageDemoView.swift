@@ -166,10 +166,10 @@ struct TileAveragePipeline: Element {
                 // Step 1: Compute per-tile averages and write to imageblock
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                     Draw { encoder in
-                        encoder.setVertexUnsafeBytes(of: vertices, index: 0)
-                        encoder.setFragmentTexture(sourceTexture, index: 0)
-                        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                        encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                     }
+                    .parameter("vertices", functionType: .vertex, values: vertices)
+                    .parameter("sourceTexture", functionType: .fragment, texture: sourceTexture)
                     .parameter("uniforms", functionType: .vertex, buffer: uniformsBuffer, offset: 0)
                     .parameter("uniforms", functionType: .fragment, buffer: uniformsBuffer, offset: 0)
                 }
@@ -178,9 +178,9 @@ struct TileAveragePipeline: Element {
                 // Step 2: Blit imageblock to color attachment (framebuffer)
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: blitFragmentShader) {
                     Draw { encoder in
-                        encoder.setVertexUnsafeBytes(of: vertices, index: 0)
-                        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                        encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                     }
+                    .parameter("vertices", functionType: .vertex, values: vertices)
                     .parameter("uniforms", functionType: .vertex, buffer: uniformsBuffer, offset: 0)
                 }
                 .vertexDescriptor(vertexShader.inferredVertexDescriptor())

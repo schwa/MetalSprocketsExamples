@@ -100,7 +100,7 @@ struct RandomGenerator {
 kernel void updateParticles(
     device Particle *particles [[buffer(0)]],
     constant ParticleUniforms &uniforms [[buffer(1)]],
-    device ParticleEmitterParams &emitter [[buffer(2)]],
+    constant ParticleEmitterParams &emitter [[buffer(2)]],
     constant uint &particleCount [[buffer(3)]],
     uint id [[thread_position_in_grid]]
 ) {

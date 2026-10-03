@@ -3503,3 +3503,754 @@ cSettings: [
 ```
 
 ---
+
+## 399: Audit multi-pass demos for missing Metal 4 barriers
+
++++
+status: closed
+priority: high
+kind: bug
+labels: metal4
+created: 2026-09-30T18:26:08Z
+updated: 2026-10-02T21:54:57Z
+closed: 2026-10-02T21:54:57Z
++++
+
+Metal 4 does not order work between passes or commands. The port added barriers only to GameOfLife, Gargantua, StamFluid and Stencil. Check every other demo where one pass or dispatch reads what an earlier one wrote (compute into render, offscreen targets, MetalFX, shadow maps, tile/imageblock demos, ray tracing builds) and add QueueBarrier, EncoderBarrier or .barrierAfterPass. Symptoms of a missing barrier: flicker, stale frames, or garbage that depends on GPU timing.
+
+- `2026-10-02T21:54:57Z`: Audited every demo in the #430 batch (#401-#437) and the demos outside it. Barriers added wherever a pass or dispatch reads what an earlier one wrote, plus the WAR cases across frames: reused depth/stencil attachments, ping-pong textures, offscreen targets. The remaining barrier gap is inside MetalSprocketsAddOns (ShadowMapDepthPass WAR), tracked in #439.
+
+---
+
+## 400: Run all demos with Metal API Validation
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-09-30T18:26:09Z
+updated: 2026-10-02T22:33:46Z
+closed: 2026-10-02T22:33:46Z
++++
+
+Run each demo with MTL_DEBUG_LAYER=1 and fix what validation reports, especially unset bindings, non-resident resources and samplers not created with supportArgumentBuffers. The port was only smoke-tested without validation.
+
+- `2026-09-30T18:32:24Z`: Ran all 52 demos (Release, MTL_DEBUG_LAYER=1, errors/warnings to NSLog, ~3s each via Demos > Next). No validation errors or crashes. Only performance warnings, filed as #405 and #406; also #407 (missing teapot.mtl). Not covered: interaction (drag, config toggles), long runs, visionOS/iOS.
+- `2026-10-02T22:25:37Z`: Runtime checked: CLI ANSI ran 60 s under MTL_DEBUG_LAYER=1 with no errors. Ray Tracing (#418 rewrite) looks correct in the Metal debugger (checked by hand). Still to run: Hit Test, Stam Fluid, MetalCanvas, GameOfLife, ParticleEffects, and the rest.
+- `2026-10-02T22:28:36Z`: StamFluid: the GPU trace showed 232 compute encoders per frame (one ComputePass + QueueBarrier per dispatch/copy, from the original metal4 port). Now one ComputePass with EncoderBarriers between steps; needs a recapture to confirm.
+- `2026-10-02T22:31:10Z`: StamFluid recapture looks better (checked by hand) after the single-encoder change.
+- `2026-10-02T22:33:42Z`: Checked by hand in the Metal debugger: Hit Test (dependencies and residency fine; readback path not exercised; see #440), Game of Life, Mixed. All look good.
+- `2026-10-02T22:33:46Z`: Signed off. Runtime-checked: CLI ANSI (MTL_DEBUG_LAYER, no errors), Ray Tracing, Stam Fluid (after the single-encoder fix), Hit Test, Game of Life, Mixed. The other demos are build-verified only.
+
+---
+
+## 401: StamFluid source textures can be written while in flight
+
++++
+status: closed
+priority: low
+kind: bug
+labels: metal4
+created: 2026-09-30T18:26:09Z
+updated: 2026-10-02T21:31:40Z
+closed: 2026-10-02T21:31:40Z
++++
+
+StamFluid double-buffers its CPU-written source textures. srcIndex used to flip in onCommandBufferCompleted; that callback is now @Sendable and cannot write @MSState, so it flips in onSubmissionCommitted instead. With more than two frames in flight the CPU can write a texture the GPU is still reading. Fix with a ring sized to frames in flight, or gate reuse on onSubmissionFinished.
+
+- `2026-09-30T18:34:21Z`: Upstream: MetalSprockets#463.
+- `2026-10-02T21:31:40Z`: Removed the CPU-written source textures entirely. The interaction splat is now computed on the GPU (new addSplat kernel) from a small Splat parameter, so nothing CPU-written can be in flight. Same falloff math as the old CPU path. Build-verified only; runtime check under #400.
+
+---
+
+## 402: GameOfLife and Gargantua swap state on commit, not completion
+
++++
+status: closed
+priority: low
+kind: task
+labels: metal4
+created: 2026-09-30T18:26:09Z
+updated: 2026-10-02T21:33:47Z
+closed: 2026-10-02T21:33:47Z
++++
+
+GameOfLife toggles its ping-pong texture and Gargantua sets 'baked' in onSubmissionCommitted, because onCommandBufferCompleted is @Sendable and cannot write @MSState. This is correct only because queue barriers order later frames after the work. If a failed or discarded submission is possible, Gargantua may skip baking. Decide whether MetalSprockets should offer an isolated completion callback.
+
+- `2026-09-30T18:34:21Z`: Upstream: MetalSprockets#463 (isolated completion callback for @MSState).
+- `2026-10-02T21:32:57Z`: GameOfLife (#429): kept the swap in onSubmissionCommitted on purpose. The isolated onCommandBufferCompleted from MetalSprockets#463 is async, so the next frame could encode before the swap, recompute the same step and then toggle twice. Swap-on-commit plus the queue barrier is the right model for GPU-only ping-pong. A failed submission only costs one stale step. Gargantua still to check under #413.
+- `2026-10-02T21:33:47Z`: GameOfLife keeps swap-on-commit (see earlier comment). Gargantua keeps baked=true on commit, so the next frame can use the LUTs, and adds an isolated onCommandBufferCompleted(perform:) that resets baked if the outcome is not .completed. Note: trailing-closure onCommandBufferCompleted { } resolves to the @Sendable overload; you need the perform: label to get the isolated one.
+
+---
+
+## 403: Restore kernel time in TriangleDemo
+
++++
+status: new
+priority: low
+kind: enhancement
+labels: metal4
+created: 2026-09-30T18:26:10Z
++++
+
+TriangleDemo showed GPU and kernel time from MTLCommandBuffer. SubmissionResult only provides gpuStartTime/gpuEndTime, so the Kernel Time row was removed. Restore it if MetalSprockets exposes kernel timing.
+
+- `2026-09-30T18:34:21Z`: Upstream: MetalSprockets#464.
+
+---
+
+## 404: Move MetalMesh Metal 4 draw helper upstream
+
++++
+status: new
+priority: low
+kind: task
+labels: metal4
+created: 2026-09-30T18:26:10Z
++++
+
+Support/MetalMesh+Metal4.swift adds MTL4RenderCommandEncoder.draw(_: MetalMesh) and Element.metalMeshResources(_:) because neither SwiftMesh nor MetalSprocketsAddOns has a Metal 4 path for MetalMesh. SwiftMesh still ships an MTLRenderCommandEncoder.draw(_:) that no longer applies. Move this into SwiftMesh or AddOns, ideally as a Draw(metalMesh:) initializer like Draw(mesh:).
+
+---
+
+## 405: Redundant encoder state warnings on every Draw
+
++++
+status: closed
+priority: low
+kind: task
+labels: metal4
+created: 2026-09-30T18:32:19Z
+updated: 2026-09-30T18:34:25Z
+closed: 2026-09-30T18:34:25Z
++++
+
+With Metal API Validation on, most render demos log thousands of 'Redundant call to' warnings per second: setCullMode, setTriangleFillMode, setVertexAmplificationCount, setStencilReferenceValue, setDepthStencilState, setDepthBias and setRenderPipelineState. Worst: Wireframe, Debug Shader, Trivial Mesh, Spinning Cube, Shadow Map. These come from MetalSprockets resetting draw state before every Draw (#455 upstream) and re-binding the same pipeline, not from demo code. Fix upstream by tracking current encoder state and skipping unchanged sets. Also floods the log and hides real validation messages.
+
+- `2026-09-30T18:34:25Z`: Duplicate of MetalSprockets#462; the cause is upstream.
+
+---
+
+## 406: 'unused binding in compute encoder at Buffer index 3/4' logged every frame after Tiled SDF
+
++++
+status: new
+priority: medium
+kind: bug
+labels: metal4
+created: 2026-09-30T18:32:20Z
++++
+
+In a validation run that stepped through demos in order, 'unused binding in compute encoder at Buffer index 3' and '... index 4' first appeared on the Tiled SDF demo and kept appearing on every later demo, including ones with no compute (Infinite Grid, Terminal: about 11k lines per 3s). Cause unknown. Either a compute workload keeps running after its demo is left (leaked RenderView or timer), or MetalSprockets binds extra buffers on a shared compute path. Repro: launch with MTL_DEBUG_LAYER=1, open Tiled SDF, then switch to Infinite Grid and watch the log.
+
+---
+
+## 407: teapot.obj references missing teapot.mtl
+
++++
+status: new
+priority: low
+kind: bug
+created: 2026-09-30T18:32:20Z
++++
+
+Model I/O logs 'Unable to find mtl file .../teapot.mtl' each time teapot.obj loads (Depth, Mixed, Bouncing Teapots, ...; about 500 lines in one run). Add the .mtl, or strip the mtllib line from teapot.obj.
+
+---
+
+## 408: Mixed demo: teapot flashes
+
++++
+status: closed
+priority: medium
+kind: bug
+labels: metal4
+created: 2026-09-30T18:42:27Z
+updated: 2026-09-30T18:48:59Z
+closed: 2026-09-30T18:48:59Z
++++
+
+Since the Metal 4 port, the teapot in the Mixed demo flashes. Not investigated. My guess is a missing barrier or a per-Draw state reset (Metal 4 resets cull, fill and winding on every Draw). Related to #399 (barrier audit).
+
+- `2026-09-30T18:48:59Z`: Fixed: added QueueBarrier(after: .fragment, before: .dispatch) so the edge-detection pass waits for the render pass.
+
+---
+
+## 409: Grass demo renders nothing: 'uniforms' not bound by any allowed stage
+
++++
+status: closed
+priority: high
+kind: bug
+labels: metal4
+created: 2026-09-30T18:42:28Z
+updated: 2026-09-30T18:48:59Z
+closed: 2026-09-30T18:48:59Z
++++
+
+The Grass demo is blank. Every frame fails with: 'Metal 4 recording failed and is being discarded: Parameter 'uniforms' is not a binding of any stage the filter allows in this pipeline.'
+
+Likely cause: GrassDemoView.swift:200 binds .parameter("uniforms", functionType: .object, ...), but the object shader in GrassShaders.metal does not declare 'uniforms'; only grassMeshShader does. Metal 3 ignored the unused binding; MetalSprockets on Metal 4 throws. Fix: drop the .object 'uniforms' binding (check 'pointData' too).
+
+- `2026-09-30T18:48:59Z`: Fixed: removed object-stage bindings for uniforms and pointData; the object shader uses neither.
+
+---
+
+## 410: DepthDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:39:30Z
+closed: 2026-10-02T21:39:30Z
++++
+
+Compute and render passes share textures. Order them with barriers. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:39:30Z`: The render -> compute -> render chain had no barriers. Added: QueueBarrier([.dispatch, .fragment] -> .fragment) on the teapot pass (WAR on depth/color), QueueBarrier(.fragment -> .dispatch) on the adjust pass (RAW depth + WAR adjusted), and barrierAfterPass(.dispatch -> .fragment) before the billboard. The 3 targets are in a ResourceCollection, replaced on resize. The teapot is rebuilt in View.init (#438), so it stays on automatic residency. Build-verified only; runtime check under #400.
+
+---
+
+## 411: StencilDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:40:02Z
+closed: 2026-10-02T21:40:02Z
++++
+
+Compute and stencil passes share targets. Order them with barriers. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:40:02Z`: The copy -> render barrier was already there. Added the missing WAR barrier: QueueBarrier(.fragment -> .blit) before the copy into the stencil attachment, which RenderView reuses across frames. The staging buffer is in a ResourceCollection, replaced on resize. The stencil attachment is framework-owned and already resident. Build-verified only; runtime check under #400.
+
+---
+
+## 412: VideoPlaybackDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: blocked
+priority: medium
+kind: task
+labels: metal4
+depends: 439
+created: 2026-10-02T21:18:26Z
+updated: 2026-10-02T21:45:44Z
++++
+
+Compute and render passes on video frames. Order them with barriers. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:40:42Z`: Demo side done: QueueBarrier(.fragment -> .dispatch) plus barrierAfterPass(.dispatch -> .fragment) around the VCR compute pass, and distortedTexture in a ResourceCollection. Build-verified only. Left OPEN because it needs a MetalSprocketsAddOns fix: VideoTexturePipeline.updateFrame keeps only CVMetalTextureGetTexture(cvTexture) and drops the CVMetalTexture right away, so the CVMetalTextureCache can recycle the backing while in-flight frames still read it. AddOns needs to keep the CVMetalTexture (or CVPixelBuffer) alive with the frame, and expose it as an owner, the way YCbCrBillboardRenderPass(owners:) does. Also, VCRDistortionPipeline.init builds a 256x256 noise texture every frame (#438).
+
+---
+
+## 413: GargantuaDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:26Z
+updated: 2026-10-02T21:33:47Z
+closed: 2026-10-02T21:33:47Z
++++
+
+Compute and two render passes in GargantuaPipeline. Order producer and consumer passes. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:33:47Z`: Ray pass barrier now also waits on .fragment (without MetalFX it writes the scene texture the previous composite may be sampling). MetalFXSpatial already orders itself against all queue stages. All 10 targets/LUTs registered in a ResourceCollection, replaced on resize. Bake resets if the submission fails (see #402). Build-verified only; runtime check under #400.
+
+---
+
+## 414: AppleEventLogoDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: blocked
+priority: medium
+kind: task
+labels: metal4
+depends: 439
+created: 2026-10-02T21:18:26Z
+updated: 2026-10-02T21:45:44Z
++++
+
+Compute and three render passes. Order producer and consumer passes. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:41:15Z`: Demo side done: there were no barriers anywhere in the heatup -> remap -> blend -> render -> MetalFX -> render chain. Each pass now starts with a QueueBarrier for its RAW input and its WAR output. MetalFX orders itself. All 8 long-lived textures are in a ResourceCollection. Build-verified only. Left OPEN for the same MetalSprocketsAddOns VideoTexturePipeline CVMetalTexture lifetime problem as #412. Also noted: currentTextureIndex flips on the SwiftUI timeline tick, not when a frame is submitted, so a skipped RenderView frame desyncs the ping-pong for one step (visual only).
+
+---
+
+## 415: MixedDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:26Z
+updated: 2026-10-02T21:41:35Z
+closed: 2026-10-02T21:41:35Z
++++
+
+Mixes compute and render passes. Add barriers between them. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:41:36Z`: The render -> compute barrier was already there. Added the missing WAR barrier QueueBarrier(.dispatch -> .fragment) on the teapot pass: RenderView reuses the depth attachment, which the previous frame's edge pass reads. The color target is the drawable and changes every frame. No long-lived client resources except the teapot, which TeapotElement.init rebuilds every frame (#438). Build-verified only; runtime check under #400.
+
+---
+
+## 416: ComputeDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:26Z
+updated: 2026-10-02T21:41:42Z
+closed: 2026-10-02T21:41:42Z
++++
+
+Compute output feeds a later pass. Add barrierAfterPass. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:41:42Z`: No change needed. One-shot ComputePass.run() with a single dispatch; run() waits before the CPU reads back. The buffers live for one submission, so automatic residency is correct.
+
+---
+
+## 417: RayTracedShadowDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: blocked
+priority: medium
+kind: task
+labels: metal4
+depends: 439
+created: 2026-10-02T21:18:26Z
+updated: 2026-10-02T21:45:44Z
++++
+
+Compute and five render passes, plus acceleration structure. Order passes that read prior outputs. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:42:37Z`: Demo side done: added QueueBarrier(.dispatch -> .fragment) on the main pass, since RenderView reuses the depth attachment the previous RT shadow pass reads. The AddOns RayTracedShadowComputePass already orders itself after the main pass. The acceleration structures and lighting buffers are in a ResourceCollection. Build-verified only. Left OPEN because it needs a MetalSprocketsAddOns fix: Lighting.setLightPosition/setLight write into shared MTLBuffers in place, and this demo calls them every timeline tick while earlier frames may still read them (CPU/GPU race). Lighting needs per-frame copies, values passed as parameters, or a ring. The teapot/ground meshes are also View 'let's rebuilt on every view init (#438).
+
+---
+
+## 418: RayTracingDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:26Z
+updated: 2026-10-02T21:44:14Z
+closed: 2026-10-02T21:44:14Z
++++
+
+Compute ray tracing writes output that rendering reads. Add barriers; keep the BVH in a ResourceCollection. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:44:15Z`: Bigger than a barrier fix. The path tracer ran on its own Metal 3 queue in a main-actor Task loop (commit + waitUntilCompleted), and RenderView (Metal 4) sampled outputTexture with no cross-queue ordering, so the trace could overwrite the texture while frames were still displaying it. Moved the trace into the RenderView tree as a ComputePass: QueueBarrier([.dispatch, .fragment] -> .dispatch) for accumulation RAW + output WAR, then barrierAfterPass(.dispatch -> .fragment). The AS is bound with .parameter(accelerationStructure:). frameIndex advances on commit. Removed the Task loop and the Metal 3 pipeline. The one-time AS build still uses a Metal 3 queue and waits before use. All buffers, AS and textures are in a ResourceCollection. Build-verified only; runtime check under #400.
+
+---
+
+## 419: ShadowMapDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: blocked
+priority: medium
+kind: task
+labels: metal4
+depends: 439
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:45:44Z
++++
+
+Shadow map pass is sampled by the lighting pass. Add barrierAfterPass(after: .fragment...) to the fragment stage. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:45:03Z`: Demo side done: QueueBarrier(.dispatch -> .fragment) on the main scene pass (WAR on the reused depth attachment that ShadowMaskPass reads), and the shadow map texture plus lighting buffers in a ResourceCollection, replaced when the resolution or inverse-Z changes. Build-verified only. Left OPEN because it needs MetalSprocketsAddOns fixes: (1) ShadowMapDepthPass has a producer barrier but no WAR barrier at the start of its RenderPass, so the next frame can rewrite the shadow map while the previous ShadowMaskPass (dispatch) and main pass (fragment) still sample it. It needs QueueBarrier(after: [.dispatch, .fragment], before: .fragment) inside each depth RenderPass. A demo cannot add that, because a QueueBarrier only gates its own encoder. (2) Same Lighting in-place CPU write race as #417 (setLightPosition every tick).
+
+---
+
+## 420: SDFDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:45:12Z
+closed: 2026-10-02T21:45:12Z
++++
+
+Six render passes. Order passes whose targets are sampled later. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:45:12Z`: No change needed. One RenderPass per frame (the RenderView one or the CLI SDFRenderPass). No compute, offscreen targets or long-lived client resources. My grep counted 6 'RenderPass' mentions, but they are type names.
+
+---
+
+## 421: BlinnPhongDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: blocked
+priority: medium
+kind: task
+labels: metal4
+depends: 439
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:45:44Z
++++
+
+Multiple render passes. Order passes whose targets are sampled later. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:45:34Z`: Demo side done: one render pass, so no GPU-GPU hazards. Skybox and lighting buffers are in a ResourceCollection. Build-verified only. Left OPEN for the MetalSprocketsAddOns Lighting in-place CPU write race (setLightPosition/setLight every tick, see #417). Teapot meshes are View 'let's (#438).
+
+---
+
+## 422: MetalFXDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:46:08Z
+closed: 2026-10-02T21:46:08Z
++++
+
+Render, upscale, and present passes. Order them with barriers. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:46:08Z`: No barriers needed: MetalFXSpatial orders itself against all earlier and later queue work. The upscaled texture is in a ResourceCollection, replaced when the scale changes. The source texture is loaded in View.init (#438), so it stays on automatic residency. Build-verified only; runtime check under #400.
+
+---
+
+## 423: HitTestDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:48:04Z
+closed: 2026-10-02T21:48:04Z
++++
+
+Hit-test pass output is read later. Order passes and check CPU readback waits for completion. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:48:04Z`: Hit queries read the hit-test textures' shared backing buffers straight from the CPU, while every frame's hit-test pass cleared and redrew them, so a hover could read a half-written frame. The Metal 3 .managed synchronize path never ran (the buffers are shared). Now a query is queued, and the frame copies the pixel (or the whole geometry ID texture for export) into a fresh buffer after the hit-test pass (QueueBarrier .fragment -> .blit). An isolated onCommandBufferCompleted(perform:) reads it. Removed the Metal 3 queue. Added QueueBarrier([.blit, .fragment] -> .fragment) on the hit-test pass (WAR vs the previous readback and visualization) and QueueBarrier(.fragment -> .fragment) on the visualization pass. Mesh, lighting and hit-test targets are in a ResourceCollection, replaced on resize. Build-verified only; runtime check under #400.
+
+---
+
+## 424: SkinningDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+depends: 400
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:48:11Z
+closed: 2026-10-02T21:48:11Z
++++
+
+Long-lived mesh and skin buffers. Depends on the raw drawIndexedPrimitives fix. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:48:11Z`: No change needed. One render pass. The index buffer is made fresh each frame and declared with .useResource, so automatic residency fits. Vertices and bones are passed by value. Nothing outlives a frame.
+
+---
+
+## 425: OpenSeaDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+depends: 400
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:48:46Z
+closed: 2026-10-02T21:48:46Z
++++
+
+Long-lived ocean buffers. Depends on the raw drawIndexedPrimitives fix. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:48:46Z`: One render pass, so no hazards. The index buffer is built once in onSetupEnter and is now registered in a ResourceCollection made with it. The .useResource on the raw draw stays, for lifetime. Build-verified only; runtime check under #400.
+
+---
+
+## 426: Residency-only demos: move long-lived resources to ResourceCollection
+
++++
+status: closed
+priority: low
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:27Z
+updated: 2026-10-02T21:54:43Z
+closed: 2026-10-02T21:54:43Z
++++
+
+These demos make long-lived buffers or textures but have no compute hazards: GLTF, TileAverage, MetalCanvas, TrivialMesh, SpiralParticles, Skybox, SceneGraph, PBR, Grass, PointCloud, LiquidGlass, Mobile, Render, and the CLI renderers. Register them in a ResourceCollection. Also check multi-pass ones (Mobile, Render, SceneGraph) for barriers. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:54:43Z`: Real bugs found: (1) MetalCanvas rewrote its 3 shared buffers in place on canvas/viewport change while earlier frames could read them. It now makes fresh buffers per regeneration, lazily, which also removes a 16 MB per-frame allocation from init. (2) The CLI ANSIRenderer compute pass read the color texture with no barrier after the render pass; added QueueBarrier(.fragment -> .dispatch). (3) Mobile passed ARKit textures to YCbCrBillboardRenderPass without owners; it now uses init(frameData:) (iOS sim build ok). Residency: added a ResidencyTracker helper (diffs the frame's long-lived resources into a ResourceCollection) and used it in TrivialMesh, Skybox, PointCloud, PBR and SceneGraph. LiquidGlass and the 4 CLI renderers got collections. No change needed: SpiralParticles and Grass (buffers per frame), Render/SceneGraph/Mobile (single pass), GLTF (one-time CI work that waits). NOT DONE: GLTF scene-graph textures stay on automatic residency (registering them means walking the scene graph). TileAverage loads its texture in the element init every frame (#438), so automatic residency fits until that is fixed. Runtime: CLI ANSI ran 60 s under MTL_DEBUG_LAYER=1 with no validation errors; the rest is build-verified only.
+
+---
+
+## 427: StamFluidDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:24Z
+updated: 2026-10-02T21:29:56Z
+closed: 2026-10-02T21:29:56Z
++++
+
+Ping-pong compute passes. Add EncoderBarrier between dependent dispatches and barrierAfterPass before the render pass. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:29:56Z`: Registered all fluid, display and colormap textures in a ResourceCollection (re-registered on grid/colormap rebuild). Visualize pass now waits on .fragment so it cannot overwrite displayTexture while the previous frame samples it. Solver passes already had QueueBarriers. Build-verified only; runtime check under #400. CPU source-texture race is #401.
+
+---
+
+## 428: VoxelDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:36:45Z
+closed: 2026-10-02T21:36:45Z
++++
+
+Compute pass output feeds rendering. Add barrierAfterPass. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:36:45Z`: Had no barriers. Compute now waits for the previous frame's fragment reads of the color texture and ends with barrierAfterPass(.dispatch -> .fragment). Voxel and color textures are in a ResourceCollection, replaced when regenerated. The sphere bake uses .run() and waits, so it was already safe. Build-verified only; runtime check under #400.
+
+---
+
+## 429: GameOfLifeDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:24Z
+updated: 2026-10-02T21:32:57Z
+closed: 2026-10-02T21:32:57Z
++++
+
+Compute simulation feeds rendering and the next step. Add barriers between steps and before the render pass. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:32:57Z`: Render pass now waits on .dispatch (it reads the texture the previous frame's step wrote; it had no barrier). Seeding moved from a separate Metal 3 queue with waitUntilCompleted into an in-tree ComputePass with a QueueBarrier, so pattern changes no longer race in-flight frames. Textures registered in a ResourceCollection. Build-verified only; runtime check under #400.
+
+---
+
+## 430: Port all demos to Metal 4 ordering and residency model
+
++++
+status: new
+priority: high
+kind: task
+labels: metal4
+depends: 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426
+created: 2026-10-02T21:18:24Z
+updated: 2026-10-02T21:25:52Z
++++
+
+Examples use no barriers (EncoderBarrier, QueueBarrier, barrierAfterPass) and no ResourceCollection. Metal 4 does not track hazards, and automatic residency adds and removes long-lived resources every frame. Child issues cover each demo. Verify each with MTL_DEBUG_LAYER=1 and a GPU capture: Dependencies view shows producer/consumer edges, and no per-frame addAllocation/removeAllocation. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:54:57Z`: Status: done and closed: 401, 402, 410, 411, 413, 415, 416, 418, 420, 422-429, 431-437, 399. Blocked on MetalSprocketsAddOns (#439): 412, 414, 417, 419, 421; their demo-side parts are done. Follow-ups: #438 (@MSState eager GPU allocations), #400 (runtime validation pass; everything except the CLI ANSI path is build-verified only).
+
+---
+
+## 431: LUTDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:37:39Z
+closed: 2026-10-02T21:37:39Z
++++
+
+Compute LUT pass output is sampled later. Add barrierAfterPass to the fragment stage. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:37:39Z`: Had no barriers between the compute pass that writes the output texture and the render pass that samples it. Added QueueBarrier(.fragment -> .dispatch) and barrierAfterPass(.dispatch -> .fragment). Source, LUT and output textures are in a ResourceCollection; the LUT is replaced when the selection changes. LUT creation is synchronous (.run() / replace on fresh textures), so it was already safe. Build-verified only; runtime check under #400.
+
+---
+
+## 432: TiledSDFDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:37:59Z
+closed: 2026-10-02T21:37:59Z
++++
+
+Compute output feeds rendering. Add barrierAfterPass. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:37:59Z`: The cull compute pass had no barrier before the render pass reads the tile lists in the fragment stage. Added barrierAfterPass(.dispatch -> .fragment). All buffers are allocated fresh each frame, so automatic residency is correct and there is no WAR hazard; no ResourceCollection. #406 (unused-binding spam) left open, separate. Build-verified only; runtime check under #400.
+
+---
+
+## 433: PanoramaDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:38:48Z
+closed: 2026-10-02T21:38:48Z
++++
+
+Compute and multiple render passes. Order producer and consumer passes. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:38:49Z`: The gamma path (render -> compute -> render) had no barriers. Added: QueueBarrier(.dispatch -> .fragment) on the panorama pass (WAR on intermediate), QueueBarrier(.fragment -> .dispatch) on the gamma pass (RAW intermediate + WAR output), and barrierAfterPass(.dispatch -> .fragment) before the billboard. Panorama texture, mesh buffers and both targets are in a ResourceCollection shared with the minimap RenderView. Build-verified only; runtime check under #400.
+
+---
+
+## 434: ColorAdjustDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:37:13Z
+closed: 2026-10-02T21:37:13Z
++++
+
+Compute writes a texture that a later pass samples. Add barrierAfterPass to the fragment stage. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:37:13Z`: Had no barriers between the compute pass that writes adjustedTexture and the render pass that samples it. Added QueueBarrier(.fragment -> .dispatch) and barrierAfterPass(.dispatch -> .fragment). Source and adjusted textures are in a ResourceCollection created with them in init. Build-verified only; runtime check under #400.
+
+---
+
+## 435: Raw drawIndexedPrimitives without useResource can read freed memory
+
++++
+status: closed
+priority: high
+kind: bug
+labels: metal4
+created: 2026-10-02T21:18:24Z
+updated: 2026-10-02T21:28:07Z
+closed: 2026-10-02T21:28:07Z
++++
+
+OpenSeaPipeline.swift:116 and SkinningDemoView.swift:258,296 call drawIndexedPrimitives directly with no .useResource on the index buffer. Switch to Draw(primitiveType:indexBuffer:...) or declare the buffer with .useResource. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:28:07Z`: Already fixed on metal4: OpenSea and Skinning use .useResource on the index buffer, and every MetalMesh draw is paired with .metalMeshResources or .useResources.
+
+---
+
+## 436: BouncingTeapotsDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:25Z
+updated: 2026-10-02T21:36:04Z
+closed: 2026-10-02T21:36:04Z
++++
+
+Compute updates instance data for the draw. Add barrierAfterPass to the vertex stage. Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:36:04Z`: Added: QueueBarrier(.fragment -> .dispatch) before rewriting the skybox (WAR vs previous frame), EncoderBarrier between the checkerboard and circle kernels (both write the skybox), and barrierAfterPass(.dispatch -> .fragment) before the render pass samples it. MetalFX path already self-ordered. Render targets (view-owned) and skybox + mesh buffers (element-owned) are in ResourceCollections. Note: init allocates a 2048^2 texture, sampler and meshes every frame because @MSState initial values are not lazy; filed separately. Build-verified only; runtime check under #400.
+
+---
+
+## 437: ParticleEffectsDemo: add Metal 4 barriers and ResourceCollection
+
++++
+status: closed
+priority: medium
+kind: task
+labels: metal4
+created: 2026-10-02T21:18:24Z
+updated: 2026-10-02T21:34:43Z
+closed: 2026-10-02T21:34:43Z
++++
+
+Compute updates particles that the render pass reads. Add barrierAfterPass(after: .dispatch, beforeQueueStages: .vertex). Also move long-lived buffers and textures into a ResourceCollection. See MetalSprockets/Documentation/Porting-to-Metal4.md (Ordering and resources; Persistent and manual residency).
+
+- `2026-10-02T21:34:43Z`: Had no barriers. Compute now waits on the previous frame's dispatch and vertex reads (in-place update), and ends with barrierAfterPass(.dispatch -> .vertex) for the draw. Emitter params were memcpy'd into a shared buffer every frame while earlier frames could read it; they are now a constant value parameter (the shader only reads them). Particle buffer registered in a ResourceCollection. Build-verified only; runtime check under #400.
+
+---
+
+## 438: @MSState initial values with GPU allocations run every frame
+
++++
+status: new
+priority: medium
+kind: bug
+labels: metal4, performance
+created: 2026-10-02T21:36:11Z
++++
+
+MSState.init(wrappedValue:) is not an autoclosure, so an @MSState initial value, or an assignment to it in init, runs each time the element is rebuilt. Usually that is every frame. The persisted state is kept and the new value is thrown away. Example: FlyingTeapotsRenderPass (BouncingTeapots) builds a teapot MTKMesh, a sphere, a 2048x2048 texture and a sampler every frame. Audit the other demos for the same pattern. Move the allocations to onSetupEnter or a lazy create-in-body, or ask MetalSprockets for an autoclosure MSState initializer.
+
+- `2026-10-02T21:37:13Z`: Same pattern in SwiftUI views: ColorAdjustDemoView.init loads the JPG with MTKTextureLoader and allocates the output texture every time the view struct is re-created.
+- `2026-10-02T21:39:30Z`: Also DepthDemoView: 'let teapot = MTKMesh.teapot()' runs on every view init.
+- `2026-10-02T21:40:42Z`: Also VCRDistortionPipeline.init: createDefaultNoiseTexture runs on every init when noiseTexture is nil (every frame in VideoPlayback).
+- `2026-10-02T21:41:36Z`: Also TeapotElement.init (MixedDemo): mesh = MTKMesh.teapot() every frame.
+- `2026-10-02T21:42:37Z`: Also RayTracedShadowDemoView: 'private let teapots' (2x MTKMesh.teapot()) and groundMesh run on every view init.
+- `2026-10-02T21:46:08Z`: Also MetalFXDemoView.init loads the HEIC source texture on every view init.
+- `2026-10-02T22:35:20Z`: Filed upstream as MetalSprockets #475 (autoclosure MSState initializer).
+
+---
+
+## 439: AddOns: Lighting and VideoTexturePipeline mutate or release GPU-visible data while frames are in flight
+
++++
+status: new
+priority: high
+kind: bug
+labels: metal4, blocked-upstream
+created: 2026-10-02T21:45:41Z
++++
+
+Two MetalSprocketsAddOns types need changes before the demos that use them are race-free. (1) Lighting.setLightPosition and setLight write into shared MTLBuffers in place. RayTracedShadow (#417), ShadowMap (#419) and BlinnPhong (#421) call them every timeline tick while up to 3 earlier frames may still read those buffers. Fix with per-frame copies, a ring sized to maximumInFlightSubmissions, or value parameters. (2) VideoTexturePipeline.updateFrame keeps only CVMetalTextureGetTexture(cvTexture) and releases the CVMetalTexture right away, so CVMetalTextureCache can recycle the backing while frames still sample it. Affects VideoPlayback (#412) and AppleEventLogo (#414). Keep the CVMetalTexture alive with the frame and expose it as an owner, like YCbCrBillboardRenderPass(owners:). (3) ShadowMapDepthPass needs a WAR QueueBarrier at the start of each depth RenderPass (#419).
+
+- `2026-10-02T22:34:33Z`: Filed upstream: MetalSprocketsAddOns #63 (Lighting), #64 (VideoTexturePipeline CVMetalTexture lifetime), #65 (ShadowMapDepthPass WAR barrier).
+
+---
+
+## 440: HitTest: hit-test pass barrier also waits on this frame's main pass
+
++++
+status: new
+priority: low
+kind: enhancement
+labels: metal4, performance
+created: 2026-10-02T22:32:54Z
++++
+
+The hit-test RenderPass starts with QueueBarrier(after: [.blit, .fragment], before: .fragment). It is only needed for WAR against the previous frame's readback copy and visualization pass. A queue barrier waits on all earlier queue work, so it also serializes the hit-test pass after this frame's main pass, which it does not depend on. A GPU capture shows a barrier node between the two render encoders. Options: move the hit-test pass before the main pass, so the barrier only covers the previous frame. Or give each frame its own HitTestTextures so no WAR barrier is needed. Correct as is; low priority.
+
+---

@@ -223,6 +223,15 @@ public class ShaderGraph: @unchecked Sendable {
 
     /// Build a stitched MTLFunction from a node
     public func makeFunction<T>(_ name: String, node: Node<T>) throws -> MTLFunction {
+        let library = try makeLibrary(name, node: node)
+        guard let function = library.makeFunction(name: name) else {
+            throw ShaderGraphError.stitchingFailed(name: name, reason: "Function not found in stitched library")
+        }
+        return function
+    }
+
+    /// Build a stitched library containing a function named `name`
+    public func makeLibrary<T>(_ name: String, node: Node<T>) throws -> MTLLibrary {
         // Validate all functions in the graph exist
         try validateGraph(kind: node.kind)
 
@@ -258,14 +267,10 @@ public class ShaderGraph: @unchecked Sendable {
 
         let library = try device.makeLibrary(stitchedDescriptor: descriptor)
 
-        guard let function = library.makeFunction(name: name) else {
-            throw ShaderGraphError.stitchingFailed(name: name, reason: "Function not found in stitched library")
-        }
-
         // Validate input indices after wrapping
         try validateInputIndices(kind: wrappedKind, name: name)
 
-        return function
+        return library
     }
 
     /// Validate that all functions referenced in the graph are registered

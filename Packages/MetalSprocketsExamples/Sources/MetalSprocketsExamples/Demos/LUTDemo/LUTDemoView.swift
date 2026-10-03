@@ -39,6 +39,9 @@ public struct LUTDemoView: View {
     @State
     private var lutURL: URL
 
+    @State
+    private var resourceCollection: ResourceCollection
+
     public init() {
         do {
             let device = _MTLCreateSystemDefaultDevice()
@@ -56,6 +59,9 @@ public struct LUTDemoView: View {
             self.sourceTexture = sourceTexture
             self.lutTexture = lutTexture
             self.outputTexture = outputTexture
+            let resourceCollection = try ResourceCollection(device: device)
+            try resourceCollection.register([sourceTexture, lutTexture, outputTexture])
+            self.resourceCollection = resourceCollection
         }
         catch {
             fatalError("\(error)")
@@ -68,12 +74,16 @@ public struct LUTDemoView: View {
             RenderView { _, _ in
                 try Group {
                     try ComputePass(label: "LUTDemo") {
+                        // The previous frame may still be sampling the output texture.
+                        QueueBarrier(after: .fragment, before: .dispatch)
                         try LUTComputePipeline(inputTexture: sourceTexture, lutTexture: lutTexture, blend: blend, outputTexture: outputTexture)
                     }
+                    .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
                     try RenderPass(label: "Billboard") {
                         try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
                     }
                 }
+                .useResourceCollection(resourceCollection)
             }
             .metalColorPixelFormat(.rgba16Float) //
             .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
@@ -100,6 +110,7 @@ public struct LUTDemoView: View {
         .onChange(of: lutURL) {
             do {
                 let lutTexture = try Self.make3DLUTTexture(from: lutURL)
+                try resourceCollection.replace([self.lutTexture], with: [lutTexture])
                 self.lutTexture = lutTexture
             } catch {
                 fatalError("\(error)")

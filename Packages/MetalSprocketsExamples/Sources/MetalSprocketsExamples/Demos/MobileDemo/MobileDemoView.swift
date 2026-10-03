@@ -52,9 +52,10 @@ public struct MobileDemoView: View {
 
     @ViewBuilder
     private var content: some View {
-        if isARMode, let textureY = frameData.textureY, let textureCbCr = frameData.textureCbCr {
-            // Capture textures to avoid race during teardown
-            let textureCoordinates = frameData.textureCoordinates
+        if isARMode, frameData.textureY != nil, frameData.textureCbCr != nil {
+            // Capture the frame to avoid a race during teardown. init(frameData:) also keeps ARKit's
+            // CVMetalTextures alive until the GPU is done with them.
+            let frameData = frameData
             let projectionMatrix = frameData.projectionMatrix
             let viewMatrix = frameData.viewMatrix
 
@@ -64,7 +65,7 @@ public struct MobileDemoView: View {
                 let transform = projectionMatrix * viewMatrix * modelMatrix
 
                 try RenderPass(label: "Mobile Demo") {
-                    YCbCrBillboardRenderPass(textureY: textureY, textureCbCr: textureCbCr, textureCoordinates: textureCoordinates)
+                    try YCbCrBillboardRenderPass(frameData: frameData)
                     try DemoCubeRenderPipeline(transform: transform, time: time)
                 }
             }

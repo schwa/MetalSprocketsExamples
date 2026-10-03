@@ -33,10 +33,8 @@ struct TeapotElement: Element {
     var body: some Element {
         get throws {
             LambertianShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection) {
-                Draw { encoder in
-                    encoder.setVertexBuffers(of: mesh)
-                    encoder.draw(mesh)
-                }
+                Draw(mesh: mesh)
+                    .vertexBuffers(of: mesh)
             }
             .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
             .depthCompare(function: .less, enabled: true)

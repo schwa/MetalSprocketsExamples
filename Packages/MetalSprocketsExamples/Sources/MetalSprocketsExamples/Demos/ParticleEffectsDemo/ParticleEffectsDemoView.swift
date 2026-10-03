@@ -22,9 +22,8 @@ public struct ParticleEffectsDemoView: View {
     @State private var emitterType: EmitterType = .magicPortal
     @State private var emissionRate: Float = 2_000
 
-    // Particle buffers
     @State private var particleBuffer: MTLBuffer?
-    @State private var emitterBuffer: MTLBuffer?
+    @State private var resourceCollection: ResourceCollection?
 
     enum EmitterType: String, CaseIterable {
         case fountain = "Fountain"
@@ -44,13 +43,13 @@ public struct ParticleEffectsDemoView: View {
             RenderView { context, drawableSize in
                 let currentTime = context.frameUniforms.time
 
-                if let particleBuffer, let emitterBuffer {
+                if let particleBuffer, let resourceCollection {
                     try Group {
-                        // Update particles using compute shader
+                        // Updates particles in place: wait for the previous frame's update and draw.
                         try ComputePass {
+                            QueueBarrier(after: [.dispatch, .vertex], before: .dispatch)
                             ParticleUpdateCompute(
                                 particleBuffer: particleBuffer,
-                                emitterBuffer: emitterBuffer,
                                 particleCount: particleCount,
                                 time: currentTime,
                                 gravity: gravity,
@@ -58,6 +57,7 @@ public struct ParticleEffectsDemoView: View {
                                 emissionRate: emissionRate
                             )
                         }
+                        .barrierAfterPass(after: .dispatch, beforeQueueStages: .vertex)
 
                         // Render particles
                         try RenderPass {
@@ -73,6 +73,7 @@ public struct ParticleEffectsDemoView: View {
                             .depthCompare(function: .less, enabled: true)
                         }
                     }
+                    .useResourceCollection(resourceCollection)
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
@@ -148,34 +149,18 @@ public struct ParticleEffectsDemoView: View {
             ))
         }
 
-        // Create particle buffer
+        // A new buffer, not an in-place reset: earlier frames may still be using the old one.
+        let oldBuffer = particleBuffer
         let bufferSize = particles.count * MemoryLayout<Particle>.stride
         particleBuffer = device.makeBuffer(bytes: particles, length: bufferSize, options: [.storageModeShared])
         particleBuffer?.label = "Particle Buffer"
 
-        // Create emitter parameters buffer
-        let emitterParams = ParticleEmitterParams(
-            position: getEmitterPosition(for: emitterType),
-            emitterType: Int32(emitterTypeIndex),
-            emissionRate: emissionRate,
-            time: 0
-        )
-        emitterBuffer = device.makeBuffer(bytes: [emitterParams], length: MemoryLayout<ParticleEmitterParams>.stride, options: [.storageModeShared])
-        emitterBuffer?.label = "Emitter Buffer"
-    }
-
-    private var emitterTypeIndex: Int {
-        EmitterType.allCases.firstIndex(of: emitterType) ?? 0
-    }
-
-    private func getEmitterPosition(for type: EmitterType) -> SIMD3<Float> {
-        switch type {
-        case .fountain: return SIMD3<Float>(0, -2, 0)
-        case .explosion: return SIMD3<Float>(0, 0, 0)
-        case .rain: return SIMD3<Float>(0, 5, 0)
-        case .fireworks: return SIMD3<Float>(0, -3, 0)
-        case .tornado: return SIMD3<Float>(0, 0, 0)
-        case .magicPortal: return SIMD3<Float>(0, 0, 0)
+        do {
+            let collection = try resourceCollection ?? ResourceCollection(device: device)
+            try collection.replace([oldBuffer], with: [particleBuffer])
+            resourceCollection = collection
+        } catch {
+            assertionFailure("\(error)")
         }
     }
 }
@@ -183,31 +168,11 @@ public struct ParticleEffectsDemoView: View {
 // Use the structs from the Metal header
 private struct ParticleUpdateCompute: Element {
     let particleBuffer: MTLBuffer
-    let emitterBuffer: MTLBuffer
     let particleCount: Int
     let time: Float
     let gravity: SIMD3<Float>
     let emitterType: ParticleEffectsDemoView.EmitterType
     let emissionRate: Float
-
-    init(particleBuffer: MTLBuffer, emitterBuffer: MTLBuffer, particleCount: Int, time: Float, gravity: SIMD3<Float>, emitterType: ParticleEffectsDemoView.EmitterType, emissionRate: Float) {
-        self.particleBuffer = particleBuffer
-        self.emitterBuffer = emitterBuffer
-        self.particleCount = particleCount
-        self.time = time
-        self.gravity = gravity
-        self.emitterType = emitterType
-        self.emissionRate = emissionRate
-
-        // Update emitter parameters before compute pass
-        let emitterParams = ParticleEmitterParams(
-            position: getEmitterPosition(for: emitterType),
-            emitterType: Int32(ParticleEffectsDemoView.EmitterType.allCases.firstIndex(of: emitterType) ?? 0),
-            emissionRate: emissionRate,
-            time: time
-        )
-        memcpy(emitterBuffer.contents(), [emitterParams], MemoryLayout<ParticleEmitterParams>.stride)
-    }
 
     @MSState
     private var updateKernel = ShaderLibrary.examples.requiredFunction(type: ComputeKernel.self, named: "updateParticles")
@@ -222,12 +187,19 @@ private struct ParticleUpdateCompute: Element {
                 gravity: gravity,
                 baseSize: 1.0
             )
+            // Passed by value so no CPU-written buffer is shared with in-flight frames.
+            let emitterParams = ParticleEmitterParams(
+                position: getEmitterPosition(for: emitterType),
+                emitterType: Int32(ParticleEffectsDemoView.EmitterType.allCases.firstIndex(of: emitterType) ?? 0),
+                emissionRate: emissionRate,
+                time: time
+            )
 
             try ComputePipeline(computeKernel: updateKernel) {
                 try ComputeDispatch(threadsPerGrid: MTLSize(width: particleCount, height: 1, depth: 1))
                 .parameter("particles", buffer: particleBuffer)
                 .parameter("uniforms", value: uniforms)
-                .parameter("emitter", buffer: emitterBuffer)
+                .parameter("emitter", value: emitterParams)
                 .parameter("particleCount", value: UInt32(particleCount))
             }
         }
@@ -271,24 +243,24 @@ private struct ParticleRenderPipeline: Element {
                 vertexShader: vertexShader,
                 fragmentShader: fragmentShader
             ) {
+                let uniforms = ParticleUniforms(
+                    viewMatrix: viewMatrix,
+                    projectionMatrix: projectionMatrix,
+                    time: time,
+                    _padding1: (0, 0, 0),
+                    gravity: gravity,
+                    baseSize: baseSize
+                )
                 Draw { encoder in
-                    let uniforms = ParticleUniforms(
-                        viewMatrix: viewMatrix,
-                        projectionMatrix: projectionMatrix,
-                        time: time,
-                        _padding1: (0, 0, 0),
-                        gravity: gravity,
-                        baseSize: baseSize
-                    )
-                    encoder.setVertexBuffer(particleBuffer, offset: 0, index: 0)
-                    encoder.setVertexBytes([uniforms], length: MemoryLayout<ParticleUniforms>.stride, index: 1)
-                    encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount)
+                    encoder.drawPrimitives(primitiveType: .point, vertexStart: 0, vertexCount: particleCount)
                 }
+                .parameter("particles", functionType: .vertex, buffer: particleBuffer)
+                .parameter("uniforms", functionType: .vertex, value: uniforms)
             }
             .vertexDescriptor(vertexDescriptor)
             .renderPipelineDescriptorTransformer { renderPipelineDescriptor in
                 // Simple additive blending for glow effect (optional)
-                renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+                renderPipelineDescriptor.colorAttachments[0].blendingState = .enabled
                 renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
                 renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
                 renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .one

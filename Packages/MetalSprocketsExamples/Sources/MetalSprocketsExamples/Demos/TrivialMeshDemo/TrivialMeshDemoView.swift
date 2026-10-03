@@ -20,6 +20,7 @@ public struct TrivialMeshDemoView: View {
     @State private var lighting: Lighting?
     @State private var skyboxTexture: MTLTexture?
     @State private var showWireframe = false
+    @State private var residency = ResidencyTracker()
 
     @State private var cameraRotation = simd_quatf(angle: -.pi / 8, axis: [1, 0, 0])
     @State private var cameraDistance: Float = 12
@@ -37,6 +38,7 @@ public struct TrivialMeshDemoView: View {
             let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
             let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
             let viewMatrix = cameraMatrix.inverse
+            let longLivedResources: [(any MTLAllocation)?] = [skyboxTexture] + (lighting?.argumentBufferResources ?? []) + models.flatMap(\.mesh.buffers)
 
             try RenderPass(label: "TrivialMesh Demo") {
                 if let skyboxTexture {
@@ -67,6 +69,7 @@ public struct TrivialMeshDemoView: View {
                                 }
                                 encoder.draw(model.mesh)
                             }
+                            .metalMeshResources(model.mesh)
                             .blinnPhongMaterial(model.material)
                             .blinnPhongMatrices(
                                 projectionMatrix: projectionMatrix,
@@ -81,6 +84,7 @@ public struct TrivialMeshDemoView: View {
                     .depthCompare(function: .less, enabled: true)
                 }
             }
+            .useResourceCollection(residency.collection(for: longLivedResources, device: _MTLCreateSystemDefaultDevice()))
         }
         .metalDepthStencilPixelFormat(.depth32Float)
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)

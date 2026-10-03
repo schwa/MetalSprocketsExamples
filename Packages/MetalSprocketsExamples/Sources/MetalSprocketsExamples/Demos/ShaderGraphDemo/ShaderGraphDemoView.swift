@@ -83,35 +83,31 @@ struct ShaderGraphRenderView: View {
                     fragmentShader: fragmentShader
                 ) {
                     Draw { encoder in
-                        drawTriangle(encoder: encoder)
+                        encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                     }
-                    .visibleFunctionTable("colorFunction", function: stitchedFunction.function)
+                    .vertexValues(Self.vertices, index: 0)
+                    .visibleFunctionTable("colorFunction", function: stitchedFunction)
                     .parameter("time", value: time)
                     .parameter("contrastAmount", value: Float(1.5))
                 }
                 .vertexDescriptor(makeVertexDescriptor())
-                .linkedFunctions([stitchedFunction.function])
+                .linkedFunctions([stitchedFunction])
             }
         }
         .metalDepthStencilPixelFormat(.depth32Float)
     }
 
-    private func drawTriangle(encoder: MTLRenderCommandEncoder) {
-        struct Vertex {
-            var position: SIMD2<Float>
-            var color: SIMD4<Float>
-            var uv: SIMD2<Float>
-        }
-
-        let vertices: [Vertex] = [
-            Vertex(position: [0, 0.75], color: [1, 0, 0, 1], uv: [0.5, 1.0]),
-            Vertex(position: [-0.75, -0.75], color: [0, 1, 0, 1], uv: [0.0, 0.0]),
-            Vertex(position: [0.75, -0.75], color: [0, 0, 1, 1], uv: [1.0, 0.0])
-        ]
-
-        encoder.setVertexBytes(vertices, length: MemoryLayout<Vertex>.stride * 3, index: 0)
-        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+    private struct Vertex {
+        var position: SIMD2<Float>
+        var color: SIMD4<Float>
+        var uv: SIMD2<Float>
     }
+
+    private static let vertices: [Vertex] = [
+        Vertex(position: [0, 0.75], color: [1, 0, 0, 1], uv: [0.5, 1.0]),
+        Vertex(position: [-0.75, -0.75], color: [0, 1, 0, 1], uv: [0.0, 0.0]),
+        Vertex(position: [0.75, -0.75], color: [0, 0, 1, 1], uv: [1.0, 0.0])
+    ]
 }
 
 enum ColorEffect: String, CaseIterable {

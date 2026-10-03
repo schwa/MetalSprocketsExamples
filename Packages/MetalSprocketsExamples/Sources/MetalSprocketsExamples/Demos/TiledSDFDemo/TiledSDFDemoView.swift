@@ -250,6 +250,8 @@ struct TiledSDFPipeline: Element {
                             .parameter("uniforms", buffer: uniformsBuffer)
                     }
                 }
+                // The fragment stage reads the tile lists. The buffers are new every frame, so no WAR barrier is needed.
+                .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
 
                 // Pass 2: Evaluate SDF and blit to screen (render pass with tile memory)
                 try RenderPass {
@@ -265,9 +267,9 @@ struct TiledSDFPipeline: Element {
                     // Step 1: Write SDF results to imageblock (tile memory)
                     try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
-                            encoder.setVertexUnsafeBytes(of: vertices, index: 0)
-                            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                            encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                         }
+                        .parameter("vertices", functionType: .vertex, values: vertices)
                         .parameter("uniforms", functionType: .vertex, buffer: uniformsBuffer, offset: 0)
                         .parameter("primitives", functionType: .fragment, buffer: primitivesBuffer, offset: 0)
                         .parameter("tilePrimitives", functionType: .fragment, buffer: tilePrimitivesBuffer, offset: 0)
@@ -279,9 +281,9 @@ struct TiledSDFPipeline: Element {
                     // Step 2: Blit imageblock to color attachment (framebuffer)
                     try RenderPipeline(vertexShader: vertexShader, fragmentShader: blitFragmentShader) {
                         Draw { encoder in
-                            encoder.setVertexUnsafeBytes(of: vertices, index: 0)
-                            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                            encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                         }
+                        .parameter("vertices", functionType: .vertex, values: vertices)
                         .parameter("uniforms", functionType: .vertex, buffer: uniformsBuffer, offset: 0)
                     }
                     .vertexDescriptor(vertexShader.inferredVertexDescriptor())

@@ -22,6 +22,9 @@ public struct SkyboxDemoView: View {
     @State
     private var showFaceLabels = false
 
+    @State
+    private var residency = ResidencyTracker()
+
     public init() {
         // This line intentionally left blank.
     }
@@ -34,6 +37,7 @@ public struct SkyboxDemoView: View {
                         try SkyboxRenderPipeline(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, texture: texture)
                     }
                 }
+                .useResourceCollection(residency.collection(for: [texture], device: _MTLCreateSystemDefaultDevice()))
             }
         }
         .demoConfiguration {

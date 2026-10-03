@@ -29,12 +29,16 @@ struct MixedExample: Element {
             let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.resourceCreationFailure("Missing depth attachment texture"))
 
             try RenderPass {
+                // The depth attachment is reused across frames; the previous edge pass may still be reading it.
+                QueueBarrier(after: .dispatch, before: .fragment)
                 try TeapotElement(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
             }
             .renderPassDescriptorModifier { renderPassDescriptor in
                 renderPassDescriptor.depthAttachment.storeAction = .store
             }
             try ComputePass {
+                // Reads the color and depth the render pass just wrote.
+                QueueBarrier(after: .fragment, before: .dispatch)
                 try EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
             }
         }

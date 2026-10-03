@@ -36,6 +36,7 @@ public struct BlinnPhongDemoView: DemoView {
 
     @State private var lighting: Lighting?
     @State private var skyboxTexture: MTLTexture?
+    @State private var resourceCollection: ResourceCollection?
     @State private var lightPosition0: SIMD3<Float> = [0, 3, 5]
     @State private var lightPosition1: SIMD3<Float> = [0, 1.5, -5]
     @State private var renderOptions: BlinnPhongDemoRenderPass.Options = .all
@@ -101,7 +102,7 @@ public struct BlinnPhongDemoView: DemoView {
 
     @ViewBuilder
     private var renderView: some View {
-        if let lighting, let skyboxTexture {
+        if let lighting, let skyboxTexture, let resourceCollection {
             RenderView { _, drawableSize in
                 let aspect = drawableSize.height > 0 ? Float(drawableSize.width / drawableSize.height) : 1.0
                 let projectionMatrix = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 1_000.0)
@@ -117,6 +118,7 @@ public struct BlinnPhongDemoView: DemoView {
                     debugMode: useDebugShading ? debugMode : nil,
                     options: renderOptions
                 )
+                .useResourceCollection(resourceCollection)
             }
             .metalDepthStencilPixelFormat(.depth32Float)
         }
@@ -185,7 +187,11 @@ public struct BlinnPhongDemoView: DemoView {
                 )
                 let device = _MTLCreateSystemDefaultDevice()
                 let crossTexture = try device.makeTexture(name: "Skybox", bundle: .main)
-                skyboxTexture = try device.makeTextureCubeFromCrossTexture(texture: crossTexture)
+                let skyboxTexture = try device.makeTextureCubeFromCrossTexture(texture: crossTexture)
+                self.skyboxTexture = skyboxTexture
+                let collection = try ResourceCollection(device: device)
+                try collection.register([skyboxTexture] + (lighting?.argumentBufferResources ?? []))
+                resourceCollection = collection
             } catch {
                 fatalError("Failed to initialize BlinnPhong demo: \(error)")
             }
@@ -289,9 +295,10 @@ struct BlinnPhongDemoRenderPass: Element {
                             ) {
                                 Draw { encoder in
                                     if wireframe { encoder.setTriangleFillMode(.lines) }
-                                    encoder.setVertexBuffers(of: model.mesh)
                                     encoder.draw(model.mesh)
                                 }
+                                .vertexBuffers(of: model.mesh)
+                                .useResources(model.mesh.submeshes.map(\.indexBuffer.buffer), usage: .read, stages: .vertex)
                             }
                             .vertexDescriptor(model.mesh.vertexDescriptor)
                             .depthCompare(function: .less, enabled: true)
@@ -302,9 +309,10 @@ struct BlinnPhongDemoRenderPass: Element {
                             try ForEach(models) { model in
                                 try Draw { encoder in
                                     if wireframe { encoder.setTriangleFillMode(.lines) }
-                                    encoder.setVertexBuffers(of: model.mesh)
                                     encoder.draw(model.mesh)
                                 }
+                                .vertexBuffers(of: model.mesh)
+                                .useResources(model.mesh.submeshes.map(\.indexBuffer.buffer), usage: .read, stages: .vertex)
                                 .blinnPhongMaterial(model.material)
                                 .blinnPhongMatrices(
                                     projectionMatrix: projectionMatrix,

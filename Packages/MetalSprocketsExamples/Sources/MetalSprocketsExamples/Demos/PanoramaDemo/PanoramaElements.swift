@@ -34,7 +34,8 @@ struct PanoramaElement: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                Draw(mtkMesh: mesh)
+                Draw(mesh: mesh)
+                    .vertexBuffers(of: mesh)
                     .parameter("projectionMatrix", functionType: .vertex, value: projectionMatrix)
                     .parameter("viewMatrix", functionType: .vertex, value: cameraMatrix.inverse)
                     .parameter("modelMatrix", functionType: .vertex, value: simd_float4x4.identity)
@@ -76,23 +77,23 @@ struct PanoramaMinimapElement: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+                let vertices: [SIMD3<Float>] = [
+                    [-1, -1, 0],
+                    [ 1, -1, 0],
+                    [-1, 1, 0],
+                    [ 1, 1, 0]
+                ]
+                let texCoords: [SIMD2<Float>] = [
+                    [0, 1],
+                    [1, 1],
+                    [0, 0],
+                    [1, 0]
+                ]
                 Draw { encoder in
-                    let vertices: [SIMD3<Float>] = [
-                        [-1, -1, 0],
-                        [ 1, -1, 0],
-                        [-1, 1, 0],
-                        [ 1, 1, 0]
-                    ]
-                    let texCoords: [SIMD2<Float>] = [
-                        [0, 1],
-                        [1, 1],
-                        [0, 0],
-                        [1, 0]
-                    ]
-                    encoder.setVertexBytes(vertices, length: vertices.count * MemoryLayout<SIMD3<Float>>.stride, index: 0)
-                    encoder.setVertexBytes(texCoords, length: texCoords.count * MemoryLayout<SIMD2<Float>>.stride, index: 1)
-                    encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+                    encoder.drawPrimitives(primitiveType: .triangleStrip, vertexStart: 0, vertexCount: 4)
                 }
+                .vertexValues(vertices, index: 0)
+                .vertexValues(texCoords, index: 1)
                 .parameter("panoramaTexture", texture: panoramaTexture)
             }
             .vertexDescriptor(vertexDescriptor)

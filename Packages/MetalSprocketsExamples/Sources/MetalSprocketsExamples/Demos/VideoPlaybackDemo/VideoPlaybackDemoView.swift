@@ -33,6 +33,9 @@ public struct VideoPlaybackDemoView: View {
     @State
     private var distortedTexture: MTLTexture?
 
+    @State
+    private var resourceCollection: ResourceCollection?
+
     public init() {
         // This line intentionally left blank.
     }
@@ -45,6 +48,8 @@ public struct VideoPlaybackDemoView: View {
                     if enableVCR, let distortedTexture = getOrCreateDistortedTexture(for: videoTexture) {
                         // Apply VCR distortion
                         try ComputePass {
+                            // The previous frame may still be sampling the distorted texture.
+                            QueueBarrier(after: .fragment, before: .dispatch)
                             try VCRDistortionPipeline(
                                 inputTexture: videoTexture,
                                 outputTexture: distortedTexture,
@@ -52,6 +57,8 @@ public struct VideoPlaybackDemoView: View {
                                 frameUniforms: context.frameUniforms
                             )
                         }
+                        .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
+                        .useResourceCollection(resourceCollection ?? makeResourceCollection())
 
                         // Render the distorted texture
                         try RenderPass {
@@ -241,13 +248,26 @@ public struct VideoPlaybackDemoView: View {
 
     private func getOrCreateDistortedTexture(for videoTexture: MTLTexture) -> MTLTexture? {
         if distortedTexture == nil || distortedTexture?.width != videoTexture.width || distortedTexture?.height != videoTexture.height {
-            distortedTexture = device.makeTexture2D(
+            let newTexture = device.makeTexture2D(
                 pixelFormat: videoTexture.pixelFormat,
                 width: videoTexture.width,
                 height: videoTexture.height,
                 label: "VCR Distorted Texture"
             )
+            do {
+                try resourceCollection?.replace([distortedTexture], with: [newTexture])
+            } catch {
+                assertionFailure("\(error)")
+            }
+            distortedTexture = newTexture
         }
         return distortedTexture
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: device)
+        try collection.register([distortedTexture])
+        resourceCollection = collection
+        return collection
     }
 }

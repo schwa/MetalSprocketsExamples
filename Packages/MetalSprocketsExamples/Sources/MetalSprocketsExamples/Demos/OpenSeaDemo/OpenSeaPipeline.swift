@@ -82,6 +82,9 @@ struct OpenSeaPipeline: Element {
     @MSState
     private var indexBuffer: MTLBuffer?
 
+    @MSState
+    private var resourceCollection: ResourceCollection?
+
     // Slow automatic orbit, accumulated so toggling drift never makes the camera jump.
     @MSState
     private var driftAngle: Float = 0
@@ -107,29 +110,33 @@ struct OpenSeaPipeline: Element {
         get throws {
             let uniforms = makeUniforms()
             try Group {
-                if let indexBuffer {
+                if let indexBuffer, let resourceCollection {
                     // Ocean first: it writes depth, so the sky's fullscreen triangle
                     // (at z = 1) is depth-rejected wherever water covers the screen.
                     try RenderPipeline(vertexShader: oceanVertexShader, fragmentShader: oceanFragmentShader) {
                         Draw { encoder in
                             for range in visibleSpokeRanges() {
+                                let indexCount = range.count * Self.indicesPerSpoke
+                                let offset = range.lowerBound * Self.indicesPerSpoke * MemoryLayout<UInt16>.stride
                                 encoder.drawIndexedPrimitives(
-                                    type: .triangle,
-                                    indexCount: range.count * Self.indicesPerSpoke,
+                                    primitiveType: .triangle,
+                                    indexCount: indexCount,
                                     indexType: .uint16,
-                                    indexBuffer: indexBuffer,
-                                    indexBufferOffset: range.lowerBound * Self.indicesPerSpoke * MemoryLayout<UInt16>.stride
+                                    indexBuffer: indexBuffer.gpuAddress + UInt64(offset),
+                                    indexBufferLength: indexCount * MemoryLayout<UInt16>.stride
                                 )
                             }
                         }
+                        .useResource(indexBuffer, usage: .read, stages: .vertex)
                         .parameter("uniforms", functionType: .vertex, value: uniforms)
                         .parameter("uniforms", functionType: .fragment, value: uniforms)
                     }
                     .depthCompare(function: .lessEqual, enabled: true)
+                    .useResourceCollection(resourceCollection)
 
                     try RenderPipeline(vertexShader: skyVertexShader, fragmentShader: skyFragmentShader) {
                         Draw { encoder in
-                            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                            encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                         }
                         .parameter("uniforms", functionType: .vertex, value: uniforms)
                         .parameter("uniforms", functionType: .fragment, value: uniforms)
@@ -142,7 +149,11 @@ struct OpenSeaPipeline: Element {
                     return
                 }
                 let indices = Self.makeRadialIndices(spokes: Self.ringSpokes, rings: Self.ringCount)
-                indexBuffer = device.makeBuffer(bytes: indices, length: MemoryLayout<UInt16>.stride * indices.count)
+                let indexBuffer = device.makeBuffer(bytes: indices, length: MemoryLayout<UInt16>.stride * indices.count)
+                let collection = try ResourceCollection(device: device)
+                try collection.register([indexBuffer])
+                self.indexBuffer = indexBuffer
+                resourceCollection = collection
             }
             .onWorkloadEnter { _ in
                 let delta = min(max(time - (lastTime ?? time), 0), 0.1)

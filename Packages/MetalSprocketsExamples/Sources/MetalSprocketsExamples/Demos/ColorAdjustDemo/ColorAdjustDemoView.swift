@@ -39,6 +39,7 @@ public struct ColorAdjustDemoView: View {
 
     let sourceTexture: MTLTexture
     let adjustedTexture: MTLTexture
+    let resourceCollection: ResourceCollection
     let shaderLibrary: MetalSprockets.ShaderNamespace
 
     @State
@@ -97,6 +98,12 @@ public struct ColorAdjustDemoView: View {
 
         adjustedTexture = device.makeTexture2D(pixelFormat: .rgba8Unorm, width: sourceTexture.width, height: sourceTexture.height, label: "Adjusted Texture")
         do {
+            resourceCollection = try ResourceCollection(device: device)
+            try resourceCollection.register([sourceTexture, adjustedTexture])
+        } catch {
+            fatalError("Failed to create resource collection: \(error)")
+        }
+        do {
             shaderLibrary = try ShaderLibrary(bundle: .metalSprocketsExampleShaders())
                 .namespaced("ColorAdjust")
         } catch {
@@ -108,12 +115,18 @@ public struct ColorAdjustDemoView: View {
         ZStack {
             Color.clear
             RenderView { _, _ in
-                try ComputePass(label: "ColorAdjust") {
-                    try colorAdjustComputePipeline
+                try Group {
+                    try ComputePass(label: "ColorAdjust") {
+                        // The previous frame may still be sampling the adjusted texture.
+                        QueueBarrier(after: .fragment, before: .dispatch)
+                        try colorAdjustComputePipeline
+                    }
+                    .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
+                    try RenderPass {
+                        try TextureBillboardPipeline(specifier: .texture2D(adjustedTexture))
+                    }
                 }
-                try RenderPass {
-                    try TextureBillboardPipeline(specifier: .texture2D(adjustedTexture))
-                }
+                .useResourceCollection(resourceCollection)
             }
             .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
         }

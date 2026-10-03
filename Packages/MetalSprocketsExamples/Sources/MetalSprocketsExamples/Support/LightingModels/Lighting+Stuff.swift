@@ -42,10 +42,8 @@ struct LightingVisualizer: Element {
                 let lightPosition = lighting.lightPositions[SIMD3<Float>.self, index]
                 let modelViewProjection = projectionMatrix * cameraMatrix.inverse * float4x4(translation: lightPosition)
                 try FlatShader(modelViewProjection: modelViewProjection, textureSpecifier: .color([1, 1, 1])) {
-                    Draw { encoder in
-                        encoder.setVertexBuffers(of: lightMarker)
-                        encoder.draw(lightMarker)
-                    }
+                    Draw(mesh: lightMarker)
+                        .vertexBuffers(of: lightMarker)
                 }
                 .vertexDescriptor(lightMarker.vertexDescriptor)
                 .depthCompare(function: .less, enabled: true)

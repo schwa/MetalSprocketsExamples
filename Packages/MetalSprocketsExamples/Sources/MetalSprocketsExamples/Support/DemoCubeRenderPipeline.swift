@@ -21,18 +21,13 @@ struct DemoCubeRenderPipeline: Element {
         get throws {
             // RenderPipeline binds shaders and configures pipeline state
             try RenderPipeline(label: "Demo Cube", vertexShader: shaderLibrary.vertexMain, fragmentShader: shaderLibrary.fragmentMain) {
-                // Draw gives direct access to MTLRenderCommandEncoder
+                let vertices = generateCubeVertices()
                 Draw { encoder in
-                    var transform = transform
-                    encoder.setVertexBytes(&transform, length: MemoryLayout<float4x4>.stride, index: 1)
-
-                    var time = time
-                    encoder.setFragmentBytes(&time, length: MemoryLayout<Float>.stride, index: 0)
-
-                    var vertices = generateCubeVertices()
-                    encoder.setVertexBytes(&vertices, length: MemoryLayout<Vertex>.stride * vertices.count, index: 0)
-                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+                    encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: vertices.count)
                 }
+                .vertexValues(vertices, index: 0)
+                .parameter("transform", value: transform)
+                .parameter("time", value: time)
             }
             // Tells Metal how to interpret Vertex struct
             .vertexDescriptor(Vertex.descriptor)

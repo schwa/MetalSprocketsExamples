@@ -23,10 +23,9 @@ struct RedTriangle: Element {
             try RenderPass {
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                     Draw { encoder in
-                        let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
-                        encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
-                        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                        encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                     }
+                    .vertexValues([[0, 0.75], [-0.75, -0.75], [0.75, -0.75]] as [SIMD2<Float>], index: 0)
                     .parameter("color", value: SIMD4<Float>([1, 0, 0, 1]))
                 }
                 .vertexDescriptor(vertexShader.inferredVertexDescriptor())

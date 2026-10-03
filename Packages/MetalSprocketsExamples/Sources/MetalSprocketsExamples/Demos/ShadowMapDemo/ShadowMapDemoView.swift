@@ -31,6 +31,7 @@ public struct ShadowMapDemoView: View {
 
     @State private var lighting: Lighting?
     @State private var shadowMap: ShadowMap?
+    @State private var resourceCollection: ResourceCollection?
     @State private var lightPositions: [SIMD3<Float>] = [[0, 5, 5], [0, 5, -5]]
     @State private var renderOptions: ShadowMapDemoRenderPass.Options = .all
     @State private var depthBias: Float = 2.0
@@ -115,7 +116,7 @@ public struct ShadowMapDemoView: View {
     @ViewBuilder
     private var renderContent: some View {
         RenderView { _, drawableSize in
-            if let lighting, let shadowMap {
+            if let lighting, let shadowMap, let resourceCollection {
                 // Update shadow map from current light positions
                 let updatedShadowMap: ShadowMap = {
                     var sm = shadowMap
@@ -151,6 +152,7 @@ public struct ShadowMapDemoView: View {
                     options: renderOptions,
                     shadowDebug: shadowDebug
                 )
+                .useResourceCollection(resourceCollection)
             }
         }
         .id("\(useInverseZ)-\(shadowDebug)") // Workaround: force RenderView recreation to clear cached state (MetalSprockets#314)
@@ -183,10 +185,10 @@ public struct ShadowMapDemoView: View {
             lighting?.setLight(Light(type: .point, color: [1, 1, 1], intensity: lightIntensity), at: 0)
         }
         .onChange(of: shadowMapResolution) {
-            shadowMap = try? ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
+            replaceShadowMap()
         }
         .onChange(of: useInverseZ) {
-            shadowMap = try? ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
+            replaceShadowMap()
         }
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
         .frameTimingOverlay()
@@ -258,10 +260,24 @@ public struct ShadowMapDemoView: View {
                         ([0, 5, -5], Light(type: .point, color: [0.8, 0.9, 1], intensity: lightIntensity))
                     ]
                 )
-                shadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
+                let shadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
+                self.shadowMap = shadowMap
+                let collection = try ResourceCollection(device: shadowMap.depthTexture.device)
+                try collection.register([shadowMap.depthTexture] + (lighting?.argumentBufferResources ?? []))
+                resourceCollection = collection
             } catch {
                 fatalError("Failed to initialize ShadowMap demo: \(error)")
             }
+        }
+    }
+
+    private func replaceShadowMap() {
+        do {
+            let newShadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
+            try resourceCollection?.replace([shadowMap?.depthTexture], with: [newShadowMap.depthTexture])
+            shadowMap = newShadowMap
+        } catch {
+            assertionFailure("\(error)")
         }
     }
 }
@@ -304,23 +320,21 @@ struct ShadowMapDemoRenderPass: Element {
                 try ShadowMapDepthPass(shadowMap: shadowMap, vertexDescriptor: teapots.first!.mesh.vertexDescriptor) {
                     // Teapots as shadow casters
                     ForEach(teapots) { model in
-                        Draw { encoder in
-                            encoder.setVertexBuffers(of: model.mesh)
-                            encoder.draw(model.mesh)
-                        }
+                        Draw(mesh: model.mesh)
+                        .vertexBuffers(of: model.mesh)
                         .parameter("modelMatrix", functionType: .vertex, value: model.modelMatrix)
                     }
                     // Ground plane as shadow caster (it self-shadows)
-                    Draw { encoder in
-                        encoder.setVertexBuffers(of: groundMesh)
-                        encoder.draw(groundMesh)
-                    }
+                    Draw(mesh: groundMesh)
+                    .vertexBuffers(of: groundMesh)
                     .parameter("modelMatrix", functionType: .vertex, value: groundModelMatrix)
                 }
             }
 
             // Pass 2: Main scene render pass
             try RenderPass(label: "Main Scene") {
+                // The depth attachment is reused across frames; the previous shadow mask pass may still be reading it.
+                QueueBarrier(after: .dispatch, before: .fragment)
                 let viewMatrix = cameraMatrix.inverse
                 let viewProjection = projectionMatrix * viewMatrix
 
@@ -368,10 +382,8 @@ struct ShadowMapDemoRenderPass: Element {
                         try Group {
                             // Teapots
                             ForEach(teapots) { model in
-                                try Draw { encoder in
-                                    encoder.setVertexBuffers(of: model.mesh)
-                                    encoder.draw(model.mesh)
-                                }
+                                try Draw(mesh: model.mesh)
+                                .vertexBuffers(of: model.mesh)
                                 .blinnPhongMaterial(model.material)
                                 .blinnPhongMatrices(
                                     projectionMatrix: projectionMatrix,
@@ -382,10 +394,8 @@ struct ShadowMapDemoRenderPass: Element {
                             }
 
                             // Ground plane
-                            try Draw { encoder in
-                                encoder.setVertexBuffers(of: groundMesh)
-                                encoder.draw(groundMesh)
-                            }
+                            try Draw(mesh: groundMesh)
+                            .vertexBuffers(of: groundMesh)
                             .blinnPhongMaterial(groundMaterial)
                             .blinnPhongMatrices(
                                 projectionMatrix: projectionMatrix,

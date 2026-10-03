@@ -4,7 +4,7 @@ import MetalSprocketsAddOns
 import MetalSprocketsExamplesSupport
 import MetalSprocketsSupport
 
-struct ColorAdjustComputePipeline<T>: Element {
+struct ColorAdjustComputePipeline<T: BitwiseCopyable>: Element {
     let inputSpecifier: ColorSource
     let inputParameters: T
     let outputTexture: MTLTexture
@@ -45,7 +45,7 @@ struct ColorAdjustComputePipeline<T>: Element {
                     .useComputeResource(inputSpecifier.textureCube, usage: .read)
                     .useComputeResource(inputSpecifier.depth2D, usage: .read)
             }
-            .environment(\.linkedFunctions, MTLLinkedFunctions(functions: mapTextureCoordinateGraph.stitchedFunctions + colorAdjustGraph.stitchedFunctions))
+            .linkedFunctions(mapTextureCoordinateGraph.stitchedFunctions + colorAdjustGraph.stitchedFunctions)
         }
     }
 }

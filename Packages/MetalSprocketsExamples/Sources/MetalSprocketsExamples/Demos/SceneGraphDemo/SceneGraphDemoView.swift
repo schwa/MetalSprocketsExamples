@@ -20,6 +20,9 @@ public struct SceneGraphDemoView: View {
     @State
     private var cameraMatrix = simd_float4x4(translation: [0.5, 2, 6])
 
+    @State
+    private var residency = ResidencyTracker()
+
     let environmentTexture: MTLTexture
     let lighting: Lighting
 
@@ -49,6 +52,7 @@ public struct SceneGraphDemoView: View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             RenderView { _, drawableSize in
                 SceneGraphRenderPass(sceneGraph: sceneGraph, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize), lighting: lighting, environmentTexture: environmentTexture)
+                    .useResourceCollection(try residency.collection(for: [environmentTexture] + lighting.argumentBufferResources, device: environmentTexture.device))
             }
             .metalDepthStencilPixelFormat(.depth32Float)
             .panel(id: "SceneGraphEditorView", label: "Scene Graph") {

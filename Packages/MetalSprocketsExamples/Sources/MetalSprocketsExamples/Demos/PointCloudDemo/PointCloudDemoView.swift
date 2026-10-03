@@ -23,6 +23,7 @@ public struct PointCloudDemoView: View {
 
     // Point cloud data
     @State private var pointBuffer: MTLBuffer?
+    @State private var residency = ResidencyTracker()
     @State private var vertexCount: Int = 0
 
     public init() {
@@ -43,6 +44,7 @@ public struct PointCloudDemoView: View {
                         )
                         .depthCompare(function: .less, enabled: true)
                     }
+                    .useResourceCollection(residency.collection(for: [pointBuffer], device: pointBuffer.device))
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
@@ -190,15 +192,14 @@ private struct PointCloudRenderPipeline: Element {
                 fragmentShader: fragmentFunction
             ) {
                 Draw { encoder in
-                    let uniforms = PointCloudUniforms(
-                        viewMatrix: viewMatrix,
-                        projectionMatrix: projectionMatrix,
-                        pointSize: pointSize
-                    )
-                    encoder.setVertexBuffer(pointBuffer, offset: 0, index: 0)
-                    encoder.setVertexBytes([uniforms], length: MemoryLayout<PointCloudUniforms>.stride, index: 1)
-                    encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: vertexCount)
+                    encoder.drawPrimitives(primitiveType: .point, vertexStart: 0, vertexCount: vertexCount)
                 }
+                .vertexBuffer(pointBuffer, index: 0)
+                .parameter("uniforms", functionType: .vertex, value: PointCloudUniforms(
+                    viewMatrix: viewMatrix,
+                    projectionMatrix: projectionMatrix,
+                    pointSize: pointSize
+                ))
             }
             .vertexDescriptor(vertexDescriptor)
         }

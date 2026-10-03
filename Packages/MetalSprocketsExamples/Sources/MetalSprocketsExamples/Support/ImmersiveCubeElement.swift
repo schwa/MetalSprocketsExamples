@@ -31,39 +31,37 @@ struct ImmersiveCubeContent: Element, @unchecked Sendable {
 
     nonisolated var body: some Element {
         get throws {
+            // Position cube in world space: 2m in front, 1.5m up, scaled to 30cm
+            let modelMatrix = float4x4.translation(0, 1.5, -2) * cubeRotationMatrix(time: context.time) * float4x4.scale(0.3, 0.3, 0.3)
+
+            // ImmersiveContext provides head-tracked view/projection matrices for each eye
+            let leftView = context.viewMatrix(eye: 0)
+            let rightView = context.viewCount > 1 ? context.viewMatrix(eye: 1) : leftView
+            let leftProj = context.projectionMatrix(eye: 0)
+            let rightProj = context.viewCount > 1 ? context.projectionMatrix(eye: 1) : leftProj
+
+            let uniforms = Uniforms(modelMatrix: modelMatrix, cameras: (CameraUniforms(viewMatrix: leftView, projectionMatrix: leftProj), CameraUniforms(viewMatrix: rightView, projectionMatrix: rightProj)))
+            let time = Float(context.time)
+            let vertices = generateCubeVertices()
+
             try RenderPipeline(label: "Immersive Cube", vertexShader: shaderLibrary.vertexImmersive, fragmentShader: shaderLibrary.fragmentMain) {
                 Draw { encoder in
                     // Vertex amplification renders geometry twice (once per eye) in a single draw call.
-                    var viewMappings = (0 ..< context.viewCount).map { MTLVertexAmplificationViewMapping(viewportArrayIndexOffset: UInt32($0), renderTargetArrayIndexOffset: UInt32($0)) }
-                    encoder.setVertexAmplificationCount(context.viewCount, viewMappings: &viewMappings)
+                    let viewMappings = (0 ..< context.viewCount).map { MTLVertexAmplificationViewMapping(viewportArrayIndexOffset: UInt32($0), renderTargetArrayIndexOffset: UInt32($0)) }
+                    encoder.setVertexAmplificationCount(viewMappings)
                     encoder.setViewports(context.viewports)
 
-                    // Position cube in world space: 2m in front, 1.5m up, scaled to 30cm
-                    let modelMatrix = float4x4.translation(0, 1.5, -2) * cubeRotationMatrix(time: context.time) * float4x4.scale(0.3, 0.3, 0.3)
-
-                    // ImmersiveContext provides head-tracked view/projection matrices for each eye
-                    let leftView = context.viewMatrix(eye: 0)
-                    let rightView = context.viewCount > 1 ? context.viewMatrix(eye: 1) : leftView
-                    let leftProj = context.projectionMatrix(eye: 0)
-                    let rightProj = context.viewCount > 1 ? context.projectionMatrix(eye: 1) : leftProj
-
-                    var uniforms = Uniforms(modelMatrix: modelMatrix, cameras: (CameraUniforms(viewMatrix: leftView, projectionMatrix: leftProj), CameraUniforms(viewMatrix: rightView, projectionMatrix: rightProj)))
-                    encoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
-
-                    var time = Float(context.time)
-                    encoder.setFragmentBytes(&time, length: MemoryLayout<Float>.stride, index: 0)
-
-                    var vertices = generateCubeVertices()
-                    encoder.setVertexBytes(&vertices, length: MemoryLayout<Vertex>.stride * vertices.count, index: 0)
-                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+                    encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: vertices.count)
                 }
+                .vertexValues(vertices, index: 0)
+                .parameter("uniforms", value: uniforms)
+                .parameter("time", value: time)
             }
             .vertexDescriptor(Vertex.descriptor)
             .depthCompare(function: .greater, enabled: true)  // visionOS uses reverse-Z depth buffer
-            .renderPipelineDescriptorModifier { descriptor in
+            .renderPipelineDescriptorTransformer { descriptor in
                 descriptor.maxVertexAmplificationCount = context.viewCount
                 descriptor.colorAttachments[0].pixelFormat = context.drawable.colorTextures[0].pixelFormat
-                descriptor.depthAttachmentPixelFormat = context.drawable.depthTextures[0].pixelFormat
             }
         }
     }

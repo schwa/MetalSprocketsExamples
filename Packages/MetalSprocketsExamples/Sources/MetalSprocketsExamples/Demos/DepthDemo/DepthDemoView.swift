@@ -35,6 +35,9 @@ public struct DepthDemoView: View {
     @State
     private var adjustedDepthTexture: MTLTexture?
 
+    @State
+    private var resourceCollection: ResourceCollection?
+
     let teapot = MTKMesh.teapot()
 
     let colorAdjustFunction: VisibleFunction
@@ -65,39 +68,57 @@ public struct DepthDemoView: View {
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             RenderView { _, _ in
-                if let colorTexture, let depthTexture, let adjustedDepthTexture {
-                    try RenderPass(label: "Teapot to Textures Pass") {
-                        try teapotPipeline
-                    }
-                    .depthAttachment(depthTexture)
-                    .renderPassDescriptorModifier { renderPassDescriptor in
-                        renderPassDescriptor.colorAttachments[0].texture = colorTexture
-                        renderPassDescriptor.colorAttachments[0].loadAction = .clear
-                        renderPassDescriptor.colorAttachments[0].storeAction = .store
+                if let colorTexture, let depthTexture, let adjustedDepthTexture, let resourceCollection {
+                    try Group {
+                        try RenderPass(label: "Teapot to Textures Pass") {
+                            // The previous frame's adjust pass reads the depth texture and its billboard samples the color texture.
+                            QueueBarrier(after: [.dispatch, .fragment], before: .fragment)
+                            try teapotPipeline
+                        }
+                        .depthAttachment(depthTexture)
+                        .renderPassDescriptorModifier { renderPassDescriptor in
+                            renderPassDescriptor.colorAttachments[0].texture = colorTexture
+                            renderPassDescriptor.colorAttachments[0].loadAction = .clear
+                            renderPassDescriptor.colorAttachments[0].storeAction = .store
 
-                        renderPassDescriptor.depthAttachment.texture = depthTexture
-                        renderPassDescriptor.depthAttachment.loadAction = .clear
-                        renderPassDescriptor.depthAttachment.storeAction = .store
-                    }
+                            renderPassDescriptor.depthAttachment.texture = depthTexture
+                            renderPassDescriptor.depthAttachment.loadAction = .clear
+                            renderPassDescriptor.depthAttachment.storeAction = .store
+                        }
 
-                    try ComputePass(label: "Depth Adjust Pass") {
-                        try ColorAdjustComputePipeline(
-                            inputSpecifier: .depth2D(depthTexture, nil),
-                            inputParameters: exponent,
-                            outputTexture: adjustedDepthTexture,
-                            colorAdjustFunction: colorAdjustFunction
-                        )
-                    }
+                        try ComputePass(label: "Depth Adjust Pass") {
+                            // Reads this frame's depth, and overwrites the adjusted texture the previous frame sampled.
+                            QueueBarrier(after: .fragment, before: .dispatch)
+                            try ColorAdjustComputePipeline(
+                                inputSpecifier: .depth2D(depthTexture, nil),
+                                inputParameters: exponent,
+                                outputTexture: adjustedDepthTexture,
+                                colorAdjustFunction: colorAdjustFunction
+                            )
+                        }
+                        .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
 
-                    try RenderPass(label: "Depth to Screen Pass") {
-                        try TextureBillboardPipeline(specifier: showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil))
+                        try RenderPass(label: "Depth to Screen Pass") {
+                            try TextureBillboardPipeline(specifier: showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil))
+                        }
                     }
+                    .useResourceCollection(resourceCollection)
                 }
             }
             .onUsableDrawableSizeChange { size in
                 drawableSize = size
 
                 let device = _MTLCreateSystemDefaultDevice()
+                let oldTextures = [colorTexture, depthTexture, adjustedDepthTexture]
+                defer {
+                    do {
+                        let collection = try resourceCollection ?? ResourceCollection(device: device)
+                        try collection.replace(oldTextures, with: [colorTexture, depthTexture, adjustedDepthTexture])
+                        resourceCollection = collection
+                    } catch {
+                        assertionFailure("\(error)")
+                    }
+                }
                 colorTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead, .shaderWrite], label: "Color Texture")
                 depthTexture = device.makeTexture2D(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead], label: "Depth Texture")
                 adjustedDepthTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), usage: [.renderTarget, .shaderRead, .shaderWrite], label: "Adjusted Depth Texture")
@@ -123,7 +144,8 @@ public struct DepthDemoView: View {
         get throws {
             let modelViewProjection = projection.projectionMatrix(for: drawableSize) * cameraMatrix.inverse
             try FlatShader(modelViewProjection: modelViewProjection, textureSpecifier: .color([1, 1, 1])) {
-                Draw(mtkMesh: teapot)
+                Draw(mesh: teapot)
+                    .vertexBuffers(of: teapot)
             }
             .vertexDescriptor(teapot.vertexDescriptor)
             .depthCompare(function: .less, enabled: true)

@@ -25,6 +25,8 @@ struct ITermRenderer<Demo: DemoRenderPass> {
     let depthTexture: MTLTexture
 
     let offscreenRenderer: OffscreenRenderer
+    // OffscreenRenderer only keeps textures it creates itself resident across frames.
+    let resourceCollection: ResourceCollection
 
     // Pixel readback buffer (reused across frames)
     var pixelBuffer: [UInt8]
@@ -78,6 +80,10 @@ struct ITermRenderer<Demo: DemoRenderPass> {
             colorTexture: colorTexture,
             depthTexture: depthTexture
         )
+        self.resourceCollection = try ResourceCollection(device: device)
+        for resource in [colorTexture, depthTexture] {
+            try resourceCollection.register(resource)
+        }
     }
 
     func render(frameUniforms: MetalSprocketsUI.FrameUniforms, cameraMatrix: simd_float4x4) throws {
@@ -87,7 +93,7 @@ struct ITermRenderer<Demo: DemoRenderPass> {
             cameraMatrix: cameraMatrix
         )
 
-        _ = try offscreenRenderer.render(demoPass)
+        _ = try offscreenRenderer.render(demoPass.useResourceCollection(resourceCollection))
     }
 
     mutating func printFrame() {

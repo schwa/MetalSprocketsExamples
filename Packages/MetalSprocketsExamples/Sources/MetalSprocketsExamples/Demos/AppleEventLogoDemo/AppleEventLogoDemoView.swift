@@ -35,6 +35,9 @@ public struct AppleEventLogoDemoView: View {
     private var upscaledTexture: MTLTexture?
 
     @State
+    private var resourceCollection: ResourceCollection?
+
+    @State
     private var videoPlayer = VideoTexturePipeline(device: _MTLCreateSystemDefaultDevice())
 
     @State
@@ -67,6 +70,8 @@ public struct AppleEventLogoDemoView: View {
                 TimelineView(.animation) { timeline in
                     RenderView { _, _ in
                         try ComputePass {
+                            // Reads the previous step's heat, and overwrites the texture the previous frame's remap and blend read.
+                            QueueBarrier(after: .dispatch, before: .dispatch)
                             if heatTextures.count == 2 {
                                 let previousTexture = heatTextures[currentTextureIndex]
                                 let currentTexture = heatTextures[1 - currentTextureIndex]
@@ -79,14 +84,20 @@ public struct AppleEventLogoDemoView: View {
                                 }
                             }
                         }
+                        // Covers the whole submission.
+                        .useResourceCollection(resourceCollection ?? makeResourceCollection())
                         // Color remap compute pass
                         try ComputePass {
+                            // Reads this frame's heat, and overwrites the colored texture the previous blend read.
+                            QueueBarrier(after: .dispatch, before: .dispatch)
                             if heatTextures.count == 2, let coloredTexture, let gradientTexture, let maskTexture, let videoTexture = videoPlayer.currentTexture {
                                 ColorRemapComputePipeline(inputTexture: heatTextures[1 - currentTextureIndex], outputTexture: coloredTexture, gradientTexture: gradientTexture, maskTexture: maskTexture, videoTexture: videoTexture, power: 0.8)
                             }
                         }
                         // Blend thermal with video
                         try ComputePass {
+                            // Reads the colored texture, and overwrites the final texture the previous frame sampled.
+                            QueueBarrier(after: [.dispatch, .fragment], before: .dispatch)
                             if let coloredTexture, let finalTexture {
                                 ThermalVideoBlendPipeline(thermalTexture: coloredTexture, videoTexture: videoPlayer.currentTexture, heatTexture: heatTextures[1 - currentTextureIndex], outputTexture: finalTexture, videoBlendAmount: 0.7)
                             }
@@ -96,6 +107,7 @@ public struct AppleEventLogoDemoView: View {
                         if let finalTexture, let offscreenTexture, let upscaledTexture {
                             // Render to offscreen texture first at 256x256
                             try RenderPass {
+                                QueueBarrier(after: .dispatch, before: .fragment)
                                 try TextureBillboardPipeline(specifier: .texture2D(finalTexture))
                             }
                             .renderPassDescriptorModifier { descriptor in
@@ -112,6 +124,7 @@ public struct AppleEventLogoDemoView: View {
                         }
                         #else
                         try RenderPass {
+                            QueueBarrier(after: .dispatch, before: .fragment)
                             if let finalTexture {
                                 try TextureBillboardPipeline(specifier: .texture2D(finalTexture))
                             }
@@ -216,6 +229,8 @@ public struct AppleEventLogoDemoView: View {
                         }
                         try videoPlayer.loadVideo(url: videoURL)
                         videoPlayer.play()
+
+                        try resourceCollection?.register(heatTextures + [coloredTexture, finalTexture, offscreenTexture, upscaledTexture, gradientTexture, maskTexture])
                     }
                     catch {
                         fatalError("Error: \(error)")
@@ -224,5 +239,12 @@ public struct AppleEventLogoDemoView: View {
             }
         }
         .background(.black.opacity(0.8))
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: device)
+        try collection.register(heatTextures + [coloredTexture, finalTexture, offscreenTexture, upscaledTexture, gradientTexture, maskTexture])
+        resourceCollection = collection
+        return collection
     }
 }

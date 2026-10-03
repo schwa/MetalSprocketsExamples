@@ -40,9 +40,6 @@ public struct TriangleDemoView: View {
     @State
     private var gpuTime: Double = 0
 
-    @State
-    private var kernelTime: Double = 0
-
     public init() {
         // This line intentionally left blank.
     }
@@ -57,26 +54,25 @@ public struct TriangleDemoView: View {
                         let fragmentShader = try FragmentShader(source: source)
                         try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                             Draw { encoder in
-                                let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
-                                encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
-                                encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+                                encoder.drawPrimitives(primitiveType: .triangle, vertexStart: 0, vertexCount: 3)
                             }
+                            .vertexValues([[0, 0.75], [-0.75, -0.75], [0.75, -0.75]] as [SIMD2<Float>], index: 0)
                             .parameter("color", value: color)
                         }
                         .vertexDescriptor(vertexShader.inferredVertexDescriptor())
                     }
-                    .onCommandBufferCompleted { commandBuffer in
-                        gpuTime = commandBuffer.gpuEndTime - commandBuffer.gpuStartTime
-                        kernelTime = commandBuffer.kernelEndTime - commandBuffer.kernelStartTime
+                    .onCommandBufferCompleted { [gpuTime = $gpuTime] result in
+                        let duration = result.gpuDuration ?? 0
+                        Task { @MainActor in
+                            gpuTime.wrappedValue = duration
+                        }
                     }
                 }
                 .aspectRatio(1.0, contentMode: .fit)
                 .demoConfiguration {
                     Form {
                         let gpuTime = Measurement(value: gpuTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
-                        let kernelTime = Measurement(value: kernelTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
                         LabeledContent("GPU Time", value: gpuTime.formatted())
-                        LabeledContent("Kernel Time", value: kernelTime.formatted())
                     }
                     .formStyle(.grouped)
                 }

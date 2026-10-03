@@ -30,6 +30,9 @@ public struct BouncingTeapotsDemoView: View {
     private var upscaledTexture: MTLTexture?
 
     @State
+    private var targetCollection: ResourceCollection?
+
+    @State
     private var drawableSize: CGSize = .zero
 
     @State
@@ -76,8 +79,9 @@ public struct BouncingTeapotsDemoView: View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             let projectionMatrix = projection.projectionMatrix(for: drawableSize)
             RenderView { _, _ in
-                if let offscreenTexture, let offscreenDepthTexture, let upscaledTexture {
+                if let offscreenTexture, let offscreenDepthTexture, let upscaledTexture, let targetCollection {
                     FlyingTeapotsRenderPass(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, simulation: simulation, checkerboardColor: checkerboardColor, offscreenTexture: offscreenTexture, offscreenDepthTexture: offscreenDepthTexture, upscaledTexture: upscaledTexture)
+                        .useResourceCollection(targetCollection)
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
@@ -96,6 +100,16 @@ public struct BouncingTeapotsDemoView: View {
     func regenerateTextures() {
         let device = _MTLCreateSystemDefaultDevice()
         let offscreenSize = MTLSize(width: Int(scaleFactor * drawableSize.width), height: Int(scaleFactor * drawableSize.height), depth: 1)
+        let oldTargets = [offscreenTexture, offscreenDepthTexture, upscaledTexture]
+        defer {
+            do {
+                let collection = try targetCollection ?? ResourceCollection(device: device)
+                try collection.replace(oldTargets, with: [offscreenTexture, offscreenDepthTexture, upscaledTexture])
+                targetCollection = collection
+            } catch {
+                assertionFailure("\(error)")
+            }
+        }
 
         offscreenTexture = device.makeTexture2D(pixelFormat: .bgra8Unorm, width: offscreenSize.width, height: offscreenSize.height, usage: [.shaderRead, .shaderWrite, .renderTarget], label: "Offscreen Texture")
         offscreenDepthTexture = device.makeTexture2D(pixelFormat: .depth32Float, width: offscreenSize.width, height: offscreenSize.height, usage: [.shaderRead, .shaderWrite, .renderTarget], storageMode: .private, label: "Offscreen Depth Texture")
@@ -114,6 +128,8 @@ struct FlyingTeapotsRenderPass: Element {
     var skyboxSampler: MTLSamplerState
     @MSState
     var skyboxTexture: MTLTexture
+    @MSState
+    var resourceCollection: ResourceCollection?
 
     var projectionMatrix: float4x4
     var cameraMatrix: float4x4
@@ -142,48 +158,59 @@ struct FlyingTeapotsRenderPass: Element {
         get throws {
             let colors = simulation.teapots.map(\.color)
             let modelMatrices = simulation.teapots.map(\.matrix)
+            let resourceCollection = try self.resourceCollection ?? makeResourceCollection()
 
-            try ComputePass {
-                // Render a checkerboard pattern into a texture
-                try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], foregroundColor: [1, 1, 1, 1])
-                // And some circles
-                try CircleGridKernel(outputTexture: skyboxTexture, spacing: [128, 128], radius: 32, foregroundColor: .init(color: checkerboardColor))
-            }
-            try RenderPass {
-                // Draw the checkerboard texture into a skybox
-                let modelViewProjectionMatrix = projectionMatrix * cameraMatrix.inverse
-                try FlatShader(modelViewProjection: modelViewProjectionMatrix, textureSpecifier: .texture2D(skyboxTexture, skyboxSampler)) {
-                    Draw { encoder in
-                        encoder.setVertexBuffers(of: sphere)
-                        encoder.draw(sphere)
-                    }
+            try Group {
+                try ComputePass {
+                    // The previous frame may still be sampling the skybox.
+                    QueueBarrier(after: .fragment, before: .dispatch)
+                    // Render a checkerboard pattern into a texture
+                    try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], foregroundColor: [1, 1, 1, 1])
+                    // And some circles, drawn over the checkerboard
+                    EncoderBarrier(after: .dispatch, before: .dispatch)
+                    try CircleGridKernel(outputTexture: skyboxTexture, spacing: [128, 128], radius: 32, foregroundColor: .init(color: checkerboardColor))
                 }
-                .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
-
-                // Teapot party.
-                LambertianShaderInstanced(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
-                    Draw { encoder in
-                        encoder.setVertexBuffers(of: mesh)
-                        encoder.draw(mesh, instanceCount: simulation.teapots.count)
+                .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
+                try RenderPass {
+                    // Draw the checkerboard texture into a skybox
+                    let modelViewProjectionMatrix = projectionMatrix * cameraMatrix.inverse
+                    try FlatShader(modelViewProjection: modelViewProjectionMatrix, textureSpecifier: .texture2D(skyboxTexture, skyboxSampler)) {
+                        Draw(mesh: sphere)
+                            .vertexBuffers(of: sphere)
                     }
-                }
-                .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
-            }
-            .depthCompare(function: .less, enabled: true)
-            #if canImport(MetalFX)
-            .renderPassDescriptorModifier { descriptor in
-                descriptor.colorAttachments[0].texture = offscreenTexture
-                descriptor.depthAttachment.texture = offscreenDepthTexture
-            }
-            #endif
+                    .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
 
-            #if canImport(MetalFX)
-            MetalFXSpatial(inputTexture: offscreenTexture, outputTexture: upscaledTexture)
-            try RenderPass {
-                try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
+                    // Teapot party.
+                    LambertianShaderInstanced(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, colors: colors, modelMatrices: modelMatrices, lightDirection: [-1, -2, -1]) {
+                        Draw(mesh: mesh, instanceCount: simulation.teapots.count)
+                            .vertexBuffers(of: mesh)
+                    }
+                    .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
+                }
+                .depthCompare(function: .less, enabled: true)
+                #if canImport(MetalFX)
+                .renderPassDescriptorModifier { descriptor in
+                    descriptor.colorAttachments[0].texture = offscreenTexture
+                    descriptor.depthAttachment.texture = offscreenDepthTexture
+                }
+                #endif
+
+                #if canImport(MetalFX)
+                MetalFXSpatial(inputTexture: offscreenTexture, outputTexture: upscaledTexture)
+                try RenderPass {
+                    try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
+                }
+                .depthCompare(function: .always, enabled: false)
+                #endif
             }
-            .depthCompare(function: .always, enabled: false)
-            #endif
+            .useResourceCollection(resourceCollection)
         }
+    }
+
+    private func makeResourceCollection() throws -> ResourceCollection {
+        let collection = try ResourceCollection(device: skyboxTexture.device)
+        try collection.register([skyboxTexture] + [mesh, sphere].flatMap(\.buffers))
+        resourceCollection = collection
+        return collection
     }
 }
