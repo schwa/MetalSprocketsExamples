@@ -42,7 +42,6 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 | **PBR** | Physically based rendering | [<img src="Documentation/screenshots/thumbnails/PBR.png" width="320" alt="PBR">](Documentation/screenshots/PBR.png) |
 | **SDF** | 3D SDF raymarching | [<img src="Documentation/screenshots/thumbnails/SDF.png" width="320" alt="SDF">](Documentation/screenshots/SDF.png) |
 | **Particle Effects** | GPU compute particle system | [<img src="Documentation/screenshots/thumbnails/ParticleEffects.png" width="320" alt="Particle Effects">](Documentation/screenshots/ParticleEffects.png) |
-| **GLTF** | glTF/GLB model loader and viewer | [<img src="Documentation/screenshots/thumbnails/GLTF.png" width="320" alt="GLTF">](Documentation/screenshots/GLTF.png) |
 | **Voxel** | Compute-raymarched voxel volumes | [<img src="Documentation/screenshots/thumbnails/Voxel.png" width="320" alt="Voxel">](Documentation/screenshots/Voxel.png) |
 | **Grass** | Mesh-shader procedural grass | [<img src="Documentation/screenshots/thumbnails/Grass.png" width="320" alt="Grass">](Documentation/screenshots/Grass.png) |
 | **Spiral Particles** | Mesh-shader spiral particles | [<img src="Documentation/screenshots/thumbnails/SpiralParticles.png" width="320" alt="Spiral Particles">](Documentation/screenshots/SpiralParticles.png) |

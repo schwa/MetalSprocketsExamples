@@ -29,7 +29,6 @@ import SwiftUI
         WireframeDemoView.self,
         TrivialMeshDemoView.self,
         SceneGraphDemoView.self,
-        GLTFDemoView.self,
         VoxelDemoView.self,
         GrassDemoView.self,
         SpiralParticlesDemoView.self,
@@ -365,17 +364,6 @@ extension SceneGraphDemoView: @retroactive DemoView {
             description: "Hierarchical scene graph rendering",
             longDescription: "`SceneGraph` construction with **recursive transform propagation**, rendered via `SceneGraphRenderPass` with PBR shading.",
             group: "Basic"
-        )
-    }
-}
-
-extension GLTFDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "GLTF",
-            description: "glTF/GLB model loader and viewer",
-            longDescription: "Loading **glTF/GLB** files, converting them to a `SceneGraph` via `GLTFSceneGraphGenerator`, and rendering with `SceneGraphRenderPass`.",
-            group: "Complex"
         )
     }
 }

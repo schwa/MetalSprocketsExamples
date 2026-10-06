@@ -340,16 +340,6 @@ Compute-to-render buffer sharing: a compute pass updates particle state each fra
 
 ---
 
-### GLTF
-
-![GLTF](screenshots/GLTF.png)
-
-> glTF/GLB model loader and viewer
-
-Loading glTF/GLB files, converting them to a SceneGraph via GLTFSceneGraphGenerator, and rendering with SceneGraphRenderPass.
-
----
-
 ### Voxel
 
 ![Voxel](screenshots/Voxel.png)

@@ -1,5 +1,5 @@
 {
-  "originHash" : "d1735cda45a6e847364b1a37dd6f59298f2ffc10e459defc35671a57c7d610d9",
+  "originHash" : "374123f9669573ee65756c42319e411b46ff49a6850c793558b50d5a7ae22ff0",
   "pins" : [
     {
       "identity" : "demokit",
@@ -188,15 +188,6 @@
       "state" : {
         "revision" : "0f0929852e7709fcd2a006efda19925ee773d752",
         "version" : "0.3.7"
-      }
-    },
-    {
-      "identity" : "swiftgltf",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/SwiftGLTF",
-      "state" : {
-        "branch" : "main",
-        "revision" : "7876a15f41167c9f2c6150d64e02583853ca0d7b"
       }
     },
     {

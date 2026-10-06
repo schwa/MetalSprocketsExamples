@@ -521,23 +521,6 @@ demos:
       choreography: *showcase_arc_zoom
       notes: "Arc-drag + zoom to inspect the scene graph hierarchy."
 
-  - name: GLTF
-    id: GLTF
-    description: glTF/GLB model loader and viewer
-    long_description: >
-      Loading glTF/GLB files, converting them to a SceneGraph via
-      GLTFSceneGraphGenerator, and rendering with SceneGraphRenderPass.
-    group: Complex
-    keywords: []
-    screenshot: GLTF.png
-    platform: null
-    video:
-      duration: 8
-      interest: high
-      choreography: []
-      incomplete: true
-      notes: "INCOMPLETE — needs a model loaded before capture. Come back."
-
   - name: Voxel
     id: Voxel
     description: Compute-raymarched voxel volumes
