@@ -8,6 +8,7 @@
 #import "OpenSeaShaders.h"
 #import "MeshDissolveShaders.h"
 #import "MetalCanvasShaders.h"
+#import "MetalFLIPShaders.h"
 #import "PBRShaders.h"
 #import "Panorama.h"
 #import "ParticleEffectsShader.h"

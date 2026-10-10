@@ -18,7 +18,8 @@ enum RenderMode: String, CaseIterable, ExpressibleByArgument {
 struct CLI: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "cli",
-        abstract: "Render demo to terminal using ASCII art or Sixel graphics"
+        abstract: "Render demo to terminal using ASCII art or Sixel graphics",
+        subcommands: [FLIPCommand.self]
     )
 
     static var availableDemos: String {

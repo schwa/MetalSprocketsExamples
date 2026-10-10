@@ -48,6 +48,7 @@ import SwiftUI
         SlugTextPanelDemoView.self,
         ShaderGraphDemoView.self,
         StamFluidDemoView.self,
+        MetalFLIPDemoView.self,
         LiquidGlassDemoView.self,
         OpenSeaDemoView.self,
         GargantuaDemoView.self,
@@ -649,6 +650,18 @@ extension GargantuaDemoView: @retroactive DemoView {
             systemImage: "circle.circle",
             description: "Black hole with geodesic ray marching",
             longDescription: "A Schwarzschild **black hole**: null geodesics marched per pixel through curved spacetime, with a Novikov-Thorne accretion disk (relativistic beaming, Doppler shift, gravitational redshift), baked milky way and disk-noise LUTs, MetalFX spatial upscaling, a compute bloom pyramid, and a cinematic camera path.",
+            group: "Complex"
+        )
+    }
+}
+
+extension MetalFLIPDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "FLIP Fluid",
+            systemImage: "drop",
+            description: "3D PIC/FLIP fluid simulation",
+            longDescription: "A 3D **PIC/FLIP** fluid in a tank, after \"Fluid Implicit Particle Simulation for CPU and GPU\" (Centeno & Pereira, 2024). Every solver pass runs in one compute pass: particle-to-grid transfer, velocity extrapolation, red-black Gauss-Seidel pressure projection, grid-to-particle with midpoint advection, and particle reseeding. The surface is a Zhu-Bridson field ray-marched in a fragment shader. Drag to orbit, pinch to zoom.",
             group: "Complex"
         )
     }
