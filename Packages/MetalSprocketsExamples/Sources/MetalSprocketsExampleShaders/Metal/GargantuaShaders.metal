@@ -243,13 +243,9 @@ namespace Gargantua {
         float flux = max(u * u * u * (1.0 - su), 0.0);
         float temp = sqrt(sqrt(flux * 10.0));
 
-        // seamless rotating pattern coords (rotate cartesian, never atan-sample)
         float w = 3.0 / qr;
         float omega = rotSign * 1.1 * rotSpeed * w * sqrt(w);
         float rot = omega * uTime;
-        float ca = cos(rot), sa = sin(rot);
-        float3 qp = float3(ca * q.x + sa * q.z, 0.0, -sa * q.x + ca * q.z);
-        float2 rp = qp.xz / qr;
 
         // turbulence: warp at 1.5x, inner detail, 22x streaks, lane mask
         float innerDetail = 1.0 - smoothstep(4.0, 18.0, qr);
@@ -257,7 +253,7 @@ namespace Gargantua {
         // its constant end of the mix, so all six FBMs are dead work out there
         float turb = 0.50, streak = 0.95, laneMask = 0.85;
         if (innerDetail > 0.0) {
-            // rp sits at angle (ang - rot), and the LUT wraps in that axis, so no
+            // the pattern sits at angle (ang - rot), and the LUT wraps in that axis, so no
             // extra atan2 is needed -- both terms are already known.
             float2 uv = float2((ang - rot) * (0.5 / M_PI_F), qr * (1.0 / DISK_LUT_QR));
             float2 lut = diskNoise.sample(diskLinear, uv).rg;

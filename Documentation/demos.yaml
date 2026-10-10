@@ -365,8 +365,8 @@ demos:
     long_description: >
       DebugRenderPipeline with switchable fragment shader modes for visualizing
       mesh attributes — normals, tangents, UVs, depth, wireframe, etc.
-    group: Basic
-    keywords: []
+    group: Rendering
+    keywords: [MetalSprocketsAddOns]
     screenshot: DebugShader.png
     platform: null
     video:
@@ -495,8 +495,8 @@ demos:
     long_description: >
       TrivialMesh procedural geometry generation and conversion to renderable
       Mesh objects — platonic solids, 2D shapes, and curved surfaces.
-    group: Basic
-    keywords: [mesh, procedural, lighting, animated, configurable]
+    group: Rendering
+    keywords: [MetalSprocketsAddOns, mesh, procedural, lighting, animated, configurable]
     screenshot: TrivialMesh.png
     platform: null
     video:
@@ -572,12 +572,12 @@ demos:
 
   - name: GraphicsContext3D
     id: GraphicsContext3D
-    description: Canvas-style 3D path drawing
+    description: 3D stroked and filled paths with pixel-perfect line widths
     long_description: >
       GraphicsContext3DRenderPipeline: a SwiftUI Canvas-like API for 3D path
       drawing with stroke/fill, backed by mesh-shader line rendering.
-    group: Basic
-    keywords: [3d, path, canvas, configurable]
+    group: Rendering
+    keywords: [MetalSprocketsAddOns, 3d, path, canvas, configurable]
     screenshot: GraphicsContext3D.png
     platform: null
     video:
@@ -919,3 +919,159 @@ demos:
       choreography: []
       incomplete: true
       notes: "INCOMPLETE — wants graph-picker cycling through example graphs. Come back."
+
+  - name: Meadow
+    id: Meadow
+    description: Ray-traced procedural meadow
+    long_description: >
+      Hardware ray tracing over ~5M procedural triangles of grass, flowers and
+      trees. Progressive accumulation with sun shadows, one diffuse bounce,
+      volumetric haze and clouds.
+    group: Complex
+    keywords: [ray-tracing, acceleration-structure, procedural]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — needs WASD fly-through choreography."
+
+  - name: Stam Fluid
+    id: StamFluid
+    description: Interactive 2D Navier-Stokes fluid
+    long_description: >
+      GPU implementation of Jos Stam's "Real-Time Fluid Dynamics for Games"
+      (GDC 2003). Diffusion, advection, and pressure projection via red-black
+      Gauss-Seidel relaxation. Drag to inject smoke and apply forces.
+    group: Complex
+    keywords: [fluid, simulation, compute, interactive]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      choreography: *showcase_arc
+      notes: "Drag through the middle to inject smoke."
+
+  - name: FLIP Fluid
+    id: FLIPFluid
+    description: 3D PIC/FLIP fluid simulation
+    long_description: >
+      A 3D PIC/FLIP fluid in a tank. All solver passes run in one compute
+      pass; the surface is a Zhu-Bridson field ray-marched in a fragment
+      shader. Drag to orbit, pinch to zoom.
+    group: Complex
+    keywords: [fluid, simulation, compute, raymarching]
+    screenshot: null
+    platform: null
+    video:
+      duration: 10
+      interest: high
+      choreography: *showcase_arc
+      notes: "Arc-drag to orbit the tank."
+
+  - name: Liquid Glass
+    id: LiquidGlass
+    description: Refractive liquid-glass pills over an animated background
+    long_description: >
+      SDF pills with a circular bevel refract an animated marquee background,
+      with chromatic dispersion, fresnel rim glow, frost blur, and smooth-min
+      blending so dragged pills merge like liquid.
+    group: Basic
+    keywords: [sdf, refraction, interactive]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants pill drags that merge."
+
+  - name: Open Sea
+    id: OpenSea
+    description: Gerstner-wave ocean with analytic sky
+    long_description: >
+      Five Gerstner wave components displace a camera-centred radial grid
+      generated from vertex IDs, with analytic normals, fresnel sky
+      reflection, sun glitter, crest foam, and a time-of-day palette.
+    group: Complex
+    keywords: [ocean, procedural, animated]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      choreography: *showcase_arc
+      notes: "Arc-drag to orbit over the waves."
+
+  - name: Gargantua
+    id: Gargantua
+    description: Black hole with geodesic ray marching
+    long_description: >
+      A Schwarzschild black hole: null geodesics marched per pixel, with a
+      Novikov-Thorne accretion disk, MetalFX spatial upscaling, a compute
+      bloom pyramid, and a cinematic camera path.
+    group: Complex
+    keywords: [raymarching, metalfx, bloom, animated]
+    screenshot: null
+    platform: null
+    video:
+      duration: 10
+      interest: high
+      choreography: []
+      notes: "Static — let the cinematic camera path run."
+
+  - name: Mesh Dissolve
+    id: MeshDissolve
+    description: Triplanar-grid dissolve effects
+    long_description: >
+      A cube shaded with a triplanar projected grid and a dozen dissolve
+      effects, each a scalar field compared against an animated threshold,
+      with discard_fragment and a leading-edge glow.
+    group: Basic
+    keywords: [dissolve, triplanar, animated, configurable]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: medium
+      choreography: []
+      incomplete: true
+      notes: "INCOMPLETE — wants effect-picker cycling."
+
+  - name: Stargate
+    id: Stargate
+    description: 2001-style slit-scan effect
+    long_description: >
+      Procedural recreation of the 2001: A Space Odyssey slit-scan sequence: a
+      fullscreen fragment shader warps screen space into a tunnel with streaks
+      stretched along its depth axis.
+    group: Basic
+    keywords: [fullscreen, procedural, animated, configurable]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      choreography: []
+      notes: "Static — the effect animates on its own."
+
+  - name: Tree Generator
+    id: TreeGenerator
+    description: Space-colonization procedural trees
+    long_description: >
+      Port of hugomarques13/TreeGenerator: space colonization grows a branching
+      skeleton toward attraction points, then builds tapered bark tubes and
+      leaf quads. Oak, Pine, Willow and Dead presets.
+    group: Complex
+    keywords: [procedural, mesh, configurable]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: medium
+      choreography: *showcase_arc
+      notes: "Arc-drag to orbit the tree."

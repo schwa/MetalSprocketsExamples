@@ -1,10 +1,10 @@
 import ArgumentParser
 import Foundation
 import ImageIO
-import UniformTypeIdentifiers
 import MetalSprocketsExamples
 import MetalSprocketsUI
 import simd
+import UniformTypeIdentifiers
 
 extension CharacterRamp: ExpressibleByArgument {
 }
@@ -66,7 +66,7 @@ struct MeadowCommand: AsyncParsableCommand {
             throw ValidationError("Cannot write \(output)")
         }
         let elapsed = CFAbsoluteTimeGetCurrent() - start
-        print("Wrote \(url.path) (\(width)×\(height), \(samples) samples, \(triangleCount.formatted()) triangles, \(String(format: "%.1f", elapsed)) s)")
+        print("Wrote \(url.path) (\(width)×\(height), \(samples) samples, \(triangleCount.formatted()) triangles, \(elapsed.formatted(.number.precision(.fractionLength(1)))) s)")
     }
 }
 

@@ -16,19 +16,19 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 | **Stencil** | Stencil-masked triangle | [<img src="Documentation/screenshots/thumbnails/Stencil.png" width="320" alt="Stencil">](Documentation/screenshots/Stencil.png) |
 | **LUT** | Image color grading via LUTs | [<img src="Documentation/screenshots/thumbnails/LUT.png" width="320" alt="LUT">](Documentation/screenshots/LUT.png) |
 | **Game of Life** | GPU-driven cellular automaton | [<img src="Documentation/screenshots/thumbnails/GameOfLife.png" width="320" alt="Game of Life">](Documentation/screenshots/GameOfLife.png) |
-| **Debug Shader** | Shader debug visualizations | [<img src="Documentation/screenshots/thumbnails/DebugShader.png" width="320" alt="Debug Shader">](Documentation/screenshots/DebugShader.png) |
 | **Point Cloud** | Interactive torus point cloud | [<img src="Documentation/screenshots/thumbnails/PointCloud.png" width="320" alt="Point Cloud">](Documentation/screenshots/PointCloud.png) |
 | **Video Playback** | Video with VCR distortion effect | [<img src="Documentation/screenshots/thumbnails/VideoPlayback.png" width="320" alt="Video Playback">](Documentation/screenshots/VideoPlayback.png) |
 | **Panorama** | Equirectangular panorama viewer | [<img src="Documentation/screenshots/thumbnails/Panorama.png" width="320" alt="Panorama">](Documentation/screenshots/Panorama.png) |
 | **Wireframe** | Wireframe mesh rendering | [<img src="Documentation/screenshots/thumbnails/Wireframe.png" width="320" alt="Wireframe">](Documentation/screenshots/Wireframe.png) |
-| **Trivial Mesh** | Procedural geometry primitives | [<img src="Documentation/screenshots/thumbnails/TrivialMesh.png" width="320" alt="Trivial Mesh">](Documentation/screenshots/TrivialMesh.png) |
 | **SceneGraph** | Hierarchical scene graph rendering | [<img src="Documentation/screenshots/thumbnails/SceneGraph.png" width="320" alt="SceneGraph">](Documentation/screenshots/SceneGraph.png) |
-| **GraphicsContext3D** | Canvas-style 3D path drawing | [<img src="Documentation/screenshots/thumbnails/GraphicsContext3D.png" width="320" alt="GraphicsContext3D">](Documentation/screenshots/GraphicsContext3D.png) |
 | **MetalCanvas** | 2D path rendering via mesh shaders | [<img src="Documentation/screenshots/thumbnails/MetalCanvas.png" width="320" alt="MetalCanvas">](Documentation/screenshots/MetalCanvas.png) |
 | **Tile Average** | Imageblock tile averaging | [<img src="Documentation/screenshots/thumbnails/TileAverage.png" width="320" alt="Tile Average">](Documentation/screenshots/TileAverage.png) |
 | **Offscreen *(macOS only)*** | Render to CGImage | [<img src="Documentation/screenshots/thumbnails/Offscreen.png" width="320" alt="Offscreen *(macOS only)*">](Documentation/screenshots/Offscreen.png) |
 | **MetalFX *(macOS only)*** | MetalFX spatial upscaling | [<img src="Documentation/screenshots/thumbnails/MetalFX.png" width="320" alt="MetalFX *(macOS only)*">](Documentation/screenshots/MetalFX.png) |
 | **Skinning** | Skeletal mesh deformation with bones | — |
+| **Liquid Glass** | Refractive liquid-glass pills over an animated background | — |
+| **Mesh Dissolve** | Triplanar-grid dissolve effects | — |
+| **Stargate** | 2001-style slit-scan effect | — |
 
 ### Complex
 
@@ -47,8 +47,13 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 | **Spiral Particles** | Mesh-shader spiral particles | [<img src="Documentation/screenshots/thumbnails/SpiralParticles.png" width="320" alt="Spiral Particles">](Documentation/screenshots/SpiralParticles.png) |
 | **Tiled SDF** | Tile-culled 2D SDF rendering | [<img src="Documentation/screenshots/thumbnails/TiledSDF.png" width="320" alt="Tiled SDF">](Documentation/screenshots/TiledSDF.png) |
 | **Ray Tracing** | Cornell box path tracer | — |
-| **Meadow** | Ray-traced procedural meadow | — |
 | **Shader Graph** | Build Metal shaders as Swift DSL graphs | — |
+| **Meadow** | Ray-traced procedural meadow | — |
+| **Stam Fluid** | Interactive 2D Navier-Stokes fluid | — |
+| **FLIP Fluid** | 3D PIC/FLIP fluid simulation | — |
+| **Open Sea** | Gerstner-wave ocean with analytic sky | — |
+| **Gargantua** | Black hole with geodesic ray marching | — |
+| **Tree Generator** | Space-colonization procedural trees | — |
 
 ### In-progress
 
@@ -60,6 +65,9 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 
 | Example | Description | Screenshot |
 |---------|-------------|------------|
+| **Debug Shader** | Shader debug visualizations | [<img src="Documentation/screenshots/thumbnails/DebugShader.png" width="320" alt="Debug Shader">](Documentation/screenshots/DebugShader.png) |
+| **Trivial Mesh** | Procedural geometry primitives | [<img src="Documentation/screenshots/thumbnails/TrivialMesh.png" width="320" alt="Trivial Mesh">](Documentation/screenshots/TrivialMesh.png) |
+| **GraphicsContext3D** | 3D stroked and filled paths with pixel-perfect line widths | [<img src="Documentation/screenshots/thumbnails/GraphicsContext3D.png" width="320" alt="GraphicsContext3D">](Documentation/screenshots/GraphicsContext3D.png) |
 | **Infinite Grid** | An infinite ground plane grid with interactive camera | — |
 | **Spinning Cube** | A rotating RGB cube with MSAA controls | — |
 | **Shadow Map** | Multi-light shadow mapping with PCF and depth bias controls | — |

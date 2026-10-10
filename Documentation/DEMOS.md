@@ -1,6 +1,6 @@
 # Demos
 
-*50 demos — generated from [`demos.yaml`](demos.yaml)*
+*57 demos — generated from [`demos.yaml`](demos.yaml)*
 
 ## Ungrouped
 
@@ -94,16 +94,6 @@ GPU-driven cellular automaton — a ComputePass updates a texture each frame, dr
 
 ---
 
-### Debug Shader
-
-![Debug Shader](screenshots/DebugShader.png)
-
-> Shader debug visualizations
-
-DebugRenderPipeline with switchable fragment shader modes for visualizing mesh attributes — normals, tangents, UVs, depth, wireframe, etc.
-
----
-
 ### Point Cloud
 
 ![Point Cloud](screenshots/PointCloud.png)
@@ -150,18 +140,6 @@ WireframeRenderPipeline for line-mode mesh rendering, combined with GridShader a
 
 ---
 
-### Trivial Mesh
-
-![Trivial Mesh](screenshots/TrivialMesh.png)
-
-> Procedural geometry primitives
-
-TrivialMesh procedural geometry generation and conversion to renderable Mesh objects — platonic solids, 2D shapes, and curved surfaces.
-
-**Tags:** `mesh`  `procedural`  `lighting`  `animated`  `configurable`
-
----
-
 ### SceneGraph
 
 ![SceneGraph](screenshots/SceneGraph.png)
@@ -171,18 +149,6 @@ TrivialMesh procedural geometry generation and conversion to renderable Mesh obj
 SceneGraph construction with recursive transform propagation, rendered via SceneGraphRenderPass with PBR shading.
 
 **Tags:** `scene`  `graph`  `lighting`
-
----
-
-### GraphicsContext3D
-
-![GraphicsContext3D](screenshots/GraphicsContext3D.png)
-
-> Canvas-style 3D path drawing
-
-GraphicsContext3DRenderPipeline: a SwiftUI Canvas-like API for 3D path drawing with stroke/fill, backed by mesh-shader line rendering.
-
-**Tags:** `3d`  `path`  `canvas`  `configurable`
 
 ---
 
@@ -241,6 +207,36 @@ Integrating MetalFXSpatial upsampling into a MetalSprockets pipeline.
 Skeletal animation with a 2-bone rig deforming a capsule mesh. Vertex shader applies per-vertex bone weights to blend between bone transforms, animating between straight and L-shaped poses.
 
 **Tags:** `skinning`  `skeletal`  `animated`
+
+---
+
+### Liquid Glass
+
+> Refractive liquid-glass pills over an animated background
+
+SDF pills with a circular bevel refract an animated marquee background, with chromatic dispersion, fresnel rim glow, frost blur, and smooth-min blending so dragged pills merge like liquid.
+
+**Tags:** `sdf`  `refraction`  `interactive`
+
+---
+
+### Mesh Dissolve
+
+> Triplanar-grid dissolve effects
+
+A cube shaded with a triplanar projected grid and a dozen dissolve effects, each a scalar field compared against an animated threshold, with discard_fragment and a leading-edge glow.
+
+**Tags:** `dissolve`  `triplanar`  `animated`  `configurable`
+
+---
+
+### Stargate
+
+> 2001-style slit-scan effect
+
+Procedural recreation of the 2001: A Space Odyssey slit-scan sequence: a fullscreen fragment shader warps screen space into a tunnel with streaks stretched along its depth axis.
+
+**Tags:** `fullscreen`  `procedural`  `animated`  `configurable`
 
 ---
 
@@ -408,6 +404,66 @@ A Swift DSL that generates Metal code via MTLFunctionStitchingGraph. Build fragm
 
 ---
 
+### Meadow
+
+> Ray-traced procedural meadow
+
+Hardware ray tracing over ~5M procedural triangles of grass, flowers and trees. Progressive accumulation with sun shadows, one diffuse bounce, volumetric haze and clouds.
+
+**Tags:** `ray-tracing`  `acceleration-structure`  `procedural`
+
+---
+
+### Stam Fluid
+
+> Interactive 2D Navier-Stokes fluid
+
+GPU implementation of Jos Stam's "Real-Time Fluid Dynamics for Games" (GDC 2003). Diffusion, advection, and pressure projection via red-black Gauss-Seidel relaxation. Drag to inject smoke and apply forces.
+
+**Tags:** `fluid`  `simulation`  `compute`  `interactive`
+
+---
+
+### FLIP Fluid
+
+> 3D PIC/FLIP fluid simulation
+
+A 3D PIC/FLIP fluid in a tank. All solver passes run in one compute pass; the surface is a Zhu-Bridson field ray-marched in a fragment shader. Drag to orbit, pinch to zoom.
+
+**Tags:** `fluid`  `simulation`  `compute`  `raymarching`
+
+---
+
+### Open Sea
+
+> Gerstner-wave ocean with analytic sky
+
+Five Gerstner wave components displace a camera-centred radial grid generated from vertex IDs, with analytic normals, fresnel sky reflection, sun glitter, crest foam, and a time-of-day palette.
+
+**Tags:** `ocean`  `procedural`  `animated`
+
+---
+
+### Gargantua
+
+> Black hole with geodesic ray marching
+
+A Schwarzschild black hole: null geodesics marched per pixel, with a Novikov-Thorne accretion disk, MetalFX spatial upscaling, a compute bloom pyramid, and a cinematic camera path.
+
+**Tags:** `raymarching`  `metalfx`  `bloom`  `animated`
+
+---
+
+### Tree Generator
+
+> Space-colonization procedural trees
+
+Port of hugomarques13/TreeGenerator: space colonization grows a branching skeleton toward attraction points, then builds tapered bark tubes and leaf quads. Oak, Pine, Willow and Dead presets.
+
+**Tags:** `procedural`  `mesh`  `configurable`
+
+---
+
 ## In-progress
 
 ### Color Adjust
@@ -423,6 +479,42 @@ Multiple compute shader functions (multiply, gamma, HSV, levels, temperature/tin
 ---
 
 ## Rendering
+
+### Debug Shader
+
+![Debug Shader](screenshots/DebugShader.png)
+
+> Shader debug visualizations
+
+DebugRenderPipeline with switchable fragment shader modes for visualizing mesh attributes — normals, tangents, UVs, depth, wireframe, etc.
+
+**Tags:** `MetalSprocketsAddOns`
+
+---
+
+### Trivial Mesh
+
+![Trivial Mesh](screenshots/TrivialMesh.png)
+
+> Procedural geometry primitives
+
+TrivialMesh procedural geometry generation and conversion to renderable Mesh objects — platonic solids, 2D shapes, and curved surfaces.
+
+**Tags:** `MetalSprocketsAddOns`  `mesh`  `procedural`  `lighting`  `animated`  `configurable`
+
+---
+
+### GraphicsContext3D
+
+![GraphicsContext3D](screenshots/GraphicsContext3D.png)
+
+> 3D stroked and filled paths with pixel-perfect line widths
+
+GraphicsContext3DRenderPipeline: a SwiftUI Canvas-like API for 3D path drawing with stroke/fill, backed by mesh-shader line rendering.
+
+**Tags:** `MetalSprocketsAddOns`  `3d`  `path`  `canvas`  `configurable`
+
+---
 
 ### Infinite Grid
 
