@@ -47,6 +47,7 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 | **Spiral Particles** | Mesh-shader spiral particles | [<img src="Documentation/screenshots/thumbnails/SpiralParticles.png" width="320" alt="Spiral Particles">](Documentation/screenshots/SpiralParticles.png) |
 | **Tiled SDF** | Tile-culled 2D SDF rendering | [<img src="Documentation/screenshots/thumbnails/TiledSDF.png" width="320" alt="Tiled SDF">](Documentation/screenshots/TiledSDF.png) |
 | **Ray Tracing** | Cornell box path tracer | — |
+| **Meadow** | Ray-traced procedural meadow | — |
 | **Shader Graph** | Build Metal shaders as Swift DSL graphs | — |
 
 ### In-progress

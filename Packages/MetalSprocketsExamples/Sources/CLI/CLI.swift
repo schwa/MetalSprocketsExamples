@@ -1,5 +1,7 @@
 import ArgumentParser
 import Foundation
+import ImageIO
+import UniformTypeIdentifiers
 import MetalSprocketsExamples
 import MetalSprocketsUI
 import simd
@@ -15,9 +17,62 @@ enum RenderMode: String, CaseIterable, ExpressibleByArgument {
 }
 
 @main
-struct CLI: ParsableCommand {
+struct CLI: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "cli",
+        abstract: "Render MetalSprockets demos from the command line",
+        subcommands: [TerminalCommand.self, MeadowCommand.self],
+        defaultSubcommand: TerminalCommand.self
+    )
+}
+
+struct MeadowCommand: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "meadow",
+        abstract: "Ray trace the Meadow demo to a PNG"
+    )
+
+    @Option(name: .shortAndLong, help: "Output PNG path")
+    var output: String = "meadow.png"
+
+    @Option(help: "Image width")
+    var width: Int = 1_280
+
+    @Option(help: "Image height")
+    var height: Int = 720
+
+    @Option(name: .shortAndLong, help: "Accumulated samples per pixel")
+    var samples: Int = 64
+
+    @Option(help: "Sun elevation in radians")
+    var sunElevation: Float?
+
+    @Option(help: "Cloud coverage, 0-1")
+    var clouds: Float?
+
+    @MainActor
+    func run() async throws {
+        var settings = MeadowSettings()
+        if let sunElevation { settings.sunElevation = sunElevation }
+        if let clouds { settings.cloudCoverage = clouds }
+        let start = CFAbsoluteTimeGetCurrent()
+        let (image, triangleCount) = try await MeadowOffscreen.render(width: width, height: height, samples: samples, settings: settings)
+        let url = URL(fileURLWithPath: output)
+        guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil) else {
+            throw ValidationError("Cannot write \(output)")
+        }
+        CGImageDestinationAddImage(destination, image, nil)
+        guard CGImageDestinationFinalize(destination) else {
+            throw ValidationError("Cannot write \(output)")
+        }
+        let elapsed = CFAbsoluteTimeGetCurrent() - start
+        print("Wrote \(url.path) (\(width)×\(height), \(samples) samples, \(triangleCount.formatted()) triangles, \(String(format: "%.1f", elapsed)) s)")
+    }
+}
+
+struct TerminalCommand: ParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "terminal",
         abstract: "Render demo to terminal using ASCII art or Sixel graphics",
         subcommands: [FLIPCommand.self]
     )

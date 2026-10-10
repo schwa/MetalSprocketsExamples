@@ -37,6 +37,7 @@ import SwiftUI
         TiledSDFDemoView.self,
         TileAverageDemoView.self,
         RayTracingDemoView.self,
+        MeadowDemoView.self,
         GridDemoView.self,
         SkinningDemoView.self,
         RenderDemoView.self,
@@ -432,6 +433,17 @@ extension TiledSDFDemoView: @retroactive DemoView {
             name: "Tiled SDF",
             description: "Tile-culled 2D SDF rendering",
             longDescription: "**Tile-based compute dispatch** with threadgroup-level primitive culling — primitives are binned per tile into **threadgroup memory** to reduce global memory traffic.",
+            group: "Complex"
+        )
+    }
+}
+
+extension MeadowDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Meadow",
+            description: "Ray-traced procedural meadow",
+            longDescription: "Hardware **ray tracing** over ~5M procedural triangles of grass, flowers and trees. Progressive accumulation with sun shadows, one diffuse bounce, volumetric haze and clouds.",
             group: "Complex"
         )
     }

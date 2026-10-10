@@ -5,6 +5,7 @@
 #import "GargantuaShaders.h"
 #import "GrassShaders.h"
 #import "LiquidGlassShaders.h"
+#import "MeadowShaders.h"
 #import "OpenSeaShaders.h"
 #import "MeshDissolveShaders.h"
 #import "MetalCanvasShaders.h"
