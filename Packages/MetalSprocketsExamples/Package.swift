@@ -31,8 +31,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/Panels", from: "0.1.2"),
         .package(url: "https://github.com/schwa/SwiftMesh", branch: "main"),
         .package(url: "https://github.com/tree-sitter/swift-tree-sitter", from: "0.25.0"),
-        .package(url: "https://github.com/tree-sitter/tree-sitter-cpp", branch: "master"),
-        .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0")
+        .package(url: "https://github.com/tree-sitter/tree-sitter-cpp", branch: "master")
     ],
     targets: [
         .target(
@@ -79,8 +78,7 @@ let package = Package(
         .target(
             name: "MetalSprocketsExamplesSupport",
             dependencies: [
-                .product(name: "MetalSprockets", package: "MetalSprockets"),
-                .product(name: "ZIPFoundation", package: "ZIPFoundation")
+                .product(name: "MetalSprockets", package: "MetalSprockets")
             ]
         ),
         .target(

@@ -78,8 +78,6 @@
 			</dict>
 		</dict>
 	</array>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<false/>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_metal-sprockets._tcp</string>
