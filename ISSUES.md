@@ -4254,3 +4254,129 @@ created: 2026-10-02T22:32:54Z
 The hit-test RenderPass starts with QueueBarrier(after: [.blit, .fragment], before: .fragment). It is only needed for WAR against the previous frame's readback copy and visualization pass. A queue barrier waits on all earlier queue work, so it also serializes the hit-test pass after this frame's main pass, which it does not depend on. A GPU capture shows a barrier node between the two render encoders. Options: move the hit-test pass before the main pass, so the barrier only covers the previous frame. Or give each frame its own HitTestTextures so no WAR barrier is needed. Correct as is; low priority.
 
 ---
+
+## 441: Tree Generator: no bark or leaf textures
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:11Z
++++
+
+The add-on uses triplanar bark textures with an optional height map for bump and roughness, and textured leaf/flower images (Texturas/). The demo draws flat vertex colors only. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 442: Tree Generator: leaf variants and triangle leaves not supported
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:11Z
++++
+
+The add-on can mix several weighted leaf variants (e.g. leaves + flowers) with per-variant stem side, and can build single-triangle leaves. The demo has one leaf type and quads only. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 443: Tree Generator: bark tubes have visible seams at forks and open tips
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:12Z
++++
+
+Bark is built from 8-sided tubes (in place of Blender Skin + Subdivision). Side branches start inside the parent tube with a visible seam, branch tips are open, and there is no smoothness/subdivision control. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 444: Tree Generator: RDP skeleton simplification not ported
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:12Z
++++
+
+simplify_skeleton / _rdp_mask (radius-aware Ramer-Douglas-Peucker) is not ported. The demo uses the full skeleton, so triangle counts are higher than the add-on's optimized output. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 445: Tree Generator: no low-poly mode or LOD chain
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:12Z
++++
+
+The add-on has a low-poly mode (prune_to_budget to a triangle target, flat shading) and an LOD chain with optional camera-facing billboard. The demo renders one full-detail tree. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 446: Tree Generator: crown is limited to sphere and cone
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:12Z
++++
+
+The add-on can scatter attraction points inside any mesh (scatter_in_mesh) and place the root by raycast or 3D cursor. The demo only has sphere/cone crowns and a root fixed at the origin. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 447: Tree Generator: leaf and bark colors cannot be edited
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:12Z
++++
+
+Colors come only from presets. The add-on exposes bark color, leaf color and leaf roughness. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 448: Tree Generator: no mesh export
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:13Z
++++
+
+The add-on output is a Blender mesh (with optional bark UVs) for export to other engines. The demo cannot export the generated tree (e.g. OBJ/USDZ). Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
+
+## 449: Tree Generator: no shadows
+
++++
+status: new
+priority: low
+kind: feature
+labels: tree-generator
+created: 2026-10-10T16:43:13Z
++++
+
+Bark and leaves are lit with Lambert + hemisphere ambient only. The canopy casts no shadows on itself, the trunk, or the ground, so it looks flat compared to the add-on renders. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
+
+---
