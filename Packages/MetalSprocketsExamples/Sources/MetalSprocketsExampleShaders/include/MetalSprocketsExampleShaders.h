@@ -16,6 +16,7 @@
 #import "SDFShader.h"
 #import "SpiralParticlesShader.h"
 #import "RayTracingShaders.h"
+#import "TreeGeneratorShaders.h"
 #import "VoxelShaders.h"
 
 #ifdef __OBJC__

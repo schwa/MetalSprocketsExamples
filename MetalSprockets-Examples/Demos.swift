@@ -53,7 +53,8 @@ import SwiftUI
         OpenSeaDemoView.self,
         GargantuaDemoView.self,
         MeshDissolveDemoView.self,
-        StargateDemoView.self
+        StargateDemoView.self,
+        TreeGeneratorDemoView.self
     ]
 
     #if os(macOS)
@@ -687,6 +688,18 @@ extension LiquidGlassDemoView: @retroactive DemoView {
             description: "Refractive liquid-glass pills over an animated background",
             longDescription: "Apple-style **liquid glass**: SDF pills with a circular bevel refract an animated marquee background, with chromatic dispersion, fresnel rim glow, frost blur, and smooth-min blending so dragged pills merge like liquid.",
             group: "Basic"
+        )
+    }
+}
+
+extension TreeGeneratorDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Tree Generator",
+            systemImage: "tree",
+            description: "Space-colonization procedural trees",
+            longDescription: "Port of [hugomarques13/TreeGenerator](https://github.com/hugomarques13/TreeGenerator): **space colonization** grows a branching skeleton toward attraction points scattered in a sphere or cone crown, then depth-based radii and foliage placement build tapered bark tubes and leaf quads, drawn from one `MTLBuffer` with `.vertexBuffer` and a ground `GridShader`. Oak, Pine, Willow and Dead presets.",
+            group: "Complex"
         )
     }
 }
