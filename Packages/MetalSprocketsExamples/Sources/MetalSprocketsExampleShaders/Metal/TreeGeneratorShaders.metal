@@ -40,13 +40,20 @@ namespace TreeGenerator {
         float3 l = normalize(uniforms.lightDirection);
         float3 v = normalize(uniforms.cameraPosition - in.worldPosition);
 
-        float diffuse = saturate(dot(n, l));
+        // Wrapped diffuse keeps the shadow side of thin tubes from going black.
+        float diffuse = saturate((dot(n, l) + 0.3) / 1.3);
+        float3 sunColor = float3(1.0, 0.92, 0.78) * 2.2;
         // Hemisphere ambient: sky from above, ground bounce from below.
-        float3 ambient = mix(float3(0.18, 0.16, 0.12), float3(0.35, 0.42, 0.55), n.y * 0.5 + 0.5);
+        float3 ambient = mix(float3(0.22, 0.20, 0.17), float3(0.55, 0.65, 0.80), n.y * 0.5 + 0.5);
         // Back-lit leaves glow a little, like light passing through them.
-        float translucency = saturate(dot(-v, l)) * 0.3;
+        float translucency = pow(saturate(dot(-v, l)), 4.0) * 0.5;
+        // Soft sky rim along silhouettes.
+        float rim = pow(1.0 - saturate(dot(n, v)), 3.0) * 0.25;
 
-        float3 color = in.color * (ambient + (diffuse + translucency) * float3(1.0, 0.95, 0.85) * 1.6);
+        float3 color = in.color * (ambient + (diffuse + translucency) * sunColor) + rim * float3(0.55, 0.65, 0.80) * in.color * 2.0;
+        // Reinhard tone map, then gamma encode: the drawable is not sRGB.
+        color = color / (1.0 + color);
+        color = pow(color, 1.0 / 2.2);
         return float4(color, 1.0);
     }
 }
