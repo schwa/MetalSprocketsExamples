@@ -6,12 +6,13 @@ extension MTL4RenderCommandEncoder {
     // Pair with `.metalMeshResources(_:)` so vertex buffers are bound and index buffers stay resident.
     func draw(_ metalMesh: MetalMesh, instanceCount: Int = 1) {
         for submesh in metalMesh.submeshes {
+            let indexStride = submesh.indexType == .uint16 ? MemoryLayout<UInt16>.stride : MemoryLayout<UInt32>.stride
             drawIndexedPrimitives(
-                primitiveType: .triangle,
+                primitiveType: submesh.primitiveType,
                 indexCount: submesh.indexCount,
-                indexType: .uint32,
-                indexBuffer: submesh.indexBuffer.gpuAddress,
-                indexBufferLength: submesh.indexCount * MemoryLayout<UInt32>.stride,
+                indexType: submesh.indexType,
+                indexBuffer: submesh.indexBuffer.gpuAddress + UInt64(submesh.indexBufferOffset),
+                indexBufferLength: submesh.indexCount * indexStride,
                 instanceCount: instanceCount
             )
         }

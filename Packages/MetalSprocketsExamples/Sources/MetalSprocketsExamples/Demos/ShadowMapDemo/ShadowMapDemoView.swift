@@ -236,7 +236,7 @@ public struct ShadowMapDemoView: View {
 
                     if let shadowMap {
                         ForEach(0..<shadowMap.lightCount, id: \.self) { i in
-                            if let sliceView = shadowMap.depthTexture.makeTextureView(
+                            if let sliceView = shadowMap.depthTextures[0].makeTextureView(
                                 pixelFormat: .depth32Float,
                                 textureType: .type2D,
                                 levels: 0..<1,
@@ -262,8 +262,8 @@ public struct ShadowMapDemoView: View {
                 )
                 let shadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
                 self.shadowMap = shadowMap
-                let collection = try ResourceCollection(device: shadowMap.depthTexture.device)
-                try collection.register([shadowMap.depthTexture] + (lighting?.argumentBufferResources ?? []))
+                let collection = try ResourceCollection(device: shadowMap.depthTextures[0].device)
+                try collection.register(shadowMap.depthTextures + (lighting?.argumentBufferResources ?? []))
                 resourceCollection = collection
             } catch {
                 fatalError("Failed to initialize ShadowMap demo: \(error)")
@@ -274,7 +274,7 @@ public struct ShadowMapDemoView: View {
     private func replaceShadowMap() {
         do {
             let newShadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
-            try resourceCollection?.replace([shadowMap?.depthTexture], with: [newShadowMap.depthTexture])
+            try resourceCollection?.replace(shadowMap?.depthTextures ?? [], with: newShadowMap.depthTextures)
             shadowMap = newShadowMap
         } catch {
             assertionFailure("\(error)")

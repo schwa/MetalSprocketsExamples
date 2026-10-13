@@ -4397,10 +4397,12 @@ MetalSprocketsAddOns #78 replaced ShadowMap.depthTexture with depthTextures (one
 ## 451: MetalMesh Metal 4 draw ignores submesh index buffer offsets
 
 +++
-status: new
+status: closed
 priority: medium
 kind: bug
 created: 2026-10-13T17:08:06Z
+updated: 2026-10-13T18:08:06Z
+closed: 2026-10-13T18:08:06Z
 +++
 
 Support/MetalMesh+Metal4.swift (about line 13) draws each MetalMesh submesh with indexBuffer: submesh.indexBuffer.gpuAddress and does not add submesh.indexBufferOffset. SwiftMesh's MetalMesh direct inits put all submeshes in one index buffer and set indexBufferOffset, so for such a mesh with more than one submesh every submesh is drawn with the first submesh's indices, with no error. SwiftMesh's own demo (Demo/SwiftMeshDemo/MetalMesh+MetalSprockets.swift) adds the offset.

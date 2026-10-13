@@ -126,7 +126,7 @@ extension VertexDescriptor {
         .init(attributes: [
             .init(semantic: .position, format: .float3, offset: 0, bufferIndex: 0),
             .init(semantic: .normal, format: .float3, offset: 0, bufferIndex: 0),
-            .init(semantic: .texcoord, format: .float2, offset: 0, bufferIndex: 0),
+            .init(semantic: .texcoord(), format: .float2, offset: 0, bufferIndex: 0),
             .init(semantic: .tangent, format: .float3, offset: 0, bufferIndex: 0),
             .init(semantic: .bitangent, format: .float3, offset: 0, bufferIndex: 0)
         ], layouts: [

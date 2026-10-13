@@ -1,5 +1,5 @@
 {
-  "originHash" : "619cf7616eb3bd19e8dc5fb9b4d26c3336be964e8fe477759b9c58f23bba2e33",
+  "originHash" : "ccc028a352b7258c2bcb39a8cf078ddf927c5cc3b34b99d1500fefabae5ff7fe",
   "pins" : [
     {
       "identity" : "demokit",
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalCompilerPlugin",
       "state" : {
-        "revision" : "be146725554a704b77b7b9b19c58818a0233de3c",
-        "version" : "0.4.0"
+        "revision" : "4ad74195623b0bc11662eb3c6f0495e119521a0d",
+        "version" : "0.4.1"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
-        "revision" : "2340c66d5bc1eca41ef6621490dd69b7e38dfe66",
-        "version" : "0.2.0"
+        "branch" : "main",
+        "revision" : "7eb6be9b56afc841584a0f266b6d08b6a7ba9d6e"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
-        "revision" : "e8ba4df5a1896745cfcf3eaa610fc83de3bb1123",
-        "version" : "0.2.0"
+        "branch" : "main",
+        "revision" : "4ea5feea2fb6a4fed767efea599a2c35e242b477"
       }
     },
     {
@@ -88,7 +88,7 @@
       "location" : "https://github.com/schwa/MetalSupport",
       "state" : {
         "branch" : "main",
-        "revision" : "03197600fb9b23b4b332a696dd0475f485518938"
+        "revision" : "667d86e694e2f9d599c757152bbdf0d46cab63fe"
       }
     },
     {
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
       "state" : {
-        "revision" : "98ef3c98609a1e31b7e157b5b619579001a789d6",
-        "version" : "1.7.1"
+        "revision" : "35a1edcb8ebd2bfe251d587f0b69e62af28f508c",
+        "version" : "1.7.3"
       }
     },
     {
@@ -196,7 +196,7 @@
       "location" : "https://github.com/schwa/SwiftMesh",
       "state" : {
         "branch" : "main",
-        "revision" : "03150ec28399850aad192c85e79ae02ced5ddfcc"
+        "revision" : "30d44e11eccf655906b833e271a24c0a0e2c27eb"
       }
     },
     {
