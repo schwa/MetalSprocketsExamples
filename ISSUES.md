@@ -4380,3 +4380,29 @@ created: 2026-10-10T16:43:13Z
 Bark and leaves are lit with Lambert + hemisphere ambient only. The canopy casts no shadows on itself, the trunk, or the ground, so it looks flat compared to the add-on renders. Upstream: https://github.com/hugomarques13/TreeGenerator (plugin.py).
 
 ---
+
+## 450: ShadowMapDemo: adapt to ShadowMap ring of depth textures
+
++++
+status: new
+priority: medium
+kind: task
+created: 2026-10-12T15:47:17Z
++++
+
+MetalSprocketsAddOns #78 replaced ShadowMap.depthTexture with depthTextures (one per in-flight submission) and depthTexture(forSubmission:). ShadowMapDemoView.swift uses shadowMap.depthTexture for residency registration (lines ~265-277) and the slice debug view (~239). Register all of depthTextures in the ResourceCollection, and show the slot for the current submission (or slot 0) in the debug view.
+
+---
+
+## 451: MetalMesh Metal 4 draw ignores submesh index buffer offsets
+
++++
+status: new
+priority: medium
+kind: bug
+created: 2026-10-13T17:08:06Z
++++
+
+Support/MetalMesh+Metal4.swift (about line 13) draws each MetalMesh submesh with indexBuffer: submesh.indexBuffer.gpuAddress and does not add submesh.indexBufferOffset. SwiftMesh's MetalMesh direct inits put all submeshes in one index buffer and set indexBufferOffset, so for such a mesh with more than one submesh every submesh is drawn with the first submesh's indices, with no error. SwiftMesh's own demo (Demo/SwiftMeshDemo/MetalMesh+MetalSprockets.swift) adds the offset.
+
+---
