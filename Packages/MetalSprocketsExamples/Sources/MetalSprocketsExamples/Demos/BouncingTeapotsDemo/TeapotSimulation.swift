@@ -5,7 +5,7 @@ import simd
 
 internal struct TeapotSimulation {
     var teapots: [Teapot] = []
-    var boundingBox: BoundingBox = .init(min: [-4, 0, -4], max: [4, 4, 4])
+    var boundingBox: BoundingBox3D = .init(min: [-4, 0, -4], max: [4, 4, 4])
 
     init(count: Int) {
         // create random teapots

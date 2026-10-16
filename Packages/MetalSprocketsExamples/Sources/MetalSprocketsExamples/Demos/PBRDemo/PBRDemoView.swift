@@ -145,7 +145,7 @@ extension float4x4 {
         matrix = rotationMatrix * matrix
 
         // Apply translation
-        matrix.columns.3 = [components.translate.x, components.translate.y, components.translate.z, 1]
+        matrix.columns.3 = [components.translation.x, components.translation.y, components.translation.z, 1]
 
         // Apply perspective (if needed)
         // Perspective is typically applied to the last row

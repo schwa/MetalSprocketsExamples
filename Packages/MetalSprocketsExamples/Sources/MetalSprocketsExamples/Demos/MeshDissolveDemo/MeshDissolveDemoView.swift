@@ -43,7 +43,7 @@ public struct MeshDissolveDemoView: View {
         RenderView { context, size in
             let time = context.frameUniforms.time
             let aspect = size.height > 0 ? Float(size.width / size.height) : 1
-            let projection = float4x4.perspective(aspectRatio: aspect, fovy: .pi / 4, near: 0.1, far: 100)
+            let projection = float4x4.perspective(fovY: .pi / 4, aspect: aspect, near: 0.1, far: 100)
             try RenderPass {
                 try MeshDissolveElement(
                     metalMesh: metalMesh,
