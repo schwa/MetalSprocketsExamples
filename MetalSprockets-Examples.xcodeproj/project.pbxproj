@@ -257,6 +257,7 @@
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = TODO;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This app uses the local network to discover and connect to rendering services via Bonjour.";
 				INFOPLIST_KEY_NSMotionUsageDescription = TODO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -282,6 +283,7 @@
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = TODO;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This app uses the local network to discover and connect to rendering services via Bonjour.";
 				INFOPLIST_KEY_NSMotionUsageDescription = TODO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

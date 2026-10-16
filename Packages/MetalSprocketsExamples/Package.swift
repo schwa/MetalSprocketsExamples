@@ -29,9 +29,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalSprockets", exact: "0.2.0"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", from: "0.1.2"),
-        .package(url: "https://github.com/schwa/SwiftMesh", branch: "main"),
-        .package(url: "https://github.com/tree-sitter/swift-tree-sitter", from: "0.25.0"),
-        .package(url: "https://github.com/tree-sitter/tree-sitter-cpp", branch: "master")
+        .package(url: "https://github.com/schwa/SwiftMesh", branch: "main")
     ],
     targets: [
         .target(
@@ -54,10 +52,7 @@ let package = Package(
                 .product(name: "MetalSprocketsAddOnsShaders", package: "MetalSprocketsAddOns"),
                 .product(name: "MetalSupport", package: "MetalSupport"),
                 .product(name: "Panels", package: "Panels"),
-                .product(name: "SwiftMesh", package: "SwiftMesh"),
-                .product(name: "SwiftTreeSitter", package: "swift-tree-sitter"),
-                .product(name: "SwiftTreeSitterLayer", package: "swift-tree-sitter"),
-                .product(name: "TreeSitterCPP", package: "tree-sitter-cpp")
+                .product(name: "SwiftMesh", package: "SwiftMesh")
             ],
             resources: [
                 .copy("Resources/4.2.03.heic"),

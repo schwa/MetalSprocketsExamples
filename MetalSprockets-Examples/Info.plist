@@ -2,17 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>io.schwa.MetalSprocketsExamples</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>metalsprockets-examples</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -27,6 +16,21 @@
 				<string>io.schwa.uvsnapshots</string>
 			</array>
 		</dict>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>io.schwa.MetalSprocketsExamples</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>metalsprockets-examples</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_metal-sprockets._tcp</string>
 	</array>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
@@ -78,11 +82,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_metal-sprockets._tcp</string>
-	</array>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>This app uses the local network to discover and connect to rendering services via Bonjour.</string>
 </dict>
 </plist>
