@@ -3414,11 +3414,13 @@ created: 2026-08-18T17:31:57Z
 ## 395: Package declares unused direct dependencies
 
 +++
-status: new
+status: closed
 priority: low
 kind: task
 labels: cleanup, dependencies, ponytail-audit
 created: 2026-08-18T17:31:57Z
+updated: 2026-10-16T19:32:58Z
+closed: 2026-10-16T19:32:58Z
 +++
 
 ## What's wrong
@@ -3429,6 +3431,8 @@ The package declares direct dependencies that the audit could not find in source
 
 - `swift-collections` / `Collections` is declared in `Package.swift`, but no source imports `Collections`.
 - `earcut-swift` / `earcut` is declared in `Package.swift`, but source search found no `earcut` usage.
+
+- `2026-10-16T19:32:58Z`: Removed swift-collections and earcut-swift direct deps.
 
 ---
 

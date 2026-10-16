@@ -20,7 +20,6 @@ import SwiftUI
         AppleEventLogoDemoView.self,
         ColorAdjustDemoView.self,
         DebugShaderDemoView.self,
-        PBRDemoView.self,
         SDFDemoView.self,
         PointCloudDemoView.self,
         ParticleEffectsDemoView.self,
@@ -28,7 +27,6 @@ import SwiftUI
         PanoramaDemoView.self,
         WireframeDemoView.self,
         TrivialMeshDemoView.self,
-        SceneGraphDemoView.self,
         VoxelDemoView.self,
         GrassDemoView.self,
         SpiralParticlesDemoView.self,
@@ -271,17 +269,6 @@ extension DebugShaderDemoView: @retroactive DemoView {
     }
 }
 
-extension PBRDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "PBR",
-            description: "Physically based rendering",
-            longDescription: "`PBRShader` with **Cook-Torrance BRDF**, HDR environment reflections, animated lighting, and configurable material properties.",
-            group: "Complex"
-        )
-    }
-}
-
 extension SDFDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(
@@ -356,17 +343,6 @@ extension TrivialMeshDemoView: @retroactive DemoView {
             longDescription: "`TrivialMesh` **procedural geometry** generation and conversion to renderable `Mesh` objects — platonic solids, 2D shapes, and curved surfaces.",
             group: "Rendering",
             keywords: ["MetalSprocketsAddOns"]
-        )
-    }
-}
-
-extension SceneGraphDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "SceneGraph",
-            description: "Hierarchical scene graph rendering",
-            longDescription: "`SceneGraph` construction with **recursive transform propagation**, rendered via `SceneGraphRenderPass` with PBR shading.",
-            group: "Basic"
         )
     }
 }

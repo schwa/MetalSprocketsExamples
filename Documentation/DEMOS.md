@@ -1,6 +1,6 @@
 # Demos
 
-*57 demos — generated from [`demos.yaml`](demos.yaml)*
+*55 demos — generated from [`demos.yaml`](demos.yaml)*
 
 ## Ungrouped
 
@@ -137,18 +137,6 @@ Equirectangular-to-sphere texture mapping with WorldView camera controls and an 
 > Wireframe mesh rendering
 
 WireframeRenderPipeline for line-mode mesh rendering, combined with GridShader and AxisLinesRenderPipeline.
-
----
-
-### SceneGraph
-
-![SceneGraph](screenshots/SceneGraph.png)
-
-> Hierarchical scene graph rendering
-
-SceneGraph construction with recursive transform propagation, rendered via SceneGraphRenderPass with PBR shading.
-
-**Tags:** `scene`  `graph`  `lighting`
 
 ---
 
@@ -299,16 +287,6 @@ Instanced rendering to an offscreen texture with optional MetalFX upscaling befo
 Chaining multiple ComputePass stages — heat simulation, color remap, video blend — in a single frame.
 
 **Tags:** `needs-work`  `animated`  `video`
-
----
-
-### PBR
-
-![PBR](screenshots/PBR.png)
-
-> Physically based rendering
-
-PBRShader with Cook-Torrance BRDF, HDR environment reflections, animated lighting, and configurable material properties.
 
 ---
 

@@ -20,7 +20,6 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 | **Video Playback** | Video with VCR distortion effect | [<img src="Documentation/screenshots/thumbnails/VideoPlayback.png" width="320" alt="Video Playback">](Documentation/screenshots/VideoPlayback.png) |
 | **Panorama** | Equirectangular panorama viewer | [<img src="Documentation/screenshots/thumbnails/Panorama.png" width="320" alt="Panorama">](Documentation/screenshots/Panorama.png) |
 | **Wireframe** | Wireframe mesh rendering | [<img src="Documentation/screenshots/thumbnails/Wireframe.png" width="320" alt="Wireframe">](Documentation/screenshots/Wireframe.png) |
-| **SceneGraph** | Hierarchical scene graph rendering | [<img src="Documentation/screenshots/thumbnails/SceneGraph.png" width="320" alt="SceneGraph">](Documentation/screenshots/SceneGraph.png) |
 | **MetalCanvas** | 2D path rendering via mesh shaders | [<img src="Documentation/screenshots/thumbnails/MetalCanvas.png" width="320" alt="MetalCanvas">](Documentation/screenshots/MetalCanvas.png) |
 | **Tile Average** | Imageblock tile averaging | [<img src="Documentation/screenshots/thumbnails/TileAverage.png" width="320" alt="Tile Average">](Documentation/screenshots/TileAverage.png) |
 | **Offscreen *(macOS only)*** | Render to CGImage | [<img src="Documentation/screenshots/thumbnails/Offscreen.png" width="320" alt="Offscreen *(macOS only)*">](Documentation/screenshots/Offscreen.png) |
@@ -39,7 +38,6 @@ A companion collection of examples and demos for [MetalSprockets](https://github
 | **Mixed** | Combined render and compute passes | [<img src="Documentation/screenshots/thumbnails/Mixed.png" width="320" alt="Mixed">](Documentation/screenshots/Mixed.png) |
 | **Bouncing Teapots** | Physics-driven instanced teapots | [<img src="Documentation/screenshots/thumbnails/BouncingTeapots.png" width="320" alt="Bouncing Teapots">](Documentation/screenshots/BouncingTeapots.png) |
 | **Apple Event Logo** | Thermal-style video effect | [<img src="Documentation/screenshots/thumbnails/AppleEventLogo.png" width="320" alt="Apple Event Logo">](Documentation/screenshots/AppleEventLogo.png) |
-| **PBR** | Physically based rendering | [<img src="Documentation/screenshots/thumbnails/PBR.png" width="320" alt="PBR">](Documentation/screenshots/PBR.png) |
 | **SDF** | 3D SDF raymarching | [<img src="Documentation/screenshots/thumbnails/SDF.png" width="320" alt="SDF">](Documentation/screenshots/SDF.png) |
 | **Particle Effects** | GPU compute particle system | [<img src="Documentation/screenshots/thumbnails/ParticleEffects.png" width="320" alt="Particle Effects">](Documentation/screenshots/ParticleEffects.png) |
 | **Voxel** | Compute-raymarched voxel volumes | [<img src="Documentation/screenshots/thumbnails/Voxel.png" width="320" alt="Voxel">](Documentation/screenshots/Voxel.png) |

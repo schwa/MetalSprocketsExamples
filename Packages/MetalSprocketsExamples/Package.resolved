@@ -1,5 +1,5 @@
 {
-  "originHash" : "ccc028a352b7258c2bcb39a8cf078ddf927c5cc3b34b99d1500fefabae5ff7fe",
+  "originHash" : "b23642a0c99040874c18ca116680c42dacd7eaecdba06c1a8456b4bf5b7c2f39",
   "pins" : [
     {
       "identity" : "demokit",
@@ -7,16 +7,7 @@
       "location" : "https://github.com/schwa/DemoKit",
       "state" : {
         "branch" : "main",
-        "revision" : "6232f26ca98c0aa17b27f1413abd803c27b96fcb"
-      }
-    },
-    {
-      "identity" : "earcut-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/earcut-swift",
-      "state" : {
-        "revision" : "1ea5f351f84b88671e2cc723be5f7ceaaad0b932",
-        "version" : "0.1.1"
+        "revision" : "2cbd09412c597cc12c4382b036d3c3ecd4a0129f"
       }
     },
     {
@@ -24,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Everything",
       "state" : {
-        "revision" : "1940f815f22202d12252a07005edc00ce1c501bf",
-        "version" : "1.2.4"
+        "branch" : "main",
+        "revision" : "5e9556ee1aa2bbe8671c909f630e13e78e1a7b43"
       }
     },
     {
@@ -33,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/GeometryLite2D",
       "state" : {
-        "revision" : "938d2bf1276508f51b1e028153c7cc3c25648e40",
-        "version" : "0.0.3"
+        "revision" : "542e05566f76d4248f95a43d13c1ff771acb32fd",
+        "version" : "0.0.4"
       }
     },
     {
@@ -43,7 +34,7 @@
       "location" : "https://github.com/schwa/GeometryLite3D",
       "state" : {
         "branch" : "main",
-        "revision" : "7b576374fb9f5cbd07bc85ad7e8090a850492382"
+        "revision" : "4a1c76400e564b76140a14d14a7e6d6279908faf"
       }
     },
     {
@@ -52,7 +43,7 @@
       "location" : "https://github.com/schwa/Interaction3D",
       "state" : {
         "branch" : "main",
-        "revision" : "26a3345bf6afd33d6f0d9e38ba4e0466634770e1"
+        "revision" : "829f6b57780ac2ae07c73039abcb5a6f5e5c46f7"
       }
     },
     {
@@ -60,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalCompilerPlugin",
       "state" : {
-        "revision" : "4ad74195623b0bc11662eb3c6f0495e119521a0d",
-        "version" : "0.4.1"
+        "branch" : "main",
+        "revision" : "4ad74195623b0bc11662eb3c6f0495e119521a0d"
       }
     },
     {
@@ -70,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "7eb6be9b56afc841584a0f266b6d08b6a7ba9d6e"
+        "revision" : "032e235670285e35775b397d297afdea6ef02d88"
       }
     },
     {
@@ -79,7 +70,7 @@
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
         "branch" : "main",
-        "revision" : "4ea5feea2fb6a4fed767efea599a2c35e242b477"
+        "revision" : "de5d8918aac95a3b44947a9f097d78dc89185ea6"
       }
     },
     {
@@ -89,15 +80,6 @@
       "state" : {
         "branch" : "main",
         "revision" : "667d86e694e2f9d599c757152bbdf0d46cab63fe"
-      }
-    },
-    {
-      "identity" : "panels",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/Panels",
-      "state" : {
-        "revision" : "81fb9369c945ec383acddcc5063f75f3e65c1d17",
-        "version" : "0.1.2"
       }
     },
     {
@@ -164,21 +146,12 @@
       }
     },
     {
-      "identity" : "swift-tree-sitter",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tree-sitter/swift-tree-sitter",
-      "state" : {
-        "revision" : "08ef81eb8620617b55b08868126707ad72bf754f",
-        "version" : "0.25.0"
-      }
-    },
-    {
       "identity" : "swiftearcut",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/SwiftEarcut",
       "state" : {
-        "revision" : "216a6dea8c9804dd6157b7dc25cb4ed0adb525dd",
-        "version" : "0.0.2"
+        "revision" : "370b7e424b8f933be46eb768292de424a1ba56e1",
+        "version" : "0.0.3"
       }
     },
     {
@@ -186,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/SwiftFormats",
       "state" : {
-        "revision" : "0f0929852e7709fcd2a006efda19925ee773d752",
-        "version" : "0.3.7"
+        "revision" : "073633367a7d69e206693377082ef36570345022",
+        "version" : "0.3.8"
       }
     },
     {
@@ -196,25 +169,7 @@
       "location" : "https://github.com/schwa/SwiftMesh",
       "state" : {
         "branch" : "main",
-        "revision" : "30d44e11eccf655906b833e271a24c0a0e2c27eb"
-      }
-    },
-    {
-      "identity" : "tree-sitter",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tree-sitter/tree-sitter",
-      "state" : {
-        "revision" : "da6fe9beb4f7f67beb75914ca8e0d48ae48d6406",
-        "version" : "0.25.10"
-      }
-    },
-    {
-      "identity" : "tree-sitter-cpp",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tree-sitter/tree-sitter-cpp",
-      "state" : {
-        "branch" : "master",
-        "revision" : "c009222808634c1014f82438d4883753516a2c24"
+        "revision" : "2c0918b8415cfa50d963521fc147ca1ee376dff3"
       }
     }
   ],

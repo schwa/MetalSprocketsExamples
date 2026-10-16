@@ -375,22 +375,6 @@ demos:
       choreography: *showcase_arc
       notes: "Arc-drag to rotate through the debug visualization."
 
-  - name: PBR
-    id: PBR
-    description: Physically based rendering
-    long_description: >
-      PBRShader with Cook-Torrance BRDF, HDR environment reflections, animated
-      lighting, and configurable material properties.
-    group: Complex
-    keywords: []
-    screenshot: PBR.png
-    platform: null
-    video:
-      duration: 8
-      interest: high
-      choreography: *showcase_arc
-      notes: "Arc-drag to show environment reflections. Animated light."
-
   - name: SDF
     id: SDF
     description: 3D SDF raymarching
@@ -504,22 +488,6 @@ demos:
       interest: medium
       choreography: *showcase_arc_zoom
       notes: "Arc-drag + zoom across procedural geometry primitives."
-
-  - name: SceneGraph
-    id: SceneGraph
-    description: Hierarchical scene graph rendering
-    long_description: >
-      SceneGraph construction with recursive transform propagation, rendered
-      via SceneGraphRenderPass with PBR shading.
-    group: Basic
-    keywords: [scene, graph, lighting]
-    screenshot: SceneGraph.png
-    platform: null
-    video:
-      duration: 10
-      interest: medium
-      choreography: *showcase_arc_zoom
-      notes: "Arc-drag + zoom to inspect the scene graph hierarchy."
 
   - name: Voxel
     id: Voxel

@@ -17,18 +17,15 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.2.0"),
         .package(url: "https://github.com/schwa/DemoKit", branch: "main"),
-        .package(url: "https://github.com/schwa/earcut-swift", from: "0.1.0"),
-        .package(url: "https://github.com/schwa/Everything", from: "1.2.0"),
+        .package(url: "https://github.com/schwa/Everything", branch: "main"),
         .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
         .package(url: "https://github.com/schwa/Interaction3D", branch: "main"),
-        .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.4"),
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "main"),
         // Override to pick up `MTLTexture.fill()` from main (upstream pins are 1.0.x).
         .package(url: "https://github.com/schwa/MetalSupport", branch: "main"),
-        .package(url: "https://github.com/schwa/MetalSprockets", exact: "0.2.0"),
+        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
-        .package(url: "https://github.com/schwa/Panels", from: "0.1.2"),
         .package(url: "https://github.com/schwa/SwiftMesh", branch: "main")
     ],
     targets: [
@@ -40,9 +37,7 @@ let package = Package(
                 "MetalSprocketsShaderGraph",
                 "ShaderGraphSupport",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-                .product(name: "Collections", package: "swift-collections"),
                 .product(name: "DemoKit", package: "DemoKit"),
-                .product(name: "earcut", package: "earcut-swift"),
                 .product(name: "Everything", package: "Everything"),
                 .product(name: "GeometryLite3D", package: "GeometryLite3D"),
                 .product(name: "Interaction3D", package: "Interaction3D"),
@@ -51,7 +46,6 @@ let package = Package(
                 .product(name: "MetalSprocketsAddOns", package: "MetalSprocketsAddOns"),
                 .product(name: "MetalSprocketsAddOnsShaders", package: "MetalSprocketsAddOns"),
                 .product(name: "MetalSupport", package: "MetalSupport"),
-                .product(name: "Panels", package: "Panels"),
                 .product(name: "SwiftMesh", package: "SwiftMesh")
             ],
             resources: [
