@@ -4412,3 +4412,23 @@ closed: 2026-10-13T18:08:06Z
 Support/MetalMesh+Metal4.swift (about line 13) draws each MetalMesh submesh with indexBuffer: submesh.indexBuffer.gpuAddress and does not add submesh.indexBufferOffset. SwiftMesh's MetalMesh direct inits put all submeshes in one index buffer and set indexBufferOffset, so for such a mesh with more than one submesh every submesh is drawn with the first submesh's indices, with no error. SwiftMesh's own demo (Demo/SwiftMeshDemo/MetalMesh+MetalSprockets.swift) adds the offset.
 
 ---
+
+## 452: ShadowMapDemo: use ShadowMap reverseZ instead of deprecated useInverseZ
+
++++
+status: new
+priority: low
+kind: task
+created: 2026-10-22T20:53:56Z
++++
+
+MetalSprocketsAddOns renamed `ShadowMap(useInverseZ:)` to `ShadowMap(reverseZ:)` to match MetalSprocketsParticles. The old name is deprecated.
+
+`Demos/ShadowMapDemo/ShadowMapDemoView.swift` still uses it (lines ~40, 158, 190, 234, 263, 276):
+- Rename the `useInverseZ` state to `reverseZ`.
+- Pass `reverseZ:` to `ShadowMap`.
+- Relabel the toggle "Reverse Z".
+
+Needs a MetalSprocketsAddOns release with the rename.
+
+---
