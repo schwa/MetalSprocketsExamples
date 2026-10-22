@@ -34,7 +34,7 @@
       "location" : "https://github.com/schwa/GeometryLite3D",
       "state" : {
         "branch" : "main",
-        "revision" : "4a1c76400e564b76140a14d14a7e6d6279908faf"
+        "revision" : "4e91b6e3455e2b71d3495ffeb35f2aca30d39f33"
       }
     },
     {
@@ -43,7 +43,7 @@
       "location" : "https://github.com/schwa/Interaction3D",
       "state" : {
         "branch" : "main",
-        "revision" : "829f6b57780ac2ae07c73039abcb5a6f5e5c46f7"
+        "revision" : "0518b2f92ca97f9d12e776eab122d1adbb1e274d"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/schwa/MetalSprockets",
       "state" : {
         "branch" : "main",
-        "revision" : "032e235670285e35775b397d297afdea6ef02d88"
+        "revision" : "7038521ecde3278818a9dc26cd25d371341b155b"
       }
     },
     {
@@ -70,7 +70,7 @@
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
         "branch" : "main",
-        "revision" : "de5d8918aac95a3b44947a9f097d78dc89185ea6"
+        "revision" : "50a90fc018a3f4167433e3e88371c4d126faca02"
       }
     },
     {
@@ -141,17 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
-        "version" : "602.0.0"
-      }
-    },
-    {
-      "identity" : "swiftearcut",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/SwiftEarcut",
-      "state" : {
-        "revision" : "370b7e424b8f933be46eb768292de424a1ba56e1",
-        "version" : "0.0.3"
+        "revision" : "050f1a346fbbac0ca2cfb15a95274f7bd1cf0ccf",
+        "version" : "604.0.0"
       }
     },
     {
@@ -169,7 +160,7 @@
       "location" : "https://github.com/schwa/SwiftMesh",
       "state" : {
         "branch" : "main",
-        "revision" : "2c0918b8415cfa50d963521fc147ca1ee376dff3"
+        "revision" : "cb80c0bc0ecc670c3b716fb2d53af792738c107b"
       }
     }
   ],
