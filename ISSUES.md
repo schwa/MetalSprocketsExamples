@@ -1140,11 +1140,11 @@ Need to add proper assertions to verify that values are correct in Texture2DSpec
 
 +++
 status: closed
-priority: none
+priority: high
 kind: feature
-labels: effort:m, priority:high
+labels: effort:m
 created: 2025-10-26T00:00:00Z
-updated: 2026-04-03T04:34:19Z
+updated: 2026-10-23T14:31:33Z
 closed: 2026-04-03T04:34:19Z
 +++
 
@@ -3085,9 +3085,9 @@ Fix: after creating the heat textures, explicitly clear both to zero — a blit 
 status: closed
 priority: medium
 kind: bug
-labels: effort:m, blocked
+labels: effort:m
 created: 2026-08-09T17:59:22Z
-updated: 2026-08-09T19:33:46Z
+updated: 2026-10-23T14:31:33Z
 closed: 2026-08-09T19:33:46Z
 +++
 
@@ -4232,11 +4232,12 @@ MSState.init(wrappedValue:) is not an autoclosure, so an @MSState initial value,
 ## 439: AddOns: Lighting and VideoTexturePipeline mutate or release GPU-visible data while frames are in flight
 
 +++
-status: new
+status: blocked
 priority: high
 kind: bug
-labels: metal4, blocked-upstream
+labels: metal4
 created: 2026-10-02T21:45:41Z
+updated: 2026-10-23T14:31:33Z
 +++
 
 Two MetalSprocketsAddOns types need changes before the demos that use them are race-free. (1) Lighting.setLightPosition and setLight write into shared MTLBuffers in place. RayTracedShadow (#417), ShadowMap (#419) and BlinnPhong (#421) call them every timeline tick while up to 3 earlier frames may still read those buffers. Fix with per-frame copies, a ring sized to maximumInFlightSubmissions, or value parameters. (2) VideoTexturePipeline.updateFrame keeps only CVMetalTextureGetTexture(cvTexture) and releases the CVMetalTexture right away, so CVMetalTextureCache can recycle the backing while frames still sample it. Affects VideoPlayback (#412) and AppleEventLogo (#414). Keep the CVMetalTexture alive with the frame and expose it as an owner, like YCbCrBillboardRenderPass(owners:). (3) ShadowMapDepthPass needs a WAR QueueBarrier at the start of each depth RenderPass (#419).
