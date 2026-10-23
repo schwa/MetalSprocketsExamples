@@ -17,7 +17,7 @@ public struct VoxelDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: float4x4 = float4x4(yRotation: .degrees(30)) * float4x4(xRotation: .degrees(20)) * .init(translation: [0, 0, 3])
+    private var cameraMatrix: float4x4 = float4x4(yRotation: .degrees(-30)) * float4x4(xRotation: .degrees(-20)) * .init(translation: [0, 0, 3])
 
     @State
     private var voxelTexture: MTLTexture?
