@@ -4435,3 +4435,16 @@ MetalSprocketsAddOns renamed `ShadowMap(useInverseZ:)` to `ShadowMap(reverseZ:)`
 Needs a MetalSprocketsAddOns release with the rename.
 
 ---
+
+## 453: VoxelDemo starting camera changes after GeometryLite3D rotation fix
+
++++
+status: new
+priority: high
+kind: bug
+created: 2026-10-23T19:48:08Z
++++
+
+GeometryLite3D commit aabafead (GeometryLite3D#45) changed simd_float4x4(xRotation:/yRotation:/zRotation:) to rotate counter-clockwise (right-handed, same as simd_quatf). Before, positive angles rotated by -θ. Code here was written against the old behavior.\n\nVoxelDemoView.swift:20 sets the camera with . After the update, the yaw becomes -30° and the pitch flips.\n\nTo do:\n- Negate the angles if the old view is preferred, then check the result visually.
+
+---
