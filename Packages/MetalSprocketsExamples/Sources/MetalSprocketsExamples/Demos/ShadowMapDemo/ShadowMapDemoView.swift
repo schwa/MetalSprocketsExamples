@@ -37,7 +37,7 @@ public struct ShadowMapDemoView: View {
     @State private var depthBias: Float = 2.0
     @State private var slopeScale: Float = 6.0
     @State private var shadowMapResolution: Int = 2_048
-    @State private var useInverseZ: Bool = true
+    @State private var reverseZ: Bool = true
 
     @State private var shadowDebug: Bool = false
     @State private var ambientLight: Float = 0.4
@@ -155,7 +155,7 @@ public struct ShadowMapDemoView: View {
                 .useResourceCollection(resourceCollection)
             }
         }
-        .id("\(useInverseZ)-\(shadowDebug)") // Workaround: force RenderView recreation to clear cached state (MetalSprockets#314)
+        .id("\(reverseZ)-\(shadowDebug)") // Workaround: force RenderView recreation to clear cached state (MetalSprockets#314)
         .metalDepthStencilPixelFormat(.depth32Float)
         .metalDepthStencilAttachmentTextureUsage([.renderTarget, .shaderRead])
         // The shadow mask compute pass writes into the drawable.
@@ -187,7 +187,7 @@ public struct ShadowMapDemoView: View {
         .onChange(of: shadowMapResolution) {
             replaceShadowMap()
         }
-        .onChange(of: useInverseZ) {
+        .onChange(of: reverseZ) {
             replaceShadowMap()
         }
         .interactiveCamera(rotation: $cameraRotation, distance: $cameraDistance, target: $cameraTarget)
@@ -231,7 +231,7 @@ public struct ShadowMapDemoView: View {
                         Text("2048").tag(2_048)
                         Text("4096").tag(4_096)
                     }
-                    Toggle("Inverse Z", isOn: $useInverseZ)
+                    Toggle("Reverse Z", isOn: $reverseZ)
                     Toggle("Debug", isOn: $shadowDebug)
 
                     if let shadowMap {
@@ -260,7 +260,7 @@ public struct ShadowMapDemoView: View {
                         ([0, 5, -5], Light(type: .point, color: [0.8, 0.9, 1], intensity: lightIntensity))
                     ]
                 )
-                let shadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
+                let shadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, reverseZ: reverseZ)
                 self.shadowMap = shadowMap
                 let collection = try ResourceCollection(device: shadowMap.depthTextures[0].device)
                 try collection.register(shadowMap.depthTextures + (lighting?.argumentBufferResources ?? []))
@@ -273,7 +273,7 @@ public struct ShadowMapDemoView: View {
 
     private func replaceShadowMap() {
         do {
-            let newShadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, useInverseZ: useInverseZ)
+            let newShadowMap = try ShadowMap(resolution: shadowMapResolution, lightCount: 2, reverseZ: reverseZ)
             try resourceCollection?.replace(shadowMap?.depthTextures ?? [], with: newShadowMap.depthTextures)
             shadowMap = newShadowMap
         } catch {

@@ -4416,10 +4416,12 @@ Support/MetalMesh+Metal4.swift (about line 13) draws each MetalMesh submesh with
 ## 452: ShadowMapDemo: use ShadowMap reverseZ instead of deprecated useInverseZ
 
 +++
-status: new
+status: closed
 priority: low
 kind: task
 created: 2026-10-22T20:53:56Z
+updated: 2026-10-23T12:49:35Z
+closed: 2026-10-23T12:49:35Z
 +++
 
 MetalSprocketsAddOns renamed `ShadowMap(useInverseZ:)` to `ShadowMap(reverseZ:)` to match MetalSprocketsParticles. The old name is deprecated.
