@@ -2,6 +2,7 @@
 
 #import "MetalSprocketsAddOnsShaders.h"
 
+#import "CloudShaders.h"
 #import "GargantuaShaders.h"
 #import "GrassShaders.h"
 #import "LiquidGlassShaders.h"

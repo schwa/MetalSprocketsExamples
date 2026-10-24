@@ -51,6 +51,7 @@ import SwiftUI
         LiquidGlassDemoView.self,
         OpenSeaDemoView.self,
         GargantuaDemoView.self,
+        CloudDemoView.self,
         MeshDissolveDemoView.self,
         StargateDemoView.self,
         TreeGeneratorDemoView.self
@@ -651,6 +652,18 @@ extension MetalFLIPDemoView: @retroactive DemoView {
             systemImage: "drop",
             description: "3D PIC/FLIP fluid simulation",
             longDescription: "A 3D **PIC/FLIP** fluid in a tank, after \"Fluid Implicit Particle Simulation for CPU and GPU\" (Centeno & Pereira, 2024). Every solver pass runs in one compute pass: particle-to-grid transfer, velocity extrapolation, red-black Gauss-Seidel pressure projection, grid-to-particle with midpoint advection, and particle reseeding. The surface is a Zhu-Bridson field ray-marched in a fragment shader. Drag to orbit, pinch to zoom.",
+            group: "Complex"
+        )
+    }
+}
+
+extension CloudDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Volumetric Cloud",
+            systemImage: "cloud",
+            description: "Ray-marched vs path-traced volume",
+            longDescription: "A procedural **cloud** volume rendered two ways side by side: fixed-step **ray marching** on the left, unbiased **path tracing** with delta tracking on the right. Emissive mode is absorption + emission only; Lit mode adds scattering with a two-lobe phase function, ratio-tracked sun shadows, and multiple bounces. Drag the split to compare.",
             group: "Complex"
         )
     }
