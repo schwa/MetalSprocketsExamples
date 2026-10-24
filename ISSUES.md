@@ -4475,11 +4475,13 @@ Each frame redraws the path-traced half from scratch with a new RNG seed, so the
 ## 455: Cloud demo: better density field (baked 3D texture, Perlin-Worley)
 
 +++
-status: new
+status: closed
 priority: medium
 kind: enhancement
 labels: cloud
 created: 2026-10-24T22:28:58Z
+updated: 2026-10-24T22:48:56Z
+closed: 2026-10-24T22:48:56Z
 +++
 
 The current field is a few ellipsoids plus 5-octave value noise, evaluated per sample. It looks blobby and costs a lot. Bake a Perlin-Worley 3D texture once for cumulus-like edges, and sample it in cloudDensity() in CloudShaders.metal.

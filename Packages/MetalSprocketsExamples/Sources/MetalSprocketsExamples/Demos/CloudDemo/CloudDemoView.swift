@@ -49,12 +49,29 @@ public struct CloudDemoView: View {
                 if let resources, let accumulationTexture = resources.accumulationTexture {
                     // While animating the volume changes every frame, so there is nothing to accumulate.
                     let frames = animate ? 0 : accumulatedFrames
+                    if resources.needsBake {
+                        try ComputePass(label: "Cloud Noise Bake") {
+                            try ComputePipeline(computeKernel: resources.bakeKernel) {
+                                try ComputeDispatch(
+                                    threadsPerGrid: MTLSize(width: CloudResources.noiseSize, height: CloudResources.noiseSize, depth: CloudResources.noiseSize),
+                                    threadsPerThreadgroup: MTLSize(width: 4, height: 4, depth: 4)
+                                )
+                                .parameter("noise", texture: resources.noiseTexture)
+                            }
+                        }
+                        .barrierAfterPass(after: .dispatch, beforeQueueStages: .fragment)
+                        .onSubmissionCommitted { _ in
+                            resources.needsBake = false
+                        }
+                        .useResourceCollection(resources.resourceCollection)
+                    }
                     try RenderPass {
                         // Reads and rewrites the accumulation texture the previous frame wrote.
                         QueueBarrier(after: .fragment, before: .fragment)
                         try CloudPipeline(
                             uniforms: uniforms(time: animate ? context.frameUniforms.time : 0, accumulatedFrames: frames),
-                            accumulationTexture: accumulationTexture
+                            accumulationTexture: accumulationTexture,
+                            noiseTexture: resources.noiseTexture
                         )
                     }
                     .useResourceCollection(resources.resourceCollection)
@@ -148,13 +165,31 @@ public struct CloudDemoView: View {
 
 @MainActor
 private final class CloudResources {
+    static let noiseSize = 128
+
     let device: MTLDevice
     let resourceCollection: ResourceCollection
+    let bakeKernel: ComputeKernel
+    let noiseTexture: MTLTexture
+    var needsBake = true
     var accumulationTexture: MTLTexture?
 
     init() throws {
         device = _MTLCreateSystemDefaultDevice()
         resourceCollection = try ResourceCollection(device: device)
+        bakeKernel = try ShaderNamespace.examples("CloudShaders").bake_noise
+
+        let descriptor = MTLTextureDescriptor()
+        descriptor.textureType = .type3D
+        descriptor.pixelFormat = .rg8Unorm
+        descriptor.width = Self.noiseSize
+        descriptor.height = Self.noiseSize
+        descriptor.depth = Self.noiseSize
+        descriptor.usage = [.shaderRead, .shaderWrite]
+        descriptor.storageMode = .private
+        noiseTexture = try device.makeTexture(descriptor: descriptor).orThrow(.resourceCreationFailure("Cloud noise texture"))
+        noiseTexture.label = "Cloud Noise"
+        try resourceCollection.register([noiseTexture])
     }
 
     func ensureTexture(size: CGSize) throws {
@@ -172,13 +207,15 @@ private final class CloudResources {
 struct CloudPipeline: Element {
     let uniforms: CloudUniforms
     let accumulationTexture: MTLTexture
+    let noiseTexture: MTLTexture
 
     @MSState private var vertexShader: VertexShader
     @MSState private var fragmentShader: FragmentShader
 
-    init(uniforms: CloudUniforms, accumulationTexture: MTLTexture) throws {
+    init(uniforms: CloudUniforms, accumulationTexture: MTLTexture, noiseTexture: MTLTexture) throws {
         self.uniforms = uniforms
         self.accumulationTexture = accumulationTexture
+        self.noiseTexture = noiseTexture
         let shaders = try ShaderNamespace.examples("CloudShaders")
         vertexShader = try shaders.vertex_main
         fragmentShader = try shaders.fragment_main
@@ -192,6 +229,7 @@ struct CloudPipeline: Element {
                 }
                 .parameter("uniforms", functionType: .fragment, value: uniforms)
                 .parameter("accumulation", functionType: .fragment, texture: accumulationTexture)
+                .parameter("noise", functionType: .fragment, texture: noiseTexture)
             }
         }
     }
