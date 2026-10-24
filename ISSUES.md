@@ -4455,3 +4455,115 @@ To do:
 - Negate the angles if the old view is preferred, then check the result visually.
 
 ---
+
+## 454: Cloud demo: progressive accumulation for the path-traced half
+
++++
+status: new
+priority: medium
+kind: enhancement
+labels: cloud
+created: 2026-10-24T22:28:58Z
++++
+
+Each frame redraws the path-traced half from scratch with a new RNG seed, so the noise never converges. Add a ping-pong accumulation texture and reset it when the camera or any setting changes. Code is in Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Demos/CloudDemo/CloudDemoView.swift.
+
+---
+
+## 455: Cloud demo: better density field (baked 3D texture, Perlin-Worley)
+
++++
+status: new
+priority: medium
+kind: enhancement
+labels: cloud
+created: 2026-10-24T22:28:58Z
++++
+
+The current field is a few ellipsoids plus 5-octave value noise, evaluated per sample. It looks blobby and costs a lot. Bake a Perlin-Worley 3D texture once for cumulus-like edges, and sample it in cloudDensity() in CloudShaders.metal.
+
+---
+
+## 456: Cloud demo: tricubic density sampling toggle
+
++++
+status: new
+priority: low
+kind: enhancement
+labels: cloud
+created: 2026-10-24T22:28:58Z
++++
+
+Trilinear sampling of a baked density texture shows blocky artifacts. Tricubic sampling (8 bilinear taps) is much smoother. Add a toggle to compare the two, like the reference post (left: trilinear, right: tricubic). Depends on the baked density texture.
+
+---
+
+## 457: Cloud demo: wavelength-dependent scattering
+
++++
+status: new
+priority: medium
+kind: enhancement
+labels: cloud
+created: 2026-10-24T22:28:58Z
++++
+
+Use a per-channel (RGB) extinction and scattering coefficient so light that travels deep into the cloud shifts toward warm tones. The reference shows soft brown/orange cores against white edges. Path-traced half: spectral or hero-wavelength tracking with a per-channel majorant. Ray-marched half: per-channel transmittance.
+
+---
+
+## 458: Cloud demo: physical sky with visible sun disk
+
++++
+status: new
+priority: medium
+kind: enhancement
+labels: cloud
+created: 2026-10-24T22:28:58Z
++++
+
+Replace the flat sky() gradient with an analytic atmosphere (Preetham/Hosek, or a simple Rayleigh+Mie model). Show a sun disk and halo in the background, and use the same sky as the light that scatters into the cloud from around it.
+
+---
+
+## 459: Cloud demo: multiple-scattering approximation for the ray-marched half
+
++++
+status: new
+priority: medium
+kind: enhancement
+labels: cloud
+created: 2026-10-24T22:28:58Z
++++
+
+In Lit mode the ray-marched side does only single scattering plus a flat ambient term, so it can't match the path-traced side. Add an octave multiple-scattering approximation (Wrenninge 2013 / Hillaire 2016) so both halves converge to a similar result.
+
+---
+
+## 460: Cloud demo: emissive mode tone and density-weighted emission
+
++++
+status: new
+priority: low
+kind: enhancement
+labels: cloud
+created: 2026-10-24T22:28:59Z
++++
+
+Emissive mode comes out as a nearly flat white silhouette. Weight emission by density and tune the exposure/tone map to match the soft glowing look of the original reference.
+
+---
+
+## 461: Cloud demo: add entry to Documentation/demos.yaml
+
++++
+status: new
+priority: low
+kind: documentation
+labels: cloud
+created: 2026-10-24T22:28:59Z
++++
+
+The Volumetric Cloud demo has no entry in Documentation/demos.yaml (screenshot/video metadata).
+
+---
