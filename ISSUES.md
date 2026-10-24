@@ -4459,11 +4459,13 @@ To do:
 ## 454: Cloud demo: progressive accumulation for the path-traced half
 
 +++
-status: new
+status: closed
 priority: medium
 kind: enhancement
 labels: cloud
 created: 2026-10-24T22:28:58Z
+updated: 2026-10-24T22:44:10Z
+closed: 2026-10-24T22:44:10Z
 +++
 
 Each frame redraws the path-traced half from scratch with a new RNG seed, so the noise never converges. Add a ping-pong accumulation texture and reset it when the camera or any setting changes. Code is in Packages/MetalSprocketsExamples/Sources/MetalSprocketsExamples/Demos/CloudDemo/CloudDemoView.swift.

@@ -12,5 +12,6 @@ struct CloudUniforms {
     int mode;               // 0 = emissive (absorption + emission), 1 = lit (scattering)
     int samplesPerPixel;
     int maxBounces;
-    unsigned int frameIndex;
+    unsigned int frameIndex;        // RNG seed
+    unsigned int accumulatedFrames; // path-traced samples already in the accumulation texture; 0 resets it
 };

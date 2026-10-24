@@ -283,7 +283,11 @@ namespace CloudShaders {
 
     // MARK: - Fragment
 
-    [[fragment]] float4 fragment_main(VertexOut in [[stage_in]], constant CloudUniforms &uniforms [[buffer(0)]]) {
+    [[fragment]] float4 fragment_main(
+        VertexOut in [[stage_in]],
+        constant CloudUniforms &uniforms [[buffer(0)]],
+        texture2d<float, access::read_write> accumulation [[texture(0)]]
+    ) {
         float4 nearPoint = uniforms.inverseViewProjection * float4(in.ndc, 0, 1);
         float4 farPoint = uniforms.inverseViewProjection * float4(in.ndc, 1, 1);
         float3 origin = uniforms.cameraPosition;
@@ -302,6 +306,14 @@ namespace CloudShaders {
                 color += pathTrace(origin, direction, uniforms, rng);
             }
             color /= float(samples);
+
+            // Progressive accumulation: running sum in rgb, averaged by frame count.
+            if (pixel.x < accumulation.get_width() && pixel.y < accumulation.get_height()) {
+                float3 previous = uniforms.accumulatedFrames == 0 ? float3(0) : accumulation.read(pixel).rgb;
+                float3 sum = previous + color;
+                accumulation.write(float4(sum, 1), pixel);
+                color = sum / float(uniforms.accumulatedFrames + 1);
+            }
         }
 
         // Thin divider between the halves.
