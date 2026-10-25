@@ -25,6 +25,7 @@ public struct CloudDemoView: View {
         var sunAzimuth: Double
         var sunElevation: Double
         var chromatic: Bool
+        var tricubic: Bool
         var animate: Bool
     }
 
@@ -39,6 +40,7 @@ public struct CloudDemoView: View {
     @State private var sunAzimuth: Double = 25
     @State private var sunElevation: Double = 18
     @State private var chromatic = true
+    @State private var tricubic = false
     @State private var animate = false
     @State private var accumulatedFrames = 0
     @State private var accumulationResetPending = true
@@ -134,6 +136,7 @@ public struct CloudDemoView: View {
                     }
                     Toggle("Wavelength-Dependent", isOn: $chromatic)
                 }
+                Toggle("Tricubic Filtering", isOn: $tricubic)
                 Toggle("Animate", isOn: $animate)
                 LabeledContent("Accumulated") {
                     Text(animate ? "–" : "\(accumulatedFrames)").monospacedDigit()
@@ -144,7 +147,7 @@ public struct CloudDemoView: View {
     }
 
     private var accumulationKey: AccumulationKey {
-        AccumulationKey(cameraMatrix: cameraMatrix, mode: mode, density: density, maxBounces: maxBounces, sunAzimuth: sunAzimuth, sunElevation: sunElevation, chromatic: chromatic, animate: animate)
+        AccumulationKey(cameraMatrix: cameraMatrix, mode: mode, density: density, maxBounces: maxBounces, sunAzimuth: sunAzimuth, sunElevation: sunElevation, chromatic: chromatic, tricubic: tricubic, animate: animate)
     }
 
     private func uniforms(time: Float, viewportSize: CGSize, reset: Bool) -> CloudUniforms {
@@ -165,6 +168,7 @@ public struct CloudDemoView: View {
             mode: Int32(mode.rawValue),
             samplesPerPixel: Int32(samplesPerPixel),
             maxBounces: Int32(maxBounces),
+            tricubic: tricubic ? 1 : 0,
             chromatic: chromatic ? 1 : 0,
             frameIndex: seed,
             resetAccumulation: reset ? 1 : 0

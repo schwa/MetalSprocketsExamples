@@ -137,6 +137,38 @@ namespace CloudShaders {
 
     constexpr sampler noiseSampler(filter::linear, address::repeat);
 
+    // Tricubic B-spline filtering from 8 trilinear taps (Sigg & Hadwiger, GPU Gems 2 ch. 20).
+    // Removes the blocky, faceted look of trilinear interpolation at the cost of 8x the samples.
+    float2 sampleTricubic(texture3d<float> texture, float3 uvw) {
+        float3 size = float3(texture.get_width(), texture.get_height(), texture.get_depth());
+        float3 coord = uvw * size - 0.5;
+        float3 index = floor(coord);
+        float3 f = coord - index;
+        float3 f2 = f * f;
+        float3 f3 = f2 * f;
+        float3 w0 = (1.0 - 3.0 * f + 3.0 * f2 - f3) / 6.0;
+        float3 w1 = (4.0 - 6.0 * f2 + 3.0 * f3) / 6.0;
+        float3 w2 = (1.0 + 3.0 * f + 3.0 * f2 - 3.0 * f3) / 6.0;
+        float3 w3 = f3 / 6.0;
+        float3 g0 = w0 + w1;
+        float3 g1 = w2 + w3;
+        float3 h0 = (index - 0.5 + w1 / g0) / size;
+        float3 h1 = (index + 1.5 + w3 / g1) / size;
+
+        float2 result = 0;
+        for (int corner = 0; corner < 8; corner++) {
+            bool3 upper = bool3(corner & 1, corner & 2, corner & 4);
+            float3 position = select(h0, h1, upper);
+            float3 weight = select(g0, g1, upper);
+            result += weight.x * weight.y * weight.z * texture.sample(noiseSampler, position).rg;
+        }
+        return result;
+    }
+
+    float2 sampleNoise(texture3d<float> texture, float3 uvw, constant CloudUniforms &uniforms) {
+        return uniforms.tricubic ? sampleTricubic(texture, uvw) : texture.sample(noiseSampler, uvw).rg;
+    }
+
     // Normalised density in [0, 1]. Multiplied by uniforms.density to get the extinction coefficient.
     float cloudDensity(float3 p, constant CloudUniforms &uniforms, texture3d<float> noise) {
         float time = uniforms.time;
@@ -154,11 +186,11 @@ namespace CloudShaders {
         }
 
         float3 wind = float3(time * 0.03, -time * 0.01, 0);
-        float base = noise.sample(noiseSampler, p * 0.22 + wind).r;
+        float base = sampleNoise(noise, p * 0.22 + wind, uniforms).r;
         // Coverage: the noise survives only where the shape allows it, so edges break into billows.
         float density = saturate(remap(base, 1.0 - saturate(shape * 1.4), 1.0, 0.0, 1.0));
         // Erode the edges with high-frequency Worley; the core stays solid.
-        float detail = noise.sample(noiseSampler, p * 0.9 + wind * 3.0).g;
+        float detail = sampleNoise(noise, p * 0.9 + wind * 3.0, uniforms).g;
         density = saturate(remap(density, detail * 0.35, 1.0, 0.0, 1.0));
         return saturate(density * 2.5);
     }

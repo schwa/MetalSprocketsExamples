@@ -4491,11 +4491,13 @@ The current field is a few ellipsoids plus 5-octave value noise, evaluated per s
 ## 456: Cloud demo: tricubic density sampling toggle
 
 +++
-status: new
+status: closed
 priority: low
 kind: enhancement
 labels: cloud
 created: 2026-10-24T22:28:58Z
+updated: 2026-10-25T00:32:35Z
+closed: 2026-10-25T00:32:35Z
 +++
 
 Trilinear sampling of a baked density texture shows blocky artifacts. Tricubic sampling (8 bilinear taps) is much smoother. Add a toggle to compare the two, like the reference post (left: trilinear, right: tricubic). Depends on the baked density texture.
