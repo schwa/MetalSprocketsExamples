@@ -245,19 +245,40 @@ namespace CloudShaders {
 
     // MARK: - Ray marching
 
-    float3 marchedSunTransmittance(float3 p, constant CloudUniforms &uniforms, texture3d<float> noise) {
+    // Per-channel optical depth from p toward the light, marched in a few steps.
+    float3 marchedOpticalDepth(float3 p, float3 lightDirection, constant CloudUniforms &uniforms, texture3d<float> noise) {
         float tNear, tFar;
-        if (!intersectBounds(p, uniforms.sunDirection, tNear, tFar)) {
-            return 1.0;
+        if (!intersectBounds(p, lightDirection, tNear, tFar)) {
+            return 0.0;
         }
         const int steps = 8;
         float stepSize = tFar / float(steps);
         float opticalDepth = 0;
         for (int i = 0; i < steps; i++) {
-            float3 q = p + uniforms.sunDirection * ((float(i) + 0.5) * stepSize);
+            float3 q = p + lightDirection * ((float(i) + 0.5) * stepSize);
             opticalDepth += cloudDensity(q, uniforms, noise) * uniforms.density * stepSize;
         }
-        return exp(-opticalDepth * extinctionScale(uniforms));
+        return opticalDepth * extinctionScale(uniforms);
+    }
+
+    // Multiple-scattering approximation (Wrenninge et al. 2013, "Oz: The Great and Volumetric"):
+    // sum single-scattering octaves with progressively weaker extinction, scattering, and phase
+    // anisotropy. Light that has scattered many times penetrates further and is less directional.
+    float3 multipleScatteredSun(float cosSun, float3 opticalDepth) {
+        const int octaves = 6;
+        const float scatteringFalloff = 0.6;   // a
+        const float extinctionFalloff = 0.35;  // b
+        const float anisotropyFalloff = 0.5;   // c
+        float3 result = 0;
+        float a = 1, b = 1, c = 1;
+        for (int i = 0; i < octaves; i++) {
+            float octavePhase = mix(henyeyGreenstein(cosSun, -0.2 * c), henyeyGreenstein(cosSun, phaseG * c), 0.7);
+            result += a * octavePhase * exp(-b * opticalDepth);
+            a *= scatteringFalloff;
+            b *= extinctionFalloff;
+            c *= anisotropyFalloff;
+        }
+        return sunColor * result;
     }
 
     float3 rayMarch(float3 origin, float3 direction, constant CloudUniforms &uniforms, texture3d<float> noise, float jitter) {
@@ -283,9 +304,12 @@ namespace CloudShaders {
             if (uniforms.mode == 0) {
                 source = emissionColor;
             } else {
-                float3 direct = sunColor * phase(cosSun) * marchedSunTransmittance(p, uniforms, noise);
-                // Cheap multiple-scattering stand-in: ambient sky light.
-                float3 ambient = sky(float3(0, 1, 0), uniforms.sunDirection, false) * 0.6;
+                float3 sunDepth = marchedOpticalDepth(p, uniforms.sunDirection, uniforms, noise);
+                float3 direct = multipleScatteredSun(cosSun, sunDepth);
+                // Sky light, attenuated by the cloud above with the same softened (multiply-scattered) extinction.
+                float3 skyDepth = marchedOpticalDepth(p, float3(0, 1, 0), uniforms, noise);
+                float3 skyLight = 0.5 * (sky(float3(0, 1, 0), uniforms.sunDirection, false) + sky(normalize(float3(1, 0.1, 0)), uniforms.sunDirection, false));
+                float3 ambient = skyLight * exp(-0.25 * skyDepth);
                 source = albedo * (direct + ambient);
             }
             radiance += transmittance * (1.0 - stepTransmittance) * source;

@@ -4537,11 +4537,13 @@ Replace the flat sky() gradient with an analytic atmosphere (Preetham/Hosek, or 
 ## 459: Cloud demo: multiple-scattering approximation for the ray-marched half
 
 +++
-status: new
+status: closed
 priority: medium
 kind: enhancement
 labels: cloud
 created: 2026-10-24T22:28:58Z
+updated: 2026-10-25T00:25:43Z
+closed: 2026-10-25T00:25:43Z
 +++
 
 In Lit mode the ray-marched side does only single scattering plus a flat ambient term, so it can't match the path-traced side. Add an octave multiple-scattering approximation (Wrenninge 2013 / Hillaire 2016) so both halves converge to a similar result.
