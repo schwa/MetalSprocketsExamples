@@ -13,5 +13,5 @@ struct CloudUniforms {
     int samplesPerPixel;
     int maxBounces;
     unsigned int frameIndex;        // RNG seed
-    unsigned int accumulatedFrames; // path-traced samples already in the accumulation texture; 0 resets it
+    int resetAccumulation;          // 1 discards the accumulation texture's contents
 };

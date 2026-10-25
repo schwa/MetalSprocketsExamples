@@ -16,10 +16,9 @@ public struct CloudDemoView: View {
         case lit
     }
 
-    // Anything that changes the image. A change restarts accumulation.
+    // Anything that changes the image. A change restarts accumulation (as does a resize).
     private struct AccumulationKey: Equatable {
         var cameraMatrix: simd_float4x4
-        var drawableSize: CGSize
         var mode: Mode
         var density: Double
         var maxBounces: Double
@@ -29,7 +28,6 @@ public struct CloudDemoView: View {
 
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
     @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0.2, 4.5])
-    @State private var drawableSize: CGSize = .zero
     @State private var mode: Mode = .emissive
     @State private var split: Double = 0.5
     @State private var density: Double = 12
@@ -37,7 +35,8 @@ public struct CloudDemoView: View {
     @State private var maxBounces: Double = 8
     @State private var sunAngle: Double = 40
     @State private var animate = false
-    @State private var accumulatedFrames: UInt32 = 0
+    @State private var accumulatedFrames = 0
+    @State private var accumulationResetPending = true
     @State private var resources: CloudResources?
 
     public init() {
@@ -46,9 +45,10 @@ public struct CloudDemoView: View {
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             RenderView { context, _ in
-                if let resources, let accumulationTexture = resources.accumulationTexture {
+                let viewportSize = CGSize(width: CGFloat(context.frameUniforms.viewportSize.x), height: CGFloat(context.frameUniforms.viewportSize.y))
+                if let resources, let accumulationTexture = try resources.accumulationTexture(size: viewportSize) {
                     // While animating the volume changes every frame, so there is nothing to accumulate.
-                    let frames = animate ? 0 : accumulatedFrames
+                    let reset = animate || accumulationResetPending || resources.textureWasReallocated
                     if resources.needsBake {
                         try ComputePass(label: "Cloud Noise Bake") {
                             try ComputePipeline(computeKernel: resources.bakeKernel) {
@@ -69,37 +69,35 @@ public struct CloudDemoView: View {
                         // Reads and rewrites the accumulation texture the previous frame wrote.
                         QueueBarrier(after: .fragment, before: .fragment)
                         try CloudPipeline(
-                            uniforms: uniforms(time: animate ? context.frameUniforms.time : 0, accumulatedFrames: frames),
+                            uniforms: uniforms(time: animate ? context.frameUniforms.time : 0, viewportSize: viewportSize, reset: reset),
                             accumulationTexture: accumulationTexture,
                             noiseTexture: resources.noiseTexture
                         )
                     }
                     .useResourceCollection(resources.resourceCollection)
                     .onSubmissionCommitted { _ in
-                        // A setting change may have reset the count since this frame was built.
-                        if accumulatedFrames == frames, !animate {
+                        // The GPU keeps the real sample count in the texture's alpha; this only mirrors it for the UI.
+                        if reset {
+                            accumulationResetPending = false
+                            resources.textureWasReallocated = false
+                            accumulatedFrames = 1
+                        } else {
                             accumulatedFrames += 1
                         }
                     }
                 }
             }
             .metalColorPixelFormat(.bgra8Unorm_srgb)
-            .onDrawableSizeChange { size in
-                drawableSize = size
-                try? resources?.ensureTexture(size: size)
-            }
         }
         .task {
             do {
-                let resources = try CloudResources()
-                try resources.ensureTexture(size: drawableSize)
-                self.resources = resources
+                resources = try CloudResources()
             } catch {
                 print("Cloud setup failed: \(error)")
             }
         }
         .onChange(of: accumulationKey) {
-            accumulatedFrames = 0
+            accumulationResetPending = true
         }
         .demoConfiguration {
             Form {
@@ -137,11 +135,11 @@ public struct CloudDemoView: View {
     }
 
     private var accumulationKey: AccumulationKey {
-        AccumulationKey(cameraMatrix: cameraMatrix, drawableSize: drawableSize, mode: mode, density: density, maxBounces: maxBounces, sunAngle: sunAngle, animate: animate)
+        AccumulationKey(cameraMatrix: cameraMatrix, mode: mode, density: density, maxBounces: maxBounces, sunAngle: sunAngle, animate: animate)
     }
 
-    private func uniforms(time: Float, accumulatedFrames: UInt32) -> CloudUniforms {
-        let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+    private func uniforms(time: Float, viewportSize: CGSize, reset: Bool) -> CloudUniforms {
+        let projectionMatrix = projection.projectionMatrix(for: viewportSize)
         let viewProjection = projectionMatrix * cameraMatrix.inverse
         let angle = Float(sunAngle) * .pi / 180
         let sunDirection = simd_normalize(SIMD3<Float>(cos(angle), 0.8, 0.3 * sin(angle)))
@@ -158,7 +156,7 @@ public struct CloudDemoView: View {
             samplesPerPixel: Int32(samplesPerPixel),
             maxBounces: Int32(maxBounces),
             frameIndex: seed,
-            accumulatedFrames: accumulatedFrames
+            resetAccumulation: reset ? 1 : 0
         )
     }
 }
@@ -172,7 +170,8 @@ private final class CloudResources {
     let bakeKernel: ComputeKernel
     let noiseTexture: MTLTexture
     var needsBake = true
-    var accumulationTexture: MTLTexture?
+    var textureWasReallocated = false
+    private var accumulationTexture: MTLTexture?
 
     init() throws {
         device = _MTLCreateSystemDefaultDevice()
@@ -192,15 +191,18 @@ private final class CloudResources {
         try resourceCollection.register([noiseTexture])
     }
 
-    func ensureTexture(size: CGSize) throws {
+    // Returns the accumulation texture, reallocating it (and flagging a reset) when the viewport size changes.
+    func accumulationTexture(size: CGSize) throws -> MTLTexture? {
         let width = max(Int(size.width), 1)
         let height = max(Int(size.height), 1)
         if let accumulationTexture, accumulationTexture.width == width, accumulationTexture.height == height {
-            return
+            return accumulationTexture
         }
         let old = accumulationTexture
         accumulationTexture = device.makeTexture2D(pixelFormat: .rgba32Float, width: width, height: height, storageMode: .private, label: "Cloud Accumulation")
+        textureWasReallocated = true
         try resourceCollection.replace([old], with: [accumulationTexture])
+        return accumulationTexture
     }
 }
 

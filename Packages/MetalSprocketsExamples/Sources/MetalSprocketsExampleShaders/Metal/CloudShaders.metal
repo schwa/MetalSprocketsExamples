@@ -346,11 +346,9 @@ namespace CloudShaders {
             float sunTransmittance = ratioTrackingTransmittance(p, uniforms.sunDirection, uniforms, noise, rng);
             radiance += throughput * sunColor * phase(dot(direction, uniforms.sunDirection)) * sunTransmittance;
 
-            // Continue the walk. Sampling the forward lobe only and weighting by phase/pdf keeps it unbiased.
-            float3 newDirection = sampleHenyeyGreenstein(direction, phaseG, rng.next(), rng.next());
-            float cosTheta = dot(direction, newDirection);
-            throughput *= phase(cosTheta) / henyeyGreenstein(cosTheta, phaseG);
-            direction = newDirection;
+            // Continue the walk. Picking a lobe by its mixture weight samples phase() exactly, so throughput is unchanged.
+            float lobeG = rng.next() < 0.7 ? phaseG : -0.2;
+            direction = sampleHenyeyGreenstein(direction, lobeG, rng.next(), rng.next());
             origin = p;
             bounces += 1;
         }
@@ -384,12 +382,12 @@ namespace CloudShaders {
             }
             color /= float(samples);
 
-            // Progressive accumulation: running sum in rgb, averaged by frame count.
+            // Progressive accumulation: running sum in rgb, sample count in alpha.
             if (pixel.x < accumulation.get_width() && pixel.y < accumulation.get_height()) {
-                float3 previous = uniforms.accumulatedFrames == 0 ? float3(0) : accumulation.read(pixel).rgb;
-                float3 sum = previous + color;
-                accumulation.write(float4(sum, 1), pixel);
-                color = sum / float(uniforms.accumulatedFrames + 1);
+                float4 previous = uniforms.resetAccumulation ? float4(0) : accumulation.read(pixel);
+                float4 sum = previous + float4(color, 1);
+                accumulation.write(sum, pixel);
+                color = sum.rgb / sum.a;
             }
         }
 
