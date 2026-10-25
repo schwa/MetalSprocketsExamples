@@ -47,28 +47,28 @@ namespace CloudShaders {
     //   r = Perlin-Worley (low-frequency billows), g = Worley fbm (high-frequency erosion detail).
     // The lattice wraps at `period` so the texture repeats seamlessly.
 
-    uint3 hashUInt3(int3 cell) {
-        uint3 v = uint3(cell) * uint3(1597334673u, 3812015801u, 2798796415u);
+    uint3 hashUInt3(int3 cell, uint seed) {
+        uint3 v = (uint3(cell) + hashUInt(seed)) * uint3(1597334673u, 3812015801u, 2798796415u);
         v = (v.x ^ v.y ^ v.z) * uint3(1597334673u, 3812015801u, 2798796415u);
         return v;
     }
 
-    float3 hashFloat3(int3 cell) {
-        return float3(hashUInt3(cell)) * (1.0 / 4294967296.0);
+    float3 hashFloat3(int3 cell, uint seed) {
+        return float3(hashUInt3(cell, seed)) * (1.0 / 4294967296.0);
     }
 
     int3 wrap(int3 cell, int period) {
         return (cell % period + period) % period;
     }
 
-    float tileablePerlin(float3 p, int period) {
+    float tileablePerlin(float3 p, int period, uint seed) {
         int3 i = int3(floor(p));
         float3 f = fract(p);
         float3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
         float corners[8];
         for (int c = 0; c < 8; c++) {
             int3 offset = int3(c & 1, (c >> 1) & 1, (c >> 2) & 1);
-            float3 gradient = normalize(hashFloat3(wrap(i + offset, period)) * 2.0 - 1.0);
+            float3 gradient = normalize(hashFloat3(wrap(i + offset, period), seed) * 2.0 - 1.0);
             corners[c] = dot(gradient, f - float3(offset));
         }
         float x00 = mix(corners[0], corners[1], u.x);
@@ -79,7 +79,7 @@ namespace CloudShaders {
     }
 
     // 1 at feature points, falling to 0 between them (inverted Worley).
-    float tileableWorley(float3 p, int period) {
+    float tileableWorley(float3 p, int period, uint seed) {
         int3 i = int3(floor(p));
         float3 f = fract(p);
         float nearest = 1.0;
@@ -87,7 +87,7 @@ namespace CloudShaders {
             for (int y = -1; y <= 1; y++) {
                 for (int x = -1; x <= 1; x++) {
                     int3 offset = int3(x, y, z);
-                    float3 feature = float3(offset) + hashFloat3(wrap(i + offset, period));
+                    float3 feature = float3(offset) + hashFloat3(wrap(i + offset, period), seed);
                     nearest = min(nearest, length_squared(feature - f));
                 }
             }
@@ -95,17 +95,28 @@ namespace CloudShaders {
         return 1.0 - sqrt(nearest);
     }
 
-    float worleyFbm(float3 p, int period) {
-        return tileableWorley(p, period) * 0.625
-            + tileableWorley(p * 2.0, period * 2) * 0.25
-            + tileableWorley(p * 4.0, period * 4) * 0.125;
+    float worleyFbm(float3 p, int period, uint seed) {
+        return tileableWorley(p, period, seed) * 0.625
+            + tileableWorley(p * 2.0, period * 2, seed) * 0.25
+            + tileableWorley(p * 4.0, period * 4, seed) * 0.125;
     }
 
     float remap(float value, float oldMin, float oldMax, float newMin, float newMax) {
         return newMin + (value - oldMin) / (oldMax - oldMin) * (newMax - newMin);
     }
 
-    [[kernel]] void bake_noise(texture3d<float, access::write> noise [[texture(0)]], uint3 gid [[thread_position_in_grid]]) {
+    // TEMP #242: counts pink pixels in the drawable. Thresholds match pinkscan.py (sRGB 180/150/120) in linear space.
+    [[kernel]] void pink_scan(texture2d<float, access::read> drawable [[texture(0)]], device atomic_uint *count [[buffer(0)]], uint2 gid [[thread_position_in_grid]]) {
+        if (gid.x >= drawable.get_width() || gid.y >= drawable.get_height()) {
+            return;
+        }
+        float4 color = drawable.read(gid);
+        if (color.r > 0.456 && color.b > 0.305 && color.g < 0.188) {
+            atomic_fetch_add_explicit(count, 1, memory_order_relaxed);
+        }
+    }
+
+    [[kernel]] void bake_noise(texture3d<float, access::write> noise [[texture(0)]], constant uint &seed [[buffer(0)]], uint3 gid [[thread_position_in_grid]]) {
         uint size = noise.get_width();
         if (any(gid >= uint3(size))) {
             return;
@@ -117,16 +128,16 @@ namespace CloudShaders {
         float amplitude = 0.5;
         int period = 4;
         for (int octave = 0; octave < 4; octave++) {
-            perlin += amplitude * tileablePerlin(uvw * float(period), period);
+            perlin += amplitude * tileablePerlin(uvw * float(period), period, seed);
             amplitude *= 0.5;
             period *= 2;
         }
         perlin = saturate(perlin * 0.9 + 0.5);
 
-        float worleyLow = worleyFbm(uvw * 4.0, 4);
+        float worleyLow = worleyFbm(uvw * 4.0, 4, seed);
         // Perlin-Worley: Worley carves Perlin into round billows.
         float perlinWorley = saturate(remap(perlin, worleyLow - 1.0, 1.0, 0.0, 1.0));
-        float detail = worleyFbm(uvw * 8.0, 8);
+        float detail = worleyFbm(uvw * 8.0, 8, seed + 1u);
         noise.write(float4(perlinWorley, detail, 0, 0), gid);
     }
 
@@ -172,12 +183,18 @@ namespace CloudShaders {
     // Normalised density in [0, 1]. Multiplied by uniforms.density to get the extinction coefficient.
     float cloudDensity(float3 p, constant CloudUniforms &uniforms, texture3d<float> noise) {
         float time = uniforms.time;
-        // A few overlapping blobs give the base cumulus shape.
+        p /= uniforms.scale;
+        // A few overlapping blobs give the base cumulus shape; the seed nudges their layout.
+        float3 s = uniforms.seedOffset;
+        float3 jitter0 = 0.15 * sin(s * 6.28 + float3(0.0, 1.0, 2.0));
+        float3 jitter1 = 0.25 * sin(s * 6.28 + float3(3.0, 4.0, 5.0));
+        float3 jitter2 = 0.25 * sin(s * 6.28 + float3(6.0, 7.0, 8.0));
+        float3 jitter3 = 0.25 * sin(s * 6.28 + float3(9.0, 10.0, 11.0));
         float shape = 0;
-        shape = max(shape, 1.0 - length((p - float3(0.0, 0.1, 0.0)) / float3(1.3, 0.9, 1.0)));
-        shape = max(shape, 1.0 - length((p - float3(-1.0, -0.3, 0.2)) / float3(0.9, 0.6, 0.8)));
-        shape = max(shape, 1.0 - length((p - float3(1.0, -0.4, -0.1)) / float3(0.9, 0.55, 0.8)));
-        shape = max(shape, 1.0 - length((p - float3(0.3, 0.7, 0.1)) / float3(0.7, 0.6, 0.6)));
+        shape = max(shape, 1.0 - length((p - float3(0.0, 0.1, 0.0) - jitter0) / float3(1.3, 0.9, 1.0)));
+        shape = max(shape, 1.0 - length((p - float3(-1.0, -0.3, 0.2) - jitter1) / float3(0.9, 0.6, 0.8)));
+        shape = max(shape, 1.0 - length((p - float3(1.0, -0.4, -0.1) - jitter2) / float3(0.9, 0.55, 0.8)));
+        shape = max(shape, 1.0 - length((p - float3(0.3, 0.7, 0.1) - float3(jitter3.x, abs(jitter3.y) * -0.5, jitter3.z)) / float3(0.7, 0.6, 0.6)));
         // Flatten the bottom like a real cumulus.
         shape *= smoothstep(-0.9, -0.6, p.y);
 
@@ -185,20 +202,23 @@ namespace CloudShaders {
             return 0;
         }
 
-        float3 wind = float3(time * 0.03, -time * 0.01, 0);
-        float base = sampleNoise(noise, p * 0.22 + wind, uniforms).r;
+        float3 wind = float3(time * 0.08, -time * 0.03, time * 0.02);
+        float base = sampleNoise(noise, p * 0.3 + s + wind, uniforms).r;
         // Coverage: the noise survives only where the shape allows it, so edges break into billows.
-        float density = saturate(remap(base, 1.0 - saturate(shape * 1.4), 1.0, 0.0, 1.0));
-        // Erode the edges with high-frequency Worley; the core stays solid.
-        float detail = sampleNoise(noise, p * 0.9 + wind * 3.0, uniforms).g;
-        density = saturate(remap(density, detail * 0.35, 1.0, 0.0, 1.0));
+        float density = saturate(remap(base, 1.0 - saturate(shape * 1.5), 1.0, 0.0, 1.0));
+        // Erode the edges with high-frequency Worley; the core stays solid. Inverting the Worley
+        // near the base turns round billows into wisps (Schneider, "Nubis").
+        float heightFraction = saturate((p.y + 0.9) / 1.8);
+        float detail = sampleNoise(noise, p * 1.1 + s.zxy + wind * 3.0, uniforms).g;
+        detail = mix(1.0 - detail, detail, saturate(heightFraction * 4.0));
+        density = saturate(remap(density, detail * 0.4, 1.0, 0.0, 1.0));
         return saturate(density * 2.5);
     }
 
-    bool intersectBounds(float3 origin, float3 direction, thread float &tNear, thread float &tFar) {
+    bool intersectBounds(float3 origin, float3 direction, float scale, thread float &tNear, thread float &tFar) {
         float3 inverse = 1.0 / direction;
-        float3 t0 = (boundsMin - origin) * inverse;
-        float3 t1 = (boundsMax - origin) * inverse;
+        float3 t0 = (boundsMin * scale - origin) * inverse;
+        float3 t1 = (boundsMax * scale - origin) * inverse;
         float3 tMin = min(t0, t1);
         float3 tMax = max(t0, t1);
         tNear = max(max(tMin.x, tMin.y), max(tMin.z, 0.0));
@@ -282,15 +302,20 @@ namespace CloudShaders {
     // Per-channel optical depth from p toward the light, marched in a few steps.
     float3 marchedOpticalDepth(float3 p, float3 lightDirection, constant CloudUniforms &uniforms, texture3d<float> noise) {
         float tNear, tFar;
-        if (!intersectBounds(p, lightDirection, tNear, tFar)) {
+        if (!intersectBounds(p, lightDirection, uniforms.scale, tNear, tFar)) {
             return 0.0;
         }
+        // Geometrically growing steps: fine near p for crisp self-shadowing, coarse far away.
         const int steps = 8;
-        float stepSize = tFar / float(steps);
         float opticalDepth = 0;
+        float t = 0;
+        const float growth = 1.5;
+        float stepSize = tFar * (growth - 1.0) / (pow(growth, float(steps)) - 1.0);
         for (int i = 0; i < steps; i++) {
-            float3 q = p + lightDirection * ((float(i) + 0.5) * stepSize);
+            float3 q = p + lightDirection * (t + 0.5 * stepSize);
             opticalDepth += cloudDensity(q, uniforms, noise) * uniforms.density * stepSize;
+            t += stepSize;
+            stepSize *= growth;
         }
         return opticalDepth * extinctionScale(uniforms);
     }
@@ -317,7 +342,7 @@ namespace CloudShaders {
 
     float3 rayMarch(float3 origin, float3 direction, constant CloudUniforms &uniforms, texture3d<float> noise, float jitter) {
         float tNear, tFar;
-        if (!intersectBounds(origin, direction, tNear, tFar)) {
+        if (!intersectBounds(origin, direction, uniforms.scale, tNear, tFar)) {
             return background(direction, uniforms, true);
         }
         const int steps = 96;
@@ -340,10 +365,15 @@ namespace CloudShaders {
             } else {
                 float3 sunDepth = marchedOpticalDepth(p, uniforms.sunDirection, uniforms, noise);
                 float3 direct = multipleScatteredSun(cosSun, sunDepth);
+                // Powder effect: in-scattering is weak right at the surface facing the sun, which darkens
+                // crevices and gives billows their rounded look. Fades out when looking toward the sun.
+                float powder = 1.0 - exp(-2.0 * sigma * 0.15);
+                direct *= mix(powder, 1.0, saturate(cosSun * 0.5 + 0.5));
                 // Sky light, attenuated by the cloud above with the same softened (multiply-scattered) extinction.
                 float3 skyDepth = marchedOpticalDepth(p, float3(0, 1, 0), uniforms, noise);
                 float3 skyLight = 0.5 * (sky(float3(0, 1, 0), uniforms.sunDirection, false) + sky(normalize(float3(1, 0.1, 0)), uniforms.sunDirection, false));
-                float3 ambient = skyLight * exp(-0.25 * skyDepth);
+                float heightFraction = saturate((p.y / uniforms.scale - boundsMin.y) / (boundsMax.y - boundsMin.y));
+                float3 ambient = skyLight * exp(-0.25 * skyDepth) * mix(0.4, 1.0, heightFraction);
                 source = albedo * (direct + ambient);
             }
             radiance += transmittance * (1.0 - stepTransmittance) * source;
@@ -360,7 +390,7 @@ namespace CloudShaders {
     // Unbiased transmittance estimate between p and the volume exit along direction, for one channel's extinction scale.
     float ratioTrackingTransmittance(float3 p, float3 direction, constant CloudUniforms &uniforms, texture3d<float> noise, float channelScale, thread RNG &rng) {
         float tNear, tFar;
-        if (!intersectBounds(p, direction, tNear, tFar)) {
+        if (!intersectBounds(p, direction, uniforms.scale, tNear, tFar)) {
             return 1.0;
         }
         float majorant = uniforms.density;
@@ -398,7 +428,7 @@ namespace CloudShaders {
 
         for (int iteration = 0; iteration < 1024; iteration++) {
             float tNear, tFar;
-            if (!intersectBounds(origin, direction, tNear, tFar)) {
+            if (!intersectBounds(origin, direction, uniforms.scale, tNear, tFar)) {
                 // Primary rays see the background; scattered rays see sky (sun is handled by next-event estimation).
                 if (bounces == 0 || uniforms.mode == 1) {
                     radiance += throughput * background(direction, uniforms, bounces == 0);
@@ -493,8 +523,9 @@ namespace CloudShaders {
             color = float3(1);
         }
 
-        // Simple filmic tone map; render target is sRGB so no manual gamma.
-        color = 1.0 - exp(-color * 1.2);
+        // ACES filmic tone map (Narkowicz fit); render target is sRGB so no manual gamma.
+        color *= 0.8;
+        color = saturate((color * (2.51 * color + 0.03)) / (color * (2.43 * color + 0.59) + 0.14));
         return float4(color, 1);
     }
 

@@ -1,5 +1,5 @@
 {
-  "originHash" : "b23642a0c99040874c18ca116680c42dacd7eaecdba06c1a8456b4bf5b7c2f39",
+  "originHash" : "2c036bdc4cadaa9050405ca4a187f7ec30841456e608ffd8f1bf4b6c92ae4d5e",
   "pins" : [
     {
       "identity" : "demokit",
@@ -43,7 +43,7 @@
       "location" : "https://github.com/schwa/Interaction3D",
       "state" : {
         "branch" : "main",
-        "revision" : "0518b2f92ca97f9d12e776eab122d1adbb1e274d"
+        "revision" : "3696a8f1e9f1e018fbdea5fd4c48030775dbd43e"
       }
     },
     {
@@ -56,21 +56,12 @@
       }
     },
     {
-      "identity" : "metalsprockets",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/MetalSprockets",
-      "state" : {
-        "branch" : "main",
-        "revision" : "7038521ecde3278818a9dc26cd25d371341b155b"
-      }
-    },
-    {
       "identity" : "metalsprocketsaddons",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalSprocketsAddOns",
       "state" : {
         "branch" : "main",
-        "revision" : "79ae7f93cc7887280f03e90e5ce478d1a2eed207"
+        "revision" : "02f667a46e96cbf148864d6de31b17b3c8f1a91d"
       }
     },
     {
@@ -160,7 +151,7 @@
       "location" : "https://github.com/schwa/SwiftMesh",
       "state" : {
         "branch" : "main",
-        "revision" : "cb80c0bc0ecc670c3b716fb2d53af792738c107b"
+        "revision" : "971028bd1bd62e8f70b0f264de99ab482424bbf1"
       }
     }
   ],

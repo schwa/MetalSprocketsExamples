@@ -6,7 +6,9 @@ struct CloudUniforms {
     simd_float4x4 inverseViewProjection;
     simd_float3 cameraPosition;
     simd_float3 sunDirection;
-    float time;
+    simd_float3 seedOffset;         // per-seed offset into the noise texture and blob layout
+    float time;                     // animation clock, already scaled by animation speed
+    float scale;                    // cloud size multiplier
     float density;
     float split;            // 0...1 screen x; left of it is ray marched, right is path traced
     int mode;               // 0 = emissive (absorption + emission), 1 = lit (scattering)
