@@ -992,6 +992,25 @@ demos:
       choreography: []
       notes: "Static — let the cinematic camera path run."
 
+  - name: Volumetric Cloud
+    id: VolumetricCloud
+    description: Ray-marched vs path-traced volume
+    long_description: >
+      A procedural cloud rendered two ways side by side: ray marching with a
+      multiple-scattering approximation on the left, and progressively
+      accumulated path tracing with delta and ratio tracking on the right. A
+      baked Perlin-Worley noise volume, wavelength-dependent extinction, and
+      an analytic sky with a sun disk.
+    group: Complex
+    keywords: [volumetric, path-tracing, raymarching, clouds]
+    screenshot: null
+    platform: null
+    video:
+      duration: 8
+      interest: high
+      choreography: []
+      notes: "Static — the path-traced half converges while the camera is still."
+
   - name: Mesh Dissolve
     id: MeshDissolve
     description: Triplanar-grid dissolve effects

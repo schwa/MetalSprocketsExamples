@@ -4571,11 +4571,13 @@ Emissive mode comes out as a nearly flat white silhouette. Weight emission by de
 ## 461: Cloud demo: add entry to Documentation/demos.yaml
 
 +++
-status: new
+status: closed
 priority: low
 kind: documentation
 labels: cloud
 created: 2026-10-24T22:28:59Z
+updated: 2026-10-25T00:47:20Z
+closed: 2026-10-25T00:47:20Z
 +++
 
 The Volumetric Cloud demo has no entry in Documentation/demos.yaml (screenshot/video metadata).

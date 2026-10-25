@@ -663,7 +663,7 @@ extension CloudDemoView: @retroactive DemoView {
             name: "Volumetric Cloud",
             systemImage: "cloud",
             description: "Ray-marched vs path-traced volume",
-            longDescription: "A procedural **cloud** volume rendered two ways side by side: fixed-step **ray marching** on the left, unbiased **path tracing** with delta tracking on the right. Emissive mode is absorption + emission only; Lit mode adds scattering with a two-lobe phase function, ratio-tracked sun shadows, and multiple bounces. Drag the split to compare.",
+            longDescription: "A procedural **cloud** volume rendered two ways side by side: **ray marching** with a Wrenninge multiple-scattering approximation on the left, progressively accumulated **path tracing** with delta and ratio tracking on the right. The density comes from a baked Perlin-Worley 3D texture (optional tricubic filtering). Lit mode adds wavelength-dependent extinction and an analytic sky with a sun disk; Emissive mode is absorption + emission only. Move the split to compare.",
             group: "Complex"
         )
     }
