@@ -208,7 +208,9 @@ namespace CloudShaders {
 
     // MARK: - Lighting
 
-    constant float3 emissionColor = float3(1.0, 0.82, 0.45) * 2.5;
+    // Emissive mode: emission scales with density, so a source term of emissionColor * density
+    // makes the dense core glow brighter than the thin, wispy edges.
+    constant float3 emissionColor = float3(1.0, 0.72, 0.28) * 4.0;
     constant float3 emissiveBackground = float3(0.01, 0.025, 0.04);
     constant float3 sunColor = float3(1.0, 0.95, 0.85) * 6.0;
     constant float albedo = 0.95;
@@ -334,7 +336,7 @@ namespace CloudShaders {
             // Integrate the source term analytically over the step: (1 - exp(-sigma dt)) * source / sigma.
             float3 source;
             if (uniforms.mode == 0) {
-                source = emissionColor;
+                source = emissionColor * (sigma / uniforms.density);
             } else {
                 float3 sunDepth = marchedOpticalDepth(p, uniforms.sunDirection, uniforms, noise);
                 float3 direct = multipleScatteredSun(cosSun, sunDepth);
@@ -427,7 +429,7 @@ namespace CloudShaders {
             float3 p = origin + direction * t;
             if (uniforms.mode == 0) {
                 // Pure absorber: every real collision absorbs and returns the emitted radiance.
-                radiance += throughput * emissionColor;
+                radiance += throughput * emissionColor * cloudDensity(p, uniforms, noise);
                 break;
             }
 

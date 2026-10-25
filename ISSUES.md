@@ -4555,11 +4555,13 @@ In Lit mode the ray-marched side does only single scattering plus a flat ambient
 ## 460: Cloud demo: emissive mode tone and density-weighted emission
 
 +++
-status: new
+status: closed
 priority: low
 kind: enhancement
 labels: cloud
 created: 2026-10-24T22:28:59Z
+updated: 2026-10-25T00:42:58Z
+closed: 2026-10-25T00:42:58Z
 +++
 
 Emissive mode comes out as a nearly flat white silhouette. Weight emission by density and tune the exposure/tone map to match the soft glowing look of the original reference.
