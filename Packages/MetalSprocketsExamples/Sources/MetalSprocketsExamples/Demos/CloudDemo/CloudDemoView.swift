@@ -23,17 +23,19 @@ public struct CloudDemoView: View {
         var density: Double
         var maxBounces: Double
         var sunAngle: Double
+        var chromatic: Bool
         var animate: Bool
     }
 
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
     @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0.2, 4.5])
-    @State private var mode: Mode = .emissive
+    @State private var mode: Mode = .lit
     @State private var split: Double = 0.5
     @State private var density: Double = 12
     @State private var samplesPerPixel: Double = 1
     @State private var maxBounces: Double = 8
     @State private var sunAngle: Double = 40
+    @State private var chromatic = true
     @State private var animate = false
     @State private var accumulatedFrames = 0
     @State private var accumulationResetPending = true
@@ -124,6 +126,7 @@ public struct CloudDemoView: View {
                     LabeledContent("Sun Angle") {
                         Slider(value: $sunAngle, in: 0...180)
                     }
+                    Toggle("Wavelength-Dependent", isOn: $chromatic)
                 }
                 Toggle("Animate", isOn: $animate)
                 LabeledContent("Accumulated") {
@@ -135,7 +138,7 @@ public struct CloudDemoView: View {
     }
 
     private var accumulationKey: AccumulationKey {
-        AccumulationKey(cameraMatrix: cameraMatrix, mode: mode, density: density, maxBounces: maxBounces, sunAngle: sunAngle, animate: animate)
+        AccumulationKey(cameraMatrix: cameraMatrix, mode: mode, density: density, maxBounces: maxBounces, sunAngle: sunAngle, chromatic: chromatic, animate: animate)
     }
 
     private func uniforms(time: Float, viewportSize: CGSize, reset: Bool) -> CloudUniforms {
@@ -155,6 +158,7 @@ public struct CloudDemoView: View {
             mode: Int32(mode.rawValue),
             samplesPerPixel: Int32(samplesPerPixel),
             maxBounces: Int32(maxBounces),
+            chromatic: chromatic ? 1 : 0,
             frameIndex: seed,
             resetAccumulation: reset ? 1 : 0
         )

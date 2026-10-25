@@ -187,6 +187,12 @@ namespace CloudShaders {
         return mix(float3(0.55, 0.6, 0.7), float3(0.25, 0.45, 0.85), t);
     }
 
+    // Per-channel extinction relative to uniforms.density. Blue is extinguished more than red, so light that
+    // travels deep into the cloud comes out warm. Kept <= 1 so uniforms.density * 1 stays a valid majorant.
+    float3 extinctionScale(constant CloudUniforms &uniforms) {
+        return (uniforms.mode == 1 && uniforms.chromatic) ? float3(0.4, 0.65, 1.0) : float3(1.0);
+    }
+
     float3 background(float3 direction, constant CloudUniforms &uniforms) {
         return uniforms.mode == 0 ? emissiveBackground : sky(direction);
     }
@@ -219,7 +225,7 @@ namespace CloudShaders {
 
     // MARK: - Ray marching
 
-    float marchedSunTransmittance(float3 p, constant CloudUniforms &uniforms, texture3d<float> noise) {
+    float3 marchedSunTransmittance(float3 p, constant CloudUniforms &uniforms, texture3d<float> noise) {
         float tNear, tFar;
         if (!intersectBounds(p, uniforms.sunDirection, tNear, tFar)) {
             return 1.0;
@@ -231,7 +237,7 @@ namespace CloudShaders {
             float3 q = p + uniforms.sunDirection * ((float(i) + 0.5) * stepSize);
             opticalDepth += cloudDensity(q, uniforms, noise) * uniforms.density * stepSize;
         }
-        return exp(-opticalDepth);
+        return exp(-opticalDepth * extinctionScale(uniforms));
     }
 
     float3 rayMarch(float3 origin, float3 direction, constant CloudUniforms &uniforms, texture3d<float> noise, float jitter) {
@@ -241,16 +247,17 @@ namespace CloudShaders {
         }
         const int steps = 96;
         float stepSize = (tFar - tNear) / float(steps);
-        float transmittance = 1.0;
+        float3 transmittance = 1.0;
         float3 radiance = 0;
         float cosSun = dot(direction, uniforms.sunDirection);
+        float3 scale = extinctionScale(uniforms);
         for (int i = 0; i < steps; i++) {
             float3 p = origin + direction * (tNear + (float(i) + jitter) * stepSize);
             float sigma = cloudDensity(p, uniforms, noise) * uniforms.density;
             if (sigma <= 0) {
                 continue;
             }
-            float stepTransmittance = exp(-sigma * stepSize);
+            float3 stepTransmittance = exp(-sigma * scale * stepSize);
             // Integrate the source term analytically over the step: (1 - exp(-sigma dt)) * source / sigma.
             float3 source;
             if (uniforms.mode == 0) {
@@ -263,7 +270,7 @@ namespace CloudShaders {
             }
             radiance += transmittance * (1.0 - stepTransmittance) * source;
             transmittance *= stepTransmittance;
-            if (transmittance < 0.005) {
+            if (max3(transmittance.x, transmittance.y, transmittance.z) < 0.005) {
                 break;
             }
         }
@@ -272,8 +279,8 @@ namespace CloudShaders {
 
     // MARK: - Path tracing
 
-    // Unbiased transmittance estimate between p and the volume exit along direction.
-    float ratioTrackingTransmittance(float3 p, float3 direction, constant CloudUniforms &uniforms, texture3d<float> noise, thread RNG &rng) {
+    // Unbiased transmittance estimate between p and the volume exit along direction, for one channel's extinction scale.
+    float ratioTrackingTransmittance(float3 p, float3 direction, constant CloudUniforms &uniforms, texture3d<float> noise, float channelScale, thread RNG &rng) {
         float tNear, tFar;
         if (!intersectBounds(p, direction, tNear, tFar)) {
             return 1.0;
@@ -286,7 +293,7 @@ namespace CloudShaders {
             if (t >= tFar) {
                 break;
             }
-            transmittance *= 1.0 - cloudDensity(p + direction * t, uniforms, noise);
+            transmittance *= 1.0 - cloudDensity(p + direction * t, uniforms, noise) * channelScale;
             if (transmittance < 1e-3) {
                 return 0;
             }
@@ -299,6 +306,17 @@ namespace CloudShaders {
         float3 throughput = 1.0;
         float3 radiance = 0;
         int bounces = 0;
+
+        // Hero channel: with chromatic extinction each path tracks one RGB channel's medium and
+        // contributes only to that channel (weighted by 3 for the 1/3 selection probability).
+        float3 scale = extinctionScale(uniforms);
+        float channelScale = 1.0;
+        if (any(scale != 1.0)) {
+            int channel = min(int(rng.next() * 3.0), 2);
+            channelScale = scale[channel];
+            throughput = float3(0);
+            throughput[channel] = 3.0;
+        }
 
         for (int iteration = 0; iteration < 1024; iteration++) {
             float tNear, tFar;
@@ -319,7 +337,7 @@ namespace CloudShaders {
                 if (t >= tFar) {
                     break;
                 }
-                if (rng.next() < cloudDensity(origin + direction * t, uniforms, noise)) {
+                if (rng.next() < cloudDensity(origin + direction * t, uniforms, noise) * channelScale) {
                     collided = true;
                     break;
                 }
@@ -343,7 +361,7 @@ namespace CloudShaders {
             }
 
             // Next-event estimation toward the sun.
-            float sunTransmittance = ratioTrackingTransmittance(p, uniforms.sunDirection, uniforms, noise, rng);
+            float sunTransmittance = ratioTrackingTransmittance(p, uniforms.sunDirection, uniforms, noise, channelScale, rng);
             radiance += throughput * sunColor * phase(dot(direction, uniforms.sunDirection)) * sunTransmittance;
 
             // Continue the walk. Picking a lobe by its mixture weight samples phase() exactly, so throughput is unchanged.

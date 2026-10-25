@@ -4505,11 +4505,13 @@ Trilinear sampling of a baked density texture shows blocky artifacts. Tricubic s
 ## 457: Cloud demo: wavelength-dependent scattering
 
 +++
-status: new
+status: closed
 priority: medium
 kind: enhancement
 labels: cloud
 created: 2026-10-24T22:28:58Z
+updated: 2026-10-25T00:15:53Z
+closed: 2026-10-25T00:15:53Z
 +++
 
 Use a per-channel (RGB) extinction and scattering coefficient so light that travels deep into the cloud shifts toward warm tones. The reference shows soft brown/orange cores against white edges. Path-traced half: spectral or hero-wavelength tracking with a per-channel majorant. Ray-marched half: per-channel transmittance.
