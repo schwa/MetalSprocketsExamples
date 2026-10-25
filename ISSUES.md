@@ -4521,11 +4521,13 @@ Use a per-channel (RGB) extinction and scattering coefficient so light that trav
 ## 458: Cloud demo: physical sky with visible sun disk
 
 +++
-status: new
+status: closed
 priority: medium
 kind: enhancement
 labels: cloud
 created: 2026-10-24T22:28:58Z
+updated: 2026-10-25T00:22:13Z
+closed: 2026-10-25T00:22:13Z
 +++
 
 Replace the flat sky() gradient with an analytic atmosphere (Preetham/Hosek, or a simple Rayleigh+Mie model). Show a sun disk and halo in the background, and use the same sky as the light that scatters into the cloud from around it.

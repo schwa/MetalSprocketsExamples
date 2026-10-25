@@ -182,9 +182,29 @@ namespace CloudShaders {
     constant float albedo = 0.95;
     constant float phaseG = 0.6;
 
-    float3 sky(float3 direction) {
-        float t = saturate(direction.y * 0.5 + 0.5);
-        return mix(float3(0.55, 0.6, 0.7), float3(0.25, 0.45, 0.85), t);
+    float henyeyGreenstein(float cosTheta, float g);
+
+    // Cheap analytic atmosphere: a Rayleigh-like zenith/horizon gradient plus a Mie forward-scattering
+    // halo around the sun. The sun disk itself is optional: scattered rays leave it to next-event estimation.
+    float3 sky(float3 direction, float3 sunDirection, bool includeSunDisk) {
+        const float3 zenith = float3(0.18, 0.36, 0.78);
+        const float3 horizon = float3(0.62, 0.76, 0.92);
+        float up = direction.y;
+        float3 color = mix(horizon, zenith, pow(saturate(up), 0.45));
+        // Below the horizon fade to a hazy, darker band instead of a hard edge.
+        color *= mix(1.0, 0.65, saturate(-up * 3.0));
+
+        float cosSun = dot(direction, sunDirection);
+        // Rayleigh phase (1 + cos^2) brightens the sky on the sun's side and opposite it.
+        color *= 0.85 + 0.25 * cosSun * cosSun;
+        // Mie halo: strongly forward-peaked glow around the sun.
+        color += sunColor * 0.035 * henyeyGreenstein(cosSun, 0.8);
+
+        // Sun disk, ~0.6 degrees across with a soft limb.
+        if (includeSunDisk) {
+            color += sunColor * 40.0 * smoothstep(0.99994, 0.99997, cosSun);
+        }
+        return color;
     }
 
     // Per-channel extinction relative to uniforms.density. Blue is extinguished more than red, so light that
@@ -193,8 +213,8 @@ namespace CloudShaders {
         return (uniforms.mode == 1 && uniforms.chromatic) ? float3(0.4, 0.65, 1.0) : float3(1.0);
     }
 
-    float3 background(float3 direction, constant CloudUniforms &uniforms) {
-        return uniforms.mode == 0 ? emissiveBackground : sky(direction);
+    float3 background(float3 direction, constant CloudUniforms &uniforms, bool includeSunDisk) {
+        return uniforms.mode == 0 ? emissiveBackground : sky(direction, uniforms.sunDirection, includeSunDisk);
     }
 
     float henyeyGreenstein(float cosTheta, float g) {
@@ -243,7 +263,7 @@ namespace CloudShaders {
     float3 rayMarch(float3 origin, float3 direction, constant CloudUniforms &uniforms, texture3d<float> noise, float jitter) {
         float tNear, tFar;
         if (!intersectBounds(origin, direction, tNear, tFar)) {
-            return background(direction, uniforms);
+            return background(direction, uniforms, true);
         }
         const int steps = 96;
         float stepSize = (tFar - tNear) / float(steps);
@@ -265,7 +285,7 @@ namespace CloudShaders {
             } else {
                 float3 direct = sunColor * phase(cosSun) * marchedSunTransmittance(p, uniforms, noise);
                 // Cheap multiple-scattering stand-in: ambient sky light.
-                float3 ambient = sky(float3(0, 1, 0)) * 0.6;
+                float3 ambient = sky(float3(0, 1, 0), uniforms.sunDirection, false) * 0.6;
                 source = albedo * (direct + ambient);
             }
             radiance += transmittance * (1.0 - stepTransmittance) * source;
@@ -274,7 +294,7 @@ namespace CloudShaders {
                 break;
             }
         }
-        return radiance + transmittance * background(direction, uniforms);
+        return radiance + transmittance * background(direction, uniforms, true);
     }
 
     // MARK: - Path tracing
@@ -323,7 +343,7 @@ namespace CloudShaders {
             if (!intersectBounds(origin, direction, tNear, tFar)) {
                 // Primary rays see the background; scattered rays see sky (sun is handled by next-event estimation).
                 if (bounces == 0 || uniforms.mode == 1) {
-                    radiance += throughput * background(direction, uniforms);
+                    radiance += throughput * background(direction, uniforms, bounces == 0);
                 }
                 break;
             }

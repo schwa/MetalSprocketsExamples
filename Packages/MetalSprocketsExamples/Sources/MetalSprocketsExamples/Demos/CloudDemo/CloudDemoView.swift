@@ -22,7 +22,8 @@ public struct CloudDemoView: View {
         var mode: Mode
         var density: Double
         var maxBounces: Double
-        var sunAngle: Double
+        var sunAzimuth: Double
+        var sunElevation: Double
         var chromatic: Bool
         var animate: Bool
     }
@@ -34,7 +35,9 @@ public struct CloudDemoView: View {
     @State private var density: Double = 12
     @State private var samplesPerPixel: Double = 1
     @State private var maxBounces: Double = 8
-    @State private var sunAngle: Double = 40
+    // Azimuth 0 puts the sun behind the cloud as seen from the default camera.
+    @State private var sunAzimuth: Double = 25
+    @State private var sunElevation: Double = 18
     @State private var chromatic = true
     @State private var animate = false
     @State private var accumulatedFrames = 0
@@ -123,8 +126,11 @@ public struct CloudDemoView: View {
                         Slider(value: $maxBounces, in: 0...32, step: 1)
                         Text("\(Int(maxBounces))").monospacedDigit().fixedSize()
                     }
-                    LabeledContent("Sun Angle") {
-                        Slider(value: $sunAngle, in: 0...180)
+                    LabeledContent("Sun Azimuth") {
+                        Slider(value: $sunAzimuth, in: -180...180)
+                    }
+                    LabeledContent("Sun Elevation") {
+                        Slider(value: $sunElevation, in: 2...90)
                     }
                     Toggle("Wavelength-Dependent", isOn: $chromatic)
                 }
@@ -138,14 +144,15 @@ public struct CloudDemoView: View {
     }
 
     private var accumulationKey: AccumulationKey {
-        AccumulationKey(cameraMatrix: cameraMatrix, mode: mode, density: density, maxBounces: maxBounces, sunAngle: sunAngle, chromatic: chromatic, animate: animate)
+        AccumulationKey(cameraMatrix: cameraMatrix, mode: mode, density: density, maxBounces: maxBounces, sunAzimuth: sunAzimuth, sunElevation: sunElevation, chromatic: chromatic, animate: animate)
     }
 
     private func uniforms(time: Float, viewportSize: CGSize, reset: Bool) -> CloudUniforms {
         let projectionMatrix = projection.projectionMatrix(for: viewportSize)
         let viewProjection = projectionMatrix * cameraMatrix.inverse
-        let angle = Float(sunAngle) * .pi / 180
-        let sunDirection = simd_normalize(SIMD3<Float>(cos(angle), 0.8, 0.3 * sin(angle)))
+        let azimuth = Float(sunAzimuth) * .pi / 180
+        let elevation = Float(sunElevation) * .pi / 180
+        let sunDirection = SIMD3<Float>(cos(elevation) * sin(azimuth), sin(elevation), -cos(elevation) * cos(azimuth))
         // Fresh RNG seed every frame so each accumulated sample is independent.
         let seed = UInt32.random(in: 0...UInt32.max)
         return CloudUniforms(
