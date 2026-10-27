@@ -4583,3 +4583,21 @@ closed: 2026-10-25T00:47:20Z
 The Volumetric Cloud demo has no entry in Documentation/demos.yaml (screenshot/video metadata).
 
 ---
+
+## 462: Temporary #242 pink-scan debugging code still in CloudDemo
+
++++
+status: new
+priority: medium
+kind: task
+created: 2026-10-27T16:19:10Z
++++
+
+CloudDemo still has temporary #242 bisect/debug code:
+- `pink_scan` kernel in `CloudShaders.metal`
+- Pink Scan compute pass, `pinkScanLogger`, pink buffers/kernel in `CloudDemoView.swift`
+- "Pink Bisect (temporary)" inspector section and `metalFramebufferOnly(bisectFramebufferOnly)` override
+
+This should be removed.
+
+---
