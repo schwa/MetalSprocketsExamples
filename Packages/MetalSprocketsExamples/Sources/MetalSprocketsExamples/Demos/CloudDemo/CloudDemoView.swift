@@ -271,8 +271,7 @@ public struct CloudDemoView: View {
     }
 }
 
-@MainActor
-private let pinkScanLogger = Logger(subsystem: "io.schwa.metal-sprockets.pink242", category: "scan")
+nonisolated private let pinkScanLogger = Logger(subsystem: "io.schwa.metal-sprockets.pink242", category: "scan")
 
 private final class CloudResources {
     static let noiseSize = 128
