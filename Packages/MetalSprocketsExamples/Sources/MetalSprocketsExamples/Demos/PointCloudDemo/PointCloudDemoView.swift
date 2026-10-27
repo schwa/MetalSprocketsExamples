@@ -42,7 +42,7 @@ public struct PointCloudDemoView: View {
                             projectionMatrix: projection.projectionMatrix(for: drawableSize),
                             pointSize: pointSize
                         )
-                        .depthCompare(function: .less, enabled: true)
+                        .depthCompare(function: .less, writes: true)
                     }
                     .useResourceCollection(residency.collection(for: [pointBuffer], device: pointBuffer.device))
                 }

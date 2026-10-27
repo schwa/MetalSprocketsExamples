@@ -301,7 +301,7 @@ struct BlinnPhongDemoRenderPass: Element {
                                 .useResources(model.mesh.submeshes.map(\.indexBuffer.buffer), usage: .read, stages: .vertex)
                             }
                             .vertexDescriptor(model.mesh.vertexDescriptor)
-                            .depthCompare(function: .less, enabled: true)
+                            .depthCompare(function: .less, writes: true)
                         }
                     } else {
                         // Blinn-Phong shading
@@ -324,7 +324,7 @@ struct BlinnPhongDemoRenderPass: Element {
                             .lighting(lighting)
                         }
                         .vertexDescriptor(firstModel.mesh.vertexDescriptor)
-                        .depthCompare(function: .less, enabled: true)
+                        .depthCompare(function: .less, writes: true)
                     }
                 }
             }

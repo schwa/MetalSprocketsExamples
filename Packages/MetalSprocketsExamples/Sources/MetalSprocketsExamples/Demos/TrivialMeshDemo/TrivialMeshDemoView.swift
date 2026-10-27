@@ -81,7 +81,7 @@ public struct TrivialMeshDemoView: View {
                         .lighting(lighting)
                     }
                     .vertexDescriptor(MTLVertexDescriptor(firstModel.mesh.vertexDescriptor))
-                    .depthCompare(function: .less, enabled: true)
+                    .depthCompare(function: .less, writes: true)
                 }
             }
             .useResourceCollection(residency.collection(for: longLivedResources, device: _MTLCreateSystemDefaultDevice()))

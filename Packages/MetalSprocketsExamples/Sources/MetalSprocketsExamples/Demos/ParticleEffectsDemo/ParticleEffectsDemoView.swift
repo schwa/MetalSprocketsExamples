@@ -70,7 +70,7 @@ public struct ParticleEffectsDemoView: View {
                                 gravity: gravity,
                                 baseSize: particleSize
                             )
-                            .depthCompare(function: .less, enabled: true)
+                            .depthCompare(function: .less, writes: true)
                         }
                     }
                     .useResourceCollection(resourceCollection)

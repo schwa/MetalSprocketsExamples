@@ -407,7 +407,7 @@ struct ShadowMapDemoRenderPass: Element {
                         .lighting(lighting)
                     }
                     .vertexDescriptor(firstTeapot.mesh.vertexDescriptor)
-                    .depthCompare(function: .less, enabled: true)
+                    .depthCompare(function: .less, writes: true)
                 }
             }
             .renderPassDescriptorModifier { descriptor in

@@ -131,7 +131,7 @@ struct OpenSeaPipeline: Element {
                         .parameter("uniforms", functionType: .vertex, value: uniforms)
                         .parameter("uniforms", functionType: .fragment, value: uniforms)
                     }
-                    .depthCompare(function: .lessEqual, enabled: true)
+                    .depthCompare(function: .lessEqual, writes: true)
                     .useResourceCollection(resourceCollection)
 
                     try RenderPipeline(vertexShader: skyVertexShader, fragmentShader: skyFragmentShader) {
@@ -141,7 +141,7 @@ struct OpenSeaPipeline: Element {
                         .parameter("uniforms", functionType: .vertex, value: uniforms)
                         .parameter("uniforms", functionType: .fragment, value: uniforms)
                     }
-                    .depthCompare(function: .lessEqual, enabled: true)
+                    .depthCompare(function: .lessEqual, writes: true)
                 }
             }
             .onSetupEnter { environment in

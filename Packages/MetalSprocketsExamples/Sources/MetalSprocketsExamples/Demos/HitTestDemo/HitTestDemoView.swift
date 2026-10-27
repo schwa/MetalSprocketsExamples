@@ -91,7 +91,7 @@ public struct HitTestDemoView: View {
                                 .lighting(lighting)
                             }
                             .vertexDescriptor(mesh.vertexDescriptor)
-                            .depthCompare(function: .less, enabled: true)
+                            .depthCompare(function: .less, writes: true)
                         }
                         // Covers the whole submission.
                         .useResourceCollection(resourceCollection ?? makeResourceCollection())
@@ -108,7 +108,7 @@ public struct HitTestDemoView: View {
                                     .geometryID(0)
                                 }
                                 .vertexDescriptor(mesh.vertexDescriptor)
-                                .depthCompare(function: .less, enabled: true)
+                                .depthCompare(function: .less, writes: true)
                             }
                             .renderPassDescriptorModifier { descriptor in
                                 descriptor.colorAttachments[0].texture = textures.geometryIDTexture

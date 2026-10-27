@@ -46,7 +46,7 @@ struct LightingVisualizer: Element {
                         .vertexBuffers(of: lightMarker)
                 }
                 .vertexDescriptor(lightMarker.vertexDescriptor)
-                .depthCompare(function: .less, enabled: true)
+                .depthCompare(function: .less, writes: true)
             }
         }
     }

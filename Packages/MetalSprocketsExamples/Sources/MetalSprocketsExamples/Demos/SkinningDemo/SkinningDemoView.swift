@@ -253,7 +253,7 @@ public struct SkinningDemoView: View {
                                 .parameter("bones", functionType: .vertex, value: boneMatrices)
                             }
                             .vertexDescriptor(skinnedVertexDescriptor())
-                            .depthCompare(function: .less, enabled: true)
+                            .depthCompare(function: .less, writes: true)
 
                         case .debug:
                             let skinnedVertices = cpuSkinVertices(vertices, boneMatrices: boneMatrices)
@@ -284,7 +284,7 @@ public struct SkinningDemoView: View {
                                 .vertexValues(skinnedVertices, index: 0)
                             }
                             .vertexDescriptor(debugVertexDescriptor())
-                            .depthCompare(function: .less, enabled: true)
+                            .depthCompare(function: .less, writes: true)
                         }
 
                         // Draw bone visualization
@@ -476,7 +476,7 @@ private func drawBoneVisualization(
         .parameter("color", value: SIMD4<Float>(1, 0.2, 0.2, 1))
     }
     .vertexDescriptor(descriptor)
-    .depthCompare(function: .always, enabled: false)
+    .depthCompare(function: .always, writes: false)
 }
 
 private extension SIMD4 where Scalar == Float {

@@ -58,7 +58,7 @@ public struct DebugShaderDemoView: View {
                         .vertexBuffers(of: teapot)
                 }
                 .vertexDescriptor(teapot.vertexDescriptor)
-                .depthCompare(function: .less, enabled: true)
+                .depthCompare(function: .less, writes: true)
             }
         }
         .metalDepthStencilPixelFormat(.depth32Float)

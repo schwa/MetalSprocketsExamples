@@ -34,7 +34,7 @@ struct TreeGeneratorElement: Element {
                 .parameter("uniforms", value: uniforms)
             }
             .vertexDescriptor(Self.vertexDescriptor)
-            .depthCompare(function: .less, enabled: true)
+            .depthCompare(function: .less, writes: true)
         }
     }
 

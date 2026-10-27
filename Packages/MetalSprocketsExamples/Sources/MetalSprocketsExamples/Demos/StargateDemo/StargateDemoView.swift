@@ -173,7 +173,7 @@ struct StargateRenderPipeline: Element {
                 .parameter("resolution", value: resolution)
                 .parameter("features", value: features.rawValue)
             }
-            .depthCompare(function: .always, enabled: false)
+            .depthCompare(function: .always, writes: false)
         }
     }
 }

@@ -77,7 +77,7 @@ struct MeshDissolveElement: Element {
                 .parameter("uniforms", functionType: .fragment, value: uniforms)
             }
             .vertexDescriptor(metalMesh.vertexDescriptor.mtlVertexDescriptor)
-            .depthCompare(function: .less, enabled: true)
+            .depthCompare(function: .less, writes: true)
             .renderPipelineDescriptorTransformer { descriptor in
                 descriptor.colorAttachments[0].blendingState = .enabled
                 descriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha

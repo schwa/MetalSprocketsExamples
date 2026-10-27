@@ -24,7 +24,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "main"),
         // Override to pick up `MTLTexture.fill()` from main (upstream pins are 1.0.x).
         .package(url: "https://github.com/schwa/MetalSupport", branch: "main"),
-        .package(path: "../../../MetalSprockets"), // TEMP #242: local logging
+        .package(url: "https://github.com/schwa/MetalSprockets", branch: "main"),
         .package(url: "https://github.com/schwa/MetalSprocketsAddOns", branch: "main"),
         .package(url: "https://github.com/schwa/SwiftMesh", branch: "main")
     ],

@@ -1,7 +1,7 @@
 import DemoKit
 import GeometryLite3D
 import Interaction3D
-import Metal
+@preconcurrency import Metal
 import MetalSprockets
 import MetalSprocketsExampleShaders
 import MetalSprocketsSupport
@@ -102,7 +102,7 @@ public struct CloudDemoView: View {
                     .useResourceCollection(resources.resourceCollection)
                     .barrierAfterPass(after: .fragment, beforeQueueStages: .dispatch)
                     // TEMP #242: count pink pixels in the drawable we actually rendered.
-                    try EnvironmentReader(keyPath: \.currentDrawable) { drawable in
+                    EnvironmentReader(keyPath: \.currentDrawable) { drawable in
                         if let drawable, !bisectFramebufferOnly {
                             let (frame, buffer) = resources.nextPinkBuffer()
                             try ComputePass(label: "Pink Scan") {
@@ -249,7 +249,7 @@ public struct CloudDemoView: View {
         let frameSeed = UInt32.random(in: 0...UInt32.max)
         // Golden-ratio fractions spread consecutive seeds evenly over [0, 1).
         let seedValue = Float(seed)
-        let scaledSeed = SIMD3<Float>(seedValue * 0.618_034, seedValue * 0.754_878, seedValue * 0.569_840)
+        let scaledSeed = SIMD3<Float>(seedValue * 0.618034, seedValue * 0.754878, seedValue * 0.569840)
         let seedOffset = scaledSeed - scaledSeed.rounded(.down)
         return CloudUniforms(
             inverseViewProjection: viewProjection.inverse,

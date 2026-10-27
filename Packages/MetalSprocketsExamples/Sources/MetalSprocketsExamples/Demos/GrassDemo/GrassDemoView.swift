@@ -166,7 +166,7 @@ public struct GrassDemoView: View {
             .metalMeshResources(sphereMesh)
         }
         .vertexDescriptor(MTLVertexDescriptor(sphereMesh.vertexDescriptor))
-        .depthCompare(function: .less, enabled: true)
+        .depthCompare(function: .less, writes: true)
     }
 
     private func renderGrass(mvp: float4x4, modelMatrix: float4x4, viewMatrix: float4x4, projectionMatrix: float4x4) throws -> some Element {
@@ -199,7 +199,7 @@ public struct GrassDemoView: View {
             .parameter("pointData", functionType: .mesh, buffer: grassDataBuffer, offset: 0)
             .parameter("uniforms", functionType: .mesh, buffer: uniformsBuffer, offset: 0)
         }
-        .depthCompare(function: .less, enabled: true)
+        .depthCompare(function: .less, writes: true)
     }
 
     private func generateUniformSpherePoints(count: Int, radius: Float) -> [SIMD3<Float>] {

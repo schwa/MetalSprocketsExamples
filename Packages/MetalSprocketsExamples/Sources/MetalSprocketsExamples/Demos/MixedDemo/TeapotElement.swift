@@ -37,7 +37,7 @@ struct TeapotElement: Element {
                     .vertexBuffers(of: mesh)
             }
             .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
-            .depthCompare(function: .less, enabled: true)
+            .depthCompare(function: .less, writes: true)
         }
     }
 }

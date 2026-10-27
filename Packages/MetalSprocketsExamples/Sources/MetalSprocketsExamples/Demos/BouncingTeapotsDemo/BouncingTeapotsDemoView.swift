@@ -187,7 +187,7 @@ struct FlyingTeapotsRenderPass: Element {
                     }
                     .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
                 }
-                .depthCompare(function: .less, enabled: true)
+                .depthCompare(function: .less, writes: true)
                 #if canImport(MetalFX)
                 .renderPassDescriptorModifier { descriptor in
                     descriptor.colorAttachments[0].texture = offscreenTexture
@@ -200,7 +200,7 @@ struct FlyingTeapotsRenderPass: Element {
                 try RenderPass {
                     try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
                 }
-                .depthCompare(function: .always, enabled: false)
+                .depthCompare(function: .always, writes: false)
                 #endif
             }
             .useResourceCollection(resourceCollection)

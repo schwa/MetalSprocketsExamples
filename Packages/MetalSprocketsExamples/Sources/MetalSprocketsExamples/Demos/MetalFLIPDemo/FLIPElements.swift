@@ -241,7 +241,7 @@ public struct FLIPRender: Element {
                 }
                 .parameter("camera", value: uniforms)
                 .parameter("field", texture: simulation.surface)
-                .depthCompare(function: .lessEqual, enabled: true)
+                .depthCompare(function: .lessEqual, writes: true)
                 if showsParticles {
                     try RenderPipeline(label: "FLIP particles", vertexShader: shaders.particleVertex, fragmentShader: shaders.particleFragment) {
                         Draw { encoder in
@@ -251,7 +251,7 @@ public struct FLIPRender: Element {
                     .parameter("positions", buffer: simulation.positions)
                     .parameter("velocities", buffer: simulation.velocities)
                     .parameter("camera", value: uniforms)
-                    .depthCompare(function: .lessEqual, enabled: true)
+                    .depthCompare(function: .lessEqual, writes: true)
                 }
             }
         }

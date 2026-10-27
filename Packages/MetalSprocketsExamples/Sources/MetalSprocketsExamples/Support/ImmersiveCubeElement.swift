@@ -58,7 +58,7 @@ struct ImmersiveCubeContent: Element, @unchecked Sendable {
                 .parameter("time", value: time)
             }
             .vertexDescriptor(Vertex.descriptor)
-            .depthCompare(function: .greater, enabled: true)  // visionOS uses reverse-Z depth buffer
+            .depthCompare(function: .greater, writes: true)  // visionOS uses reverse-Z depth buffer
             .renderPipelineDescriptorTransformer { descriptor in
                 descriptor.maxVertexAmplificationCount = context.viewCount
                 descriptor.colorAttachments[0].pixelFormat = context.drawable.colorTextures[0].pixelFormat

@@ -148,7 +148,7 @@ public struct DepthDemoView: View {
                     .vertexBuffers(of: teapot)
             }
             .vertexDescriptor(teapot.vertexDescriptor)
-            .depthCompare(function: .less, enabled: true)
+            .depthCompare(function: .less, writes: true)
         }
     }
 }

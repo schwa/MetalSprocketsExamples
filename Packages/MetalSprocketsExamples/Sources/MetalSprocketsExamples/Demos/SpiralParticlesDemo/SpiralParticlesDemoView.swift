@@ -240,7 +240,7 @@ public struct SpiralParticlesDemoView: View {
             .parameter("particleData", functionType: .mesh, buffer: particleBuffer, offset: 0)
             .parameter("uniforms", functionType: .mesh, buffer: uniformsBuffer, offset: 0)
         }
-        .depthCompare(function: .less, enabled: true)
+        .depthCompare(function: .less, writes: true)
     }
 }
 

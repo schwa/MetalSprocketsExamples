@@ -31,7 +31,7 @@ struct DemoCubeRenderPipeline: Element {
             }
             // Tells Metal how to interpret Vertex struct
             .vertexDescriptor(Vertex.descriptor)
-            .depthCompare(function: .less, enabled: true)
+            .depthCompare(function: .less, writes: true)
         }
     }
 }
